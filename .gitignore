@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Environment
+.env.local
+.env.*.local
+
+# Build
+dist/
+
+# OS
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+
+# Turbopack
+.turbo

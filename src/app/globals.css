@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-cormorant: "Cormorant Garant", Georgia, serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+
+  --color-lavender: #9b7ec8;
+  --color-lavender-light: #c4b0e0;
+  --color-lavender-lighter: #ede8f7;
+  --color-lavender-dark: #7c5cbf;
+  --color-mint: #a8d5c2;
+  --color-mint-light: #cce9df;
+  --color-cream: #faf9f7;
+  --color-cream-warm: #f0ede8;
+  --color-gold: #c9a96e;
+  --color-charcoal: #2c2c2c;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-charcoal font-sans;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/60 shadow-card rounded-2xl;
+  }
+
+  .glass-card-lavender {
+    @apply bg-lavender-lighter/70 backdrop-blur-md border border-lavender-light/40 shadow-soft rounded-2xl;
+  }
+
+  .section-label {
+    @apply text-xs font-sans font-semibold tracking-[0.2em] uppercase text-lavender;
+  }
+
+  .nav-link {
+    @apply text-sm font-sans text-charcoal/70 hover:text-charcoal transition-colors duration-200 relative;
+  }
+
+  .nav-link::after {
+    content: "";
+    @apply absolute -bottom-0.5 left-0 w-0 h-px bg-lavender transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-lavender hover:bg-lavender-dark text-white text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-card-hover;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 bg-transparent border border-lavender text-lavender hover:bg-lavender hover:text-white text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200;
+  }
+
+  .input-field {
+    @apply w-full bg-white/60 border border-cream-deep focus:border-lavender-light focus:bg-white outline-none rounded-lg px-4 py-3 text-sm font-sans text-charcoal placeholder:text-charcoal/40 transition-all duration-200;
+  }
+
+  .container-site {
+    @apply max-w-7xl mx-auto px-6 lg:px-10;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient-lavender {
+    @apply bg-gradient-to-r from-lavender to-lavender-dark bg-clip-text text-transparent;
+  }
+
+  .divider-ornament {
+    @apply flex items-center gap-3 text-gold text-sm font-serif;
+  }
+
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: "";
+    @apply flex-1 h-px bg-gold/30;
+  }
+}
