@@ -5,17 +5,16 @@ import Link from "next/link";
 import { useState } from "react";
 import type { AcfHero } from "@/types";
 
-// ─── Default ACF data (replaced by WordPress props at runtime) ────────────────
 const DEFAULT_DATA: AcfHero = {
   acf_fc_layout: "hero",
-  eyebrow_text: "Kostüme mit Charakter",
-  heading: "Kleidung,\ndie Persönlichkeit\nformt.",
-  heading_accent: "Persönlichkeit",
+  eyebrow_text: "Kostümschneiderei Basel",
+  heading: "Ihre Kostüme.\nUnser Handwerk.",
+  heading_accent: "Handwerk.",
   subtext:
-    "Massgeschneiderte Kostüme. Zeitlos. Individuell. In Handarbeit.",
+    "Wir begleiten Guggenmusiken, Cliquen und Einzelpersonen von der Idee bis zur letzten Naht – persönlich, präzise und mit Leidenschaft.",
   cta_primary_label: "Beratung buchen",
   cta_primary_url: "/termin",
-  cta_secondary_label: "Unser Angebot",
+  cta_secondary_label: "Leistungen entdecken",
   cta_secondary_url: "/leistungen",
   show_contact_form: true,
   badges: [
@@ -25,20 +24,25 @@ const DEFAULT_DATA: AcfHero = {
   ],
 };
 
-interface HeroSectionProps {
-  acf?: Partial<AcfHero>;
-}
+const STATS = [
+  { value: "20+", label: "Jahre Erfahrung" },
+  { value: "500+", label: "Kostüme gefertigt" },
+  { value: "100%", label: "Massarbeit" },
+  { value: "Basel", label: "Seit 2003" },
+];
 
-interface FormState {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-}
+const FLOATING_ICONS = [
+  { src: "/icons/sewing/spool-of-thread-sewing-tailoring-needle.svg", size: 32, top: "18%", left: "2%",  rotate: -15, opacity: 0.13 },
+  { src: "/icons/sewing/pin-cushion-handcraft-sewing-tailoring.svg",  size: 26, top: "55%", left: "3%",  rotate: 10,  opacity: 0.10 },
+  { src: "/icons/sewing/button-sewing-tailoring-handcraft.svg",        size: 22, top: "78%", left: "48%", rotate: 25,  opacity: 0.09 },
+  { src: "/icons/sewing/scissor-cut-fabric-sewing.svg",                size: 28, top: "12%", left: "55%", rotate: -8,  opacity: 0.08 },
+];
+
+interface HeroSectionProps { acf?: Partial<AcfHero> }
+interface FormState { name: string; email: string; phone: string; message: string }
 
 export function HeroSection({ acf }: HeroSectionProps) {
   const data = { ...DEFAULT_DATA, ...acf };
-
   const [form, setForm] = useState<FormState>({ name: "", email: "", phone: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -51,212 +55,225 @@ export function HeroSection({ acf }: HeroSectionProps) {
     setSubmitted(true);
   };
 
-  // Render heading with accent word in periwinkle italic
-  const renderHeading = (text: string, accent?: string) => {
-    if (!accent) return <>{text}</>;
-    const parts = text.split(new RegExp(`(${accent})`, "gi"));
-    return (
-      <>
-        {parts.map((part, i) =>
-          part.toLowerCase() === accent.toLowerCase() ? (
-            <em key={i} className="not-italic text-periwinkle-dark italic">
-              {part}
-            </em>
-          ) : (
-            <span key={i}>{part}</span>
-          )
-        )}
-      </>
-    );
+  const renderHeading = () => {
+    const lines = data.heading.split("\n");
+    return lines.map((line, li) => {
+      if (data.heading_accent && line.includes(data.heading_accent)) {
+        const parts = line.split(data.heading_accent);
+        return (
+          <span key={li} className="block">
+            {parts[0]}
+            <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+            {parts[1]}
+          </span>
+        );
+      }
+      return <span key={li} className="block">{line}</span>;
+    });
   };
 
   return (
-    <section className="relative min-h-screen bg-offwhite overflow-hidden">
-      {/* Decorative blobs */}
-      <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
-        <div className="absolute top-0 right-0 w-[55%] h-full bg-sand-light/50" />
-        <div className="absolute -top-40 right-[30%] w-[500px] h-[500px] rounded-full bg-periwinkle-lighter/60 blur-3xl" />
-      </div>
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-offwhite">
 
-      {/* Decorative tailor-dummy illustration — top right corner */}
-      <div
-        className="absolute top-16 right-0 w-[420px] h-[480px] pointer-events-none select-none hidden xl:block"
-        aria-hidden
-      >
-        <Image
-          src="/images/illustrations/tailor-dummy.png"
-          alt=""
-          fill
-          className="object-contain object-right-top opacity-30"
-          sizes="420px"
-          priority={false}
-        />
-      </div>
+      {/* ── Background panels ──────────────────────────────────────────────── */}
+      {/* Right warm panel */}
+      <div className="absolute inset-y-0 right-0 w-full lg:w-[44%] bg-gradient-to-bl from-sand-light via-offwhite-warm to-offwhite pointer-events-none" aria-hidden />
+      {/* Periwinkle glow top-right */}
+      <div className="absolute -top-32 right-[10%] w-[520px] h-[520px] rounded-full bg-periwinkle-lighter/50 blur-3xl pointer-events-none" aria-hidden />
+      {/* Soft bottom gradient */}
+      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-offwhite to-transparent pointer-events-none" aria-hidden />
 
-      {/* Floating sewing icon accents */}
+      {/* ── Floating decorative icons ──────────────────────────────────────── */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden>
-        {[
-          { src: "/icons/sewing/spool-of-thread-sewing-tailoring-needle.svg", x: "8%", y: "20%", size: 28, rotate: -12 },
-          { src: "/icons/sewing/pin-cushion-handcraft-sewing-tailoring.svg", x: "6%", y: "60%", size: 24, rotate: 8 },
-          { src: "/icons/sewing/button-sewing-tailoring-handcraft.svg", x: "92%", y: "72%", size: 22, rotate: 20 },
-        ].map((icon, i) => (
+        {FLOATING_ICONS.map((icon, i) => (
           <div
             key={i}
-            className="absolute opacity-[0.12]"
-            style={{ left: icon.x, top: icon.y, transform: `rotate(${icon.rotate}deg)` }}
+            className="absolute"
+            style={{ top: icon.top, left: icon.left, opacity: icon.opacity, transform: `rotate(${icon.rotate}deg)` }}
           >
             <Image src={icon.src} alt="" width={icon.size} height={icon.size} className="icon-charcoal" />
           </div>
         ))}
       </div>
 
-      {/* Main content */}
-      <div className="container-site relative z-10 pt-32 pb-24 lg:pt-40 lg:pb-32">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 xl:gap-16 items-start">
+      {/* ── Main grid ─────────────────────────────────────────────────────── */}
+      <div className="container-site relative z-10 flex-1 flex flex-col justify-center pt-28 pb-10 lg:pt-36 lg:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] xl:grid-cols-[1fr_440px] gap-10 xl:gap-16 items-center">
 
-          {/* ── Left: Hero copy ─────────────────────────────────────────────── */}
+          {/* ── LEFT: Copy ──────────────────────────────────────────────────── */}
           <div className="flex flex-col">
-            {/* Eyebrow */}
-            <p className="section-label mb-6 animate-fade-up">
-              {data.eyebrow_text}
-            </p>
 
-            {/* Headline — large serif, multi-line */}
-            <h1 className="font-serif text-[3.2rem] lg:text-[4rem] xl:text-[4.5rem] text-charcoal leading-[1.06] text-balance mb-7 animate-fade-up [animation-delay:80ms] opacity-0">
-              {renderHeading(data.heading.replace(/\n/g, " "), data.heading_accent)}
+            {/* Eyebrow pill */}
+            <div className="inline-flex items-center gap-2.5 self-start bg-white border border-periwinkle-light px-4 py-1.5 rounded-full mb-8 animate-fade-up">
+              <span className="w-1.5 h-1.5 rounded-full bg-periwinkle shrink-0" />
+              <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-periwinkle-dark">
+                {data.eyebrow_text}
+              </span>
+            </div>
+
+            {/* H1 — large, two-line serif */}
+            <h1 className="font-serif text-[3rem] sm:text-[3.8rem] lg:text-[4.2rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-7 animate-fade-up [animation-delay:60ms] opacity-0">
+              {renderHeading()}
             </h1>
 
+            {/* Ornamental divider */}
+            <div className="flex items-center gap-3 mb-7 animate-fade-up [animation-delay:100ms] opacity-0">
+              <div className="h-px w-8 bg-periwinkle" />
+              <Image src="/icons/sewing/needle-threader-fashion-design-sewing-tailoring.svg" alt="" width={16} height={16} className="icon-periwinkle" />
+              <div className="h-px flex-1 max-w-[60px] bg-stone" />
+            </div>
+
             {/* Sub copy */}
-            <p className="font-sans text-base text-charcoal-light leading-relaxed max-w-sm mb-10 animate-fade-up [animation-delay:160ms] opacity-0">
+            <p className="font-sans text-[15px] text-charcoal-light leading-[1.75] max-w-[480px] mb-10 animate-fade-up [animation-delay:140ms] opacity-0">
               {data.subtext}
             </p>
 
-            {/* CTA buttons */}
-            <div className="flex flex-wrap items-center gap-3 mb-12 animate-fade-up [animation-delay:220ms] opacity-0">
-              <Link href={data.cta_primary_url} className="btn-primary">
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-3 mb-12 animate-fade-up [animation-delay:180ms] opacity-0">
+              <Link
+                href={data.cta_primary_url}
+                className="inline-flex items-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white font-sans font-medium text-sm px-6 py-3 rounded-full transition-all duration-200 shadow-soft hover:shadow-periwinkle"
+              >
                 {data.cta_primary_label}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
               {data.cta_secondary_label && (
-                <Link href={data.cta_secondary_url ?? "#"} className="btn-outline-dark">
+                <Link
+                  href={data.cta_secondary_url ?? "#"}
+                  className="inline-flex items-center gap-2 border border-charcoal/15 text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark font-sans font-medium text-sm px-6 py-3 rounded-full transition-all duration-200"
+                >
                   {data.cta_secondary_label}
                 </Link>
               )}
             </div>
 
-            {/* Badges row */}
+            {/* Service badges */}
             {data.badges.length > 0 && (
-              <div className="flex flex-wrap gap-3 animate-fade-up [animation-delay:300ms] opacity-0">
+              <div className="flex flex-wrap gap-2.5 animate-fade-up [animation-delay:220ms] opacity-0">
                 {data.badges.map((badge) => (
                   <div
                     key={badge.label}
-                    className="flex items-center gap-2.5 bg-white/70 border border-stone-light rounded-full px-4 py-2"
+                    className="flex items-center gap-2 bg-white/80 border border-stone-light rounded-full pl-2 pr-4 py-1.5"
                   >
-                    <Image
-                      src={`/icons/sewing/${badge.icon_slug}`}
-                      alt=""
-                      width={18}
-                      height={18}
-                      className="icon-periwinkle shrink-0"
-                    />
-                    <span className="font-sans text-xs font-medium text-charcoal-light">
-                      {badge.label}
-                    </span>
+                    <div className="w-6 h-6 rounded-full bg-periwinkle-lighter flex items-center justify-center">
+                      <Image src={`/icons/sewing/${badge.icon_slug}`} alt="" width={13} height={13} className="icon-periwinkle" />
+                    </div>
+                    <span className="font-sans text-[11px] font-medium text-charcoal-light">{badge.label}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* ── Right: Contact form card ─────────────────────────────────────── */}
+          {/* ── RIGHT: Contact form card ─────────────────────────────────────── */}
           {data.show_contact_form && (
-            <div className="animate-fade-up [animation-delay:160ms] opacity-0">
-              <div className="glass-card p-7">
-                {submitted ? (
-                  <div className="flex flex-col items-center text-center py-8 gap-4">
-                    <div className="w-14 h-14 rounded-full bg-periwinkle-lighter flex items-center justify-center">
-                      <Image
-                        src="/icons/sewing/sewing-machine-sewing-tailoring-cloth.svg"
-                        alt=""
-                        width={28}
-                        height={28}
-                        className="icon-periwinkle"
-                      />
-                    </div>
-                    <h3 className="font-serif text-2xl text-charcoal">Vielen Dank!</h3>
-                    <p className="font-sans text-sm text-charcoal-light max-w-[220px]">
-                      Wir melden uns persönlich und zeitnah bei Ihnen.
-                    </p>
-                    <button
-                      onClick={() => setSubmitted(false)}
-                      className="btn-outline-dark text-xs mt-1"
-                    >
-                      Neue Anfrage
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <p className="section-label mb-1">Kontakt</p>
-                    <h2 className="font-serif text-xl text-charcoal mb-1">
-                      Anfrage senden
-                    </h2>
-                    <p className="font-sans text-xs text-charcoal-lighter mb-5">
-                      Wir antworten persönlich und zeitnah.
-                    </p>
+            <div className="animate-fade-up [animation-delay:100ms] opacity-0 w-full">
+              {/* Sewing machine watermark behind card */}
+              <div className="relative">
+                <div className="absolute -bottom-6 -right-4 w-36 h-36 pointer-events-none select-none opacity-[0.07]" aria-hidden>
+                  <Image src="/icons/sewing/sewing-machine-sewing-tailoring-cloth.svg" alt="" fill className="object-contain icon-charcoal" />
+                </div>
 
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                      <input
-                        type="text"
-                        placeholder="Name"
-                        required
-                        className="input-field"
-                        value={form.name}
-                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                      />
-                      <input
-                        type="email"
-                        placeholder="E-Mail"
-                        required
-                        className="input-field"
-                        value={form.email}
-                        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Telefon"
-                        className="input-field"
-                        value={form.phone}
-                        onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                      />
-                      <textarea
-                        placeholder="Nachricht"
-                        rows={3}
-                        className="input-field resize-none"
-                        value={form.message}
-                        onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                      />
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className="btn-primary justify-center mt-1"
-                      >
-                        {submitting ? (
-                          <>
-                            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            Wird gesendet…
-                          </>
-                        ) : (
-                          "Anfragen"
-                        )}
-                      </button>
-                    </form>
-                  </>
-                )}
+                {/* Card */}
+                <div className="relative bg-white rounded-3xl shadow-card border border-stone-light overflow-hidden">
+                  {/* Card top accent bar */}
+                  <div className="h-1 bg-gradient-to-r from-periwinkle-light via-periwinkle to-periwinkle-dark" />
+
+                  <div className="p-7">
+                    {submitted ? (
+                      <div className="flex flex-col items-center text-center py-10 gap-4">
+                        <div className="w-16 h-16 rounded-full bg-periwinkle-lighter flex items-center justify-center">
+                          <svg className="w-7 h-7 text-periwinkle-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <h3 className="font-serif text-2xl text-charcoal">Vielen Dank!</h3>
+                        <p className="font-sans text-sm text-charcoal-light max-w-[200px] leading-relaxed">
+                          Wir melden uns persönlich und zeitnah bei Ihnen.
+                        </p>
+                        <button onClick={() => setSubmitted(false)} className="text-xs font-sans text-periwinkle-dark hover:underline mt-1">
+                          Neue Anfrage senden
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Card header */}
+                        <div className="flex items-center gap-3 mb-5">
+                          <div className="w-10 h-10 rounded-xl bg-periwinkle-lighter flex items-center justify-center shrink-0">
+                            <Image src="/icons/sewing/pencil-sewing-tailoring-drawing.svg" alt="" width={20} height={20} className="icon-periwinkle" />
+                          </div>
+                          <div>
+                            <h2 className="font-serif text-lg text-charcoal leading-tight">Anfrage senden</h2>
+                            <p className="font-sans text-[11px] text-charcoal-lighter">Wir antworten persönlich und zeitnah.</p>
+                          </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">Name *</label>
+                              <input type="text" required placeholder="Ihr Name" className="input-field text-[13px] py-2.5" value={form.name} onChange={(e) => setForm(f => ({...f, name: e.target.value}))} />
+                            </div>
+                            <div>
+                              <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">Telefon</label>
+                              <input type="tel" placeholder="+41 ..." className="input-field text-[13px] py-2.5" value={form.phone} onChange={(e) => setForm(f => ({...f, phone: e.target.value}))} />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">E-Mail *</label>
+                            <input type="email" required placeholder="ihre@email.ch" className="input-field text-[13px] py-2.5" value={form.email} onChange={(e) => setForm(f => ({...f, email: e.target.value}))} />
+                          </div>
+                          <div>
+                            <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">Nachricht</label>
+                            <textarea rows={3} placeholder="Wie können wir Ihnen helfen?" className="input-field resize-none text-[13px]" value={form.message} onChange={(e) => setForm(f => ({...f, message: e.target.value}))} />
+                          </div>
+
+                          <button
+                            type="submit"
+                            disabled={submitting}
+                            className="w-full mt-1 flex items-center justify-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white font-sans font-medium text-sm py-3 rounded-xl transition-all duration-200 disabled:opacity-50"
+                          >
+                            {submitting ? (
+                              <>
+                                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                </svg>
+                                Wird gesendet…
+                              </>
+                            ) : (
+                              <>
+                                Anfrage absenden
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                              </>
+                            )}
+                          </button>
+                        </form>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* ── Stats bar ────────────────────────────────────────────────────────── */}
+      <div className="relative z-10 border-t border-stone-light bg-white/60 backdrop-blur-sm">
+        <div className="container-site py-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-stone-light">
+            {STATS.map((stat) => (
+              <div key={stat.label} className="flex flex-col items-center py-2 px-4 text-center">
+                <span className="font-serif text-2xl text-periwinkle-dark font-semibold">{stat.value}</span>
+                <span className="font-sans text-[11px] text-charcoal-lighter mt-0.5">{stat.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

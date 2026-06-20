@@ -21,7 +21,7 @@ export function PageHero({
   titleAccent,
   subtitle,
   breadcrumbs,
-  iconSlug,
+  iconSlug = "tailor-dummy-fashion-sewing-tailoring.svg",
 }: PageHeroProps) {
   const renderTitle = () => {
     if (!titleAccent || !title.includes(titleAccent)) return title;
@@ -36,65 +36,122 @@ export function PageHero({
   };
 
   return (
-    <section className="relative pt-32 pb-16 lg:pt-40 lg:pb-20 bg-offwhite overflow-hidden">
-      {/* Subtle bg blob */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute top-0 right-0 w-[40%] h-full bg-gradient-to-l from-periwinkle-lighter/40 to-transparent" />
-      </div>
+    <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24">
+      {/* ── Background: right periwinkle panel ──────────────────────────────── */}
+      <div
+        className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-bl from-periwinkle-lighter via-sand-light/60 to-offwhite hidden lg:block pointer-events-none"
+        aria-hidden
+      />
+      {/* Soft glow */}
+      <div className="absolute -top-20 right-[20%] w-80 h-80 rounded-full bg-periwinkle-lighter/60 blur-3xl pointer-events-none" aria-hidden />
 
-      <div className="container-site relative z-10">
-        {/* Breadcrumbs */}
-        {breadcrumbs && breadcrumbs.length > 0 && (
-          <nav className="flex items-center gap-2 mb-6 text-xs font-sans text-charcoal-lighter">
-            <Link href="/" className="hover:text-charcoal transition-colors">
-              Start
-            </Link>
-            {breadcrumbs.map((crumb, i) => (
-              <span key={crumb.href} className="flex items-center gap-2">
-                <svg className="w-3 h-3 text-stone" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-                </svg>
-                {i === breadcrumbs.length - 1 ? (
-                  <span className="text-charcoal">{crumb.label}</span>
-                ) : (
-                  <Link href={crumb.href} className="hover:text-charcoal transition-colors">
-                    {crumb.label}
-                  </Link>
-                )}
-              </span>
-            ))}
-          </nav>
-        )}
+      {/* ── Main content area ──────────────────────────────────────────────── */}
+      <div className="container-site relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end">
 
-        <div className="flex items-start gap-6">
-          {/* Optional icon */}
-          {iconSlug && (
-            <div className="hidden md:flex w-16 h-16 rounded-2xl bg-periwinkle-lighter shrink-0 items-center justify-center mt-1">
-              <Image
-                src={`/icons/sewing/${iconSlug}`}
-                alt=""
-                width={32}
-                height={32}
-                className="icon-periwinkle"
-              />
-            </div>
+        {/* LEFT: text content */}
+        <div className="pb-10 lg:pb-12 pt-8 lg:pt-12">
+          {/* Breadcrumbs */}
+          {breadcrumbs && breadcrumbs.length > 0 && (
+            <nav className="flex items-center gap-1.5 mb-6" aria-label="Breadcrumb">
+              <Link href="/" className="font-sans text-[11px] text-charcoal-lighter hover:text-charcoal transition-colors">
+                Start
+              </Link>
+              {breadcrumbs.map((crumb, i) => (
+                <span key={crumb.href} className="flex items-center gap-1.5">
+                  <svg className="w-2.5 h-2.5 text-stone-dark shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  {i === breadcrumbs.length - 1 ? (
+                    <span className="font-sans text-[11px] text-charcoal font-medium">{crumb.label}</span>
+                  ) : (
+                    <Link href={crumb.href} className="font-sans text-[11px] text-charcoal-lighter hover:text-charcoal transition-colors">
+                      {crumb.label}
+                    </Link>
+                  )}
+                </span>
+              ))}
+            </nav>
           )}
 
-          <div>
-            {label && <p className="section-label mb-3">{label}</p>}
-            <h1 className="font-serif text-4xl lg:text-5xl xl:text-6xl text-charcoal leading-tight text-balance">
-              {renderTitle()}
-            </h1>
-            {subtitle && (
-              <p className="font-sans text-base text-charcoal-light leading-relaxed mt-4 max-w-2xl">
-                {subtitle}
-              </p>
-            )}
+          {/* Label */}
+          {label && (
+            <p className="section-label mb-4">{label}</p>
+          )}
+
+          {/* Title */}
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance">
+            {renderTitle()}
+          </h1>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <p className="font-sans text-[15px] text-charcoal-light leading-relaxed mt-5 max-w-2xl">
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        {/* RIGHT: large decorative icon panel */}
+        <div className="hidden lg:flex items-end justify-center w-56 xl:w-64 self-stretch relative pb-0">
+          {/* Large faded watermark icon */}
+          <div className="absolute bottom-0 right-4 w-48 xl:w-56 h-48 xl:h-56 opacity-[0.18] pointer-events-none select-none" aria-hidden>
+            <Image
+              src={`/icons/sewing/${iconSlug}`}
+              alt=""
+              fill
+              className="object-contain object-bottom icon-periwinkle"
+            />
+          </div>
+          {/* Smaller icon in a circle — visible */}
+          <div className="relative z-10 mb-8 w-16 h-16 rounded-2xl bg-white border border-periwinkle-light shadow-soft flex items-center justify-center">
+            <Image
+              src={`/icons/sewing/${iconSlug}`}
+              alt=""
+              width={30}
+              height={30}
+              className="icon-periwinkle"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Bottom border strip ─────────────────────────────────────────────── */}
+      <div className="relative z-10">
+        {/* Decorative line with ornament */}
+        <div className="container-site">
+          <div className="flex items-center gap-0">
+            <div className="h-px flex-1 bg-gradient-to-r from-periwinkle via-periwinkle-light to-stone-light" />
+            <div className="w-1.5 h-1.5 rounded-full bg-periwinkle mx-2 shrink-0" />
+            <div className="h-px w-8 bg-stone-light" />
           </div>
         </div>
 
-        {/* Decorative line */}
-        <div className="mt-10 h-px bg-gradient-to-r from-periwinkle-light via-stone to-transparent" />
+        {/* Subtle strip of tiny sewing icons */}
+        <div className="bg-offwhite-warm border-t border-stone-light/60 py-3 overflow-hidden">
+          <div className="flex items-center gap-5 px-6 opacity-30 justify-center flex-wrap">
+            {[
+              "scissor-cut-fabric-sewing.svg",
+              "spool-of-thread-sewing-tailoring-needle.svg",
+              "pin-cushion-handcraft-sewing-tailoring.svg",
+              "tape-measure-sewing-tailoring-size.svg",
+              "button-sewing-tailoring-handcraft.svg",
+              "needle-threader-fashion-design-sewing-tailoring.svg",
+              "thimble" /* skip if not found */,
+              "sewing-needles-sewing-tailoring-needle.svg",
+            ]
+              .filter((s) => !s.includes("thimble"))
+              .map((icon) => (
+                <Image
+                  key={icon}
+                  src={`/icons/sewing/${icon}`}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="icon-charcoal shrink-0"
+                />
+              ))}
+          </div>
+        </div>
       </div>
     </section>
   );
