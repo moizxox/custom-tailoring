@@ -1,89 +1,47 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { AcfGalleryPreview, AcfGalleryItem } from "@/types";
+import type { AcfGalleryPreview } from "@/types";
 
-// ─── Default ACF data ─────────────────────────────────────────────────────────
-// Placeholders until real WP images are connected
-const PLACEHOLDER_ITEMS: AcfGalleryItem[] = [
+// ─── Gallery items — no external images; uses sewing SVGs + gradients ─────────
+// Replace icon_slug + gradient with real WpImage when WP media is connected
+const DEFAULT_ITEMS = [
   {
-    image: { id: 1, src: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80", alt: "Massanfertigung Detail", width: 600, height: 800 },
+    id: "massanfertigung",
     category: "Massanfertigung",
     title: "Kostüm im Detail",
+    description: "Jedes Kostüm wird nach Ihren Massen gefertigt.",
+    icon: "tailor-dummy-fashion-sewing-tailoring.svg",
+    gradient: "from-periwinkle-lighter to-sand-light",
   },
   {
-    image: { id: 2, src: "https://images.unsplash.com/photo-1605289982774-9a6fef564df8?w=600&q=80", alt: "Stoffe & Materialien", width: 600, height: 800 },
+    id: "stoffe",
     category: "Stoffe & Materialien",
     title: "Edle Stoffe",
+    description: "Hochwertige Materialien aus unserer Auswahl.",
+    icon: "fabric-cloth-sewing-tailoring.svg",
+    gradient: "from-sand-light to-stone-light",
   },
   {
-    image: { id: 3, src: "https://images.unsplash.com/photo-1594938298603-c8148c4b4057?w=600&q=80", alt: "Design & Beratung", width: 600, height: 800 },
+    id: "handwerk",
     category: "Design & Beratung",
     title: "Handwerk & Kreativität",
+    description: "Von der Skizze zum fertigen Unikat.",
+    icon: "pencil-sewing-tailoring-drawing.svg",
+    gradient: "from-periwinkle-lighter to-offwhite-warm",
   },
 ];
 
 const DEFAULT_DATA: AcfGalleryPreview = {
   acf_fc_layout: "gallery_preview",
   section_label: "Unsere Handwerkskunst",
-  heading: "Jedes Kostüm ein Unikat.",
+  heading: "Jedes Kostüm",
+  heading_accent: "ein Unikat.",
   show_cta: true,
   cta_label: "Zur Galerie",
   cta_url: "/galerie",
-  items: PLACEHOLDER_ITEMS,
+  items: [],
 };
-
-interface GalleryCardProps {
-  item: AcfGalleryItem;
-  index: number;
-}
-
-function GalleryCard({ item, index }: GalleryCardProps) {
-  // Alternate heights for an editorial masonry feel
-  const isTall = index === 1;
-
-  return (
-    <div
-      className={cn(
-        "group relative overflow-hidden rounded-2xl bg-stone-light",
-        isTall ? "lg:row-span-2" : ""
-      )}
-      style={{ animationDelay: `${index * 80}ms` }}
-    >
-      <div className={cn("relative w-full", isTall ? "h-[520px] lg:h-full min-h-[480px]" : "h-[320px]")}>
-        <Image
-          src={item.image.src}
-          alt={item.image.alt}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-
-        {/* Category pill */}
-        <div className="absolute top-4 left-4">
-          <span className="inline-flex items-center bg-white/80 backdrop-blur-sm text-periwinkle-deep text-[11px] font-sans font-semibold tracking-[0.15em] uppercase px-3 py-1 rounded-full">
-            {item.category}
-          </span>
-        </div>
-
-        {/* Title on hover */}
-        {item.title && (
-          <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <p className="font-serif text-lg text-white leading-snug">{item.title}</p>
-            <div className="flex items-center gap-1.5 mt-1.5 text-white/70 text-xs font-sans">
-              <span>Mehr entdecken</span>
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 interface GalleryPreviewProps {
   acf?: Partial<AcfGalleryPreview>;
@@ -103,17 +61,74 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
             </div>
           )}
           <h2 className="section-heading mb-4">
-            {data.heading}
+            {data.heading}{" "}
+            {data.heading_accent && (
+              <em className="not-italic italic text-periwinkle-dark">
+                {data.heading_accent}
+              </em>
+            )}
           </h2>
           {data.subtext && (
             <p className="section-subtext max-w-md mx-auto">{data.subtext}</p>
           )}
         </div>
 
-        {/* 3-column editorial grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-rows-2 gap-4 auto-rows-[320px]">
-          {data.items.map((item, index) => (
-            <GalleryCard key={item.image.id} item={item} index={index} />
+        {/* Editorial 3-column grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {DEFAULT_ITEMS.map((item, index) => (
+            <Link
+              key={item.id}
+              href={`/galerie#${item.id}`}
+              className={cn(
+                "group relative overflow-hidden rounded-2xl",
+                "border border-stone-light hover:border-periwinkle-light",
+                "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover",
+                index === 1 ? "md:row-span-2" : ""
+              )}
+            >
+              {/* Gradient background card */}
+              <div
+                className={cn(
+                  "flex flex-col items-center justify-center text-center",
+                  "bg-gradient-to-br",
+                  item.gradient,
+                  index === 1 ? "min-h-[480px]" : "min-h-[300px]",
+                  "p-8 gap-5"
+                )}
+              >
+                {/* Icon circle */}
+                <div className="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform duration-300">
+                  <Image
+                    src={`/icons/sewing/${item.icon}`}
+                    alt=""
+                    width={40}
+                    height={40}
+                    className="icon-periwinkle"
+                  />
+                </div>
+
+                {/* Category pill */}
+                <span className="inline-flex items-center bg-white/80 text-periwinkle-deep text-[11px] font-sans font-semibold tracking-[0.15em] uppercase px-3 py-1 rounded-full">
+                  {item.category}
+                </span>
+
+                {/* Title + desc */}
+                <div>
+                  <p className="font-serif text-xl text-charcoal mb-2">{item.title}</p>
+                  <p className="font-sans text-[13px] text-charcoal-light leading-relaxed max-w-[200px] mx-auto">
+                    {item.description}
+                  </p>
+                </div>
+
+                {/* Hover arrow */}
+                <div className="flex items-center gap-1.5 text-periwinkle-dark text-xs font-sans opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span>Mehr entdecken</span>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
 

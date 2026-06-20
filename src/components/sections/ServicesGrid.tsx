@@ -99,7 +99,7 @@ function ServiceCard({ item, index }: ServiceCardProps) {
   const card = (
     <div
       className={cn(
-        "group flex flex-col items-center text-center gap-4 p-6 rounded-2xl",
+        "group flex flex-col items-center text-center gap-4 p-5 rounded-2xl h-full",
         "border border-stone-light bg-white",
         "hover:border-periwinkle-light hover:shadow-card-hover hover:-translate-y-1",
         "transition-all duration-300 ease-out cursor-pointer"
@@ -107,22 +107,22 @@ function ServiceCard({ item, index }: ServiceCardProps) {
       style={{ animationDelay: `${index * 40}ms` }}
     >
       {/* Icon */}
-      <div className="w-14 h-14 rounded-full bg-offwhite-warm flex items-center justify-center group-hover:bg-periwinkle-lighter transition-colors duration-300">
+      <div className="w-12 h-12 rounded-full bg-offwhite-warm flex items-center justify-center shrink-0 group-hover:bg-periwinkle-lighter transition-colors duration-300">
         <Image
           src={`/icons/sewing/${item.icon_slug}`}
           alt=""
-          width={30}
-          height={30}
+          width={26}
+          height={26}
           className="icon-stone group-hover:icon-periwinkle transition-all duration-300"
         />
       </div>
 
-      {/* Text */}
-      <div>
-        <h3 className="font-serif text-[15px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug">
+      {/* Text — flex-1 pushes content to fill remaining height */}
+      <div className="flex flex-col flex-1">
+        <h3 className="font-serif text-[14px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug">
           {item.title}
         </h3>
-        <p className="font-sans text-[12px] text-charcoal-lighter leading-relaxed">
+        <p className="font-sans text-[11px] text-charcoal-lighter leading-relaxed">
           {item.description}
         </p>
       </div>
@@ -174,8 +174,8 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
           )}
         </div>
 
-        {/* 12-card grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        {/* 12-card grid — auto-rows ensures equal heights in every row */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 auto-rows-fr">
           {data.services.map((service, i) => (
             <ServiceCard key={service.title} item={service} index={i} />
           ))}
