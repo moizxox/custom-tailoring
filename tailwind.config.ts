@@ -14,11 +14,18 @@ const config: Config = {
       colors: {
         // ── Primary: Periwinkle ───────────────────────────────────────────────
         periwinkle: {
-          DEFAULT: "#9DA5D0",   // Main periwinkle — medium, readable, not harsh
-          light: "#BCC2E4",     // Soft fill / borders
-          lighter: "#E8EAF7",   // Section tints / card backgrounds
-          dark: "#7880B8",      // Hover states, headings accent
-          deep: "#565EA0",      // High-contrast text on light backgrounds
+          DEFAULT: "#9DA5D0",
+          light: "#BCC2E4",
+          lighter: "#E8EAF7",
+          dark: "#7880B8",
+          deep: "#565EA0",
+        },
+        // ── Third accent: soft mist / sage (balances periwinkle + sand) ───────
+        mist: {
+          DEFAULT: "#C5DDD4",
+          light: "#DCEBE6",
+          lighter: "#EDF5F2",
+          dark: "#9BBFB2",
         },
         // ── Neutrals ─────────────────────────────────────────────────────────
         sand: {
@@ -76,11 +83,16 @@ const config: Config = {
           "0%": { opacity: "0", transform: "scale(0.96)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        "glow-drift": {
+          "0%, 100%": { opacity: "0.55", transform: "translate(0, 0) scale(1)" },
+          "50%": { opacity: "0.75", transform: "translate(12px, -8px) scale(1.05)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s ease forwards",
         "fade-in": "fade-in 0.4s ease forwards",
         "scale-in": "scale-in 0.5s ease forwards",
+        "glow-drift": "glow-drift 12s ease-in-out infinite",
       },
     },
   },

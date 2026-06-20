@@ -18,84 +18,104 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden">
-      {/* Bright periwinkle gradient background */}
+    <footer className="relative overflow-hidden mt-4">
+      {/* ── Soft ambient base (periwinkle + sand + mist) ───────────────────── */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-periwinkle-light via-periwinkle to-periwinkle-dark pointer-events-none"
-        aria-hidden
-      />
-      {/* Soft highlight blob */}
-      <div
-        className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/20 blur-3xl pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-b from-offwhite via-offwhite-warm to-sand-light/50 pointer-events-none"
         aria-hidden
       />
 
-      <div className="relative z-10">
-        {/* CTA band — frosted white strip */}
-        <div className="border-b border-white/30 bg-white/25 backdrop-blur-sm">
-          <div className="container-site py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-deep mb-1.5">
+      {/* Lighting orbs — gentle, slow drift */}
+      <div
+        className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/35 blur-[90px] animate-glow-drift pointer-events-none"
+        aria-hidden
+      />
+      <div
+        className="absolute top-[30%] -right-16 w-[360px] h-[320px] rounded-full bg-mist-lighter/50 blur-[85px] animate-glow-drift pointer-events-none [animation-delay:4s]"
+        aria-hidden
+      />
+      <div
+        className="absolute bottom-0 left-[35%] w-[300px] h-[200px] rounded-full bg-sand-light/45 blur-[70px] pointer-events-none"
+        aria-hidden
+      />
+      {/* Specular highlights */}
+      <div
+        className="absolute top-8 right-[20%] w-24 h-24 rounded-full bg-white/50 blur-2xl pointer-events-none"
+        aria-hidden
+      />
+      <div
+        className="absolute bottom-24 left-[8%] w-16 h-16 rounded-full bg-mist-light/40 blur-xl pointer-events-none"
+        aria-hidden
+      />
+
+      {/* Top fade-in from page content */}
+      <div
+        className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none"
+        aria-hidden
+      />
+
+      <div className="relative z-10 container-site py-12 lg:py-16 flex flex-col gap-5">
+        {/* ── CTA — glass panel ─────────────────────────────────────────────── */}
+        <div className="glass-footer-panel p-8 md:p-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">
                 Handwerk. Individualität. Zeitlosigkeit.
               </p>
-              <p className="font-serif text-xl text-charcoal">
+              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">
                 Ihr Traumkostüm beginnt hier.
               </p>
             </div>
-            <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center sm:justify-end">
-              <Link
-                href="/termin"
-                className="inline-flex items-center gap-2 bg-white hover:bg-offwhite-pure text-charcoal text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-soft hover:shadow-card"
-              >
+            <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center">
+              <Link href="/termin" className="btn-primary shadow-soft">
                 Termin buchen
               </Link>
-              <Link
-                href="/kontakt"
-                className="inline-flex items-center gap-2 bg-charcoal/10 hover:bg-charcoal hover:text-white border border-charcoal/15 text-charcoal text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200"
-              >
+              <Link href="/kontakt" className="btn-outline-dark bg-white/40 backdrop-blur-sm">
                 Anfrage senden
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Main footer */}
-        <div className="container-site py-14">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-            {/* Brand */}
-            <div className="lg:col-span-2">
-              <div className="mb-5">
-                <div className="flex items-center gap-3 mb-1">
-                  <div className="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center shadow-soft">
-                    <Image
-                      src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg"
-                      alt=""
-                      width={18}
-                      height={18}
-                      className="icon-periwinkle-deep"
-                    />
-                  </div>
-                  <span className="font-serif text-lg text-charcoal tracking-[0.12em] uppercase">
-                    Kostüm<span className="text-periwinkle-deep">schneiderei</span>
+        {/* ── Main footer — glass panel ─────────────────────────────────────── */}
+        <div className="glass-footer-panel p-8 md:p-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {/* Brand column — spans 2 on lg */}
+            <div className="lg:col-span-2 flex flex-col gap-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 flex items-center justify-center shadow-soft">
+                  <Image
+                    src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="icon-periwinkle-deep"
+                  />
+                </div>
+                <div>
+                  <span className="font-serif text-lg text-charcoal tracking-[0.1em] uppercase block leading-tight">
+                    Kostüm<span className="text-periwinkle-dark">schneiderei</span>
+                  </span>
+                  <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-charcoal/45">
+                    Basel
                   </span>
                 </div>
-                <p className="font-sans text-[9px] tracking-[0.3em] uppercase text-charcoal/50 ml-12">
-                  Basel
-                </p>
               </div>
 
-              <address className="not-italic flex flex-col gap-1.5 text-sm text-charcoal/70 mb-6">
+              <address className="not-italic flex flex-col gap-1.5 text-sm text-charcoal/65">
                 <span>Greifengasse 20, 4052 Basel</span>
-                <a href="tel:+41313124567" className="hover:text-charcoal transition-colors">
+                <a href="tel:+41313124567" className="hover:text-periwinkle-dark transition-colors w-fit">
                   +41 31 312 45 67
                 </a>
-                <a href="mailto:hallo@kostuemschneiderei-basel.ch" className="hover:text-charcoal transition-colors">
+                <a
+                  href="mailto:hallo@kostuemschneiderei-basel.ch"
+                  className="hover:text-periwinkle-dark transition-colors w-fit"
+                >
                   hallo@kostuemschneiderei-basel.ch
                 </a>
-                <span className="mt-1 text-charcoal/55">Mo–Fr: 08:30 – 17:30 Uhr</span>
+                <span className="text-charcoal/50 text-[13px]">Mo–Fr: 08:30 – 17:30 Uhr</span>
               </address>
 
-              {/* Social */}
               <div className="flex gap-2.5">
                 {[
                   {
@@ -123,7 +143,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="w-9 h-9 rounded-full bg-white/60 border border-white/50 flex items-center justify-center text-periwinkle-deep hover:bg-white hover:text-charcoal transition-all duration-200 shadow-soft"
+                    className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 flex items-center justify-center text-charcoal/50 hover:text-periwinkle-dark hover:bg-white/80 transition-all duration-200 shadow-soft"
                   >
                     {s.icon}
                   </a>
@@ -131,10 +151,10 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Link columns */}
+            {/* Link columns — nested glass cards */}
             {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-              <div key={heading}>
-                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/45 mb-5">
+              <div key={heading} className="glass-footer-column">
+                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/40 mb-4">
                   {heading}
                 </h4>
                 <ul className="flex flex-col gap-2.5">
@@ -142,7 +162,7 @@ export function Footer() {
                     <li key={l.href}>
                       <Link
                         href={l.href}
-                        className="text-[13px] text-charcoal/70 hover:text-charcoal font-medium transition-colors"
+                        className="text-[13px] text-charcoal/65 hover:text-periwinkle-dark font-medium transition-colors"
                       >
                         {l.label}
                       </Link>
@@ -154,9 +174,9 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-white/25 bg-white/15 backdrop-blur-sm">
-          <div className="container-site py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-charcoal/55">
+        {/* ── Bottom bar — subtle glass strip ───────────────────────────────── */}
+        <div className="glass-footer-subtle px-6 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-charcoal/50">
             <p>© {new Date().getFullYear()} Kostümschneiderei Basel. Alle Rechte vorbehalten.</p>
             <div className="flex gap-5">
               <Link href="/impressum" className="hover:text-charcoal transition-colors">

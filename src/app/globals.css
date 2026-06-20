@@ -14,6 +14,12 @@
   --color-periwinkle-dark: #7880b8;
   --color-periwinkle-deep: #565ea0;
 
+  /* Mist — soft third accent (sage-mint) */
+  --color-mist: #c5ddd4;
+  --color-mist-light: #dcebe6;
+  --color-mist-lighter: #edf5f2;
+  --color-mist-dark: #9bbfb2;
+
   /* Neutrals */
   --color-sand: #e4d9cc;
   --color-sand-light: #f0e8df;
@@ -58,6 +64,27 @@
 
   .glass-card-periwinkle {
     @apply bg-periwinkle-lighter/80 backdrop-blur-md border border-periwinkle-light/50 shadow-soft rounded-2xl;
+  }
+
+  /* Footer glass panels — frosted, soft highlight edge */
+  .glass-footer-panel {
+    @apply bg-white/40 backdrop-blur-xl border border-white/65 rounded-3xl shadow-card;
+    box-shadow:
+      0 8px 32px rgba(44, 42, 40, 0.06),
+      0 1px 0 rgba(255, 255, 255, 0.85) inset,
+      0 -1px 0 rgba(255, 255, 255, 0.25) inset;
+  }
+
+  .glass-footer-subtle {
+    @apply bg-white/25 backdrop-blur-md border border-white/45 rounded-2xl;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  }
+
+  .glass-footer-column {
+    @apply bg-white/30 backdrop-blur-lg border border-white/50 rounded-2xl p-6;
+    box-shadow:
+      0 4px 20px rgba(44, 42, 40, 0.04),
+      0 1px 0 rgba(255, 255, 255, 0.7) inset;
   }
 
   /* ── Typography helpers ──────────────────────────────────────────────────── */
