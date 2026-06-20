@@ -135,6 +135,10 @@
     filter: invert(63%) sepia(25%) saturate(400%) hue-rotate(199deg) brightness(1.05);
   }
 
+  .icon-periwinkle-deep {
+    filter: invert(42%) sepia(30%) saturate(600%) hue-rotate(210deg) brightness(0.85);
+  }
+
   .icon-stone {
     filter: invert(80%) sepia(5%) saturate(300%) hue-rotate(10deg) brightness(0.98);
   }

@@ -18,138 +18,154 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer className="bg-charcoal text-white/75">
-      {/* CTA band */}
-      <div className="border-b border-white/10">
-        <div className="container-site py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="section-label text-periwinkle-light mb-1.5">
-              Handwerk. Individualität. Zeitlosigkeit.
-            </p>
-            <p className="font-sans text-sm text-white/50">
-              Ihr Traumkostüm beginnt hier.
-            </p>
-          </div>
-          <div className="flex items-center gap-3 shrink-0">
-            <Link
-              href="/termin"
-              className="inline-flex items-center gap-2 bg-periwinkle hover:bg-periwinkle-light text-charcoal text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200"
-            >
-              Termin buchen
-            </Link>
-            <Link
-              href="/kontakt"
-              className="inline-flex items-center gap-2 border border-white/20 hover:border-periwinkle-light text-white/70 hover:text-periwinkle-light text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200"
-            >
-              Anfrage senden
-            </Link>
-          </div>
-        </div>
-      </div>
+    <footer className="relative overflow-hidden">
+      {/* Bright periwinkle gradient background */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-periwinkle-light via-periwinkle to-periwinkle-dark pointer-events-none"
+        aria-hidden
+      />
+      {/* Soft highlight blob */}
+      <div
+        className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/20 blur-3xl pointer-events-none"
+        aria-hidden
+      />
 
-      {/* Main footer */}
-      <div className="container-site py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            {/* Logo & tagline */}
-            <div className="mb-5">
-              <div className="flex items-center gap-3 mb-1">
-                <div className="w-7 h-7 rounded-full bg-periwinkle/20 flex items-center justify-center">
-                  <Image
-                    src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg"
-                    alt=""
-                    width={14}
-                    height={14}
-                    className="icon-periwinkle"
-                  />
-                </div>
-                <span className="font-serif text-lg text-white tracking-[0.12em] uppercase">
-                  Kostüm<span className="text-periwinkle-light">schneiderei</span>
-                </span>
-              </div>
-              <p className="font-sans text-[9px] tracking-[0.3em] uppercase text-white/30 ml-10">
-                Basel
+      <div className="relative z-10">
+        {/* CTA band — frosted white strip */}
+        <div className="border-b border-white/30 bg-white/25 backdrop-blur-sm">
+          <div className="container-site py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-deep mb-1.5">
+                Handwerk. Individualität. Zeitlosigkeit.
+              </p>
+              <p className="font-serif text-xl text-charcoal">
+                Ihr Traumkostüm beginnt hier.
               </p>
             </div>
-
-            <address className="not-italic flex flex-col gap-1.5 text-sm text-white/50 mb-6">
-              <span>Greifengasse 20, 4052 Basel</span>
-              <a href="tel:+41313124567" className="hover:text-white transition-colors">
-                +41 31 312 45 67
-              </a>
-              <a href="mailto:hallo@kostuemschneiderei-basel.ch" className="hover:text-white transition-colors">
-                hallo@kostuemschneiderei-basel.ch
-              </a>
-              <span className="mt-1 text-white/35">Mo–Fr: 08:30 – 17:30 Uhr</span>
-            </address>
-
-            {/* Social */}
-            <div className="flex gap-2.5">
-              {[
-                {
-                  label: "Instagram",
-                  href: "https://instagram.com",
-                  icon: (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                  ),
-                },
-                {
-                  label: "Facebook",
-                  href: "https://facebook.com",
-                  icon: (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg>
-                  ),
-                },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/40 hover:border-periwinkle-light hover:text-periwinkle-light transition-all duration-200"
-                >
-                  {s.icon}
-                </a>
-              ))}
+            <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center sm:justify-end">
+              <Link
+                href="/termin"
+                className="inline-flex items-center gap-2 bg-white hover:bg-offwhite-pure text-charcoal text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-soft hover:shadow-card"
+              >
+                Termin buchen
+              </Link>
+              <Link
+                href="/kontakt"
+                className="inline-flex items-center gap-2 bg-charcoal/10 hover:bg-charcoal hover:text-white border border-charcoal/15 text-charcoal text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200"
+              >
+                Anfrage senden
+              </Link>
             </div>
           </div>
-
-          {/* Link columns */}
-          {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-            <div key={heading}>
-              <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-white/30 mb-5">
-                {heading}
-              </h4>
-              <ul className="flex flex-col gap-2.5">
-                {links.map((l) => (
-                  <li key={l.href}>
-                    <Link
-                      href={l.href}
-                      className="text-[13px] text-white/50 hover:text-white transition-colors"
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </div>
-      </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-white/8">
-        <div className="container-site py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/25">
-          <p>© {new Date().getFullYear()} Kostümschneiderei Basel. Alle Rechte vorbehalten.</p>
-          <div className="flex gap-5">
-            <Link href="/impressum" className="hover:text-white/50 transition-colors">Impressum</Link>
-            <Link href="/datenschutz" className="hover:text-white/50 transition-colors">Datenschutz</Link>
+        {/* Main footer */}
+        <div className="container-site py-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            {/* Brand */}
+            <div className="lg:col-span-2">
+              <div className="mb-5">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center shadow-soft">
+                    <Image
+                      src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg"
+                      alt=""
+                      width={18}
+                      height={18}
+                      className="icon-periwinkle-deep"
+                    />
+                  </div>
+                  <span className="font-serif text-lg text-charcoal tracking-[0.12em] uppercase">
+                    Kostüm<span className="text-periwinkle-deep">schneiderei</span>
+                  </span>
+                </div>
+                <p className="font-sans text-[9px] tracking-[0.3em] uppercase text-charcoal/50 ml-12">
+                  Basel
+                </p>
+              </div>
+
+              <address className="not-italic flex flex-col gap-1.5 text-sm text-charcoal/70 mb-6">
+                <span>Greifengasse 20, 4052 Basel</span>
+                <a href="tel:+41313124567" className="hover:text-charcoal transition-colors">
+                  +41 31 312 45 67
+                </a>
+                <a href="mailto:hallo@kostuemschneiderei-basel.ch" className="hover:text-charcoal transition-colors">
+                  hallo@kostuemschneiderei-basel.ch
+                </a>
+                <span className="mt-1 text-charcoal/55">Mo–Fr: 08:30 – 17:30 Uhr</span>
+              </address>
+
+              {/* Social */}
+              <div className="flex gap-2.5">
+                {[
+                  {
+                    label: "Instagram",
+                    href: "https://instagram.com",
+                    icon: (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: "Facebook",
+                    href: "https://facebook.com",
+                    icon: (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                    ),
+                  },
+                ].map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="w-9 h-9 rounded-full bg-white/60 border border-white/50 flex items-center justify-center text-periwinkle-deep hover:bg-white hover:text-charcoal transition-all duration-200 shadow-soft"
+                  >
+                    {s.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Link columns */}
+            {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
+              <div key={heading}>
+                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/45 mb-5">
+                  {heading}
+                </h4>
+                <ul className="flex flex-col gap-2.5">
+                  {links.map((l) => (
+                    <li key={l.href}>
+                      <Link
+                        href={l.href}
+                        className="text-[13px] text-charcoal/70 hover:text-charcoal font-medium transition-colors"
+                      >
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-white/25 bg-white/15 backdrop-blur-sm">
+          <div className="container-site py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-charcoal/55">
+            <p>© {new Date().getFullYear()} Kostümschneiderei Basel. Alle Rechte vorbehalten.</p>
+            <div className="flex gap-5">
+              <Link href="/impressum" className="hover:text-charcoal transition-colors">
+                Impressum
+              </Link>
+              <Link href="/datenschutz" className="hover:text-charcoal transition-colors">
+                Datenschutz
+              </Link>
+            </div>
           </div>
         </div>
       </div>
