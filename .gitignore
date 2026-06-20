@@ -23,3 +23,10 @@ pnpm-debug.log*
 
 # Turbopack
 .turbo
+
+# Client reference files (mockups, color guides — not for production)
+_reference/
+
+# Sewing outline source (original vector files — only SVGs in public/ are needed)
+Sewing_outline/
+.vercel
