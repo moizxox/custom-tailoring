@@ -16,16 +16,19 @@ type ButtonAsAnchor = ButtonBaseProps &
 type ButtonProps = ButtonAsButton | ButtonAsAnchor;
 
 const variantClasses = {
-  primary: "bg-lavender hover:bg-lavender-dark text-white shadow-sm hover:shadow-card-hover",
-  secondary: "border border-lavender text-lavender hover:bg-lavender hover:text-white",
-  ghost: "text-charcoal hover:bg-cream-warm",
-  outline: "border border-cream-deep text-charcoal hover:border-lavender-light hover:text-lavender",
+  primary:
+    "bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white shadow-soft hover:shadow-periwinkle",
+  secondary:
+    "border border-periwinkle text-charcoal hover:bg-periwinkle hover:text-charcoal",
+  ghost: "text-charcoal hover:bg-sand-light",
+  outline:
+    "border border-stone-light text-charcoal hover:border-periwinkle-light hover:text-periwinkle-deep",
 };
 
 const sizeClasses = {
   sm: "px-4 py-2 text-xs gap-1.5",
-  md: "px-5 py-2.5 text-sm gap-2",
-  lg: "px-7 py-3.5 text-base gap-2.5",
+  md: "px-5 py-2.5 text-[13px] gap-2",
+  lg: "px-7 py-3.5 text-sm gap-2.5",
 };
 
 export function Button({

@@ -1,93 +1,109 @@
+import Image from "next/image";
 import Link from "next/link";
+import type { AcfAboutBand } from "@/types";
 
-const USPs = [
-  {
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-          d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-          d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
-      </svg>
-    ),
-    label: "Persönlich & nah",
-    description: "Wir sind für Sie da – mit Herz und Verstand.",
-  },
-  {
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-          d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-      </svg>
-    ),
-    label: "Erfahren & engagiert",
-    description: "Handwerk, das begeistert – seit vielen Jahren.",
-  },
-  {
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      </svg>
-    ),
-    label: "Für unvergessliche Momente",
-    description: "Kostüme, die Geschichten erzählen.",
-  },
-];
+const DEFAULT_DATA: AcfAboutBand = {
+  acf_fc_layout: "about_band",
+  section_label: "Bereit für Ihr Projekt?",
+  heading: "Tradition in jedem Stich.",
+  heading_accent: "Tradition",
+  body_text:
+    "Moderne in jeder Linie. Für Menschen mit Stilgefühl und Anspruch – wir schaffen Kostüme, die Persönlichkeit und Handwerk vereinen.",
+  cta_label: "Beratung buchen",
+  cta_url: "/termin",
+  cta_secondary_label: "Unser Angebot",
+  cta_secondary_url: "/leistungen",
+  usps: [
+    {
+      icon_slug: "tailor-dummy-fashion-sewing-tailoring.svg",
+      title: "Persönlich & nah",
+      description: "Wir sind für Sie da – mit Herz und Verstand.",
+    },
+    {
+      icon_slug: "sewing-machine-sewing-tailoring-cloth.svg",
+      title: "Erfahren & engagiert",
+      description: "Handwerk, das begeistert – seit vielen Jahren.",
+    },
+    {
+      icon_slug: "embroidery-sewing-needlework-handcraft.svg",
+      title: "Für besondere Momente",
+      description: "Kostüme, die Geschichten erzählen.",
+    },
+  ],
+};
 
-export function AboutBand() {
+interface AboutBandProps {
+  acf?: Partial<AcfAboutBand>;
+}
+
+export function AboutBand({ acf }: AboutBandProps) {
+  const data = { ...DEFAULT_DATA, ...acf };
+
   return (
-    <section className="py-20 bg-lavender/8">
+    <section className="py-20 bg-offwhite">
       <div className="container-site">
-        <div className="bg-gradient-to-br from-lavender-lighter to-cream rounded-3xl p-10 lg:p-14 flex flex-col lg:flex-row items-center gap-10">
-          {/* Left copy */}
-          <div className="flex-1 text-center lg:text-left">
-            <p className="section-label mb-4">Bereit für Ihr Projekt?</p>
-            <h2 className="font-serif text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
-              Lassen Sie uns{" "}
-              <span className="text-lavender italic">Grossartiges</span> schaffen.
-            </h2>
-            <p className="font-sans text-sm text-charcoal/60 leading-relaxed mb-7 max-w-md">
-              Egal ob Fasnacht, Auftritt oder besonderer Anlass – wir stehen
-              Ihnen von der ersten Idee bis zur fertigen Übergabe zur Seite.
-            </p>
-            <Link
-              href="/kontakt"
-              className="btn-primary inline-flex"
-            >
-              Jetzt unverbindlich anfragen
-              <svg
-                className="w-4 h-4 ml-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </Link>
-          </div>
-
-          {/* Right USPs */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-5">
-            {USPs.map((usp) => (
-              <div
-                key={usp.label}
-                className="bg-white/60 border border-white rounded-2xl p-5 flex flex-col gap-2"
-              >
-                <span className="text-lavender">{usp.icon}</span>
-                <p className="font-serif text-base text-charcoal font-semibold leading-tight">
-                  {usp.label}
-                </p>
-                <p className="font-sans text-xs text-charcoal/50 leading-relaxed">
-                  {usp.description}
-                </p>
+        <div className="rounded-3xl bg-gradient-to-br from-periwinkle-lighter via-offwhite to-sand-light border border-periwinkle-light/40 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+            {/* Left copy */}
+            <div className="p-10 lg:p-14 flex flex-col justify-center">
+              {data.section_label && (
+                <p className="section-label mb-4">{data.section_label}</p>
+              )}
+              <h2 className="font-serif text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
+                {data.heading_accent
+                  ? data.heading.includes(data.heading_accent)
+                    ? <>
+                        {data.heading.split(data.heading_accent)[0]}
+                        <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+                        {data.heading.split(data.heading_accent)[1]}
+                      </>
+                    : data.heading
+                  : data.heading}
+              </h2>
+              <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8 max-w-sm">
+                {data.body_text}
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link href={data.cta_url} className="btn-primary">
+                  {data.cta_label}
+                </Link>
+                {data.cta_secondary_label && (
+                  <Link href={data.cta_secondary_url ?? "#"} className="btn-outline-dark">
+                    {data.cta_secondary_label}
+                  </Link>
+                )}
               </div>
-            ))}
+            </div>
+
+            {/* Right USPs */}
+            <div className="p-10 lg:p-14 lg:pl-0 flex items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-4 w-full">
+                {data.usps.map((usp) => (
+                  <div
+                    key={usp.title}
+                    className="bg-white/70 border border-white rounded-2xl p-5 flex flex-col gap-3"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-periwinkle-lighter flex items-center justify-center">
+                      <Image
+                        src={`/icons/sewing/${usp.icon_slug}`}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="icon-periwinkle"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-serif text-[15px] text-charcoal font-semibold leading-snug mb-1">
+                        {usp.title}
+                      </p>
+                      <p className="font-sans text-[12px] text-charcoal-lighter leading-relaxed">
+                        {usp.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
