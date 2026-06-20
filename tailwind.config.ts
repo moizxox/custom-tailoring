@@ -14,11 +14,11 @@ const config: Config = {
       colors: {
         // ── Primary: Periwinkle ───────────────────────────────────────────────
         periwinkle: {
-          DEFAULT: "#C2C8E8",   // Main periwinkle (buttons, accents)
-          light: "#DDE0F4",     // Soft fill backgrounds
-          lighter: "#EEEFFE",   // Section tints
-          dark: "#9AA1CC",      // Hover states, darker text
-          deep: "#7278AA",      // Deep accent for contrast text on light bg
+          DEFAULT: "#9DA5D0",   // Main periwinkle — medium, readable, not harsh
+          light: "#BCC2E4",     // Soft fill / borders
+          lighter: "#E8EAF7",   // Section tints / card backgrounds
+          dark: "#7880B8",      // Hover states, headings accent
+          deep: "#565EA0",      // High-contrast text on light backgrounds
         },
         // ── Neutrals ─────────────────────────────────────────────────────────
         sand: {

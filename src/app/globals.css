@@ -7,12 +7,12 @@
   --font-cormorant: "Playfair Display", Georgia, serif;
   --font-inter: "Inter", system-ui, sans-serif;
 
-  /* Periwinkle */
-  --color-periwinkle: #c2c8e8;
-  --color-periwinkle-light: #dde0f4;
-  --color-periwinkle-lighter: #eeeffe;
-  --color-periwinkle-dark: #9aa1cc;
-  --color-periwinkle-deep: #7278aa;
+  /* Periwinkle — medium-depth, readable on all backgrounds */
+  --color-periwinkle: #9da5d0;
+  --color-periwinkle-light: #bcc2e4;
+  --color-periwinkle-lighter: #e8eaf7;
+  --color-periwinkle-dark: #7880b8;
+  --color-periwinkle-deep: #565ea0;
 
   /* Neutrals */
   --color-sand: #e4d9cc;

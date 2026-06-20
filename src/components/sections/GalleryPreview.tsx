@@ -73,27 +73,25 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
           )}
         </div>
 
-        {/* Editorial 3-column grid */}
+        {/* 3-column equal-height grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {DEFAULT_ITEMS.map((item, index) => (
+          {DEFAULT_ITEMS.map((item) => (
             <Link
               key={item.id}
               href={`/galerie#${item.id}`}
               className={cn(
                 "group relative overflow-hidden rounded-2xl",
                 "border border-stone-light hover:border-periwinkle-light",
-                "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover",
-                index === 1 ? "md:row-span-2" : ""
+                "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
               )}
             >
-              {/* Gradient background card */}
+              {/* Gradient background card — equal height for all */}
               <div
                 className={cn(
                   "flex flex-col items-center justify-center text-center",
                   "bg-gradient-to-br",
                   item.gradient,
-                  index === 1 ? "min-h-[480px]" : "min-h-[300px]",
-                  "p-8 gap-5"
+                  "h-72 p-8 gap-5"
                 )}
               >
                 {/* Icon circle */}
