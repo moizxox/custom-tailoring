@@ -2,20 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Soft Periwinkle palette — "Zart & Zeitlos" (palette 68) ────────────────── */
 :root {
-  --font-cormorant: "Cormorant Garant", Georgia, serif;
+  --font-cormorant: "Playfair Display", Georgia, serif;
   --font-inter: "Inter", system-ui, sans-serif;
 
-  --color-lavender: #9b7ec8;
-  --color-lavender-light: #c4b0e0;
-  --color-lavender-lighter: #ede8f7;
-  --color-lavender-dark: #7c5cbf;
-  --color-mint: #a8d5c2;
-  --color-mint-light: #cce9df;
-  --color-cream: #faf9f7;
-  --color-cream-warm: #f0ede8;
-  --color-gold: #c9a96e;
-  --color-charcoal: #2c2c2c;
+  /* Periwinkle */
+  --color-periwinkle: #c2c8e8;
+  --color-periwinkle-light: #dde0f4;
+  --color-periwinkle-lighter: #eeeffe;
+  --color-periwinkle-dark: #9aa1cc;
+  --color-periwinkle-deep: #7278aa;
+
+  /* Neutrals */
+  --color-sand: #e4d9cc;
+  --color-sand-light: #f0e8df;
+  --color-stone: #d0cbc4;
+  --color-stone-light: #e2dfdc;
+  --color-offwhite: #f8f6f3;
+  --color-offwhite-warm: #f2efe9;
+  --color-warmgrey: #b5afa8;
+
+  /* Text */
+  --color-charcoal: #2c2a28;
+  --color-charcoal-light: #5a5754;
+  --color-charcoal-lighter: #8a8784;
 }
 
 @layer base {
@@ -26,7 +37,7 @@
   }
 
   body {
-    @apply bg-cream text-charcoal font-sans;
+    @apply bg-offwhite text-charcoal font-sans;
   }
 
   h1,
@@ -40,45 +51,96 @@
 }
 
 @layer components {
+  /* ── Glass cards ─────────────────────────────────────────────────────────── */
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/60 shadow-card rounded-2xl;
+    @apply bg-white/75 backdrop-blur-md border border-white/60 shadow-card rounded-2xl;
   }
 
-  .glass-card-lavender {
-    @apply bg-lavender-lighter/70 backdrop-blur-md border border-lavender-light/40 shadow-soft rounded-2xl;
+  .glass-card-periwinkle {
+    @apply bg-periwinkle-lighter/80 backdrop-blur-md border border-periwinkle-light/50 shadow-soft rounded-2xl;
   }
 
+  /* ── Typography helpers ──────────────────────────────────────────────────── */
   .section-label {
-    @apply text-xs font-sans font-semibold tracking-[0.2em] uppercase text-lavender;
+    @apply text-xs font-sans font-semibold tracking-[0.22em] uppercase text-periwinkle-dark;
   }
 
+  .section-heading {
+    @apply font-serif text-4xl xl:text-5xl text-charcoal leading-tight;
+  }
+
+  .section-subtext {
+    @apply font-sans text-base text-charcoal-light leading-relaxed;
+  }
+
+  /* ── Navigation ──────────────────────────────────────────────────────────── */
   .nav-link {
     @apply text-sm font-sans text-charcoal/70 hover:text-charcoal transition-colors duration-200 relative;
   }
 
   .nav-link::after {
     content: "";
-    @apply absolute -bottom-0.5 left-0 w-0 h-px bg-lavender transition-all duration-300;
+    @apply absolute -bottom-0.5 left-0 w-0 h-px bg-periwinkle-dark transition-all duration-300;
   }
 
   .nav-link:hover::after {
     @apply w-full;
   }
 
+  /* ── Buttons ─────────────────────────────────────────────────────────────── */
   .btn-primary {
-    @apply inline-flex items-center gap-2 bg-lavender hover:bg-lavender-dark text-white text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-card-hover;
+    @apply inline-flex items-center gap-2 bg-periwinkle hover:bg-periwinkle-dark
+      text-charcoal hover:text-white text-sm font-sans font-medium
+      px-5 py-2.5 rounded-full transition-all duration-200 shadow-soft hover:shadow-periwinkle;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 bg-transparent border border-lavender text-lavender hover:bg-lavender hover:text-white text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200;
+    @apply inline-flex items-center gap-2 bg-transparent
+      border border-periwinkle text-charcoal hover:bg-periwinkle hover:text-charcoal
+      text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200;
   }
 
+  .btn-outline-dark {
+    @apply inline-flex items-center gap-2 bg-transparent
+      border border-charcoal/20 text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark
+      text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200;
+  }
+
+  /* ── Form inputs ─────────────────────────────────────────────────────────── */
   .input-field {
-    @apply w-full bg-white/60 border border-cream-deep focus:border-lavender-light focus:bg-white outline-none rounded-lg px-4 py-3 text-sm font-sans text-charcoal placeholder:text-charcoal/40 transition-all duration-200;
+    @apply w-full bg-white/70 border border-stone-light
+      focus:border-periwinkle focus:bg-white outline-none
+      rounded-lg px-4 py-3 text-sm font-sans text-charcoal
+      placeholder:text-charcoal/35 transition-all duration-200;
   }
 
+  /* ── Layout ──────────────────────────────────────────────────────────────── */
   .container-site {
     @apply max-w-7xl mx-auto px-6 lg:px-10;
+  }
+
+  /* ── Ornamental divider ──────────────────────────────────────────────────── */
+  .divider-ornament {
+    @apply flex items-center gap-3 text-warmgrey text-xs font-sans tracking-[0.12em] uppercase;
+  }
+
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: "";
+    @apply flex-1 h-px bg-stone;
+  }
+
+  /* ── Sewing icon tint ────────────────────────────────────────────────────── */
+  .icon-periwinkle {
+    filter: invert(63%) sepia(25%) saturate(400%) hue-rotate(199deg) brightness(1.05);
+  }
+
+  .icon-stone {
+    filter: invert(80%) sepia(5%) saturate(300%) hue-rotate(10deg) brightness(0.98);
+  }
+
+  .icon-charcoal {
+    filter: invert(18%) sepia(5%) saturate(400%) hue-rotate(10deg) brightness(0.9);
   }
 }
 
@@ -87,17 +149,11 @@
     text-wrap: balance;
   }
 
-  .text-gradient-lavender {
-    @apply bg-gradient-to-r from-lavender to-lavender-dark bg-clip-text text-transparent;
+  .text-gradient-periwinkle {
+    @apply bg-gradient-to-r from-periwinkle-dark to-periwinkle-deep bg-clip-text text-transparent;
   }
 
-  .divider-ornament {
-    @apply flex items-center gap-3 text-gold text-sm font-serif;
-  }
-
-  .divider-ornament::before,
-  .divider-ornament::after {
-    content: "";
-    @apply flex-1 h-px bg-gold/30;
+  .bg-section-tint {
+    @apply bg-gradient-to-b from-offwhite to-offwhite-warm;
   }
 }
