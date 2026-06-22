@@ -20,6 +20,14 @@ const config: Config = {
           dark: "#7880B8",
           deep: "#565EA0",
         },
+        // ── Soft accent: champagne gold (subtle, not yellow) ─────────────────
+        gold: {
+          DEFAULT: "#B5A68A",
+          light: "#D0C5AE",
+          lighter: "#E8E1D4",
+          dark: "#95866E",
+          muted: "#C4B8A0",
+        },
         // ── Third accent: soft mist / sage (balances periwinkle + sand) ───────
         mist: {
           DEFAULT: "#C5DDD4",

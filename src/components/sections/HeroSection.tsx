@@ -84,8 +84,8 @@ export function HeroSection({ acf }: HeroSectionProps) {
           <div className="flex flex-col">
 
             {/* Eyebrow pill */}
-            <div className="inline-flex items-center gap-2.5 self-start bg-white border border-periwinkle-light px-4 py-1.5 rounded-full mb-8 animate-fade-up">
-              <span className="w-1.5 h-1.5 rounded-full bg-periwinkle shrink-0" />
+            <div className="inline-flex items-center gap-2.5 self-start bg-white border border-periwinkle-light/80 ring-1 ring-gold-muted/25 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
+              <span className="w-1.5 h-1.5 rounded-full bg-gold-muted shrink-0" />
               <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-periwinkle-dark">
                 {data.eyebrow_text}
               </span>
@@ -98,9 +98,9 @@ export function HeroSection({ acf }: HeroSectionProps) {
 
             {/* Ornamental divider */}
             <div className="flex items-center gap-3 mb-7 animate-fade-up [animation-delay:100ms] opacity-0">
-              <div className="h-px w-8 bg-periwinkle" />
+              <div className="h-px w-8 bg-gradient-to-r from-gold-muted/60 to-periwinkle" />
               <Image src="/icons/sewing/needle-threader-fashion-design-sewing-tailoring.svg" alt="" width={16} height={16} className="icon-periwinkle" />
-              <div className="h-px flex-1 max-w-[60px] bg-stone" />
+              <div className="h-px flex-1 max-w-[60px] bg-gradient-to-r from-periwinkle to-gold-light/50" />
             </div>
 
             {/* Sub copy */}
@@ -135,7 +135,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
                 {data.badges.map((badge) => (
                   <div
                     key={badge.label}
-                    className="flex items-center gap-2 bg-white/80 border border-stone-light rounded-full pl-2 pr-4 py-1.5"
+                    className="flex items-center gap-2 bg-white/80 border border-stone-light/80 ring-1 ring-gold-muted/10 rounded-full pl-2 pr-4 py-1.5"
                   >
                     <div className="w-6 h-6 rounded-full bg-periwinkle-lighter flex items-center justify-center">
                       <Image src={`/icons/sewing/${badge.icon_slug}`} alt="" width={13} height={13} className="icon-periwinkle" />
@@ -157,9 +157,9 @@ export function HeroSection({ acf }: HeroSectionProps) {
                 </div>
 
                 {/* Card */}
-                <div className="relative bg-white rounded-3xl shadow-card border border-stone-light overflow-hidden">
+                <div className="relative bg-white rounded-3xl shadow-card border border-stone-light ring-1 ring-gold-muted/15 overflow-hidden">
                   {/* Card top accent bar */}
-                  <div className="h-1 bg-gradient-to-r from-periwinkle-light via-periwinkle to-periwinkle-dark" />
+                  <div className="h-1 bg-gradient-to-r from-gold-light/80 via-periwinkle to-periwinkle-dark" />
 
                   <div className="p-7">
                     {submitted ? (
@@ -244,7 +244,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
       </div>
 
       {/* ── Stats bar ────────────────────────────────────────────────────────── */}
-      <div className="relative z-10 border-t border-stone-light bg-white/60 backdrop-blur-sm">
+      <div className="relative z-10 border-t border-gold-muted/25 bg-white/60 backdrop-blur-sm">
         <div className="container-site py-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-stone-light">
             {STATS.map((stat) => (

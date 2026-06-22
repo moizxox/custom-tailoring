@@ -98,7 +98,7 @@ export function PageHero({
             />
           </div>
           {/* Smaller icon in a circle — visible */}
-          <div className="relative z-10 mb-8 w-16 h-16 rounded-2xl bg-white border border-periwinkle-light shadow-soft flex items-center justify-center">
+          <div className="relative z-10 mb-8 w-16 h-16 rounded-2xl bg-white border border-periwinkle-light ring-1 ring-gold-muted/20 shadow-soft flex items-center justify-center">
             <Image
               src={`/icons/sewing/${iconSlug}`}
               alt=""
@@ -115,14 +115,14 @@ export function PageHero({
         {/* Decorative line with ornament */}
         <div className="container-site">
           <div className="flex items-center gap-0">
-            <div className="h-px flex-1 bg-gradient-to-r from-periwinkle via-periwinkle-light to-stone-light" />
-            <div className="w-1.5 h-1.5 rounded-full bg-periwinkle mx-2 shrink-0" />
-            <div className="h-px w-8 bg-stone-light" />
+            <div className="h-px flex-1 bg-gradient-to-r from-gold-muted/50 via-periwinkle to-periwinkle-light" />
+            <div className="w-1.5 h-1.5 rounded-full bg-gold-muted mx-2 shrink-0" />
+            <div className="h-px w-8 bg-gradient-to-r from-periwinkle-light to-gold-light/40" />
           </div>
         </div>
 
         {/* Subtle strip of tiny sewing icons */}
-        <div className="bg-offwhite-warm border-t border-stone-light/60 py-3 overflow-hidden">
+        <div className="bg-offwhite-warm border-t border-gold-muted/20 py-3 overflow-hidden">
           <div className="flex items-center gap-5 px-6 opacity-30 justify-center flex-wrap">
             {[
               "scissor-cut-fabric-sewing.svg",

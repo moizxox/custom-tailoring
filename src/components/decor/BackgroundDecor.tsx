@@ -35,10 +35,12 @@ function StitchDashOverlay({ className, opacity = 0.12 }: { className?: string; 
     >
       <defs>
         <pattern id={patternA} width="140" height="140" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-          <line x1="0" y1="70" x2="90" y2="70" stroke="#7880B8" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" />
+          <line x1="0" y1="70" x2="90" y2="70" stroke="#B5A68A" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" opacity="0.55" />
+          <line x1="0" y1="70" x2="90" y2="70" stroke="#7880B8" strokeWidth="0.75" strokeDasharray="5 12" strokeLinecap="round" opacity="0.35" />
         </pattern>
         <pattern id={patternB} width="140" height="140" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
-          <line x1="0" y1="70" x2="90" y2="70" stroke="#7880B8" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" />
+          <line x1="0" y1="70" x2="90" y2="70" stroke="#B5A68A" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" opacity="0.55" />
+          <line x1="0" y1="70" x2="90" y2="70" stroke="#7880B8" strokeWidth="0.75" strokeDasharray="5 12" strokeLinecap="round" opacity="0.35" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternA})`} />

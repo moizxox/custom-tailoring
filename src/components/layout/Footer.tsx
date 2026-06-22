@@ -46,11 +46,11 @@ export function Footer() {
 
       {/* Top stitch seam — horizontal dashed outline */}
       <div
-        className="absolute top-6 left-[6%] right-[6%] h-px border-t border-dashed border-periwinkle-dark/25 pointer-events-none z-[1]"
+        className="absolute top-6 left-[6%] right-[6%] h-px border-t border-dashed border-gold-muted/35 pointer-events-none z-[1]"
         aria-hidden
       />
       <div
-        className="absolute top-10 left-[12%] right-[12%] h-px border-t border-dashed border-periwinkle/20 pointer-events-none z-[1] hidden sm:block"
+        className="absolute top-10 left-[12%] right-[12%] h-px border-t border-dashed border-periwinkle-dark/20 pointer-events-none z-[1] hidden sm:block"
         aria-hidden
       />
 
@@ -89,7 +89,7 @@ export function Footer() {
             {/* Brand column — spans 2 on lg */}
             <div className="lg:col-span-2 flex flex-col gap-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 flex items-center justify-center shadow-soft">
+                <div className="w-10 h-10 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 ring-1 ring-gold-muted/20 flex items-center justify-center shadow-soft">
                   <Image
                     src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg"
                     alt=""
