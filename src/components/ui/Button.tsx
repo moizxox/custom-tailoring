@@ -19,7 +19,7 @@ const variantClasses = {
   primary:
     "bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white shadow-soft hover:shadow-periwinkle",
   secondary:
-    "border border-periwinkle text-charcoal hover:bg-periwinkle hover:text-charcoal",
+    "bg-gold-lighter/30 border border-gold-muted text-charcoal hover:bg-gold-muted hover:border-gold hover:text-charcoal",
   ghost: "text-charcoal hover:bg-sand-light",
   outline:
     "border border-stone-light text-charcoal hover:border-periwinkle-light hover:text-periwinkle-deep",

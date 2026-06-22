@@ -120,10 +120,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
                 </svg>
               </Link>
               {data.cta_secondary_label && (
-                <Link
-                  href={data.cta_secondary_url ?? "#"}
-                  className="inline-flex items-center gap-2 border border-charcoal/15 text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark font-sans font-medium text-sm px-6 py-3 rounded-full transition-all duration-200"
-                >
+                <Link href={data.cta_secondary_url ?? "#"} className="btn-secondary px-6 py-3">
                   {data.cta_secondary_label}
                 </Link>
               )}

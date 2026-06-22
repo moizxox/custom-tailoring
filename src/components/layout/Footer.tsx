@@ -76,7 +76,7 @@ export function Footer() {
               <Link href="/termin" className="btn-primary shadow-soft">
                 Termin buchen
               </Link>
-              <Link href="/kontakt" className="btn-outline-dark bg-white/40 backdrop-blur-sm">
+              <Link href="/kontakt" className="btn-secondary bg-white/40 backdrop-blur-sm">
                 Anfrage senden
               </Link>
             </div>

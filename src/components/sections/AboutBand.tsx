@@ -68,7 +68,7 @@ export function AboutBand({ acf }: AboutBandProps) {
                   {data.cta_label}
                 </Link>
                 {data.cta_secondary_label && (
-                  <Link href={data.cta_secondary_url ?? "#"} className="btn-outline-dark">
+                  <Link href={data.cta_secondary_url ?? "#"} className="btn-secondary">
                     {data.cta_secondary_label}
                   </Link>
                 )}

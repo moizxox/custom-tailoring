@@ -138,8 +138,9 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 bg-transparent
-      border border-periwinkle text-charcoal hover:bg-periwinkle hover:text-charcoal
+    @apply inline-flex items-center gap-2 bg-gold-lighter/30
+      border border-gold-muted text-charcoal
+      hover:bg-gold-muted hover:border-gold hover:text-charcoal
       text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200;
   }
 
