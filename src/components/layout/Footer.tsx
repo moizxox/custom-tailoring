@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 
 const FOOTER_LINKS = {
   Navigation: [
@@ -19,23 +20,42 @@ const FOOTER_LINKS = {
 export function Footer() {
   return (
     <footer className="relative overflow-hidden mt-4">
-      {/* ── Soft ambient base (periwinkle + sand + mist) ───────────────────── */}
+      {/* Client decor — figures, mesh, confetti, stitch dashes */}
+      <BackgroundDecor variant="footer" showConfetti showStitchDashes />
+
+      {/* ── Soft ambient base — periwinkle + sand + mist third tone ───────── */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-offwhite via-offwhite-warm to-sand-light/50 pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-b from-offwhite via-mist-lighter/70 to-mist-light/45 pointer-events-none"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-tr from-periwinkle-lighter/25 via-transparent to-mist-lighter/40 pointer-events-none"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-bl from-transparent via-sand-light/20 to-mist-light/30 pointer-events-none"
         aria-hidden
       />
 
       {/* Lighting orbs — gentle, slow drift */}
       <div
-        className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/35 blur-[90px] animate-glow-drift pointer-events-none"
+        className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/30 blur-[90px] animate-glow-drift pointer-events-none"
         aria-hidden
       />
       <div
-        className="absolute top-[30%] -right-16 w-[360px] h-[320px] rounded-full bg-mist-lighter/50 blur-[85px] animate-glow-drift pointer-events-none [animation-delay:4s]"
+        className="absolute top-[25%] -right-12 w-[400px] h-[360px] rounded-full bg-mist-lighter/65 blur-[90px] animate-glow-drift pointer-events-none [animation-delay:4s]"
         aria-hidden
       />
       <div
-        className="absolute bottom-0 left-[35%] w-[300px] h-[200px] rounded-full bg-sand-light/45 blur-[70px] pointer-events-none"
+        className="absolute top-[45%] left-[40%] w-[480px] h-[300px] rounded-full bg-mist-light/40 blur-[100px] pointer-events-none"
+        aria-hidden
+      />
+      <div
+        className="absolute bottom-0 left-[20%] w-[340px] h-[220px] rounded-full bg-mist-lighter/50 blur-[75px] pointer-events-none"
+        aria-hidden
+      />
+      <div
+        className="absolute bottom-0 right-[15%] w-[280px] h-[180px] rounded-full bg-sand-light/35 blur-[70px] pointer-events-none"
         aria-hidden
       />
       {/* Specular highlights */}
@@ -44,7 +64,17 @@ export function Footer() {
         aria-hidden
       />
       <div
-        className="absolute bottom-24 left-[8%] w-16 h-16 rounded-full bg-mist-light/40 blur-xl pointer-events-none"
+        className="absolute bottom-24 left-[8%] w-20 h-20 rounded-full bg-mist-light/55 blur-xl pointer-events-none"
+        aria-hidden
+      />
+
+      {/* Top stitch seam — horizontal dashed outline */}
+      <div
+        className="absolute top-6 left-[6%] right-[6%] h-px border-t border-dashed border-periwinkle-dark/25 pointer-events-none z-[1]"
+        aria-hidden
+      />
+      <div
+        className="absolute top-10 left-[12%] right-[12%] h-px border-t border-dashed border-periwinkle/20 pointer-events-none z-[1] hidden sm:block"
         aria-hidden
       />
 

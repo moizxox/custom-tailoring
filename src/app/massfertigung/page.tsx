@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ProcessSection } from "@/components/sections/ProcessSection";
+import { MeasurementCards } from "@/components/sections/MeasurementCards";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -14,12 +15,6 @@ const STEPS_DETAIL = [
   { icon: "pencil-sewing-tailoring-drawing.svg", title: "Schnittmuster", text: "Auf Basis Ihrer Masse erstellen wir ein individuelles Schnittmuster. Kein Kostüm von der Stange – jedes wird neu konstruiert." },
   { icon: "fabric-cloth-sewing-tailoring.svg", title: "Stoffauswahl", text: "Gemeinsam wählen wir die passenden Materialien aus. Wir helfen Ihnen, das Richtige zu finden – nach Budget und Wunsch." },
   { icon: "sewing-machine-sewing-tailoring-cloth.svg", title: "Anfertigung", text: "Jeder Schritt der Produktion erfolgt in unserem Basler Atelier, von Hand und mit grösster Sorgfalt." },
-];
-
-const MEASUREMENT_TYPES = [
-  { src: "/images/figures/man-measurement.png", label: "Herren", desc: "Massblatt für Herrenkostüme" },
-  { src: "/images/figures/woman-measurement.png", label: "Damen", desc: "Massblatt für Damenkostüme" },
-  { src: "/images/figures/child-measurement.png", label: "Kinder", desc: "Massblatt für Kinderkostüme" },
 ];
 
 export default function MassfertigungPage() {
@@ -43,28 +38,7 @@ export default function MassfertigungPage() {
               Präzise Masse für die <em className="not-italic italic text-periwinkle-dark">perfekte Passform</em>
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {MEASUREMENT_TYPES.map((m) => (
-              <div
-                key={m.label}
-                className="glass-card rounded-2xl overflow-hidden flex flex-col"
-              >
-                <div className="relative aspect-[4/3] bg-offwhite-warm p-4">
-                  <Image
-                    src={m.src}
-                    alt={`Massblatt ${m.label}`}
-                    fill
-                    className="object-contain p-2 outline-measurement-periwinkle"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                </div>
-                <div className="p-5 border-t border-stone-light/80">
-                  <h3 className="font-serif text-lg text-charcoal">{m.label}</h3>
-                  <p className="font-sans text-sm text-charcoal-lighter mt-1">{m.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <MeasurementCards />
           <p className="text-center font-sans text-sm text-charcoal-lighter mt-8">
             Im Atelier nehmen wir alle Masse für Sie auf.{" "}
             <Link href="/termin" className="text-periwinkle-dark hover:underline">
