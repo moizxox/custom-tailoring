@@ -61,7 +61,7 @@ export function BackgroundDecor({
       : variant === "page"
         ? "opacity-[0.14]"
         : variant === "footer"
-          ? "opacity-[0.11]"
+          ? "opacity-[0.15]"
           : "opacity-[0.08]";
 
   const figureWidth =
@@ -70,13 +70,26 @@ export function BackgroundDecor({
       : variant === "page"
         ? "w-[min(32vw,380px)]"
         : variant === "footer"
-          ? "w-[min(28vw,340px)]"
+          ? "w-[min(26vw,300px)]"
           : "w-[min(24vw,280px)]";
 
   const figurePosition =
     variant === "footer"
-      ? { left: "bottom-0 -translate-x-[10%] translate-y-[18%]", right: "bottom-0 translate-x-[10%] translate-y-[18%]" }
-      : { left: "top-1/2 -translate-y-1/2 -translate-x-[8%]", right: "top-1/2 -translate-y-1/2 translate-x-[8%]" };
+      ? {
+          left: "top-1/2 -translate-y-1/2 -translate-x-[14%]",
+          right: "top-1/2 -translate-y-1/2 translate-x-[14%]",
+        }
+      : {
+          left: "top-1/2 -translate-y-1/2 -translate-x-[8%]",
+          right: "top-1/2 -translate-y-1/2 translate-x-[8%]",
+        };
+
+  const figureVisibility = variant === "footer" ? "hidden md:block" : "";
+
+  const figureFade =
+    variant === "footer"
+      ? { left: "[mask-image:linear-gradient(to_right,black_50%,transparent)]", right: "[mask-image:linear-gradient(to_left,black_50%,transparent)]" }
+      : { left: "", right: "" };
 
   return (
     <div
@@ -84,14 +97,14 @@ export function BackgroundDecor({
       aria-hidden
     >
       {/* Sewing-dash crisscross — Nähnaht style */}
-      {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.14 : 0.1} />}
+      {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.09 : 0.1} />}
 
       {/* Soft pastel mesh — very subtle ambient color */}
       {showMesh && (
         <div
           className={cn(
             "absolute inset-0",
-            variant === "hero" ? "opacity-[0.12]" : variant === "footer" ? "opacity-[0.1]" : "opacity-[0.08]"
+            variant === "hero" ? "opacity-[0.12]" : variant === "footer" ? "opacity-[0.06]" : "opacity-[0.08]"
           )}
         >
           <Image
@@ -127,7 +140,9 @@ export function BackgroundDecor({
               figurePosition.left,
               figureWidth,
               "aspect-[3/5]",
-              figureOpacity
+              figureOpacity,
+              figureVisibility,
+              figureFade.left
             )}
           >
             <Image
@@ -146,7 +161,9 @@ export function BackgroundDecor({
               figurePosition.right,
               figureWidth,
               "aspect-[3/5]",
-              figureOpacity
+              figureOpacity,
+              figureVisibility,
+              figureFade.right
             )}
           >
             <Image
