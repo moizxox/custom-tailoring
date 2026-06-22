@@ -173,6 +173,18 @@
   .icon-charcoal {
     filter: invert(18%) sepia(5%) saturate(400%) hue-rotate(10deg) brightness(0.9);
   }
+
+  /* ── Client figure outlines (silver-gold → periwinkle, not yellow) ───────── */
+  /* screen: black bg vanishes on light surfaces; filter shifts line color */
+  .outline-figure-periwinkle {
+    mix-blend-mode: screen;
+    filter: sepia(0.35) hue-rotate(195deg) saturate(0.45) brightness(1.05);
+  }
+
+  .outline-measurement-periwinkle {
+    mix-blend-mode: screen;
+    filter: sepia(1) hue-rotate(188deg) saturate(0.55) brightness(0.92);
+  }
 }
 
 @layer utilities {

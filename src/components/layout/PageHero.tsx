@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 
 interface Breadcrumb {
   label: string;
@@ -37,13 +38,7 @@ export function PageHero({
 
   return (
     <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24">
-      {/* ── Background: right periwinkle panel ──────────────────────────────── */}
-      <div
-        className="absolute inset-y-0 right-0 w-[38%] bg-gradient-to-bl from-periwinkle-lighter via-sand-light/60 to-offwhite hidden lg:block pointer-events-none"
-        aria-hidden
-      />
-      {/* Soft glow */}
-      <div className="absolute -top-20 right-[20%] w-80 h-80 rounded-full bg-periwinkle-lighter/60 blur-3xl pointer-events-none" aria-hidden />
+      <BackgroundDecor variant="page" showConfetti={false} />
 
       {/* ── Main content area ──────────────────────────────────────────────── */}
       <div className="container-site relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end">

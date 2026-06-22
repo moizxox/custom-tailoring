@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { AcfHero } from "@/types";
+import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 
 const DEFAULT_DATA: AcfHero = {
   acf_fc_layout: "hero",
@@ -29,13 +30,6 @@ const STATS = [
   { value: "500+", label: "Kostüme gefertigt" },
   { value: "100%", label: "Massarbeit" },
   { value: "Basel", label: "Seit 2003" },
-];
-
-const FLOATING_ICONS = [
-  { src: "/icons/sewing/spool-of-thread-sewing-tailoring-needle.svg", size: 32, top: "18%", left: "2%",  rotate: -15, opacity: 0.13 },
-  { src: "/icons/sewing/pin-cushion-handcraft-sewing-tailoring.svg",  size: 26, top: "55%", left: "3%",  rotate: 10,  opacity: 0.10 },
-  { src: "/icons/sewing/button-sewing-tailoring-handcraft.svg",        size: 22, top: "78%", left: "48%", rotate: 25,  opacity: 0.09 },
-  { src: "/icons/sewing/scissor-cut-fabric-sewing.svg",                size: 28, top: "12%", left: "55%", rotate: -8,  opacity: 0.08 },
 ];
 
 interface HeroSectionProps { acf?: Partial<AcfHero> }
@@ -74,27 +68,13 @@ export function HeroSection({ acf }: HeroSectionProps) {
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-offwhite">
+      <BackgroundDecor variant="hero" />
 
-      {/* ── Background panels ──────────────────────────────────────────────── */}
-      {/* Right warm panel */}
-      <div className="absolute inset-y-0 right-0 w-full lg:w-[44%] bg-gradient-to-bl from-sand-light via-offwhite-warm to-offwhite pointer-events-none" aria-hidden />
-      {/* Periwinkle glow top-right */}
-      <div className="absolute -top-32 right-[10%] w-[520px] h-[520px] rounded-full bg-periwinkle-lighter/50 blur-3xl pointer-events-none" aria-hidden />
-      {/* Soft bottom gradient */}
-      <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-offwhite to-transparent pointer-events-none" aria-hidden />
-
-      {/* ── Floating decorative icons ──────────────────────────────────────── */}
-      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden" aria-hidden>
-        {FLOATING_ICONS.map((icon, i) => (
-          <div
-            key={i}
-            className="absolute"
-            style={{ top: icon.top, left: icon.left, opacity: icon.opacity, transform: `rotate(${icon.rotate}deg)` }}
-          >
-            <Image src={icon.src} alt="" width={icon.size} height={icon.size} className="icon-charcoal" />
-          </div>
-        ))}
-      </div>
+      {/* Right content panel — soft glass tint */}
+      <div
+        className="absolute inset-y-0 right-0 w-full lg:w-[44%] bg-white/30 backdrop-blur-[2px] pointer-events-none"
+        aria-hidden
+      />
 
       {/* ── Main grid ─────────────────────────────────────────────────────── */}
       <div className="container-site relative z-10 flex-1 flex flex-col justify-center pt-28 pb-10 lg:pt-36 lg:pb-16">

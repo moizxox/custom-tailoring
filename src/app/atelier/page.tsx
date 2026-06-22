@@ -44,14 +44,19 @@ export default function AtelierPage() {
 
           <div className="grid grid-cols-2 gap-4">
             {[
-              { icon: "sewing-machine-sewing-tailoring-cloth.svg", label: "Nähmaschinen", gradient: "from-periwinkle-lighter to-sand-light" },
-              { icon: "fabric-cloth-sewing-tailoring.svg", label: "Stoffe & Garne", gradient: "from-sand-light to-offwhite-warm" },
-              { icon: "scissor-cut-fabric-sewing.svg", label: "Werkzeuge", gradient: "from-offwhite-warm to-periwinkle-lighter" },
-              { icon: "spool-of-thread-sewing-tailoring-needle.svg", label: "Zubehör", gradient: "from-periwinkle-lighter to-stone-light" },
-            ].map((item) => (
-              <div key={item.label} className={`rounded-2xl bg-gradient-to-br ${item.gradient} flex flex-col items-center justify-center gap-3 aspect-square border border-stone-light p-5 text-center`}>
-                <Image src={`/icons/sewing/${item.icon}`} alt="" width={40} height={40} className="icon-periwinkle" />
-                <span className="font-sans text-xs font-medium text-charcoal-light">{item.label}</span>
+              { src: "/images/atelier/atelier-1.png", alt: "Atelier Ansicht" },
+              { src: "/images/atelier/atelier-2.jpg", alt: "Handarbeit im Atelier" },
+              { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
+              { src: "/images/atelier/atelier-1.png", alt: "Werkstatt Basel" },
+            ].map((photo, i) => (
+              <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-stone-light shadow-soft">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                />
               </div>
             ))}
           </div>

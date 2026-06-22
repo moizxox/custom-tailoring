@@ -26,6 +26,7 @@ pnpm-debug.log*
 
 # Client reference files (mockups, color guides — not for production)
 _reference/
+lani-2/
 
 # Sewing outline source (original vector files — only SVGs in public/ are needed)
 Sewing_outline/
