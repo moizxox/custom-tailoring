@@ -27,9 +27,10 @@ export function Navbar() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+        "bg-offwhite-pure/80 backdrop-blur-md border-b",
         scrolled
-          ? "bg-offwhite-pure/95 backdrop-blur-sm shadow-soft border-b border-stone-light"
-          : "bg-transparent"
+          ? "bg-offwhite-pure/95 backdrop-blur-lg shadow-soft border-gold-muted/40"
+          : "border-gold-muted/20"
       )}
     >
       <div className="container-site">

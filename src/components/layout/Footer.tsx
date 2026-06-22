@@ -44,15 +44,11 @@ export function Footer() {
         className="z-[1]"
       />
 
-      {/* Top stitch seam — horizontal dashed outline */}
-      <div
-        className="absolute top-6 left-[6%] right-[6%] h-px border-t border-dashed border-gold-muted/35 pointer-events-none z-[1]"
-        aria-hidden
-      />
-      <div
-        className="absolute top-10 left-[12%] right-[12%] h-px border-t border-dashed border-periwinkle-dark/20 pointer-events-none z-[1] hidden sm:block"
-        aria-hidden
-      />
+      {/* Top gold dashed seam lines */}
+      <div className="absolute top-5 left-[5%] right-[5%] z-[2] space-y-2.5 pointer-events-none" aria-hidden>
+        <div className="line-gold-dashed" />
+        <div className="line-gold-dashed-light" />
+      </div>
 
       {/* Top fade-in from page content */}
       <div
@@ -76,7 +72,7 @@ export function Footer() {
               <Link href="/termin" className="btn-primary shadow-soft">
                 Termin buchen
               </Link>
-              <Link href="/kontakt" className="btn-secondary bg-white/40 backdrop-blur-sm">
+              <Link href="/kontakt" className="btn-secondary">
                 Anfrage senden
               </Link>
             </div>

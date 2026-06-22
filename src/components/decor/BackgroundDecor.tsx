@@ -34,13 +34,11 @@ function StitchDashOverlay({ className, opacity = 0.12 }: { className?: string; 
       style={{ opacity }}
     >
       <defs>
-        <pattern id={patternA} width="140" height="140" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-          <line x1="0" y1="70" x2="90" y2="70" stroke="#B5A68A" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" opacity="0.55" />
-          <line x1="0" y1="70" x2="90" y2="70" stroke="#7880B8" strokeWidth="0.75" strokeDasharray="5 12" strokeLinecap="round" opacity="0.35" />
+        <pattern id={patternA} width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
+          <line x1="0" y1="60" x2="95" y2="60" stroke="#8A7A5E" strokeWidth="1.5" strokeDasharray="6 10" strokeLinecap="round" />
         </pattern>
-        <pattern id={patternB} width="140" height="140" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
-          <line x1="0" y1="70" x2="90" y2="70" stroke="#B5A68A" strokeWidth="1" strokeDasharray="5 12" strokeLinecap="round" opacity="0.55" />
-          <line x1="0" y1="70" x2="90" y2="70" stroke="#7880B8" strokeWidth="0.75" strokeDasharray="5 12" strokeLinecap="round" opacity="0.35" />
+        <pattern id={patternB} width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
+          <line x1="0" y1="60" x2="95" y2="60" stroke="#8A7A5E" strokeWidth="1.5" strokeDasharray="6 10" strokeLinecap="round" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternA})`} />
@@ -59,21 +57,21 @@ export function BackgroundDecor({
 }: BackgroundDecorProps) {
   const figureOpacity =
     variant === "hero"
-      ? "opacity-[0.22]"
+      ? "opacity-[0.32]"
       : variant === "page"
-        ? "opacity-[0.14]"
+        ? "opacity-[0.22]"
         : variant === "footer"
-          ? "opacity-[0.15]"
-          : "opacity-[0.08]";
+          ? "opacity-[0.24]"
+          : "opacity-[0.12]";
 
   const figureWidth =
     variant === "hero"
-      ? "w-[min(42vw,520px)]"
+      ? "w-[min(50vw,620px)]"
       : variant === "page"
-        ? "w-[min(32vw,380px)]"
+        ? "w-[min(38vw,440px)]"
         : variant === "footer"
-          ? "w-[min(26vw,300px)]"
-          : "w-[min(24vw,280px)]";
+          ? "w-[min(34vw,400px)]"
+          : "w-[min(28vw,320px)]";
 
   const figurePosition =
     variant === "footer"
@@ -99,7 +97,7 @@ export function BackgroundDecor({
       aria-hidden
     >
       {/* Sewing-dash crisscross — Nähnaht style */}
-      {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.09 : 0.1} />}
+      {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.22 : 0.16} />}
 
       {/* Soft pastel mesh — very subtle ambient color */}
       {showMesh && (
@@ -151,7 +149,7 @@ export function BackgroundDecor({
               src="/images/backgrounds/figuren-left.png"
               alt=""
               fill
-              className="object-contain object-left outline-figure-periwinkle"
+              className="object-contain object-left outline-figure-gold"
               sizes="(max-width: 768px) 40vw, 520px"
             />
           </div>
@@ -172,7 +170,7 @@ export function BackgroundDecor({
               src="/images/backgrounds/figuren-right.png"
               alt=""
               fill
-              className="object-contain object-right outline-figure-periwinkle"
+              className="object-contain object-right outline-figure-gold"
               sizes="(max-width: 768px) 40vw, 520px"
             />
           </div>

@@ -25,7 +25,8 @@ const config: Config = {
           DEFAULT: "#B5A68A",
           light: "#D0C5AE",
           lighter: "#E8E1D4",
-          dark: "#95866E",
+          dark: "#8A7A5E",
+          deeper: "#746654",
           muted: "#C4B8A0",
         },
         // ── Third accent: soft mist / sage (balances periwinkle + sand) ───────

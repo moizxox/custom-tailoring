@@ -24,7 +24,8 @@
   --color-gold: #b5a68a;
   --color-gold-light: #d0c5ae;
   --color-gold-lighter: #e8e1d4;
-  --color-gold-dark: #95866e;
+  --color-gold-dark: #8a7a5e;
+  --color-gold-deeper: #746654;
   --color-gold-muted: #c4b8a0;
 
   /* Neutrals */
@@ -76,12 +77,11 @@
   /* Footer glass panels — frosted with mist + subtle gold border */
   .glass-footer-panel {
     @apply bg-gradient-to-br from-white/50 via-mist-lighter/40 to-white/35 backdrop-blur-xl rounded-3xl shadow-card;
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(196, 184, 160, 0.45);
     box-shadow:
       0 8px 32px rgba(44, 42, 40, 0.06),
       0 1px 0 rgba(255, 255, 255, 0.85) inset,
-      0 -1px 0 rgba(197, 221, 212, 0.2) inset,
-      0 0 0 1px rgba(181, 166, 138, 0.14);
+      0 0 0 1px rgba(138, 122, 94, 0.18);
   }
 
   .glass-footer-subtle {
@@ -105,7 +105,7 @@
 
   .section-label::before {
     content: "";
-    @apply inline-block w-1 h-1 rounded-full bg-gold-muted mr-2.5 align-middle -mt-px;
+    @apply inline-block w-1.5 h-1.5 rounded-full bg-gold-dark mr-2.5 align-middle -mt-px;
   }
 
   .section-heading {
@@ -123,7 +123,7 @@
 
   .nav-link::after {
     content: "";
-    @apply absolute -bottom-0.5 left-0 w-0 h-px bg-periwinkle-dark transition-all duration-300;
+    @apply absolute -bottom-0.5 left-0 w-0 h-px bg-gold-dark transition-all duration-300;
   }
 
   .nav-link:hover::after {
@@ -138,10 +138,10 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 bg-gold-lighter/30
-      border border-gold-muted text-charcoal
-      hover:bg-gold-muted hover:border-gold hover:text-charcoal
-      text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200;
+    @apply inline-flex items-center gap-2 bg-gold-dark text-white
+      hover:bg-gold hover:border-gold-dark hover:text-charcoal
+      text-sm font-sans font-medium px-5 py-2.5 rounded-full transition-all duration-200 shadow-soft;
+    border: 1px solid var(--color-gold-deeper);
   }
 
   .btn-outline-dark {
@@ -171,22 +171,10 @@
   .divider-ornament::before,
   .divider-ornament::after {
     content: "";
-    @apply flex-1 h-px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(181, 166, 138, 0.45),
-      rgba(120, 128, 184, 0.35)
-    );
-  }
-
-  .divider-ornament::after {
-    background: linear-gradient(
-      to left,
-      transparent,
-      rgba(181, 166, 138, 0.45),
-      rgba(120, 128, 184, 0.35)
-    );
+    @apply flex-1;
+    height: 0;
+    border-top: 2px dashed var(--color-gold-dark);
+    opacity: 0.7;
   }
 
   /* ── Sewing icon tint ────────────────────────────────────────────────────── */
@@ -206,27 +194,28 @@
     filter: invert(18%) sepia(5%) saturate(400%) hue-rotate(10deg) brightness(0.9);
   }
 
-  /* ── Client figure outlines — periwinkle with subtle champagne gold ─────── */
-  .outline-figure-periwinkle {
+  /* Figure outlines — larger, visible subtle gold on light backgrounds */
+  .outline-figure-gold {
     mix-blend-mode: screen;
-    filter: sepia(0.42) hue-rotate(172deg) saturate(0.5) brightness(1.06);
+    filter: sepia(0.75) hue-rotate(8deg) saturate(0.65) brightness(0.88) contrast(1.2);
   }
 
   .outline-measurement-periwinkle {
     mix-blend-mode: normal;
-    filter: sepia(1) hue-rotate(175deg) saturate(0.7) brightness(1.08) contrast(1.15);
+    filter: sepia(1) hue-rotate(12deg) saturate(0.75) brightness(0.95) contrast(1.2);
   }
 
-  /* Subtle gold accent line — hero, footer, page heroes */
-  .accent-line-gold {
-    @apply h-px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(181, 166, 138, 0.5),
-      rgba(120, 128, 184, 0.4),
-      transparent
-    );
+  /* Visible gold dashed seam lines (HTML/CSS) */
+  .line-gold-dashed {
+    height: 0;
+    border-top: 2px dashed var(--color-gold-dark);
+    opacity: 0.8;
+  }
+
+  .line-gold-dashed-light {
+    height: 0;
+    border-top: 1.5px dashed var(--color-gold);
+    opacity: 0.65;
   }
 }
 
