@@ -72,12 +72,12 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 items-start">
       {/* Reference diagram — only visible to logged-in customers */}
       <div className="glass-card overflow-hidden sticky top-24">
-        <div className="relative aspect-[4/5] bg-[#2c2c30] p-4">
+        <div className="relative aspect-[4/5] bg-periwinkle-lighter/40 p-3">
           <Image
             src={MEASUREMENT_DIAGRAM[customer.costumeCategory]}
             alt={`Massblatt ${customer.costumeCategory}`}
             fill
-            className="object-contain p-2 outline-measurement-periwinkle"
+            className="object-contain p-1"
             sizes="(max-width: 1024px) 100vw, 40vw"
           />
         </div>
@@ -101,10 +101,15 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {fields.map((field) => (
             <div key={field.key} className="flex flex-col gap-1.5">
-              <label htmlFor={field.key} className="text-xs font-sans font-medium text-charcoal-light">
-                {field.label}
-                {field.required && <span className="text-periwinkle-dark"> *</span>}
-                <span className="text-charcoal-lighter font-normal"> ({field.unit})</span>
+              <label htmlFor={field.key} className="text-xs font-sans font-medium text-charcoal-light flex items-baseline gap-2">
+                <span className="inline-flex min-w-[2rem] justify-center rounded bg-gold-lighter/80 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-gold-deeper">
+                  {field.letter}
+                </span>
+                <span>
+                  {field.label}
+                  {field.required && <span className="text-periwinkle-dark"> *</span>}
+                  <span className="text-charcoal-lighter font-normal"> ({field.unit})</span>
+                </span>
               </label>
               <input
                 id={field.key}

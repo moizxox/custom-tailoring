@@ -10,6 +10,8 @@ interface BackgroundDecorProps {
   variant?: DecorVariant;
   /** Show Fasnacht character outlines on sides */
   showFigures?: boolean;
+  /** Show traditional costume symbol banner (client asset) */
+  showCostumeSymbols?: boolean;
   /** Show soft pastel mesh glow */
   showMesh?: boolean;
   /** Show light confetti dots */
@@ -52,6 +54,7 @@ function StitchDashOverlay({ className, opacity = 0.12 }: { className?: string; 
 export function BackgroundDecor({
   variant = "hero",
   showFigures = true,
+  showCostumeSymbols = variant === "hero",
   showMesh = true,
   showConfetti = variant === "hero",
   showStitchDashes = variant === "footer",
@@ -130,6 +133,40 @@ export function BackgroundDecor({
             alt=""
             fill
             className="object-cover saturate-[0.7] hue-rotate-[-10deg]"
+            sizes="100vw"
+          />
+        </div>
+      )}
+
+      {/* Traditional costume symbols — client banner row */}
+      {showCostumeSymbols && (
+        <div
+          className={cn(
+            "absolute left-0 right-0 pointer-events-none",
+            variant === "hero"
+              ? "bottom-0 h-[min(22vh,160px)] opacity-[0.20]"
+              : "bottom-0 h-[min(16vh,120px)] opacity-[0.14]"
+          )}
+        >
+          <Image
+            src="/images/backgrounds/costume-symbols-banner.png"
+            alt=""
+            fill
+            className="object-contain object-bottom saturate-[0.85]"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-offwhite/80 via-offwhite/30 to-transparent" />
+        </div>
+      )}
+
+      {/* Pastel symbol mesh — very subtle wash behind hero */}
+      {showCostumeSymbols && variant === "hero" && (
+        <div className="absolute inset-0 opacity-[0.06]">
+          <Image
+            src="/images/backgrounds/pastel-symbols-mesh.png"
+            alt=""
+            fill
+            className="object-cover object-center saturate-[0.7] hue-rotate-[-8deg]"
             sizes="100vw"
           />
         </div>

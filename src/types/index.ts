@@ -251,15 +251,8 @@ export interface MeasurementForm {
   createdAt: string;
 }
 
+/** Letter-coded values (A, B, C1, O, K1a, …) matching Massblatt diagrams */
 export interface MeasurementData {
-  koerpergroesse: number;      // Body height (cm)
-  brust: number;               // Chest (cm)
-  taille: number;              // Waist (cm)
-  huefte: number;              // Hips (cm)
-  schulterbreite: number;      // Shoulder width (cm)
-  armlaenge: number;           // Arm length (cm)
-  rueckenlaenge: number;       // Back length (cm)
-  innenbeinlaenge?: number;    // Inseam (cm)
-  halsgrösse?: number;         // Neck circumference (cm)
+  values: Record<string, number>;
   notes?: string;
 }

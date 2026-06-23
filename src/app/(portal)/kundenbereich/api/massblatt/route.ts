@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { findCustomerById, saveMeasurementSubmission } from "@/lib/portal/customers";
+import { getRequiredFieldKeys } from "@/lib/portal/measurement-fields";
 import { getPortalCustomerId } from "@/lib/portal/session";
 import type { MeasurementData } from "@/types";
 
@@ -15,43 +16,34 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData();
-  const measurements: Record<string, string> = {};
+  const raw: Record<string, string> = {};
   const photoNames: string[] = [];
 
   for (const [key, value] of formData.entries()) {
     if (key === "photos" && value instanceof File && value.size > 0) {
       photoNames.push(value.name);
     } else if (typeof value === "string" && key !== "notes") {
-      measurements[key] = value;
+      raw[key] = value;
+    }
+  }
+
+  const values: Record<string, number> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    const num = Number(value);
+    if (value.trim() !== "" && !Number.isNaN(num)) {
+      values[key] = num;
     }
   }
 
   const notes = formData.get("notes");
   const data: MeasurementData = {
-    koerpergroesse: Number(measurements.koerpergroesse) || 0,
-    brust: Number(measurements.brust) || 0,
-    taille: Number(measurements.taille) || 0,
-    huefte: Number(measurements.huefte) || 0,
-    schulterbreite: Number(measurements.schulterbreite) || 0,
-    armlaenge: Number(measurements.armlaenge) || 0,
-    rueckenlaenge: Number(measurements.rueckenlaenge) || 0,
-    innenbeinlaenge: measurements.innenbeinlaenge
-      ? Number(measurements.innenbeinlaenge)
-      : undefined,
-    halsgrösse: measurements.halsgrösse ? Number(measurements.halsgrösse) : undefined,
-    notes: typeof notes === "string" ? notes : undefined,
+    values,
+    notes: typeof notes === "string" && notes.trim() ? notes.trim() : undefined,
   };
 
-  const required = [
-    data.koerpergroesse,
-    data.brust,
-    data.taille,
-    data.huefte,
-    data.schulterbreite,
-    data.armlaenge,
-    data.rueckenlaenge,
-  ];
-  if (required.some((v) => !v || v <= 0)) {
+  const requiredKeys = getRequiredFieldKeys(customer.costumeCategory);
+  const missing = requiredKeys.filter((key) => !values[key] || values[key] <= 0);
+  if (missing.length > 0) {
     return NextResponse.json(
       { error: "Bitte füllen Sie alle Pflichtfelder aus." },
       { status: 400 }
