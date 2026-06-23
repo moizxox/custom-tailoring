@@ -184,7 +184,11 @@
   }
 
   .outline-figure-gold.outline-figure-strong {
-    filter: sepia(0.62) hue-rotate(14deg) saturate(0.9) brightness(1.02) contrast(1.5);
+    filter: sepia(0.68) hue-rotate(12deg) saturate(1) brightness(1) contrast(1.65);
+  }
+
+  .outline-figure-gold.outline-figure-strong.outline-figure-hero {
+    filter: sepia(0.75) hue-rotate(8deg) saturate(1.15) brightness(0.98) contrast(1.85);
   }
 
   .icon-gold {

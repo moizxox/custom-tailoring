@@ -60,8 +60,11 @@ export function HeroSection({ acf }: HeroSectionProps) {
 
   return (
     <section className="relative min-h-[92vh] flex flex-col overflow-hidden">
-      {/* Full-width card gradient — periwinkle → sand → warm white */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-periwinkle-lighter via-sand-light to-offwhite-warm" aria-hidden />
+      {/* Full-width card gradient — periwinkle → sand → warm white (soft so decor reads through) */}
+      <div
+        className="absolute inset-0 z-0 bg-gradient-to-br from-periwinkle-lighter/92 via-sand-light/78 to-offwhite-warm/95"
+        aria-hidden
+      />
 
       <BackgroundDecor variant="hero" showStitchDashes showConfetti className="z-[1]" />
 

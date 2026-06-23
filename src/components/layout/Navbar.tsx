@@ -27,25 +27,17 @@ export function Navbar() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-        "bg-offwhite-pure/80 backdrop-blur-md border-b",
-        scrolled
-          ? "bg-offwhite-pure/95 backdrop-blur-lg shadow-soft border-gold-muted/40"
-          : "border-gold-muted/20"
+        "bg-offwhite-pure/40 backdrop-blur-md border-b",
+        scrolled ? "bg-offwhite-pure/40 backdrop-blur-sm shadow-soft border-gold-muted/40" : "border-gold-muted/20",
       )}
     >
       <div className="container-site">
         <nav className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex flex-col leading-[1.1] group shrink-0">
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">
-              Kostüm
-            </span>
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">
-              Schneiderei
-            </span>
-            <span className="font-sans text-[8px] tracking-[0.35em] uppercase text-warmgrey mt-0.5">
-              Basel
-            </span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">Kostüm</span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">Schneiderei</span>
+            <span className="font-sans text-[8px] tracking-[0.35em] uppercase text-warmgrey mt-0.5">Basel</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -68,7 +60,7 @@ export function Navbar() {
                 "hidden sm:inline-flex items-center gap-2",
                 "bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white",
                 "text-[13px] font-sans font-medium px-4 py-2 rounded-full",
-                "transition-all duration-200 shadow-soft hover:shadow-periwinkle"
+                "transition-all duration-200 shadow-soft hover:shadow-periwinkle",
               )}
             >
               Beratung buchen
@@ -83,24 +75,9 @@ export function Navbar() {
             >
               <span className="sr-only">Menü</span>
               <div className="w-[22px] flex flex-col gap-[5px]">
-                <span
-                  className={cn(
-                    "block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center",
-                    mobileOpen ? "rotate-45 translate-y-[6.5px]" : ""
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-[1.5px] bg-charcoal rounded transition-all duration-300",
-                    mobileOpen ? "opacity-0 scale-x-0" : ""
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center",
-                    mobileOpen ? "-rotate-45 -translate-y-[6.5px]" : ""
-                  )}
-                />
+                <span className={cn("block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center", mobileOpen ? "rotate-45 translate-y-[6.5px]" : "")} />
+                <span className={cn("block h-[1.5px] bg-charcoal rounded transition-all duration-300", mobileOpen ? "opacity-0 scale-x-0" : "")} />
+                <span className={cn("block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center", mobileOpen ? "-rotate-45 -translate-y-[6.5px]" : "")} />
               </div>
             </button>
           </div>
@@ -112,7 +89,7 @@ export function Navbar() {
         className={cn(
           "lg:hidden overflow-hidden transition-all duration-300",
           "bg-offwhite-pure/98 backdrop-blur-sm border-t border-stone-light",
-          mobileOpen ? "max-h-[500px] py-2" : "max-h-0"
+          mobileOpen ? "max-h-[500px] py-2" : "max-h-0",
         )}
       >
         <div className="container-site flex flex-col pb-5">
@@ -126,11 +103,7 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/termin"
-            onClick={() => setMobileOpen(false)}
-            className="mt-4 btn-primary justify-center"
-          >
+          <Link href="/termin" onClick={() => setMobileOpen(false)} className="mt-4 btn-primary justify-center">
             Beratung buchen
           </Link>
         </div>
