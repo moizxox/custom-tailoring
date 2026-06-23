@@ -55,7 +55,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
 
   return (
     <section className="relative min-h-[92vh] flex flex-col overflow-hidden bg-gradient-to-br from-offwhite via-offwhite-warm to-sand-light/25">
-      <BackgroundDecor variant="hero" />
+      <BackgroundDecor variant="hero" showStitchDashes />
 
       {/* ── Visual hero — full width, room for figure decor ───────────────── */}
       <div className="container-site relative z-10 flex-1 flex flex-col justify-center pt-28 pb-12 lg:pt-40 lg:pb-20">

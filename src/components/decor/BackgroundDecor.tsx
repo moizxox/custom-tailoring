@@ -62,7 +62,7 @@ export function BackgroundDecor({
 }: BackgroundDecorProps) {
   const figureOpacity =
     variant === "hero"
-      ? "opacity-[0.36]"
+      ? "opacity-[0.40]"
       : variant === "page"
         ? "opacity-[0.30]"
         : variant === "footer"
@@ -71,7 +71,7 @@ export function BackgroundDecor({
 
   const figureWidth =
     variant === "hero"
-      ? "w-[min(58vw,760px)]"
+      ? "w-[min(46vw,620px)]"
       : variant === "page"
         ? "w-[min(48vw,560px)]"
         : variant === "footer"
@@ -84,17 +84,27 @@ export function BackgroundDecor({
           left: "top-1/2 -translate-y-1/2 -translate-x-[14%]",
           right: "top-1/2 -translate-y-1/2 translate-x-[14%]",
         }
-      : {
-          left: "top-1/2 -translate-y-1/2 -translate-x-[8%]",
-          right: "top-1/2 -translate-y-1/2 translate-x-[8%]",
-        };
+      : variant === "hero"
+        ? {
+            left: "top-1/2 -translate-y-1/2 -translate-x-[18%]",
+            right: "top-1/2 -translate-y-1/2 translate-x-[18%]",
+          }
+        : {
+            left: "top-1/2 -translate-y-1/2 -translate-x-[8%]",
+            right: "top-1/2 -translate-y-1/2 translate-x-[8%]",
+          };
 
   const figureVisibility = variant === "footer" ? "hidden md:block" : "";
 
   const figureFade =
     variant === "footer"
       ? { left: "[mask-image:linear-gradient(to_right,black_50%,transparent)]", right: "[mask-image:linear-gradient(to_left,black_50%,transparent)]" }
-      : { left: "", right: "" };
+      : variant === "hero"
+        ? {
+            left: "[mask-image:linear-gradient(to_right,black_42%,transparent_72%)]",
+            right: "[mask-image:linear-gradient(to_left,black_42%,transparent_72%)]",
+          }
+        : { left: "", right: "" };
 
   return (
     <div
@@ -102,7 +112,11 @@ export function BackgroundDecor({
       aria-hidden
     >
       {/* Sewing-dash crisscross — Nähnaht style */}
-      {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.22 : 0.16} />}
+      {showStitchDashes && (
+        <StitchDashOverlay
+          opacity={variant === "footer" ? 0.22 : variant === "hero" ? 0.07 : 0.16}
+        />
+      )}
 
       {/* Soft pastel mesh — warm tint only, no mint/green */}
       {showMesh && (
@@ -138,16 +152,43 @@ export function BackgroundDecor({
         </div>
       )}
 
-      {/* Traditional costume symbols — client banner row */}
-      {showCostumeSymbols && (
-        <div
-          className={cn(
-            "absolute left-0 right-0 pointer-events-none",
-            variant === "hero"
-              ? "bottom-0 h-[min(22vh,160px)] opacity-[0.20]"
-              : "bottom-0 h-[min(16vh,120px)] opacity-[0.14]"
-          )}
-        >
+      {/* Traditional costume symbols — hero: edge strips only (center stays clear) */}
+      {showCostumeSymbols && variant === "hero" && (
+        <>
+          <div className="absolute left-0 right-0 bottom-[3.25rem] h-[min(20vh,150px)] opacity-[0.30] hidden sm:block [mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)]">
+            <Image
+              src="/images/backgrounds/costume-symbols-banner.png"
+              alt=""
+              fill
+              className="object-contain object-bottom saturate-[0.9]"
+              sizes="100vw"
+            />
+          </div>
+
+          <div className="absolute inset-y-0 left-0 w-[min(32vw,400px)] opacity-[0.10] hidden lg:block [mask-image:linear-gradient(to_right,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,transparent_88%)]">
+            <Image
+              src="/images/backgrounds/pastel-symbols-mesh.png"
+              alt=""
+              fill
+              className="object-cover object-left saturate-[0.75] hue-rotate-[-8deg]"
+              sizes="400px"
+            />
+          </div>
+          <div className="absolute inset-y-0 right-0 w-[min(32vw,400px)] opacity-[0.10] hidden lg:block [mask-image:linear-gradient(to_left,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,transparent_88%)]">
+            <Image
+              src="/images/backgrounds/pastel-symbols-mesh.png"
+              alt=""
+              fill
+              className="object-cover object-right saturate-[0.75] hue-rotate-[-8deg]"
+              sizes="400px"
+            />
+          </div>
+        </>
+      )}
+
+      {/* Costume symbols — non-hero pages (subtle bottom band) */}
+      {showCostumeSymbols && variant !== "hero" && (
+        <div className="absolute left-0 right-0 bottom-0 pointer-events-none h-[min(16vh,120px)] opacity-[0.14]">
           <Image
             src="/images/backgrounds/costume-symbols-banner.png"
             alt=""
@@ -156,19 +197,6 @@ export function BackgroundDecor({
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-offwhite/80 via-offwhite/30 to-transparent" />
-        </div>
-      )}
-
-      {/* Pastel symbol mesh — very subtle wash behind hero */}
-      {showCostumeSymbols && variant === "hero" && (
-        <div className="absolute inset-0 opacity-[0.06]">
-          <Image
-            src="/images/backgrounds/pastel-symbols-mesh.png"
-            alt=""
-            fill
-            className="object-cover object-center saturate-[0.7] hue-rotate-[-8deg]"
-            sizes="100vw"
-          />
         </div>
       )}
 
