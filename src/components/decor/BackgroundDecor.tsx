@@ -32,17 +32,13 @@ function StitchDashOverlay({ className, opacity = 0.12 }: { className?: string; 
   const patternB = `stitch-b-${id}`;
 
   return (
-    <svg
-      className={cn("absolute inset-0 h-full w-full pointer-events-none", className)}
-      aria-hidden
-      style={{ opacity }}
-    >
+    <svg className={cn("absolute inset-0 h-full w-full pointer-events-none", className)} aria-hidden style={{ opacity }}>
       <defs>
         <pattern id={patternA} width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-          <line x1="0" y1="60" x2="95" y2="60" stroke="#DDD4C6" strokeWidth="1.25" strokeDasharray="6 10" strokeLinecap="round" />
+          <line x1="0" y1="60" x2="95" y2="60" stroke="#C4B8A6" strokeWidth="1.75" strokeDasharray="6 10" strokeLinecap="round" />
         </pattern>
         <pattern id={patternB} width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
-          <line x1="0" y1="60" x2="95" y2="60" stroke="#DDD4C6" strokeWidth="1.25" strokeDasharray="6 10" strokeLinecap="round" />
+          <line x1="0" y1="60" x2="95" y2="60" stroke="#C4B8A6" strokeWidth="1.75" strokeDasharray="6 10" strokeLinecap="round" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternA})`} />
@@ -60,23 +56,10 @@ export function BackgroundDecor({
   showStitchDashes = variant === "footer",
   className,
 }: BackgroundDecorProps) {
-  const figureOpacity =
-    variant === "hero"
-      ? "opacity-[0.40]"
-      : variant === "page"
-        ? "opacity-[0.30]"
-        : variant === "footer"
-          ? "opacity-[0.24]"
-          : "opacity-[0.14]";
+  const figureOpacity = variant === "hero" ? "opacity-[0.52]" : variant === "page" ? "opacity-[0.50]" : variant === "footer" ? "opacity-[0.24]" : "opacity-[0.14]";
 
   const figureWidth =
-    variant === "hero"
-      ? "w-[min(46vw,620px)]"
-      : variant === "page"
-        ? "w-[min(48vw,560px)]"
-        : variant === "footer"
-          ? "w-[min(38vw,460px)]"
-          : "w-[min(30vw,360px)]";
+    variant === "hero" ? "w-[min(46vw,620px)]" : variant === "page" ? "w-[min(48vw,560px)]" : variant === "footer" ? "w-[min(38vw,460px)]" : "w-[min(30vw,360px)]";
 
   const figurePosition =
     variant === "footer"
@@ -101,31 +84,19 @@ export function BackgroundDecor({
       ? { left: "[mask-image:linear-gradient(to_right,black_50%,transparent)]", right: "[mask-image:linear-gradient(to_left,black_50%,transparent)]" }
       : variant === "hero"
         ? {
-            left: "[mask-image:linear-gradient(to_right,black_42%,transparent_72%)]",
-            right: "[mask-image:linear-gradient(to_left,black_42%,transparent_72%)]",
+            left: "[mask-image:linear-gradient(to_right,black_48%,transparent_74%)]",
+            right: "[mask-image:linear-gradient(to_left,black_48%,transparent_74%)]",
           }
         : { left: "", right: "" };
 
   return (
-    <div
-      className={cn("absolute inset-0 overflow-hidden pointer-events-none select-none", className)}
-      aria-hidden
-    >
+    <div className={cn("absolute inset-0 overflow-hidden pointer-events-none select-none", className)} aria-hidden>
       {/* Sewing-dash crisscross — Nähnaht style */}
-      {showStitchDashes && (
-        <StitchDashOverlay
-          opacity={variant === "footer" ? 0.22 : variant === "hero" ? 0.07 : 0.16}
-        />
-      )}
+      {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.22 : variant === "hero" ? 0.11 : 0.16} />}
 
       {/* Soft pastel mesh — warm tint only, no mint/green */}
       {showMesh && (
-        <div
-          className={cn(
-            "absolute inset-0",
-            variant === "hero" ? "opacity-[0.09]" : variant === "footer" ? "opacity-[0.05]" : "opacity-[0.07]"
-          )}
-        >
+        <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.09]" : variant === "footer" ? "opacity-[0.05]" : "opacity-[0.07]")}>
           <Image
             src="/images/backgrounds/pastel-mesh.png"
             alt=""
@@ -139,15 +110,16 @@ export function BackgroundDecor({
         </div>
       )}
 
-      {/* Confetti — hero off (contains mint/green dots); page/footer very subtle */}
-      {showConfetti && variant !== "hero" && (
-        <div className={cn("absolute inset-0", variant === "footer" ? "opacity-[0.04]" : "opacity-[0.05]")}>
+      {/* Confetti — festive pastel dots (desaturated on hero to avoid mint tones) */}
+      {showConfetti && (
+        <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.08]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.05]")}>
           <Image
             src="/images/backgrounds/confetti-pastel.png"
             alt=""
             fill
-            className="object-cover saturate-[0.7] hue-rotate-[-10deg]"
+            className={cn("object-cover", variant === "hero" ? "saturate-[0.5] hue-rotate-[-18deg] brightness-[1.02]" : "saturate-[0.7] hue-rotate-[-10deg]")}
             sizes="100vw"
+            priority={variant === "hero"}
           />
         </div>
       )}
@@ -155,33 +127,15 @@ export function BackgroundDecor({
       {/* Traditional costume symbols — hero: edge strips only (center stays clear) */}
       {showCostumeSymbols && variant === "hero" && (
         <>
-          <div className="absolute left-0 right-0 bottom-[3.25rem] h-[min(20vh,150px)] opacity-[0.30] hidden sm:block [mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)]">
-            <Image
-              src="/images/backgrounds/costume-symbols-banner.png"
-              alt=""
-              fill
-              className="object-contain object-bottom saturate-[0.9]"
-              sizes="100vw"
-            />
+          <div className="absolute left-0 right-0 bottom-8 h-[min(20vh,150px)] opacity-[0.38] hidden sm:block [mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)]">
+            <Image src="/images/backgrounds/costume-symbols-banner.png" alt="" fill className="object-contain object-bottom saturate-[0.9]" sizes="100vw" />
           </div>
 
           <div className="absolute inset-y-0 left-0 w-[min(32vw,400px)] opacity-[0.10] hidden lg:block [mask-image:linear-gradient(to_right,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,transparent_88%)]">
-            <Image
-              src="/images/backgrounds/pastel-symbols-mesh.png"
-              alt=""
-              fill
-              className="object-cover object-left saturate-[0.75] hue-rotate-[-8deg]"
-              sizes="400px"
-            />
+            <Image src="/images/backgrounds/pastel-symbols-mesh.png" alt="" fill className="object-cover object-left saturate-[0.75] hue-rotate-[-8deg]" sizes="400px" />
           </div>
           <div className="absolute inset-y-0 right-0 w-[min(32vw,400px)] opacity-[0.10] hidden lg:block [mask-image:linear-gradient(to_left,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,transparent_88%)]">
-            <Image
-              src="/images/backgrounds/pastel-symbols-mesh.png"
-              alt=""
-              fill
-              className="object-cover object-right saturate-[0.75] hue-rotate-[-8deg]"
-              sizes="400px"
-            />
+            <Image src="/images/backgrounds/pastel-symbols-mesh.png" alt="" fill className="object-cover object-right saturate-[0.75] hue-rotate-[-8deg]" sizes="400px" />
           </div>
         </>
       )}
@@ -189,13 +143,7 @@ export function BackgroundDecor({
       {/* Costume symbols — non-hero pages (subtle bottom band) */}
       {showCostumeSymbols && variant !== "hero" && (
         <div className="absolute left-0 right-0 bottom-0 pointer-events-none h-[min(16vh,120px)] opacity-[0.14]">
-          <Image
-            src="/images/backgrounds/costume-symbols-banner.png"
-            alt=""
-            fill
-            className="object-contain object-bottom saturate-[0.85]"
-            sizes="100vw"
-          />
+          <Image src="/images/backgrounds/costume-symbols-banner.png" alt="" fill className="object-contain object-bottom saturate-[0.85]" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-offwhite/80 via-offwhite/30 to-transparent" />
         </div>
       )}
@@ -203,43 +151,23 @@ export function BackgroundDecor({
       {/* Fasnacht figure outlines — left column */}
       {showFigures && (
         <>
-          <div
-            className={cn(
-              "absolute left-0",
-              figurePosition.left,
-              figureWidth,
-              "aspect-[3/5]",
-              figureOpacity,
-              figureVisibility,
-              figureFade.left
-            )}
-          >
+          <div className={cn("absolute left-0", figurePosition.left, figureWidth, "aspect-[3/5]", figureOpacity, figureVisibility, figureFade.left)}>
             <Image
               src="/images/backgrounds/figuren-left.png"
               alt=""
               fill
-              className="object-contain object-left outline-figure-gold"
+              className="object-contain object-left outline-figure-gold outline-figure-strong"
               sizes="(max-width: 768px) 40vw, 520px"
             />
           </div>
 
           {/* Right column */}
-          <div
-            className={cn(
-              "absolute right-0",
-              figurePosition.right,
-              figureWidth,
-              "aspect-[3/5]",
-              figureOpacity,
-              figureVisibility,
-              figureFade.right
-            )}
-          >
+          <div className={cn("absolute right-0", figurePosition.right, figureWidth, "aspect-[3/5]", figureOpacity, figureVisibility, figureFade.right)}>
             <Image
               src="/images/backgrounds/figuren-right.png"
               alt=""
               fill
-              className="object-contain object-right outline-figure-gold"
+              className="object-contain object-right outline-figure-gold outline-figure-strong"
               sizes="(max-width: 768px) 40vw, 520px"
             />
           </div>
@@ -250,22 +178,16 @@ export function BackgroundDecor({
       <div
         className={cn(
           "absolute rounded-full bg-periwinkle-lighter/35 blur-[100px]",
-          variant === "footer"
-            ? "top-0 right-[8%] w-[400px] h-[280px]"
-            : "-top-24 right-[5%] w-[480px] h-[480px]"
+          variant === "footer" ? "top-0 right-[8%] w-[400px] h-[280px]" : "-top-24 right-[5%] w-[480px] h-[480px]",
         )}
       />
       <div
         className={cn(
           "absolute rounded-full blur-[80px]",
-          variant === "footer"
-            ? "bottom-12 left-[20%] w-[360px] h-[260px] bg-sand-light/40"
-            : "bottom-0 left-[15%] w-[360px] h-[280px] bg-sand-light/35"
+          variant === "footer" ? "bottom-12 left-[20%] w-[360px] h-[260px] bg-sand-light/40" : "bottom-0 left-[15%] w-[360px] h-[280px] bg-sand-light/35",
         )}
       />
-      {variant === "hero" && (
-        <div className="absolute top-[20%] left-[30%] w-[400px] h-[300px] rounded-full bg-gold-lighter/25 blur-[90px]" />
-      )}
+      {variant === "hero" && <div className="absolute top-[20%] left-[30%] w-[400px] h-[300px] rounded-full bg-gold-lighter/25 blur-[90px]" />}
     </div>
   );
 }
@@ -278,22 +200,10 @@ interface MeasurementOutlineProps {
 
 /** Measurement diagram — yellow lines recolored to periwinkle-dark via CSS */
 export function MeasurementOutline({ src, className, side = "right" }: MeasurementOutlineProps) {
-  const position =
-    side === "left"
-      ? "left-0 -translate-x-[15%]"
-      : side === "right"
-        ? "right-0 translate-x-[15%]"
-        : "left-1/2 -translate-x-1/2";
+  const position = side === "left" ? "left-0 -translate-x-[15%]" : side === "right" ? "right-0 translate-x-[15%]" : "left-1/2 -translate-x-1/2";
 
   return (
-    <div
-      className={cn(
-        "absolute top-1/2 -translate-y-1/2 w-[min(55vw,640px)] aspect-[4/3] opacity-[0.18] hidden lg:block",
-        position,
-        className
-      )}
-      aria-hidden
-    >
+    <div className={cn("absolute top-1/2 -translate-y-1/2 w-[min(55vw,640px)] aspect-[4/3] opacity-[0.18] hidden lg:block", position, className)} aria-hidden>
       <Image src={src} alt="" fill className="object-contain outline-measurement-periwinkle" sizes="640px" />
     </div>
   );

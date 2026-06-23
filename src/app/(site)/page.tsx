@@ -15,23 +15,23 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* 1. Hero — visual, atmospheric (figures + copy) */}
+      {/* 1. Hero — explanation + trust card */}
       <HeroSection />
 
-      {/* 2. Contact form — below hero */}
-      <HeroContactSection />
-
-      {/* 3. Services — 12-card grid with sewing icons */}
+      {/* 2. Services — 12-card grid with sewing icons */}
       <ServicesGrid />
 
-      {/* 4. Process — 4-step customer journey */}
+      {/* 3. Process — 4-step customer journey */}
       <ProcessSection />
 
-      {/* 5. Gallery — editorial 3-col photo grid */}
+      {/* 4. Gallery — editorial 3-col photo grid */}
       <GalleryPreview />
 
-      {/* 6. About / CTA band */}
+      {/* 5. About / CTA band */}
       <AboutBand />
+
+      {/* 6. Contact form — end of page */}
+      <HeroContactSection />
     </>
   );
 }

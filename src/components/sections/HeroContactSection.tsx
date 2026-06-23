@@ -20,7 +20,7 @@ export function HeroContactSection() {
   };
 
   return (
-    <section className="relative py-16 lg:py-20 bg-offwhite-warm border-t border-dashed border-gold-muted/40">
+    <section id="kontakt" className="relative py-16 lg:py-20 bg-gradient-to-br from-periwinkle-lighter/40 via-offwhite-warm to-sand-light/30 border-t border-dashed border-gold-muted/40">
       <div className="container-site">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] gap-10 xl:gap-16 items-start">
           <div className="max-w-xl">
