@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { useId } from "react";
 import { cn } from "@/lib/utils";
@@ -57,21 +59,21 @@ export function BackgroundDecor({
 }: BackgroundDecorProps) {
   const figureOpacity =
     variant === "hero"
-      ? "opacity-[0.28]"
+      ? "opacity-[0.36]"
       : variant === "page"
-        ? "opacity-[0.20]"
+        ? "opacity-[0.30]"
         : variant === "footer"
-          ? "opacity-[0.22]"
-          : "opacity-[0.12]";
+          ? "opacity-[0.24]"
+          : "opacity-[0.14]";
 
   const figureWidth =
     variant === "hero"
-      ? "w-[min(50vw,620px)]"
+      ? "w-[min(58vw,760px)]"
       : variant === "page"
-        ? "w-[min(38vw,440px)]"
+        ? "w-[min(48vw,560px)]"
         : variant === "footer"
-          ? "w-[min(34vw,400px)]"
-          : "w-[min(28vw,320px)]";
+          ? "w-[min(38vw,460px)]"
+          : "w-[min(30vw,360px)]";
 
   const figurePosition =
     variant === "footer"
@@ -99,33 +101,35 @@ export function BackgroundDecor({
       {/* Sewing-dash crisscross — Nähnaht style */}
       {showStitchDashes && <StitchDashOverlay opacity={variant === "footer" ? 0.22 : 0.16} />}
 
-      {/* Soft pastel mesh — very subtle ambient color */}
+      {/* Soft pastel mesh — warm tint only, no mint/green */}
       {showMesh && (
         <div
           className={cn(
             "absolute inset-0",
-            variant === "hero" ? "opacity-[0.12]" : variant === "footer" ? "opacity-[0.06]" : "opacity-[0.08]"
+            variant === "hero" ? "opacity-[0.09]" : variant === "footer" ? "opacity-[0.05]" : "opacity-[0.07]"
           )}
         >
           <Image
             src="/images/backgrounds/pastel-mesh.png"
             alt=""
             fill
-            className="object-cover object-center"
+            className="object-cover object-center saturate-[0.65] hue-rotate-[-12deg]"
             sizes="100vw"
             priority={variant === "hero"}
           />
+          {/* Warm wash — neutralises green/mint from mesh asset */}
+          <div className="absolute inset-0 bg-gradient-to-br from-sand-light/30 via-offwhite/20 to-periwinkle-lighter/15" />
         </div>
       )}
 
-      {/* Confetti — whisper-light (footer gets a touch more) */}
-      {showConfetti && (
-        <div className={cn("absolute inset-0", variant === "footer" ? "opacity-[0.05]" : "opacity-[0.06]")}>
+      {/* Confetti — hero off (contains mint/green dots); page/footer very subtle */}
+      {showConfetti && variant !== "hero" && (
+        <div className={cn("absolute inset-0", variant === "footer" ? "opacity-[0.04]" : "opacity-[0.05]")}>
           <Image
             src="/images/backgrounds/confetti-pastel.png"
             alt=""
             fill
-            className="object-cover"
+            className="object-cover saturate-[0.7] hue-rotate-[-10deg]"
             sizes="100vw"
           />
         </div>
@@ -177,10 +181,10 @@ export function BackgroundDecor({
         </>
       )}
 
-      {/* Ambient periwinkle + mist glow orbs */}
+      {/* Ambient glow — periwinkle + sand only (no mint) */}
       <div
         className={cn(
-          "absolute rounded-full bg-periwinkle-lighter/40 blur-[100px]",
+          "absolute rounded-full bg-periwinkle-lighter/35 blur-[100px]",
           variant === "footer"
             ? "top-0 right-[8%] w-[400px] h-[280px]"
             : "-top-24 right-[5%] w-[480px] h-[480px]"
@@ -190,10 +194,13 @@ export function BackgroundDecor({
         className={cn(
           "absolute rounded-full blur-[80px]",
           variant === "footer"
-            ? "bottom-12 left-[20%] w-[360px] h-[260px] bg-sand-light/35"
-            : "bottom-0 left-[15%] w-[320px] h-[240px] bg-sand-light/30"
+            ? "bottom-12 left-[20%] w-[360px] h-[260px] bg-sand-light/40"
+            : "bottom-0 left-[15%] w-[360px] h-[280px] bg-sand-light/35"
         )}
       />
+      {variant === "hero" && (
+        <div className="absolute top-[20%] left-[30%] w-[400px] h-[300px] rounded-full bg-gold-lighter/25 blur-[90px]" />
+      )}
     </div>
   );
 }

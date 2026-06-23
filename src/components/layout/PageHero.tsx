@@ -22,7 +22,6 @@ export function PageHero({
   titleAccent,
   subtitle,
   breadcrumbs,
-  iconSlug = "tailor-dummy-fashion-sewing-tailoring.svg",
 }: PageHeroProps) {
   const renderTitle = () => {
     if (!titleAccent || !title.includes(titleAccent)) return title;
@@ -37,14 +36,11 @@ export function PageHero({
   };
 
   return (
-    <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24">
+    <section className="relative overflow-hidden bg-gradient-to-b from-offwhite via-offwhite-warm to-sand-light/20 pt-20 lg:pt-24">
       <BackgroundDecor variant="page" showConfetti={false} />
 
       {/* ── Main content area ──────────────────────────────────────────────── */}
-      <div className="container-site relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-end">
-
-        {/* LEFT: text content */}
-        <div className="pb-10 lg:pb-12 pt-8 lg:pt-12">
+      <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12 max-w-4xl">
           {/* Breadcrumbs */}
           {breadcrumbs && breadcrumbs.length > 0 && (
             <nav className="flex items-center gap-1.5 mb-6" aria-label="Breadcrumb">
@@ -84,30 +80,6 @@ export function PageHero({
               {subtitle}
             </p>
           )}
-        </div>
-
-        {/* RIGHT: large decorative icon panel */}
-        <div className="hidden lg:flex items-end justify-center w-56 xl:w-64 self-stretch relative pb-0">
-          {/* Large faded watermark icon */}
-          <div className="absolute bottom-0 right-4 w-48 xl:w-56 h-48 xl:h-56 opacity-[0.18] pointer-events-none select-none" aria-hidden>
-            <Image
-              src={`/icons/sewing/${iconSlug}`}
-              alt=""
-              fill
-              className="object-contain object-bottom icon-periwinkle"
-            />
-          </div>
-          {/* Smaller icon in a circle — visible */}
-          <div className="relative z-10 mb-8 w-16 h-16 rounded-2xl bg-white border border-gold-muted ring-1 ring-gold-muted/30 shadow-soft flex items-center justify-center">
-            <Image
-              src={`/icons/sewing/${iconSlug}`}
-              alt=""
-              width={30}
-              height={30}
-              className="icon-periwinkle"
-            />
-          </div>
-        </div>
       </div>
 
       {/* ── Bottom border strip ─────────────────────────────────────────────── */}
@@ -122,8 +94,8 @@ export function PageHero({
         </div>
 
         {/* Subtle strip of tiny sewing icons */}
-        <div className="bg-offwhite-warm border-t border-dashed border-gold-muted/50 py-3 overflow-hidden">
-          <div className="flex items-center gap-5 px-6 opacity-30 justify-center flex-wrap">
+        <div className="bg-offwhite-warm border-t border-dashed border-gold-muted/50 py-4 overflow-hidden">
+          <div className="flex items-center gap-8 px-6 opacity-50 justify-center flex-wrap">
             {[
               "scissor-cut-fabric-sewing.svg",
               "spool-of-thread-sewing-tailoring-needle.svg",
@@ -131,20 +103,17 @@ export function PageHero({
               "tape-measure-sewing-tailoring-size.svg",
               "button-sewing-tailoring-handcraft.svg",
               "needle-threader-fashion-design-sewing-tailoring.svg",
-              "thimble" /* skip if not found */,
               "sewing-needles-sewing-tailoring-needle.svg",
-            ]
-              .filter((s) => !s.includes("thimble"))
-              .map((icon) => (
-                <Image
-                  key={icon}
-                  src={`/icons/sewing/${icon}`}
-                  alt=""
-                  width={16}
-                  height={16}
-                  className="icon-charcoal shrink-0"
-                />
-              ))}
+            ].map((icon) => (
+              <Image
+                key={icon}
+                src={`/icons/sewing/${icon}`}
+                alt=""
+                width={28}
+                height={28}
+                className="icon-gold shrink-0"
+              />
+            ))}
           </div>
         </div>
       </div>

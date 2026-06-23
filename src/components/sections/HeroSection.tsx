@@ -67,7 +67,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden bg-offwhite">
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-gradient-to-br from-offwhite via-offwhite-warm to-sand-light/25">
       <BackgroundDecor variant="hero" />
 
       {/* Right content panel — soft glass tint */}
@@ -86,7 +86,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
             {/* Eyebrow pill */}
             <div className="inline-flex items-center gap-2.5 self-start bg-white border border-gold-muted ring-1 ring-gold-muted/40 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
               <span className="w-1.5 h-1.5 rounded-full bg-gold-muted shrink-0" />
-              <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-periwinkle-dark">
+              <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-gold-deeper">
                 {data.eyebrow_text}
               </span>
             </div>
@@ -99,7 +99,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
             {/* Ornamental divider */}
             <div className="flex items-center gap-3 mb-7 animate-fade-up [animation-delay:100ms] opacity-0">
               <div className="line-gold-dashed w-10 shrink-0 opacity-90" />
-              <Image src="/icons/sewing/needle-threader-fashion-design-sewing-tailoring.svg" alt="" width={16} height={16} className="icon-periwinkle" />
+              <Image src="/icons/sewing/needle-threader-fashion-design-sewing-tailoring.svg" alt="" width={22} height={22} className="icon-gold" />
               <div className="line-gold-dashed flex-1 max-w-[72px] opacity-75" />
             </div>
 
@@ -134,8 +134,8 @@ export function HeroSection({ acf }: HeroSectionProps) {
                     key={badge.label}
                     className="flex items-center gap-2 bg-white/80 border border-stone-light/80 ring-1 ring-gold-muted/10 rounded-full pl-2 pr-4 py-1.5"
                   >
-                    <div className="w-6 h-6 rounded-full bg-periwinkle-lighter flex items-center justify-center">
-                      <Image src={`/icons/sewing/${badge.icon_slug}`} alt="" width={13} height={13} className="icon-periwinkle" />
+                    <div className="w-9 h-9 rounded-full bg-gold-lighter/60 flex items-center justify-center">
+                      <Image src={`/icons/sewing/${badge.icon_slug}`} alt="" width={18} height={18} className="icon-gold" />
                     </div>
                     <span className="font-sans text-[11px] font-medium text-charcoal-light">{badge.label}</span>
                   </div>

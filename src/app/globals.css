@@ -90,7 +90,7 @@
   }
 
   .section-label {
-    @apply text-xs font-sans font-semibold tracking-[0.22em] uppercase text-periwinkle-dark;
+    @apply text-xs font-sans font-semibold tracking-[0.22em] uppercase text-gold-deeper;
   }
 
   .section-label::before {
@@ -180,7 +180,11 @@
 
   .outline-figure-gold {
     mix-blend-mode: screen;
-    filter: sepia(0.35) hue-rotate(12deg) saturate(0.4) brightness(1.02) contrast(1.05);
+    filter: sepia(0.5) hue-rotate(18deg) saturate(0.55) brightness(1.08) contrast(1.1);
+  }
+
+  .icon-gold {
+    filter: sepia(0.35) hue-rotate(15deg) saturate(0.45) brightness(0.95);
   }
 
   .outline-measurement-periwinkle {
