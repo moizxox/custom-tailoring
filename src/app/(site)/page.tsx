@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/sections/HeroSection";
+import { HeroContactSection } from "@/components/sections/HeroContactSection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { GalleryPreview } from "@/components/sections/GalleryPreview";
@@ -14,19 +15,22 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* 1. Hero – heading + contact form card */}
+      {/* 1. Hero — visual, atmospheric (figures + copy) */}
       <HeroSection />
 
-      {/* 2. Services – 12-card grid with sewing icons */}
+      {/* 2. Contact form — below hero */}
+      <HeroContactSection />
+
+      {/* 3. Services — 12-card grid with sewing icons */}
       <ServicesGrid />
 
-      {/* 3. Process – 4-step customer journey */}
+      {/* 4. Process — 4-step customer journey */}
       <ProcessSection />
 
-      {/* 4. Gallery – editorial 3-col photo grid */}
+      {/* 5. Gallery — editorial 3-col photo grid */}
       <GalleryPreview />
 
-      {/* 5. About / CTA band */}
+      {/* 6. About / CTA band */}
       <AboutBand />
     </>
   );
