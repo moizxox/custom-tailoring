@@ -98,7 +98,7 @@ export function PageHero({
             />
           </div>
           {/* Smaller icon in a circle — visible */}
-          <div className="relative z-10 mb-8 w-16 h-16 rounded-2xl bg-white border border-gold-muted ring-2 ring-gold-dark/25 shadow-soft flex items-center justify-center">
+          <div className="relative z-10 mb-8 w-16 h-16 rounded-2xl bg-white border border-gold-muted ring-1 ring-gold-muted/30 shadow-soft flex items-center justify-center">
             <Image
               src={`/icons/sewing/${iconSlug}`}
               alt=""
@@ -116,13 +116,13 @@ export function PageHero({
         <div className="container-site">
           <div className="flex items-center gap-3 py-1">
             <div className="line-gold-dashed flex-1" />
-            <div className="w-2 h-2 rounded-full bg-gold-dark shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-gold-muted shrink-0" />
             <div className="line-gold-dashed-light w-12 shrink-0" />
           </div>
         </div>
 
         {/* Subtle strip of tiny sewing icons */}
-        <div className="bg-offwhite-warm border-t-2 border-dashed border-gold-dark/45 py-3 overflow-hidden">
+        <div className="bg-offwhite-warm border-t border-dashed border-gold-muted/50 py-3 overflow-hidden">
           <div className="flex items-center gap-5 px-6 opacity-30 justify-center flex-wrap">
             {[
               "scissor-cut-fabric-sewing.svg",

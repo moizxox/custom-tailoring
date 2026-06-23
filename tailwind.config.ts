@@ -22,19 +22,12 @@ const config: Config = {
         },
         // ── Soft accent: champagne gold (subtle, not yellow) ─────────────────
         gold: {
-          DEFAULT: "#B5A68A",
-          light: "#D0C5AE",
-          lighter: "#E8E1D4",
-          dark: "#8A7A5E",
-          deeper: "#746654",
-          muted: "#C4B8A0",
-        },
-        // ── Third accent: soft mist / sage (balances periwinkle + sand) ───────
-        mist: {
-          DEFAULT: "#C5DDD4",
-          light: "#DCEBE6",
-          lighter: "#EDF5F2",
-          dark: "#9BBFB2",
+          DEFAULT: "#D4C9B8",
+          light: "#E5DDD0",
+          lighter: "#F3EDE4",
+          dark: "#C4B8A6",
+          deeper: "#B5A896",
+          muted: "#DDD4C6",
         },
         // ── Neutrals ─────────────────────────────────────────────────────────
         sand: {

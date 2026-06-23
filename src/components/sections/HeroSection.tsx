@@ -84,8 +84,8 @@ export function HeroSection({ acf }: HeroSectionProps) {
           <div className="flex flex-col">
 
             {/* Eyebrow pill */}
-            <div className="inline-flex items-center gap-2.5 self-start bg-white border border-gold-muted ring-1 ring-gold-dark/20 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
-              <span className="w-1.5 h-1.5 rounded-full bg-gold-dark shrink-0" />
+            <div className="inline-flex items-center gap-2.5 self-start bg-white border border-gold-muted ring-1 ring-gold-muted/40 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
+              <span className="w-1.5 h-1.5 rounded-full bg-gold-muted shrink-0" />
               <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-periwinkle-dark">
                 {data.eyebrow_text}
               </span>
@@ -156,7 +156,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
                 {/* Card */}
                 <div className="relative bg-white rounded-3xl shadow-card border border-stone-light ring-1 ring-gold-muted/15 overflow-hidden">
                   {/* Card top accent bar */}
-                  <div className="h-1 bg-gradient-to-r from-gold-dark via-gold to-gold-light" />
+                  <div className="h-1 bg-gradient-to-r from-gold-lighter via-gold-light to-gold-muted" />
 
                   <div className="p-7">
                     {submitted ? (
@@ -241,7 +241,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
       </div>
 
       {/* ── Stats bar ────────────────────────────────────────────────────────── */}
-      <div className="relative z-10 border-t-2 border-dashed border-gold-dark/50 bg-white/60 backdrop-blur-sm">
+      <div className="relative z-10 border-t border-dashed border-gold-muted/60 bg-white/60 backdrop-blur-sm">
         <div className="container-site py-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-stone-light">
             {STATS.map((stat) => (

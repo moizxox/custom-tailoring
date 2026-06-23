@@ -35,10 +35,10 @@ function StitchDashOverlay({ className, opacity = 0.12 }: { className?: string; 
     >
       <defs>
         <pattern id={patternA} width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(32)">
-          <line x1="0" y1="60" x2="95" y2="60" stroke="#8A7A5E" strokeWidth="1.5" strokeDasharray="6 10" strokeLinecap="round" />
+          <line x1="0" y1="60" x2="95" y2="60" stroke="#DDD4C6" strokeWidth="1.25" strokeDasharray="6 10" strokeLinecap="round" />
         </pattern>
         <pattern id={patternB} width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(-32)">
-          <line x1="0" y1="60" x2="95" y2="60" stroke="#8A7A5E" strokeWidth="1.5" strokeDasharray="6 10" strokeLinecap="round" />
+          <line x1="0" y1="60" x2="95" y2="60" stroke="#DDD4C6" strokeWidth="1.25" strokeDasharray="6 10" strokeLinecap="round" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternA})`} />
@@ -57,11 +57,11 @@ export function BackgroundDecor({
 }: BackgroundDecorProps) {
   const figureOpacity =
     variant === "hero"
-      ? "opacity-[0.32]"
+      ? "opacity-[0.28]"
       : variant === "page"
-        ? "opacity-[0.22]"
+        ? "opacity-[0.20]"
         : variant === "footer"
-          ? "opacity-[0.24]"
+          ? "opacity-[0.22]"
           : "opacity-[0.12]";
 
   const figureWidth =
@@ -188,10 +188,10 @@ export function BackgroundDecor({
       />
       <div
         className={cn(
-          "absolute rounded-full bg-mist-lighter/35 blur-[80px]",
+          "absolute rounded-full blur-[80px]",
           variant === "footer"
-            ? "bottom-12 left-[20%] w-[360px] h-[260px] bg-mist-light/45"
-            : "bottom-0 left-[15%] w-[320px] h-[240px]"
+            ? "bottom-12 left-[20%] w-[360px] h-[260px] bg-sand-light/35"
+            : "bottom-0 left-[15%] w-[320px] h-[240px] bg-sand-light/30"
         )}
       />
     </div>

@@ -1,6 +1,5 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ProcessSection } from "@/components/sections/ProcessSection";
-import { MeasurementCards } from "@/components/sections/MeasurementCards";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const STEPS_DETAIL = [
-  { icon: "tailor-dummy-ruler-sewing-tailoring.svg", title: "Mass nehmen", text: "Wir nehmen alle relevanten Masse präzise auf. Dazu gehören Brust, Taille, Hüfte, Schulterbreite, Armlänge und weitere, je nach Kostümtyp." },
+  { icon: "tailor-dummy-ruler-sewing-tailoring.svg", title: "Mass nehmen", text: "Wir nehmen alle relevanten Masse präzise auf — persönlich im Atelier oder über Ihren geschützten Kundenbereich." },
   { icon: "pencil-sewing-tailoring-drawing.svg", title: "Schnittmuster", text: "Auf Basis Ihrer Masse erstellen wir ein individuelles Schnittmuster. Kein Kostüm von der Stange – jedes wird neu konstruiert." },
   { icon: "fabric-cloth-sewing-tailoring.svg", title: "Stoffauswahl", text: "Gemeinsam wählen wir die passenden Materialien aus. Wir helfen Ihnen, das Richtige zu finden – nach Budget und Wunsch." },
   { icon: "sewing-machine-sewing-tailoring-cloth.svg", title: "Anfertigung", text: "Jeder Schritt der Produktion erfolgt in unserem Basler Atelier, von Hand und mit grösster Sorgfalt." },
@@ -29,22 +28,35 @@ export default function MassfertigungPage() {
         breadcrumbs={[{ label: "Massfertigung", href: "/massfertigung" }]}
       />
 
-      {/* Measurement diagrams — periwinkle outlines (not yellow gold) */}
+      {/* Private measurement area — not public */}
       <section className="relative py-16 bg-offwhite overflow-hidden">
-        <div className="container-site relative z-10">
-          <div className="text-center mb-10">
-            <p className="section-label mb-3">Massblätter</p>
-            <h2 className="section-heading text-3xl">
-              Präzise Masse für die <em className="not-italic italic text-periwinkle-dark">perfekte Passform</em>
-            </h2>
-          </div>
-          <MeasurementCards />
-          <p className="text-center font-sans text-sm text-charcoal-lighter mt-8">
-            Im Atelier nehmen wir alle Masse für Sie auf.{" "}
-            <Link href="/termin" className="text-periwinkle-dark hover:underline">
-              Termin buchen →
-            </Link>
+        <div className="container-site relative z-10 max-w-3xl mx-auto text-center">
+          <p className="section-label mb-3">Massblätter</p>
+          <h2 className="section-heading text-3xl mb-4">
+            Vertrauliche Masseingabe für{" "}
+            <em className="not-italic italic text-periwinkle-dark">unsere Kundinnen & Kunden</em>
+          </h2>
+          <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8">
+            Unsere Massblätter und der genaue Messprozess sind nicht öffentlich einsehbar.
+            Nach Auftragsbestätigung erhalten Sie Zugang zu Ihrem persönlichen Kundenbereich —
+            per Login oder privatem Link.
           </p>
+          <div className="glass-card p-8 flex flex-col items-center gap-4">
+            <Image
+              src="/icons/sewing/tape-measure-sewing-tailoring-size.svg"
+              alt=""
+              width={40}
+              height={40}
+              className="icon-periwinkle"
+            />
+            <p className="font-sans text-sm text-charcoal-light max-w-md">
+              Masse digital erfassen, Fotos hochladen und sicher übermitteln — nur für
+              Kundinnen und Kunden mit laufendem Auftrag.
+            </p>
+            <Link href="/kundenbereich/login" className="btn-primary">
+              Zum Kundenbereich
+            </Link>
+          </div>
         </div>
       </section>
 

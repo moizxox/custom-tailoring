@@ -22,17 +22,17 @@ export function Footer() {
     <footer className="relative overflow-hidden mt-4">
       {/* Base shade layers — sit behind figure decor */}
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
-        <div className="absolute inset-0 bg-gradient-to-b from-offwhite via-mist-lighter/70 to-mist-light/45" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-periwinkle-lighter/25 via-transparent to-mist-lighter/40" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-transparent via-sand-light/20 to-mist-light/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-offwhite via-offwhite-warm to-sand-light/40" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-periwinkle-lighter/20 via-transparent to-sand-light/30" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-transparent via-sand-light/15 to-offwhite-warm/50" />
 
         <div className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/30 blur-[90px] animate-glow-drift" />
-        <div className="absolute top-[25%] -right-12 w-[400px] h-[360px] rounded-full bg-mist-lighter/65 blur-[90px] animate-glow-drift [animation-delay:4s]" />
-        <div className="absolute top-[45%] left-[40%] w-[480px] h-[300px] rounded-full bg-mist-light/40 blur-[100px]" />
-        <div className="absolute bottom-0 left-[20%] w-[340px] h-[220px] rounded-full bg-mist-lighter/50 blur-[75px]" />
-        <div className="absolute bottom-0 right-[15%] w-[280px] h-[180px] rounded-full bg-sand-light/35 blur-[70px]" />
+        <div className="absolute top-[25%] -right-12 w-[400px] h-[360px] rounded-full bg-sand-light/50 blur-[90px] animate-glow-drift [animation-delay:4s]" />
+        <div className="absolute top-[45%] left-[40%] w-[480px] h-[300px] rounded-full bg-gold-lighter/30 blur-[100px]" />
+        <div className="absolute bottom-0 left-[20%] w-[340px] h-[220px] rounded-full bg-sand-light/45 blur-[75px]" />
+        <div className="absolute bottom-0 right-[15%] w-[280px] h-[180px] rounded-full bg-periwinkle-lighter/25 blur-[70px]" />
         <div className="absolute top-8 right-[20%] w-24 h-24 rounded-full bg-white/50 blur-2xl" />
-        <div className="absolute bottom-24 left-[8%] w-20 h-20 rounded-full bg-mist-light/55 blur-xl" />
+        <div className="absolute bottom-24 left-[8%] w-20 h-20 rounded-full bg-gold-lighter/40 blur-xl" />
       </div>
 
       {/* Hero-style figure outlines — subtle, above shade */}
