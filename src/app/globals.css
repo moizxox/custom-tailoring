@@ -71,6 +71,13 @@
     @apply bg-gradient-to-br from-periwinkle-lighter via-offwhite to-sand-light border border-periwinkle-light/40;
   }
 
+  .card-gradient-glass {
+    @apply bg-gradient-to-br from-periwinkle-lighter/65 via-offwhite/80 to-sand-light/55 backdrop-blur-xl;
+    border-top: 1px solid rgba(196, 184, 210, 0.35);
+    border-bottom: 1px solid rgba(221, 212, 198, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  }
+
   .glass-footer-panel {
     @apply bg-gradient-to-br from-white/55 via-sand-light/30 to-offwhite-warm/40 backdrop-blur-xl rounded-3xl shadow-card;
     border: 1px solid rgba(221, 212, 198, 0.55);
@@ -162,7 +169,7 @@
     content: "";
     @apply flex-1;
     height: 0;
-    border-top: 1.5px dashed var(--color-gold-muted);
+    border-top: 3px dashed var(--color-gold-muted);
     opacity: 0.85;
   }
 
