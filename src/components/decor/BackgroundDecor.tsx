@@ -110,19 +110,14 @@ export function BackgroundDecor({
         </div>
       )}
 
-      {/* Confetti — festive pastel dots (desaturated on hero to avoid mint tones) */}
+      {/* Confetti — festive pastel shapes (screen blend hides black bg) */}
       {showConfetti && (
-        <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.14]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.05]")}>
+        <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.22]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.1]")}>
           <Image
-            src="/images/backgrounds/confetti-pastel.png"
+            src="/images/backgrounds/konfetti.png"
             alt=""
             fill
-            className={cn(
-              "object-cover",
-              variant === "hero"
-                ? "saturate-[0.62] hue-rotate-[-18deg] brightness-[1.04] contrast-[1.15]"
-                : "saturate-[0.7] hue-rotate-[-10deg]"
-            )}
+            className={cn("object-cover mix-blend-screen", variant === "hero" ? "brightness-[1.04] contrast-[1.08]" : "brightness-[1.02]")}
             sizes="100vw"
             priority={variant === "hero"}
           />
@@ -137,10 +132,22 @@ export function BackgroundDecor({
           </div>
 
           <div className="absolute inset-y-0 left-0 w-[min(32vw,400px)] opacity-[0.18] hidden lg:block [mask-image:linear-gradient(to_right,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,transparent_88%)]">
-            <Image src="/images/backgrounds/pastel-symbols-mesh.png" alt="" fill className="object-cover object-left saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]" sizes="400px" />
+            <Image
+              src="/images/backgrounds/pastel-symbols-mesh.png"
+              alt=""
+              fill
+              className="object-cover object-left saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]"
+              sizes="400px"
+            />
           </div>
           <div className="absolute inset-y-0 right-0 w-[min(32vw,400px)] opacity-[0.18] hidden lg:block [mask-image:linear-gradient(to_left,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,transparent_88%)]">
-            <Image src="/images/backgrounds/pastel-symbols-mesh.png" alt="" fill className="object-cover object-right saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]" sizes="400px" />
+            <Image
+              src="/images/backgrounds/pastel-symbols-mesh.png"
+              alt=""
+              fill
+              className="object-cover object-right saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]"
+              sizes="400px"
+            />
           </div>
         </>
       )}

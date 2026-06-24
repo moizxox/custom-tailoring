@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { AcfHero } from "@/types";
-import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
+import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
 
 const DEFAULT_DATA: AcfHero = {
   acf_fc_layout: "hero",
@@ -59,14 +59,8 @@ export function HeroSection({ acf }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative min-h-[92vh] flex flex-col overflow-hidden">
-      {/* Full-width card gradient — periwinkle → sand → warm white (soft so decor reads through) */}
-      <div
-        className="absolute inset-0 z-0 bg-gradient-to-br from-periwinkle-lighter/92 via-sand-light/78 to-offwhite-warm/95"
-        aria-hidden
-      />
-
-      <BackgroundDecor variant="hero" showStitchDashes showConfetti className="z-[1]" />
+    <section className="relative min-h-[92vh] flex flex-col overflow-hidden bg-offwhite-warm">
+      <HeroConfettiBackground className="z-0" />
 
       <div className="relative z-10 flex-1 flex flex-col justify-center w-full px-5 sm:px-8 lg:px-12 xl:px-16 pt-28 pb-16 lg:pt-36 lg:pb-24 ">
         <div className="w-full  container-site">
