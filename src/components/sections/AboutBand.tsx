@@ -42,7 +42,7 @@ export function AboutBand({ acf }: AboutBandProps) {
   return (
     <section className="py-20 bg-offwhite">
       <div className="container-site">
-        <div className="rounded-3xl bg-gradient-to-br from-periwinkle-lighter via-offwhite to-sand-light border border-periwinkle-light/40 overflow-hidden">
+        <div className="rounded-3xl card-gradient overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Left copy */}
             <div className="p-10 lg:p-14 flex flex-col justify-center">

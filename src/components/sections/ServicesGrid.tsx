@@ -100,20 +100,20 @@ function ServiceCard({ item, index }: ServiceCardProps) {
     <div
       className={cn(
         "group flex flex-col items-center text-center gap-4 p-5 rounded-2xl h-full",
-        "border border-stone-light bg-white",
+        "card-gradient",
         "hover:border-periwinkle-light hover:shadow-card-hover hover:-translate-y-1",
         "transition-all duration-300 ease-out cursor-pointer"
       )}
       style={{ animationDelay: `${index * 40}ms` }}
     >
       {/* Icon */}
-      <div className="w-12 h-12 rounded-full bg-offwhite-warm flex items-center justify-center shrink-0 group-hover:bg-periwinkle-lighter transition-colors duration-300">
+      <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-soft">
         <Image
           src={`/icons/sewing/${item.icon_slug}`}
           alt=""
           width={26}
           height={26}
-          className="icon-stone group-hover:icon-periwinkle transition-all duration-300"
+          className="icon-periwinkle"
         />
       </div>
 
@@ -147,7 +147,7 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
   const data = { ...DEFAULT_DATA, ...acf };
 
   return (
-    <section className="py-24 bg-offwhite-warm">
+    <section className="py-24 bg-white">
       <div className="container-site">
         {/* Header */}
         <div className="text-center mb-14">

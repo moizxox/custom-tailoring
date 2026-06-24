@@ -67,6 +67,10 @@
     @apply bg-periwinkle-lighter/80 backdrop-blur-md border border-periwinkle-light/50 shadow-soft rounded-2xl;
   }
 
+  .card-gradient {
+    @apply bg-gradient-to-br from-periwinkle-lighter via-offwhite to-sand-light border border-periwinkle-light/40;
+  }
+
   .glass-footer-panel {
     @apply bg-gradient-to-br from-white/55 via-sand-light/30 to-offwhite-warm/40 backdrop-blur-xl rounded-3xl shadow-card;
     border: 1px solid rgba(221, 212, 198, 0.55);
