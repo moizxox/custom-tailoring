@@ -19,13 +19,9 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden mt-4">
-      {/* Base shade layers — sit behind figure decor */}
+    <footer className="relative overflow-hidden mt-4 ">
+      {/* Ambient glow — no gradient wash */}
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
-        <div className="absolute inset-0 bg-gradient-to-b from-offwhite via-offwhite-warm to-sand-light/40" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-periwinkle-lighter/20 via-transparent to-sand-light/30" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-transparent via-sand-light/15 to-offwhite-warm/50" />
-
         <div className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/30 blur-[90px] animate-glow-drift" />
         <div className="absolute top-[25%] -right-12 w-[400px] h-[360px] rounded-full bg-sand-light/50 blur-[90px] animate-glow-drift [animation-delay:4s]" />
         <div className="absolute top-[45%] left-[40%] w-[480px] h-[300px] rounded-full bg-gold-lighter/30 blur-[100px]" />
@@ -36,13 +32,29 @@ export function Footer() {
       </div>
 
       {/* Hero-style figure outlines — subtle, above shade */}
-      <BackgroundDecor
-        variant="footer"
-        showConfetti={false}
-        showStitchDashes
-        showMesh
-        className="z-[1]"
-      />
+      <BackgroundDecor variant="footer" showFigures={false} showConfetti={false} showStitchDashes showMesh className="z-[1]" />
+
+      {/* Sketch figure outlines — larger, softer */}
+      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none select-none" aria-hidden>
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[10%] w-[min(62vw,860px)] aspect-[3/5] opacity-[0.05] hidden md:block [mask-image:linear-gradient(to_right,black_45%,transparent_85%)] [-webkit-mask-image:linear-gradient(to_right,black_45%,transparent_85%)]">
+          <Image
+            src="/images/backgrounds/figuren-left-sketch.png"
+            alt=""
+            fill
+            className="object-contain object-left outline-figure-gold outline-figure-strong"
+            sizes="(max-width: 768px) 45vw, 560px"
+          />
+        </div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[10%] w-[min(62vw,860px)] aspect-[3/5] opacity-[0.05] hidden md:block [mask-image:linear-gradient(to_left,black_45%,transparent_85%)] [-webkit-mask-image:linear-gradient(to_left,black_45%,transparent_85%)]">
+          <Image
+            src="/images/backgrounds/figuren-right-sketch.png"
+            alt=""
+            fill
+            className="object-contain object-right outline-figure-gold outline-figure-strong"
+            sizes="(max-width: 768px) 45vw, 560px"
+          />
+        </div>
+      </div>
 
       {/* Top gold dashed seam lines */}
       <div className="absolute top-5 left-[5%] right-[5%] z-[2] space-y-2.5 pointer-events-none" aria-hidden>
@@ -50,23 +62,19 @@ export function Footer() {
         <div className="line-gold-dashed-light" />
       </div>
 
-      {/* Top fade-in from page content */}
+      {/* Top fade — behind footer panels, blends background from page above */}
       <div
-        className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none"
+        className="absolute inset-x-0 top-0 z-[5] h-[200px] bg-gradient-to-b from-white via-white/70 to-transparent pointer-events-none"
         aria-hidden
       />
 
-      <div className="relative z-10 container-site py-12 lg:py-16 flex flex-col gap-5">
+      <div className="relative z-20 container-site py-12 lg:py-16 flex flex-col gap-5">
         {/* ── CTA — glass panel ─────────────────────────────────────────────── */}
         <div className="glass-footer-panel p-8 md:p-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
-              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">
-                Handwerk. Individualität. Zeitlosigkeit.
-              </p>
-              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">
-                Ihr Traumkostüm beginnt hier.
-              </p>
+              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">Handwerk. Individualität. Zeitlosigkeit.</p>
+              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">Ihr Traumkostüm beginnt hier.</p>
             </div>
             <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center">
               <Link href="/termin" className="btn-primary shadow-soft">
@@ -86,21 +94,13 @@ export function Footer() {
             <div className="lg:col-span-2 flex flex-col gap-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 ring-1 ring-gold-muted/20 flex items-center justify-center shadow-soft">
-                  <Image
-                    src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg"
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="icon-periwinkle-deep"
-                  />
+                  <Image src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg" alt="" width={20} height={20} className="icon-periwinkle-deep" />
                 </div>
                 <div>
                   <span className="font-serif text-lg text-charcoal tracking-[0.1em] uppercase block leading-tight">
                     Kostüm<span className="text-periwinkle-dark">schneiderei</span>
                   </span>
-                  <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-charcoal/45">
-                    Basel
-                  </span>
+                  <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-charcoal/45">Basel</span>
                 </div>
               </div>
 
@@ -109,10 +109,7 @@ export function Footer() {
                 <a href="tel:+41313124567" className="hover:text-periwinkle-dark transition-colors w-fit">
                   +41 31 312 45 67
                 </a>
-                <a
-                  href="mailto:hallo@kostuemschneiderei-basel.ch"
-                  className="hover:text-periwinkle-dark transition-colors w-fit"
-                >
+                <a href="mailto:hallo@kostuemschneiderei-basel.ch" className="hover:text-periwinkle-dark transition-colors w-fit">
                   hallo@kostuemschneiderei-basel.ch
                 </a>
                 <span className="text-charcoal/50 text-[13px]">Mo–Fr: 08:30 – 17:30 Uhr</span>
@@ -156,16 +153,11 @@ export function Footer() {
             {/* Link columns — nested glass cards */}
             {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
               <div key={heading} className="glass-footer-column">
-                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/40 mb-4">
-                  {heading}
-                </h4>
+                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/40 mb-4">{heading}</h4>
                 <ul className="flex flex-col gap-2.5">
                   {links.map((l) => (
                     <li key={l.href}>
-                      <Link
-                        href={l.href}
-                        className="text-[13px] text-charcoal/65 hover:text-periwinkle-dark font-medium transition-colors"
-                      >
+                      <Link href={l.href} className="text-[13px] text-charcoal/65 hover:text-periwinkle-dark font-medium transition-colors">
                         {l.label}
                       </Link>
                     </li>
