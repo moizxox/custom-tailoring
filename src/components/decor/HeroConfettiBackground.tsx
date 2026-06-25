@@ -11,7 +11,7 @@ interface HeroConfettiBackgroundProps {
 /** Hero background — soft gradient, konfetti, and side Fasnacht figure sketches */
 export function HeroConfettiBackground({ className }: HeroConfettiBackgroundProps) {
   return (
-    <div className={cn("absolute inset-0 overflow-hidden pointer-events-none select-none bg-offwhite-warm", className)} aria-hidden>
+    <div className={cn("absolute inset-0 overflow-hidden pointer-events-none select-none bg-offwhite", className)} aria-hidden>
       <div className="absolute inset-0 bg-gradient-to-br from-periwinkle-lighter/30 via-offwhite/30 to-sand-light/30 backdrop-blur-sm" />
 
       <div className="absolute inset-0 opacity-[0.5]">

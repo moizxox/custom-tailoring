@@ -59,7 +59,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative min-h-[92vh] flex flex-col overflow-hidden bg-offwhite-warm">
+    <section className="relative min-h-[92vh] flex flex-col overflow-hidden bg-offwhite">
       <HeroConfettiBackground className="z-0" />
 
       <div className="relative z-10 flex-1 flex flex-col justify-center w-full px-5 sm:px-8 lg:px-12 xl:px-16 pt-28 pb-16 lg:pt-36 lg:pb-24 ">

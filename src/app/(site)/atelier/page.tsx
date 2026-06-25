@@ -1,5 +1,5 @@
 import { PageHero } from "@/components/layout/PageHero";
-import { ContentPlaceholderSection } from "@/components/sections/ContentPlaceholderSection";
+import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,12 +22,12 @@ export default function AtelierPage() {
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 
-      <section className="py-20 bg-white">
+      <section className="py-20 section-bg-white">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <p className="section-label mb-4">Handwerk vor Ort</p>
             <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
-              Wo Traditon und<br />
+              Wo Tradition und<br />
               <em className="not-italic italic text-periwinkle-dark">Kreativität</em> aufeinandertreffen
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-4">
@@ -60,9 +60,9 @@ export default function AtelierPage() {
               { src: "/images/atelier/atelier-1.png", alt: "Atelier Ansicht" },
               { src: "/images/atelier/atelier-2.jpg", alt: "Handarbeit im Atelier" },
               { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-              { src: "/images/atelier/atelier-1.png", alt: "Werkstatt Basel" },
-            ].map((photo, i) => (
-              <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-stone-light shadow-soft">
+              { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Fertiges Kostüm – Schlösslischränzer Major" },
+            ].map((photo) => (
+              <div key={photo.src} className="relative aspect-square rounded-2xl overflow-hidden border border-stone-light shadow-soft">
                 <Image
                   src={photo.src}
                   alt={photo.alt}
@@ -76,19 +76,35 @@ export default function AtelierPage() {
         </div>
       </section>
 
-      <ContentPlaceholderSection
-        label="Platzhalter"
-        heading="Titel für diesen Abschnitt"
-        headingAccent="Abschnitt"
+      <ContentSection
+        label="Unsere Werkstatt"
+        heading="Wo jedes Kostüm Gestalt annimmt"
+        headingAccent="Gestalt"
+        imageSrc="/images/atelier/atelier-2.jpg"
+        imageAlt="Näharbeit im Atelier"
         imagePosition="left"
+        paragraphs={[
+          "In unserer Werkstatt arbeiten wir mit modernen Nähmaschinen und klassischen Handwerkstechniken. Jeder Schnitt wird geprüft, jede Naht sitzt – damit Ihr Kostüm nicht nur schön aussieht, sondern auch beim Tragen überzeugt.",
+          "Von der ersten Skizze an der Arbeitstafel bis zur letzten Knopfloch-Naht begleiten wir jedes Projekt persönlich. So entstehen Kostüme, die zu Ihnen passen – in Form, Stoff und Charakter.",
+        ]}
+        ctaLabel="Atelier besuchen"
+        ctaHref="/termin"
       />
 
-      <ContentPlaceholderSection
-        label="Platzhalter"
-        heading="Weiterer Inhalt"
-        headingAccent="Inhalt"
+      <ContentSection
+        label="Stoffe & Materialien"
+        heading="Die richtige Auswahl für Ihr Projekt"
+        headingAccent="Auswahl"
+        imageSrc="/images/atelier/atelier-3.jpg"
+        imageAlt="Stoffauswahl im Atelier"
         imagePosition="right"
-        className="bg-white"
+        className="section-bg-white"
+        paragraphs={[
+          "In unserem Atelier finden Sie eine sorgfältig zusammengestellte Auswahl an Stoffen – von robusten Wollstoffen für die Fasnacht bis zu edlen Materialien für besondere Anlässe.",
+          "Wir beraten Sie ehrlich: welcher Stoff hält, was er kostet und wie er sich im Alltag trägt. Gemeinsam finden wir die Lösung, die zu Ihrem Budget und Ihrem Wunschkostüm passt.",
+        ]}
+        ctaLabel="Stoffe entdecken"
+        ctaHref="/stoffe"
       />
 
       <PeriwinkleCtaSection />

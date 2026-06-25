@@ -1,4 +1,5 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { ContentSection } from "@/components/sections/ContentSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,7 +61,22 @@ export default function MassfertigungPage() {
         </div>
       </section>
 
-      <section className="py-20 bg-offwhite-warm">
+      <ContentSection
+        label="Präzision"
+        heading="Mass nehmen mit Sorgfalt und Erfahrung"
+        headingAccent="Sorgfalt"
+        imageSrc="/images/figures/woman-measurement.png"
+        imageAlt="Massnehmen für Massanfertigung"
+        imagePosition="left"
+        paragraphs={[
+          "Ein gut sitzendes Kostüm beginnt mit präzisen Massen. Im Atelier nehmen wir alle relevanten Werte persönlich auf – oder Sie erfassen sie bequem über Ihren geschützten Kundenbereich.",
+          "Auf Basis Ihrer Masse konstruieren wir ein individuelles Schnittmuster. Kein Standard, keine Kompromisse – jedes Kostüm wird für Ihre Figur und Ihren Anlass neu entworfen.",
+        ]}
+        ctaLabel="Termin buchen"
+        ctaHref="/termin"
+      />
+
+      <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Der Prozess</p>

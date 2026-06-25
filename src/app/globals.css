@@ -78,6 +78,18 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
   }
 
+  .section-bg-white {
+    @apply bg-white;
+  }
+
+  .section-bg-lavender {
+    @apply bg-periwinkle-lighter/35;
+  }
+
+  .section-bg-clean {
+    @apply bg-offwhite;
+  }
+
   .glass-footer-panel {
     @apply bg-transparent backdrop-blur-[2px]  rounded-3xl shadow-card;
     border: 1px solid rgba(221, 212, 198, 0.55);

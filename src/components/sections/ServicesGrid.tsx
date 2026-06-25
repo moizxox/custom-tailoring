@@ -147,7 +147,7 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
   const data = { ...DEFAULT_DATA, ...acf };
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 section-bg-white">
       <div className="container-site">
         {/* Header */}
         <div className="text-center mb-14">

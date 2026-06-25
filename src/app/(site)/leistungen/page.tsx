@@ -1,4 +1,5 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { ProcessSection } from "@/components/sections/ProcessSection";
@@ -75,7 +76,7 @@ export default function LeistungenPage() {
       />
 
       {/* Detailed service cards */}
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {DETAILS.map((s) => (
@@ -113,6 +114,21 @@ export default function LeistungenPage() {
           </div>
         </div>
       </section>
+
+      <ContentSection
+        label="Handwerkskunst"
+        heading="Vom Entwurf bis zum fertigen Kostüm"
+        headingAccent="fertigen Kostüm"
+        imageSrc="/images/gallery/waageclique-edelwaggis.jpeg"
+        imageAlt="Edelwaggis Waageclique – fertiges Kostüm"
+        imagePosition="left"
+        paragraphs={[
+          "Jedes Kostüm durchläuft bei uns denselben sorgfältigen Prozess: Beratung, Entwurf, Massnehmen, Stoffauswahl, Anfertigung und Anprobe. So stellen wir sicher, dass am Ende alles passt.",
+          "Ob Einzelstück oder Serienanfertigung für eine ganze Clique – wir liefern Qualität, die man sieht und spürt. Unsere Galerie zeigt, was in unserem Atelier entsteht.",
+        ]}
+        ctaLabel="Galerie ansehen"
+        ctaHref="/galerie"
+      />
 
       <ServicesGrid />
       <ProcessSection />

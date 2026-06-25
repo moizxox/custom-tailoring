@@ -1,4 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { ContentSection } from "@/components/sections/ContentSection";
+import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -50,6 +52,27 @@ export default function StoffePage() {
           </div>
         </div>
       </section>
+
+      <ContentSection
+        label="Persönliche Beratung"
+        heading="Gemeinsam den passenden Stoff finden"
+        headingAccent="Stoff"
+        imageSrc="/images/atelier/atelier-3.jpg"
+        imageAlt="Stoffberatung im Atelier"
+        imagePosition="right"
+        className="section-bg-white"
+        paragraphs={[
+          "Die Wahl des richtigen Stoffes entscheidet über Tragekomfort, Haltbarkeit und Ausstrahlung Ihres Kostüms. Wir zeigen Ihnen Muster, erklären Eigenschaften und helfen bei der Entscheidung – ohne Druck.",
+          "Für Gruppenausstattungen achten wir auf einheitliche Farben und gleichbleibende Qualität über alle Stücke hinweg. Spezialgewebe und Sonderwünsche beschaffen wir auf Anfrage.",
+        ]}
+        ctaLabel="Beratung buchen"
+        ctaHref="/termin"
+      />
+
+      <PeriwinkleCtaSection
+        heading="Stoffmuster ansehen?"
+        text="Vereinbaren Sie einen Termin und entdecken Sie unsere Auswahl persönlich im Atelier."
+      />
     </>
   );
 }

@@ -40,7 +40,7 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
   const data = { ...DEFAULT_DATA, ...acf };
 
   return (
-    <section className="py-24 bg-offwhite">
+    <section className="py-24 section-bg-lavender">
       <div className="container-site">
         <div className="text-center mb-12">
           {data.section_label && (

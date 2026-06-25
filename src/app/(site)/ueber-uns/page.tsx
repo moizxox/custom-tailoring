@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { AboutBand } from "@/components/sections/AboutBand";
+import { ContentSection } from "@/components/sections/ContentSection";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -83,6 +84,22 @@ export default function UeberUnsPage() {
           </div>
         </div>
       </section>
+
+      <ContentSection
+        label="Unsere Arbeit"
+        heading="Kostüme für Fasnacht, Bühne und besondere Momente"
+        headingAccent="Fasnacht"
+        imageSrc="/images/gallery/gwuerztraminer-2026.jpeg"
+        imageAlt="Gwürztraminer Waageclique – Gruppenausstattung"
+        imagePosition="right"
+        className="section-bg-lavender"
+        paragraphs={[
+          "Ob Einzelperson, Clique oder ganze Guggenmusik – wir kennen die Anforderungen der Basler Fasnacht. Haltbare Stoffe, einheitliche Gruppenoptik und Kostüme, die den ganzen Umzug überstehen.",
+          "Neben der Fasnacht fertigen wir auch Bühnenkostüme und individuelle Aufträge. Jedes Projekt beginnt mit einem Gespräch – denn nur wer versteht, was Sie brauchen, kann das richtige Kostüm schaffen.",
+        ]}
+        ctaLabel="Zur Galerie"
+        ctaHref="/galerie"
+      />
 
       {/* Values */}
       <section className="py-16 bg-offwhite">

@@ -30,7 +30,7 @@ export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: P
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-offwhite via-offwhite-warm to-sand-light/20 pt-20 lg:pt-24">
+    <section className="relative overflow-hidden bg-gradient-to-b from-offwhite via-periwinkle-lighter/25 to-sand-light/15 pt-20 lg:pt-24">
       <BackgroundDecor variant="page" showConfetti showStitchDashes showFigures={false} />
       <SideSketchFigures opacity="opacity-[0.5]" width="w-[min(22vw,320px)]" />
 
