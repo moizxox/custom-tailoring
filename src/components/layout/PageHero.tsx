@@ -35,9 +35,9 @@ export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: P
       <SideSketchFigures opacity="opacity-[0.5]" width="w-[min(22vw,320px)]" />
 
       <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12">
-        <div className="max-w-4xl">
+        <div className="max-w-3xl mx-auto text-center">
           {breadcrumbs && breadcrumbs.length > 0 && (
-            <nav className="flex items-center gap-1.5 mb-6" aria-label="Breadcrumb">
+            <nav className="flex items-center justify-center gap-1.5 mb-6" aria-label="Breadcrumb">
               <Link href="/" className="font-sans text-[11px] text-charcoal-lighter hover:text-charcoal transition-colors">
                 Start
               </Link>
@@ -58,11 +58,15 @@ export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: P
             </nav>
           )}
 
-          {label && <p className="section-label mb-4">{label}</p>}
+          {label && (
+            <div className="flex justify-center mb-4">
+              <p className="section-label">{label}</p>
+            </div>
+          )}
 
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance">{renderTitle()}</h1>
 
-          {subtitle && <p className="font-sans text-[15px] text-charcoal-light leading-relaxed mt-5 max-w-2xl">{subtitle}</p>}
+          {subtitle && <p className="font-sans text-[15px] text-charcoal-light leading-relaxed mt-5 max-w-2xl mx-auto">{subtitle}</p>}
         </div>
       </div>
 

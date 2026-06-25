@@ -1,4 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { ContentPlaceholderSection } from "@/components/sections/ContentPlaceholderSection";
+import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -20,7 +22,7 @@ export default function AtelierPage() {
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 bg-white">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <p className="section-label mb-4">Handwerk vor Ort</p>
@@ -35,11 +37,22 @@ export default function AtelierPage() {
               Besuchen Sie uns – ob für eine Beratung, eine Anprobe oder einfach um die Atmosphäre zu erleben. Wir heissen Sie herzlich willkommen.
             </p>
             <div className="flex flex-col gap-2 text-sm font-sans text-charcoal-light mb-7">
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />Greifengasse 20, 4052 Basel</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />Mo–Fr: 08:30 – 17:30 Uhr</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />Sa nach Vereinbarung</span>
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
+                Greifengasse 20, 4052 Basel
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
+                Mo–Fr: 08:30 – 17:30 Uhr
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
+                Sa nach Vereinbarung
+              </span>
             </div>
-            <Link href="/termin" className="btn-primary inline-flex">Besuch vereinbaren</Link>
+            <Link href="/termin" className="btn-primary inline-flex">
+              Besuch vereinbaren
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -62,6 +75,23 @@ export default function AtelierPage() {
           </div>
         </div>
       </section>
+
+      <ContentPlaceholderSection
+        label="Platzhalter"
+        heading="Titel für diesen Abschnitt"
+        headingAccent="Abschnitt"
+        imagePosition="left"
+      />
+
+      <ContentPlaceholderSection
+        label="Platzhalter"
+        heading="Weiterer Inhalt"
+        headingAccent="Inhalt"
+        imagePosition="right"
+        className="bg-white"
+      />
+
+      <PeriwinkleCtaSection />
     </>
   );
 }

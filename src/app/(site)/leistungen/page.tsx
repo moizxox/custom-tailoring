@@ -1,4 +1,5 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import Image from "next/image";
@@ -116,19 +117,7 @@ export default function LeistungenPage() {
       <ServicesGrid />
       <ProcessSection />
 
-      {/* CTA */}
-      <section className="py-16 bg-periwinkle-lighter">
-        <div className="container-site text-center">
-          <h2 className="font-serif text-3xl text-charcoal mb-3">Haben Sie Fragen?</h2>
-          <p className="font-sans text-sm text-charcoal-light mb-7 max-w-md mx-auto">
-            Wir beraten Sie gerne persönlich. Buchen Sie ein kostenloses Erstgespräch.
-          </p>
-          <div className="flex justify-center gap-3 flex-wrap">
-            <Link href="/termin" className="btn-primary">Termin buchen</Link>
-            <Link href="/kontakt" className="btn-outline-dark">Nachricht senden</Link>
-          </div>
-        </div>
-      </section>
+      <PeriwinkleCtaSection />
     </>
   );
 }
