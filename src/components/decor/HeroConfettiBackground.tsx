@@ -18,7 +18,7 @@ export function HeroConfettiBackground({ className }: HeroConfettiBackgroundProp
         <Image src="/images/backgrounds/konfetti.png" alt="" fill className="object-cover mix-blend-screen brightness-[1.04] contrast-[1.08]" sizes="100vw" priority />
       </div>
 
-      <SideSketchFigures width="w-[min(44vw,620px)]" />
+      <SideSketchFigures opacity="opacity-[0.08]" width="w-[min(22vw,320px)]" />
     </div>
   );
 }

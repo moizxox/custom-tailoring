@@ -36,7 +36,7 @@ export function Footer() {
       <BackgroundDecor variant="footer" showFigures={false} showConfetti={false} showStitchDashes showMesh className="z-[1]" />
 
       {/* Sketch figure outlines — side only, inward */}
-      <SideSketchFigures className="z-[1]" width="w-[min(44vw,620px)]" />
+      <SideSketchFigures className="z-[1]" opacity="opacity-[0.06]" width="w-[min(20vw,280px)]" />
 
       {/* Top gold dashed seam lines */}
       <div className="absolute top-5 left-[5%] right-[5%] z-[2] space-y-2.5 pointer-events-none" aria-hidden>

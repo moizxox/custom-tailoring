@@ -112,7 +112,12 @@ export function BackgroundDecor({
 
       {/* Confetti — festive pastel shapes (screen blend hides black bg) */}
       {showConfetti && (
-        <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.22]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.1]")}>
+        <div
+          className={cn(
+            "absolute inset-0",
+            variant === "hero" ? "opacity-[0.22]" : variant === "page" ? "opacity-[0.5]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.1]",
+          )}
+        >
           <Image
             src="/images/backgrounds/konfetti.png"
             alt=""

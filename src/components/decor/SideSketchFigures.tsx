@@ -9,24 +9,23 @@ interface SideSketchFiguresProps {
   width?: string;
 }
 
-/** Side-only Fasnacht sketches — clipped so inner figures never appear in the page center */
+/** Side Fasnacht sketch strips — full vertical stack, faded only toward page center */
 export function SideSketchFigures({
   className,
-  opacity = "opacity-[0.05]",
-  width = "w-[min(40vw,560px)]",
+  opacity = "opacity-[0.10]",
+  width = "w-[min(20vw,300px)]",
 }: SideSketchFiguresProps) {
   const edgeMask = {
-    left: "[mask-image:linear-gradient(to_right,black_0%,black_30%,transparent_52%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_30%,transparent_52%)]",
-    right: "[mask-image:linear-gradient(to_left,black_0%,black_30%,transparent_52%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,black_30%,transparent_52%)]",
+    left: "[mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_98%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_98%)]",
+    right: "[mask-image:linear-gradient(to_left,black_0%,black_80%,transparent_98%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,black_80%,transparent_98%)]",
   };
 
   return (
     <div className={cn("absolute inset-0 overflow-hidden pointer-events-none select-none", className)} aria-hidden>
       <div
         className={cn(
-          "absolute left-[4%] top-1/2 -translate-y-1/2",
+          "absolute left-[3%] inset-y-6 lg:inset-y-4",
           width,
-          "aspect-[3/5]",
           opacity,
           "hidden md:block",
           edgeMask.left,
@@ -37,15 +36,14 @@ export function SideSketchFigures({
           alt=""
           fill
           className="object-contain object-left outline-figure-gold outline-figure-strong"
-          sizes="(max-width: 768px) 38vw, 480px"
+          sizes="(max-width: 768px) 22vw, 300px"
         />
       </div>
 
       <div
         className={cn(
-          "absolute right-[4%] top-1/2 -translate-y-1/2",
+          "absolute right-[3%] inset-y-6 lg:inset-y-4",
           width,
-          "aspect-[3/5]",
           opacity,
           "hidden md:block",
           edgeMask.right,
@@ -56,7 +54,7 @@ export function SideSketchFigures({
           alt=""
           fill
           className="object-contain object-right outline-figure-gold outline-figure-strong"
-          sizes="(max-width: 768px) 38vw, 480px"
+          sizes="(max-width: 768px) 22vw, 300px"
         />
       </div>
     </div>
