@@ -17,6 +17,7 @@ export default function AtelierPage() {
         titleAccent="Atelier"
         subtitle="In der Greifengasse 20, mitten in Basel, befindet sich unser Atelier – der Ort, wo Ideen zu Kostümen werden."
         iconSlug="sewing-shop-fashion-sewing-tailoring.svg"
+        backgroundIcon="sewing-shop-fashion-sewing-tailoring.svg"
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 

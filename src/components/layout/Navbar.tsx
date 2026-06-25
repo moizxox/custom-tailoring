@@ -36,8 +36,8 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex flex-col leading-[1.1] group shrink-0">
             <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">Kostüm</span>
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">Schneiderei</span>
-            <span className="font-sans text-[8px] tracking-[0.35em] uppercase text-warmgrey mt-0.5">Basel</span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-periwinkle-dark">Schneiderei</span>
+            <span className="font-sans text-[7px] tracking-[0.22em] uppercase text-warmgrey mt-0.5">Pratteln & Therwil</span>
           </Link>
 
           {/* Desktop Nav */}

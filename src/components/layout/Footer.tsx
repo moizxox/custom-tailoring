@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
+import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
 
 const FOOTER_LINKS = {
   Navigation: [
@@ -34,27 +35,8 @@ export function Footer() {
       {/* Hero-style figure outlines — subtle, above shade */}
       <BackgroundDecor variant="footer" showFigures={false} showConfetti={false} showStitchDashes showMesh className="z-[1]" />
 
-      {/* Sketch figure outlines — larger, softer */}
-      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none select-none" aria-hidden>
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[10%] w-[min(62vw,860px)] aspect-[3/5] opacity-[0.05] hidden md:block [mask-image:linear-gradient(to_right,black_45%,transparent_85%)] [-webkit-mask-image:linear-gradient(to_right,black_45%,transparent_85%)]">
-          <Image
-            src="/images/backgrounds/figuren-left-sketch.png"
-            alt=""
-            fill
-            className="object-contain object-left outline-figure-gold outline-figure-strong"
-            sizes="(max-width: 768px) 45vw, 560px"
-          />
-        </div>
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[10%] w-[min(62vw,860px)] aspect-[3/5] opacity-[0.05] hidden md:block [mask-image:linear-gradient(to_left,black_45%,transparent_85%)] [-webkit-mask-image:linear-gradient(to_left,black_45%,transparent_85%)]">
-          <Image
-            src="/images/backgrounds/figuren-right-sketch.png"
-            alt=""
-            fill
-            className="object-contain object-right outline-figure-gold outline-figure-strong"
-            sizes="(max-width: 768px) 45vw, 560px"
-          />
-        </div>
-      </div>
+      {/* Sketch figure outlines — side only, inward */}
+      <SideSketchFigures className="z-[1]" width="w-[min(44vw,620px)]" />
 
       {/* Top gold dashed seam lines */}
       <div className="absolute top-5 left-[5%] right-[5%] z-[2] space-y-2.5 pointer-events-none" aria-hidden>
@@ -100,7 +82,7 @@ export function Footer() {
                   <span className="font-serif text-lg text-charcoal tracking-[0.1em] uppercase block leading-tight">
                     Kostüm<span className="text-periwinkle-dark">schneiderei</span>
                   </span>
-                  <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-charcoal/45">Basel</span>
+                  <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-charcoal/45">Pratteln & Therwil</span>
                 </div>
               </div>
 
