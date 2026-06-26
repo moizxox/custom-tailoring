@@ -71,7 +71,6 @@ export default function LeistungenPage() {
         title="Leistungen"
         titleAccent="Leistungen"
         subtitle="Von der Beratung über die Massanfertigung bis zur Abholung – alles aus einer Hand, mit Liebe zum Handwerk."
-        iconSlug="tailor-dummy-ruler-sewing-tailoring.svg"
         breadcrumbs={[{ label: "Leistungen", href: "/leistungen" }]}
       />
 

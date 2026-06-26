@@ -25,7 +25,6 @@ export default function MassfertigungPage() {
         title="Massfertigung"
         titleAccent="Massfertigung"
         subtitle="Kein Kostüm von der Stange. Jedes Stück wird für Sie persönlich entworfen, gemessen und in Handarbeit gefertigt."
-        iconSlug="tape-measure-sewing-tailoring-size.svg"
         breadcrumbs={[{ label: "Massfertigung", href: "/massfertigung" }]}
       />
 

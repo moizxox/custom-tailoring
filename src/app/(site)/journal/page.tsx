@@ -1,5 +1,4 @@
 import { PageHero } from "@/components/layout/PageHero";
-import { ContentSection } from "@/components/sections/ContentSection";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -68,7 +67,6 @@ export default function JournalPage() {
         title="Journal"
         titleAccent="Journal"
         subtitle="Einblicke in das Kostümhandwerk – Tipps, Trends und Geschichten aus unserem Atelier."
-        iconSlug="pencil-sewing-tailoring-drawing.svg"
         breadcrumbs={[{ label: "Journal", href: "/journal" }]}
       />
 

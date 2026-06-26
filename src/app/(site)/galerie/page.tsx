@@ -70,7 +70,6 @@ export default function GaleriePage() {
         title="Galerie"
         titleAccent="Galerie"
         subtitle="Einblicke in unsere Handwerkskunst – Fasnachtskostüme für Cliquen, Guggenmusiken und Einzelpersonen."
-        iconSlug="tailor-dummy-dress-fashion-sewing.svg"
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
 

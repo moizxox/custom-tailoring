@@ -13,7 +13,6 @@ interface PageHeroProps {
   titleAccent?: string;
   subtitle?: string;
   breadcrumbs?: Breadcrumb[];
-  iconSlug?: string;
 }
 
 export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: PageHeroProps) {

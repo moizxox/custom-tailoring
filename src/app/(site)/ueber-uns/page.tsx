@@ -45,7 +45,6 @@ export default function UeberUnsPage() {
         title="Leidenschaft für das Handwerk"
         titleAccent="Handwerk"
         subtitle="Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe."
-        iconSlug="tailor-dummy-fashion-sewing-tailoring.svg"
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
       />
 

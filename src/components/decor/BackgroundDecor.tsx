@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useId } from "react";
+import { ConfettiOverlay } from "@/components/decor/ConfettiOverlay";
+import { BG_IMAGES } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 type DecorVariant = "hero" | "page" | "minimal" | "footer";
@@ -98,7 +100,7 @@ export function BackgroundDecor({
       {showMesh && (
         <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.16]" : variant === "footer" ? "opacity-[0.05]" : "opacity-[0.07]")}>
           <Image
-            src="/images/backgrounds/pastel-mesh.png"
+            src={BG_IMAGES.pastelMesh}
             alt=""
             fill
             className="object-cover object-center saturate-[0.65] hue-rotate-[-12deg]"
@@ -112,33 +114,23 @@ export function BackgroundDecor({
 
       {/* Confetti — festive pastel shapes (screen blend hides black bg) */}
       {showConfetti && (
-        <div
-          className={cn(
-            "absolute inset-0",
-            variant === "hero" ? "opacity-[0.22]" : variant === "page" ? "opacity-[0.5]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.1]",
-          )}
-        >
-          <Image
-            src="/images/backgrounds/konfetti.png"
-            alt=""
-            fill
-            className={cn("object-cover mix-blend-screen", variant === "hero" ? "brightness-[1.04] contrast-[1.08]" : "brightness-[1.02]")}
-            sizes="100vw"
-            priority={variant === "hero"}
-          />
-        </div>
+        <ConfettiOverlay
+          opacityClassName={variant === "hero" ? "opacity-[0.22]" : variant === "page" ? "opacity-[0.5]" : variant === "footer" ? "opacity-[0.04]" : "opacity-[0.1]"}
+          imageClassName={variant === "hero" ? "brightness-[1.04] contrast-[1.08]" : "brightness-[1.02]"}
+          priority={variant === "hero"}
+        />
       )}
 
       {/* Traditional costume symbols — hero: edge strips only (center stays clear) */}
       {showCostumeSymbols && variant === "hero" && (
         <>
           <div className="absolute left-0 right-0 bottom-8 h-[min(20vh,150px)] opacity-[0.52] hidden sm:block [mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_14%,transparent_28%,transparent_72%,black_86%,black_100%)]">
-            <Image src="/images/backgrounds/costume-symbols-banner.png" alt="" fill className="object-contain object-bottom saturate-[0.95] contrast-[1.1]" sizes="100vw" />
+            <Image src={BG_IMAGES.costumeSymbolsBanner} alt="" fill className="object-contain object-bottom saturate-[0.95] contrast-[1.1]" sizes="100vw" />
           </div>
 
           <div className="absolute inset-y-0 left-0 w-[min(32vw,400px)] opacity-[0.18] hidden lg:block [mask-image:linear-gradient(to_right,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,transparent_88%)]">
             <Image
-              src="/images/backgrounds/pastel-symbols-mesh.png"
+              src={BG_IMAGES.pastelSymbolsMesh}
               alt=""
               fill
               className="object-cover object-left saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]"
@@ -147,7 +139,7 @@ export function BackgroundDecor({
           </div>
           <div className="absolute inset-y-0 right-0 w-[min(32vw,400px)] opacity-[0.18] hidden lg:block [mask-image:linear-gradient(to_left,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,transparent_88%)]">
             <Image
-              src="/images/backgrounds/pastel-symbols-mesh.png"
+              src={BG_IMAGES.pastelSymbolsMesh}
               alt=""
               fill
               className="object-cover object-right saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]"
@@ -160,7 +152,7 @@ export function BackgroundDecor({
       {/* Costume symbols — non-hero pages (subtle bottom band) */}
       {showCostumeSymbols && variant !== "hero" && (
         <div className="absolute left-0 right-0 bottom-0 pointer-events-none h-[min(16vh,120px)] opacity-[0.14]">
-          <Image src="/images/backgrounds/costume-symbols-banner.png" alt="" fill className="object-contain object-bottom saturate-[0.85]" sizes="100vw" />
+          <Image src={BG_IMAGES.costumeSymbolsBanner} alt="" fill className="object-contain object-bottom saturate-[0.85]" sizes="100vw" />
           <div className="absolute inset-0 bg-gradient-to-t from-offwhite/80 via-offwhite/30 to-transparent" />
         </div>
       )}
@@ -170,7 +162,7 @@ export function BackgroundDecor({
         <>
           <div className={cn("absolute left-0", figurePosition.left, figureWidth, "aspect-[3/5]", figureOpacity, figureVisibility, figureFade.left)}>
             <Image
-              src="/images/backgrounds/figuren-left.png"
+              src={BG_IMAGES.figuresLeft}
               alt=""
               fill
               className="object-contain object-left outline-figure-gold outline-figure-strong outline-figure-hero"
@@ -181,7 +173,7 @@ export function BackgroundDecor({
           {/* Right column */}
           <div className={cn("absolute right-0", figurePosition.right, figureWidth, "aspect-[3/5]", figureOpacity, figureVisibility, figureFade.right)}>
             <Image
-              src="/images/backgrounds/figuren-right.png"
+              src={BG_IMAGES.figuresRight}
               alt=""
               fill
               className="object-contain object-right outline-figure-gold outline-figure-strong outline-figure-hero"

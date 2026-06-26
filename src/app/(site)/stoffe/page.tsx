@@ -27,7 +27,6 @@ export default function StoffePage() {
         title="Stoffe & Materialien"
         titleAccent="Stoffe"
         subtitle="Wir führen eine grosse Auswahl hochwertiger Stoffe und beraten Sie persönlich bei der Wahl."
-        iconSlug="fabric-cloth-sewing-tailoring.svg"
         breadcrumbs={[{ label: "Stoffe & Materialien", href: "/stoffe" }]}
       />
 

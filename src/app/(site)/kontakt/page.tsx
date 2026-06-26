@@ -50,7 +50,6 @@ export default function KontaktPage() {
         title="Kontakt"
         titleAccent="Kontakt"
         subtitle="Wir freuen uns auf Ihre Nachricht. Persönlich, per Telefon oder E-Mail."
-        iconSlug="pencil-sewing-tailoring-drawing.svg"
         breadcrumbs={[{ label: "Kontakt", href: "/kontakt" }]}
       />
 

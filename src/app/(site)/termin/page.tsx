@@ -34,7 +34,6 @@ export default function TerminPage() {
         title="Beratung buchen"
         titleAccent="buchen"
         subtitle="Vereinbaren Sie ein persönliches Gespräch – kostenlos und unverbindlich."
-        iconSlug="pin-cushion-handcraft-sewing-tailoring.svg"
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
       />
 

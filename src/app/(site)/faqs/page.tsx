@@ -48,7 +48,6 @@ export default function FaqsPage() {
         title="FAQs"
         titleAccent="FAQs"
         subtitle="Antworten auf die häufigsten Fragen rund um unsere Leistungen."
-        iconSlug="sewing-gauges-fashion-design-sewing-tailoring.svg"
         breadcrumbs={[{ label: "FAQs", href: "/faqs" }]}
       />
 

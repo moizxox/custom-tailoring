@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { BG_IMAGES } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 interface SideSketchFiguresProps {
@@ -32,7 +33,7 @@ export function SideSketchFigures({
         )}
       >
         <Image
-          src="/images/backgrounds/figuren-left-sketch.png"
+          src={BG_IMAGES.figuresSideLeftSketch}
           alt=""
           fill
           className="object-contain object-left outline-figure-gold outline-figure-strong"
@@ -50,7 +51,7 @@ export function SideSketchFigures({
         )}
       >
         <Image
-          src="/images/backgrounds/figuren-right-sketch.png"
+          src={BG_IMAGES.figuresSideRightSketch}
           alt=""
           fill
           className="object-contain object-right outline-figure-gold outline-figure-strong"
