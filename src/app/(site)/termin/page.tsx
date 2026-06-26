@@ -38,7 +38,7 @@ export default function TerminPage() {
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
       />
 
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site max-w-2xl mx-auto">
           {submitted ? (
             <div className="bg-white rounded-2xl border border-stone-light p-12 text-center flex flex-col items-center gap-5">

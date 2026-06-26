@@ -52,7 +52,7 @@ export default function FaqsPage() {
         breadcrumbs={[{ label: "FAQs", href: "/faqs" }]}
       />
 
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site max-w-3xl mx-auto">
           <div className="flex flex-col gap-3">
             {FAQS.map((faq) => (

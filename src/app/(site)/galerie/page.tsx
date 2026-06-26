@@ -74,7 +74,7 @@ export default function GaleriePage() {
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
 
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="flex flex-wrap gap-2 mb-10">
             {CATEGORIES.map((cat) => (

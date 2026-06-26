@@ -50,7 +50,7 @@ export default function UeberUnsPage() {
       />
 
       {/* Story section */}
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
             <p className="section-label mb-4">Unsere Geschichte</p>
@@ -92,7 +92,7 @@ export default function UeberUnsPage() {
         imageSrc="/images/gallery/gwuerztraminer-2026.jpeg"
         imageAlt="Gwürztraminer Waageclique – Gruppenausstattung"
         imagePosition="right"
-        className="section-bg-lavender"
+        className="section-bg-white"
         paragraphs={[
           "Ob Einzelperson, Clique oder ganze Guggenmusik – wir kennen die Anforderungen der Basler Fasnacht. Haltbare Stoffe, einheitliche Gruppenoptik und Kostüme, die den ganzen Umzug überstehen.",
           "Neben der Fasnacht fertigen wir auch Bühnenkostüme und individuelle Aufträge. Jedes Projekt beginnt mit einem Gespräch – denn nur wer versteht, was Sie brauchen, kann das richtige Kostüm schaffen.",
@@ -102,7 +102,7 @@ export default function UeberUnsPage() {
       />
 
       {/* Values */}
-      <section className="py-16 bg-offwhite">
+      <section className="py-16 section-bg-white">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Was uns antreibt</p>
@@ -123,7 +123,7 @@ export default function UeberUnsPage() {
       </section>
 
       {/* Team */}
-      <section className="py-16 bg-offwhite-warm">
+      <section className="py-16 section-bg-white">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Unser Team</p>

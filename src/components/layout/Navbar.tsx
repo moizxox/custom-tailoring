@@ -41,7 +41,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <ul className="hidden lg:flex items-center gap-8">
+          <ul className="hidden lg:flex items-center gap-7 bg-periwinkle-lighter/60 border border-periwinkle-light/40 rounded-full px-7 py-2.5">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <Link href={link.href} className="nav-link text-[13px]">

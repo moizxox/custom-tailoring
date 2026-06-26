@@ -65,7 +65,7 @@ export function ContentSection({
   );
 
   return (
-    <section className={cn("py-20 section-bg-lavender", className)}>
+    <section className={cn("py-20 section-bg-white", className)}>
       <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {imagePosition === "left" ? (
           <>

@@ -30,7 +30,7 @@ export default function MassfertigungPage() {
       />
 
       {/* Private measurement area — not public */}
-      <section className="relative py-16 bg-offwhite overflow-hidden">
+      <section className="relative py-16 section-bg-white overflow-hidden">
         <div className="container-site relative z-10 max-w-3xl mx-auto text-center">
           <p className="section-label mb-3">Massblätter</p>
           <h2 className="section-heading text-3xl mb-4">

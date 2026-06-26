@@ -54,7 +54,7 @@ export default function KontaktPage() {
         breadcrumbs={[{ label: "Kontakt", href: "/kontakt" }]}
       />
 
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left: Info cards */}
           <div className="flex flex-col gap-6">

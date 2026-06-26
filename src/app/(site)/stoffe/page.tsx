@@ -31,7 +31,7 @@ export default function StoffePage() {
         breadcrumbs={[{ label: "Stoffe & Materialien", href: "/stoffe" }]}
       />
 
-      <section className="py-20 bg-offwhite-warm">
+      <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FABRICS.map((f) => (

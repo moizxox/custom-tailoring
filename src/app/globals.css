@@ -78,12 +78,25 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
   }
 
+  /* Section backgrounds — soft pastels from the confetti palette (lively but elegant) */
   .section-bg-white {
     @apply bg-white;
   }
 
   .section-bg-lavender {
-    @apply bg-periwinkle-lighter/35;
+    background-color: #eef0fb;
+  }
+
+  .section-bg-mint {
+    background-color: #e8f2ec;
+  }
+
+  .section-bg-blush {
+    background-color: #f8edf1;
+  }
+
+  .section-bg-sky {
+    background-color: #e9eff8;
   }
 
   .section-bg-clean {

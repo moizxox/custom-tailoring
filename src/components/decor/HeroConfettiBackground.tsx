@@ -12,7 +12,7 @@ interface HeroConfettiBackgroundProps {
 export function HeroConfettiBackground({ className }: HeroConfettiBackgroundProps) {
   return (
     <div className={cn("absolute inset-0 overflow-hidden pointer-events-none select-none bg-offwhite", className)} aria-hidden>
-      <div className="absolute inset-0 bg-gradient-to-br from-periwinkle-lighter/30 via-offwhite/30 to-sand-light/30 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-gradient-to-br from-periwinkle-lighter/45 via-offwhite/40 to-periwinkle-lighter/25 backdrop-blur-sm" />
 
       <div className="absolute inset-0 opacity-[0.5]">
         <Image src="/images/backgrounds/konfetti.png" alt="" fill className="object-cover mix-blend-screen brightness-[1.04] contrast-[1.08]" sizes="100vw" priority />
