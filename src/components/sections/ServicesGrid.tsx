@@ -9,8 +9,7 @@ const DEFAULT_DATA: AcfServicesGrid = {
   section_label: "Von der Idee bis zum fertigen Kostüm",
   heading: "Unsere Leistungen",
   heading_accent: "Leistungen",
-  subtext:
-    "Alles aus einer Hand – von der Beratung über die Massanfertigung bis zur Übergabe. Verlässlich, präzise und mit Liebe zum Handwerk.",
+  subtext: "Alles aus einer Hand – von der Beratung über die Massanfertigung bis zur Übergabe. Verlässlich, präzise und mit Liebe zum Handwerk.",
   show_cta: true,
   cta_label: "Alle Leistungen",
   cta_url: "/leistungen",
@@ -90,53 +89,37 @@ const DEFAULT_DATA: AcfServicesGrid = {
   ],
 };
 
-interface ServiceCardProps {
-  item: AcfServiceItem;
-  index: number;
-}
-
-function ServiceCard({ item, index }: ServiceCardProps) {
+function ServiceCard({ item }: { item: AcfServiceItem }) {
   const card = (
     <div
       className={cn(
         "group flex flex-col items-center text-center gap-4 p-5 rounded-2xl h-full",
         "card-gradient",
         "hover:border-periwinkle-light hover:shadow-card-hover hover:-translate-y-1",
-        "transition-all duration-300 ease-out cursor-pointer"
+        "transition-all duration-300 ease-out cursor-pointer",
       )}
-      style={{ animationDelay: `${index * 40}ms` }}
     >
       {/* Icon */}
       <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-soft">
-        <Image
-          src={`/icons/sewing/${item.icon_slug}`}
-          alt=""
-          width={26}
-          height={26}
-          className="icon-periwinkle"
-        />
+        <Image src={`/icons/sewing/${item.icon_slug}`} alt="" width={26} height={26} className="icon-periwinkle" />
       </div>
 
       {/* Text — flex-1 pushes content to fill remaining height */}
       <div className="flex flex-col flex-1">
-        <h3 className="font-serif text-[14px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug">
-          {item.title}
-        </h3>
-        <p className="font-sans text-[11px] text-charcoal-lighter leading-relaxed">
-          {item.description}
-        </p>
+        <h3 className="font-serif text-[14px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug">{item.title}</h3>
+        <p className="font-sans text-[11px] text-charcoal-lighter leading-relaxed">{item.description}</p>
       </div>
     </div>
   );
 
   if (item.link_url) {
     return (
-      <Link href={item.link_url} className="block">
+      <Link href={item.link_url} className="block reveal-item">
         {card}
       </Link>
     );
   }
-  return card;
+  return <div className="reveal-item">{card}</div>;
 }
 
 interface ServicesGridProps {
@@ -150,7 +133,7 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
     <section className="py-24 section-bg-white">
       <div className="container-site">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-14 reveal-header">
           {data.section_label && (
             <div className="divider-ornament justify-center mb-5">
               <span>{data.section_label}</span>
@@ -160,30 +143,26 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
             {data.heading_accent ? (
               <>
                 {data.heading.split(data.heading_accent)[0]}
-                <em className="not-italic italic text-periwinkle-dark">
-                  {data.heading_accent}
-                </em>
+                <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
                 {data.heading.split(data.heading_accent)[1]}
               </>
             ) : (
               data.heading
             )}
           </h2>
-          {data.subtext && (
-            <p className="section-subtext max-w-xl mx-auto">{data.subtext}</p>
-          )}
+          {data.subtext && <p className="section-subtext max-w-xl mx-auto">{data.subtext}</p>}
         </div>
 
         {/* 12-card grid — auto-rows ensures equal heights in every row */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 auto-rows-fr">
-          {data.services.map((service, i) => (
-            <ServiceCard key={service.title} item={service} index={i} />
+          {data.services.map((service) => (
+            <ServiceCard key={service.title} item={service} />
           ))}
         </div>
 
         {/* Bottom CTA */}
         {data.show_cta && data.cta_label && data.cta_url && (
-          <div className="mt-12 flex justify-center">
+          <div className="mt-12 flex justify-center reveal-item">
             <Link href={data.cta_url} className="btn-outline-dark inline-flex items-center gap-2">
               {data.cta_label}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

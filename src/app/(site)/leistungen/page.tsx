@@ -40,16 +40,14 @@ const DETAILS = [
   {
     id: "reparaturen",
     title: "Reparaturen",
-    description:
-      "Gerissene Nähte, beschädigte Verschlüsse oder abgenutzte Verzierungen – wir reparieren Ihre Kostüme fachgerecht und geben ihnen neues Leben.",
+    description: "Gerissene Nähte, beschädigte Verschlüsse oder abgenutzte Verzierungen – wir reparieren Ihre Kostüme fachgerecht und geben ihnen neues Leben.",
     icon: "sewing-needles-sewing-tailoring-needle.svg",
     highlights: ["Alle Materialien", "Kurze Wartezeiten", "Faire Preise"],
   },
   {
     id: "stoffe",
     title: "Stoffauswahl & Beratung",
-    description:
-      "Wir begleiten Sie persönlich beim Auswählen der richtigen Materialien. Unser Sortiment umfasst hochwertige Stoffe in allen Farben, Mustern und Texturen.",
+    description: "Wir begleiten Sie persönlich beim Auswählen der richtigen Materialien. Unser Sortiment umfasst hochwertige Stoffe in allen Farben, Mustern und Texturen.",
     icon: "fabric-cloth-sewing-tailoring.svg",
     highlights: ["Grosse Auswahl", "Persönliche Beratung", "Muster auf Anfrage"],
   },

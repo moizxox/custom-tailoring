@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
+import { SiteReveal } from "@/components/motion/SiteReveal";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -22,18 +23,8 @@ export const metadata: Metadata = {
     default: "Kostümschneiderei Basel – Ihre Kostüme. Unser Handwerk.",
     template: "%s | Kostümschneiderei Basel",
   },
-  description:
-    "Massgeschneiderte Kostüme für Guggenmusiken, Cliquen und Einzelpersonen in Basel. Individuelle Beratung, hochwertige Materialien, professionelle Umsetzung.",
-  keywords: [
-    "Kostüm",
-    "Schneiderei",
-    "Basel",
-    "Fasnacht",
-    "Guggenmusik",
-    "Massanfertigung",
-    "Kostüm Basel",
-    "Clique",
-  ],
+  description: "Massgeschneiderte Kostüme für Guggenmusiken, Cliquen und Einzelpersonen in Basel. Individuelle Beratung, hochwertige Materialien, professionelle Umsetzung.",
+  keywords: ["Kostüm", "Schneiderei", "Basel", "Fasnacht", "Guggenmusik", "Massanfertigung", "Kostüm Basel", "Clique"],
   authors: [{ name: "Kostümschneiderei Basel" }],
   openGraph: {
     type: "website",
@@ -41,8 +32,7 @@ export const metadata: Metadata = {
     url: "https://www.kostuemschneiderei.ch",
     siteName: "Kostümschneiderei Basel",
     title: "Kostümschneiderei Basel – Ihre Kostüme. Unser Handwerk.",
-    description:
-      "Massgeschneiderte Kostüme für Guggenmusiken, Cliquen und Einzelpersonen in Basel.",
+    description: "Massgeschneiderte Kostüme für Guggenmusiken, Cliquen und Einzelpersonen in Basel.",
   },
   robots: {
     index: true,
@@ -58,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${playfair.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col bg-offwhite text-charcoal antialiased">
+        <SiteReveal />
         {children}
       </body>
     </html>

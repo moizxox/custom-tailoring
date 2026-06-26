@@ -49,14 +49,9 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
             </div>
           )}
           <h2 className="section-heading mb-4">
-            {data.heading}{" "}
-            {data.heading_accent && (
-              <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
-            )}
+            {data.heading} {data.heading_accent && <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>}
           </h2>
-          {data.subtext && (
-            <p className="section-subtext max-w-md mx-auto">{data.subtext}</p>
-          )}
+          {data.subtext && <p className="section-subtext max-w-md mx-auto">{data.subtext}</p>}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -67,7 +62,7 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
               className={cn(
                 "group relative overflow-hidden rounded-2xl",
                 "border border-stone-light hover:border-periwinkle-light",
-                "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+                "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover",
               )}
             >
               <div className="relative h-72 overflow-hidden">

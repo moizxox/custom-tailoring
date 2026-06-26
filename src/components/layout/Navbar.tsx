@@ -26,7 +26,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+        "fixed top-0 inset-x-0 z-50 transition-all duration-300 site-nav-enter",
         "bg-offwhite-pure/40 backdrop-blur-md border-b",
         scrolled ? "bg-offwhite-pure/40 backdrop-blur-sm shadow-soft border-gold-muted/40" : "border-gold-muted/20",
       )}

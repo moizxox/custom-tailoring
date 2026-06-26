@@ -20,7 +20,7 @@ const FOOTER_LINKS = {
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden mt-4 ">
+    <footer className="relative overflow-hidden mt-4 site-footer-enter">
       {/* Ambient glow — no gradient wash */}
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
         <div className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/30 blur-[90px] animate-glow-drift" />
@@ -45,10 +45,7 @@ export function Footer() {
       </div>
 
       {/* Top fade — behind footer panels, blends background from page above */}
-      <div
-        className="absolute inset-x-0 top-0 z-[5] h-[200px] bg-gradient-to-b from-white via-white/70 to-transparent pointer-events-none"
-        aria-hidden
-      />
+      <div className="absolute inset-x-0 top-0 z-[5] h-[200px] bg-gradient-to-b from-white via-white/70 to-transparent pointer-events-none" aria-hidden />
 
       <div className="relative z-20 container-site py-12 lg:py-16 flex flex-col gap-5">
         {/* ── CTA — glass panel ─────────────────────────────────────────────── */}
