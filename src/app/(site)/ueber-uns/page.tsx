@@ -122,7 +122,7 @@ export default function UeberUnsPage() {
       </section>
 
       {/* Team */}
-      <section className="py-16 section-bg-white">
+      <section id="team" className="py-16 section-bg-white scroll-mt-28">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Unser Team</p>
