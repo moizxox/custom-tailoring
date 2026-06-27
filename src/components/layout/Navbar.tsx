@@ -3,15 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-
-const NAV_LINKS = [
-  { label: "Atelier", href: "/atelier" },
-  { label: "Leistungen", href: "/leistungen" },
-  { label: "Massfertigung", href: "/massfertigung" },
-  { label: "Über uns", href: "/ueber-uns" },
-  { label: "Journal", href: "/journal" },
-  { label: "Kontakt", href: "/kontakt" },
-];
+import { NAV_LINKS } from "@/lib/site-content";
+import { SiteSearch } from "@/components/layout/SiteSearch";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -51,9 +44,11 @@ export function Navbar() {
             ))}
           </ul>
 
-          {/* Desktop CTA + Hamburger */}
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Appointment CTA — matches mockup "Beratung buchen" style */}
+          {/* Desktop CTA + Search + Hamburger */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <SiteSearch className="hidden md:block" variant="bar" />
+            <SiteSearch className="md:hidden" variant="compact" onNavigate={() => setMobileOpen(false)} />
+
             <Link
               href="/termin"
               className={cn(
