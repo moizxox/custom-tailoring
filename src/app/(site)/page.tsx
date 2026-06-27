@@ -27,12 +27,13 @@ export default function HomePage() {
       {/* 4. Gallery — editorial 3-col photo grid */}
       <GalleryPreview />
 
-      <PhotoMarquee />
-
-      {/* 5. About / CTA band */}
+      {/* 5. Text breather — separates photo blocks so the page doesn't feel overloaded */}
       <AboutBand />
 
-      {/* 6. Contact form — end of page */}
+      {/* 6. Atelier impressions — second photo moment, after copy */}
+      <PhotoMarquee />
+
+      {/* 7. Contact form — end of page */}
       <HeroContactSection />
     </>
   );

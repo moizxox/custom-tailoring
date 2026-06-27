@@ -40,7 +40,7 @@ export function AboutBand({ acf }: AboutBandProps) {
   const data = { ...DEFAULT_DATA, ...acf };
 
   return (
-    <section className="py-20 section-bg-white">
+    <section className="py-20 section-bg-clean">
       <div className="container-site">
         <div className="rounded-3xl card-gradient overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">

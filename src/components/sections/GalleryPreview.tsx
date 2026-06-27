@@ -26,6 +26,8 @@ const DEFAULT_DATA: AcfGalleryPreview = {
   section_label: "Unsere Handwerkskunst",
   heading: "Jedes Kostüm",
   heading_accent: "ein Unikat.",
+  subtext:
+    "Von der Guggenmusik bis zur Einzelanfertigung — jedes Projekt erzählt eine eigene Geschichte. Ein Einblick in unsere Arbeit.",
   show_cta: true,
   cta_label: "Zur Galerie",
   cta_url: "/galerie",
