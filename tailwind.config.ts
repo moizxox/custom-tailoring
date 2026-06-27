@@ -4,11 +4,7 @@ import type { Config } from "tailwindcss";
 // Primary: soft periwinkle blue-lavender | Neutrals: sand beige, warm grey, light stone, off-white
 
 const config: Config = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
@@ -31,30 +27,30 @@ const config: Config = {
         },
         // ── Neutrals ─────────────────────────────────────────────────────────
         sand: {
-          DEFAULT: "#E4D9CC",   // Sand beige — warm off-tone
-          light: "#F0E8DF",     // Lighter sand
-          dark: "#CABBA8",      // Deeper sand for borders
+          DEFAULT: "#E4D9CC", // Sand beige — warm off-tone
+          light: "#F0E8DF", // Lighter sand
+          dark: "#CABBA8", // Deeper sand for borders
         },
         stone: {
-          DEFAULT: "#D0CBC4",   // Light stone
-          light: "#E2DFDC",     // Near-white stone
-          dark: "#B8B2AB",      // Warm grey
+          DEFAULT: "#D0CBC4", // Light stone
+          light: "#E2DFDC", // Near-white stone
+          dark: "#B8B2AB", // Warm grey
         },
         offwhite: {
-          DEFAULT: "#F8F6F3",   // Off-white background
-          warm: "#F2EFE9",      // Slightly warmer off-white
-          pure: "#FDFCFB",      // Near pure white
+          DEFAULT: "#F8F6F3", // Off-white background
+          warm: "#F2EFE9", // Slightly warmer off-white
+          pure: "#FDFCFB", // Near pure white
         },
         warmgrey: {
-          DEFAULT: "#B5AFA8",   // Warm grey
-          light: "#CEC9C3",     // Light warm grey
-          dark: "#8A847D",      // Dark warm grey
+          DEFAULT: "#B5AFA8", // Warm grey
+          light: "#CEC9C3", // Light warm grey
+          dark: "#8A847D", // Dark warm grey
         },
         // ── Text ─────────────────────────────────────────────────────────────
         charcoal: {
-          DEFAULT: "#2C2A28",   // Main text
-          light: "#5A5754",     // Secondary text
-          lighter: "#8A8784",   // Muted text
+          DEFAULT: "#2C2A28", // Main text
+          light: "#5A5754", // Secondary text
+          lighter: "#8A8784", // Muted text
         },
       },
       fontFamily: {
@@ -89,12 +85,17 @@ const config: Config = {
           "0%, 100%": { opacity: "0.55", transform: "translate(0, 0) scale(1)" },
           "50%": { opacity: "0.75", transform: "translate(12px, -8px) scale(1.05)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s ease forwards",
         "fade-in": "fade-in 0.4s ease forwards",
         "scale-in": "scale-in 0.5s ease forwards",
         "glow-drift": "glow-drift 12s ease-in-out infinite",
+        marquee: "marquee 45s linear infinite",
       },
     },
   },

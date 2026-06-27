@@ -1,9 +1,16 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
-import Image from "next/image";
+import { PhotoSlider } from "@/components/ui/PhotoSlider";
 import Link from "next/link";
 import type { Metadata } from "next";
+
+const ATELIER_SLIDES = [
+  { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt und Nähmaschinen" },
+  { src: "/images/atelier/atelier-2.jpg", alt: "Handarbeit und Nähzubehör im Atelier" },
+  { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
+  { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Fertiges Kostüm im Atelier" },
+];
 
 export const metadata: Metadata = {
   title: "Atelier",
@@ -26,11 +33,13 @@ export default function AtelierPage() {
           <div>
             <p className="section-label mb-4">Handwerk vor Ort</p>
             <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
-              Wo Tradition und<br />
+              Wo Tradition und
+              <br />
               <em className="not-italic italic text-periwinkle-dark">Kreativität</em> aufeinandertreffen
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-4">
-              Unser Atelier ist mehr als ein Arbeitsplatz. Hier riecht es nach Stoff, klingt es nach Nähmaschinen, und jede Ecke erzählt eine Geschichte von Handwerk und Leidenschaft.
+              Unser Atelier ist mehr als ein Arbeitsplatz. Hier riecht es nach Stoff, klingt es nach Nähmaschinen, und jede Ecke erzählt eine Geschichte von Handwerk und
+              Leidenschaft.
             </p>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-7">
               Besuchen Sie uns – ob für eine Beratung, eine Anprobe oder einfach um die Atmosphäre zu erleben. Wir heissen Sie herzlich willkommen.
@@ -54,24 +63,7 @@ export default function AtelierPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { src: "/images/atelier/atelier-1.png", alt: "Atelier Ansicht" },
-              { src: "/images/atelier/atelier-2.jpg", alt: "Handarbeit im Atelier" },
-              { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-              { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Fertiges Kostüm – Schlösslischränzer Major" },
-            ].map((photo) => (
-              <div key={photo.src} className="relative aspect-square rounded-2xl overflow-hidden border border-stone-light shadow-soft">
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 1024px) 50vw, 25vw"
-                />
-              </div>
-            ))}
-          </div>
+          <PhotoSlider slides={ATELIER_SLIDES} />
         </div>
       </section>
 

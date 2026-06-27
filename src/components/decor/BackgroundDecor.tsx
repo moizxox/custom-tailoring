@@ -28,7 +28,7 @@ interface BackgroundDecorProps {
  * (not yellow gold). Uses mix-blend-mode: screen so black areas disappear on light bg.
  */
 /** Crisscross dashed stitch lines — periwinkle, like client Nähnaht background */
-function StitchDashOverlay({ className, opacity = 0.12 }: { className?: string; opacity?: number }) {
+function StitchDashOverlay({ className, opacity = 0.5 }: { className?: string; opacity?: number }) {
   const id = useId().replace(/:/g, "");
   const patternA = `stitch-a-${id}`;
   const patternB = `stitch-b-${id}`;
@@ -99,14 +99,7 @@ export function BackgroundDecor({
       {/* Soft pastel mesh — warm tint only, no mint/green */}
       {showMesh && (
         <div className={cn("absolute inset-0", variant === "hero" ? "opacity-[0.16]" : variant === "footer" ? "opacity-[0.05]" : "opacity-[0.07]")}>
-          <Image
-            src={BG_IMAGES.pastelMesh}
-            alt=""
-            fill
-            className="object-cover object-center saturate-[0.65] hue-rotate-[-12deg]"
-            sizes="100vw"
-            priority={variant === "hero"}
-          />
+          <Image src={BG_IMAGES.pastelMesh} alt="" fill className="object-cover object-center saturate-[0.65] hue-rotate-[-12deg]" sizes="100vw" priority={variant === "hero"} />
           {/* Warm wash — neutralises green/mint from mesh asset */}
           <div className="absolute inset-0 bg-gradient-to-br from-sand-light/30 via-offwhite/20 to-periwinkle-lighter/15" />
         </div>
@@ -129,22 +122,10 @@ export function BackgroundDecor({
           </div>
 
           <div className="absolute inset-y-0 left-0 w-[min(32vw,400px)] opacity-[0.18] hidden lg:block [mask-image:linear-gradient(to_right,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,transparent_88%)]">
-            <Image
-              src={BG_IMAGES.pastelSymbolsMesh}
-              alt=""
-              fill
-              className="object-cover object-left saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]"
-              sizes="400px"
-            />
+            <Image src={BG_IMAGES.pastelSymbolsMesh} alt="" fill className="object-cover object-left saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]" sizes="400px" />
           </div>
           <div className="absolute inset-y-0 right-0 w-[min(32vw,400px)] opacity-[0.18] hidden lg:block [mask-image:linear-gradient(to_left,black_0%,transparent_88%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,transparent_88%)]">
-            <Image
-              src={BG_IMAGES.pastelSymbolsMesh}
-              alt=""
-              fill
-              className="object-cover object-right saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]"
-              sizes="400px"
-            />
+            <Image src={BG_IMAGES.pastelSymbolsMesh} alt="" fill className="object-cover object-right saturate-[0.8] hue-rotate-[-8deg] contrast-[1.08]" sizes="400px" />
           </div>
         </>
       )}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
-import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
+import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
 
 interface Breadcrumb {
   label: string;
@@ -29,9 +29,12 @@ export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: P
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-periwinkle-lighter/40 via-offwhite to-periwinkle-lighter/20 pt-20 lg:pt-24">
-      <BackgroundDecor variant="page" showConfetti showStitchDashes showFigures={false} />
-      <SideSketchFigures opacity="opacity-[0.5]" width="w-[min(22vw,320px)]" />
+    <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24 min-h-[60vh]">
+      {/* Same confetti stack as homepage — offwhite base, gradient, then overlay (nothing on top washing it out) */}
+      <HeroConfettiBackground sketchOpacity="opacity-[0.5]" />
+
+      {/* Stitch dashes only — mesh disabled so it doesn't cover the confetti circles */}
+      <BackgroundDecor variant="page" showConfetti={false} showMesh={false} showStitchDashes showFigures={false} />
 
       <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12">
         <div className="max-w-3xl mx-auto text-center">

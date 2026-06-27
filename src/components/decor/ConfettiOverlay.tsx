@@ -11,22 +11,10 @@ interface ConfettiOverlayProps {
   priority?: boolean;
 }
 
-export function ConfettiOverlay({
-  opacityClassName,
-  imageClassName,
-  className,
-  priority = false,
-}: ConfettiOverlayProps) {
+export function ConfettiOverlay({ opacityClassName, imageClassName, className, priority = false }: ConfettiOverlayProps) {
   return (
     <div className={cn("absolute inset-0", opacityClassName, className)}>
-      <Image
-        src={BG_IMAGES.confettiSoft}
-        alt=""
-        fill
-        className={cn("object-cover mix-blend-screen", imageClassName)}
-        sizes="100vw"
-        priority={priority}
-      />
+      <Image src={BG_IMAGES.confettiSoft} alt="" fill className={cn("object-cover object-top mix-blend-screen", imageClassName)} sizes="100vw" priority={priority} />
     </div>
   );
 }
