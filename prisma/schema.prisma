@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Admin users
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Page content — one row per page+section combination
+// ─────────────────────────────────────────────────────────────────────────────
+
+model PageContent {
+  id         String   @id @default(cuid())
+  pageSlug   String
+  sectionKey String
+  content    Json
+  updatedAt  DateTime @updatedAt
+
+  @@unique([pageSlug, sectionKey])
+  @@index([pageSlug])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Products
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       String
+  category    String
+  tier        String
+  imageUrl    String?
+  inStock     Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Media library
+// ─────────────────────────────────────────────────────────────────────────────
+
+model MediaFile {
+  id        String   @id @default(cuid())
+  url       String
+  altText   String?
+  filename  String
+  publicId  String?
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Site-wide settings (contact, locations, social)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Password reset tokens
+// ─────────────────────────────────────────────────────────────────────────────
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
