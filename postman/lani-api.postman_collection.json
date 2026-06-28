@@ -1,0 +1,850 @@
+{
+  "info": {
+    "_postman_id": "lani-cms-api-collection",
+    "name": "Lani Kostümschneiderei API",
+    "description": "Full API collection for Lani CMS (admin) and customer portal.\n\n## Quick start\n1. Import this collection\n2. Run folder **0. Demo Data Init** top-to-bottom in Collection Runner\n3. All variables use the `lani_` prefix\n\n## Auth\n- **Admin CMS**: NextAuth cookie `authjs.session-token` → stored in `{{lani_session_token}}`\n- **Customer portal**: HMAC cookie `portal_session` → stored in `{{lani_portal_session_token}}`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "lani_base_url", "value": "http://localhost:3000" },
+    { "key": "lani_admin_email", "value": "mainmoiz899@gmail.com" },
+    { "key": "lani_admin_password", "value": "Admin@123" },
+    { "key": "lani_csrf_token", "value": "" },
+    { "key": "lani_session_token", "value": "" },
+    { "key": "lani_admin_user_id", "value": "" },
+    { "key": "lani_admin_user_email", "value": "" },
+    { "key": "lani_portal_email", "value": "max@example.com" },
+    { "key": "lani_portal_access_code", "value": "LANI2026" },
+    { "key": "lani_portal_session_token", "value": "" },
+    { "key": "lani_product_id", "value": "" },
+    { "key": "lani_product_slug", "value": "demo-postman-kostum" },
+    { "key": "lani_page_slug", "value": "home" },
+    { "key": "lani_section_key", "value": "hero" },
+    { "key": "lani_media_id", "value": "" },
+    { "key": "lani_reset_token", "value": "" },
+    { "key": "lani_new_admin_name", "value": "Demo Admin" },
+    { "key": "lani_new_admin_email", "value": "demo.admin@lani.test" },
+    { "key": "lani_new_admin_password", "value": "DemoAdmin@123" },
+    { "key": "lani_demo_timestamp", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-attach admin session cookie when lani_session_token is set",
+          "const laniSession = pm.collectionVariables.get('lani_session_token');",
+          "const url = pm.request.url.toString();",
+          "const isAdminAuth = url.includes('/api/auth/') && !url.includes('/admin/api/auth/');",
+          "if (laniSession && !isAdminAuth && url.includes('/admin/api/')) {",
+          "  pm.request.headers.upsert({ key: 'Cookie', value: 'authjs.session-token=' + laniSession });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Demo Data Init (run in order)",
+      "description": "Run this entire folder in Collection Runner to authenticate and seed demo CMS data.",
+      "item": [
+        {
+          "name": "[Init] 1. Get CSRF Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('CSRF token received', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.csrfToken).to.be.a('string');",
+                  "  pm.collectionVariables.set('lani_csrf_token', json.csrfToken);",
+                  "});",
+                  "pm.collectionVariables.set('lani_demo_timestamp', Date.now().toString());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/api/auth/csrf"
+          }
+        },
+        {
+          "name": "[Init] 2. Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Admin login sets session cookie', () => {",
+                  "  pm.expect([200, 302]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "const headers = pm.response.headers.all();",
+                  "headers.filter(h => h.key.toLowerCase() === 'set-cookie').forEach(h => {",
+                  "  const match = h.value.match(/authjs\\.session-token=([^;]+)/);",
+                  "  if (match) pm.collectionVariables.set('lani_session_token', match[1]);",
+                  "});",
+                  "",
+                  "pm.test('Session token stored', () => {",
+                  "  pm.expect(pm.collectionVariables.get('lani_session_token')).to.not.be.empty;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "csrfToken", "value": "{{lani_csrf_token}}" },
+                { "key": "email", "value": "{{lani_admin_email}}" },
+                { "key": "password", "value": "{{lani_admin_password}}" },
+                { "key": "redirect", "value": "false" },
+                { "key": "json", "value": "true" }
+              ]
+            },
+            "url": "{{lani_base_url}}/api/auth/callback/credentials"
+          }
+        },
+        {
+          "name": "[Init] 3. Verify Admin Session",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.collectionVariables.get('lani_session_token');",
+                  "if (t) pm.request.headers.upsert({ key: 'Cookie', value: 'authjs.session-token=' + t });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Session is valid', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.user).to.be.an('object');",
+                  "  pm.expect(json.user.email).to.eql(pm.collectionVariables.get('lani_admin_email'));",
+                  "  if (json.user.id) pm.collectionVariables.set('lani_admin_user_id', json.user.id);",
+                  "  if (json.user.email) pm.collectionVariables.set('lani_admin_user_email', json.user.email);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/api/auth/session"
+          }
+        },
+        {
+          "name": "[Init] 4. Seed Demo Page Content (home hero)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Demo page content saved', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().ok).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionKey\": \"hero\",\n  \"content\": {\n    \"eyebrow\": \"Kostümschneiderei Basel\",\n    \"heading\": \"Ihre Kostüme.\\nUnser Handwerk.\",\n    \"headingAccent\": \"Handwerk.\",\n    \"subtext\": \"Demo content seeded via Postman (lani_ init).\",\n    \"ctaPrimaryLabel\": \"Beratung buchen\",\n    \"ctaPrimaryUrl\": \"/termin\",\n    \"ctaSecondaryLabel\": \"Leistungen entdecken\",\n    \"ctaSecondaryUrl\": \"/service\"\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/pages/home"
+          }
+        },
+        {
+          "name": "[Init] 5. Create Demo Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Demo product created', () => {",
+                  "  pm.response.to.have.status(201);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.id).to.be.a('string');",
+                  "  pm.collectionVariables.set('lani_product_id', json.id);",
+                  "  pm.collectionVariables.set('lani_product_slug', json.slug);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Postman Kostüm\",\n  \"slug\": \"demo-postman-kostum-{{lani_demo_timestamp}}\",\n  \"description\": \"Created by Postman lani_ demo init.\",\n  \"price\": \"CHF 299\",\n  \"category\": \"Einzelperson\",\n  \"tier\": \"Standard\",\n  \"inStock\": true,\n  \"sortOrder\": 99\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/products"
+          }
+        },
+        {
+          "name": "[Init] 6. Seed Demo Settings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Demo settings saved', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().ok).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contact\": {\n    \"phone\": \"+41 61 000 00 00\",\n    \"email\": \"info@kostuemschneiderei.ch\",\n    \"whatsapp\": \"+41 79 000 00 00\"\n  },\n  \"social\": {\n    \"instagram\": \"https://instagram.com/kostuemschneiderei\",\n    \"facebook\": \"https://facebook.com/kostuemschneiderei\"\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/settings"
+          }
+        },
+        {
+          "name": "[Init] 7. Portal Login (demo customer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Portal login successful', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().ok).to.eql(true);",
+                  "});",
+                  "",
+                  "pm.response.headers.all().filter(h => h.key.toLowerCase() === 'set-cookie').forEach(h => {",
+                  "  const match = h.value.match(/portal_session=([^;]+)/);",
+                  "  if (match) pm.collectionVariables.set('lani_portal_session_token', match[1]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{lani_portal_email}}\",\n  \"accessCode\": \"{{lani_portal_access_code}}\"\n}"
+            },
+            "url": "{{lani_base_url}}/kundenbereich/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Auth — Admin (NextAuth)",
+      "item": [
+        {
+          "name": "Get CSRF Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('lani_csrf_token', json.csrfToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/api/auth/csrf"
+          }
+        },
+        {
+          "name": "Login (Credentials)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.response.headers.all().filter(h => h.key.toLowerCase() === 'set-cookie').forEach(h => {",
+                  "  const match = h.value.match(/authjs\\.session-token=([^;]+)/);",
+                  "  if (match) pm.collectionVariables.set('lani_session_token', match[1]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "csrfToken", "value": "{{lani_csrf_token}}" },
+                { "key": "email", "value": "{{lani_admin_email}}" },
+                { "key": "password", "value": "{{lani_admin_password}}" },
+                { "key": "redirect", "value": "false" },
+                { "key": "json", "value": "true" }
+              ]
+            },
+            "url": "{{lani_base_url}}/api/auth/callback/credentials"
+          }
+        },
+        {
+          "name": "Get Session",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.collectionVariables.get('lani_session_token');",
+                  "if (t) pm.request.headers.upsert({ key: 'Cookie', value: 'authjs.session-token=' + t });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.user?.id) pm.collectionVariables.set('lani_admin_user_id', json.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/api/auth/session"
+          }
+        },
+        {
+          "name": "Get Providers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/api/auth/providers"
+          }
+        },
+        {
+          "name": "Sign Out",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.collectionVariables.get('lani_session_token');",
+                  "if (t) pm.request.headers.upsert({ key: 'Cookie', value: 'authjs.session-token=' + t });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('lani_session_token', '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "csrfToken", "value": "{{lani_csrf_token}}" }
+              ]
+            },
+            "url": "{{lani_base_url}}/api/auth/signout"
+          }
+        },
+        {
+          "name": "Register New Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{lani_new_admin_name}}\",\n  \"email\": \"{{lani_new_admin_email}}\",\n  \"password\": \"{{lani_new_admin_password}}\"\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/auth/register"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{lani_admin_email}}\"\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/auth/forgot-password"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{lani_reset_token}}\",\n  \"password\": \"NewPassword@123\"\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/auth/reset-password"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. CMS — Pages",
+      "item": [
+        {
+          "name": "Get Page Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/pages/{{lani_page_slug}}"
+          }
+        },
+        {
+          "name": "Update Page Section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionKey\": \"{{lani_section_key}}\",\n  \"content\": {\n    \"heading\": \"Demo heading from Postman\",\n    \"subtext\": \"Updated via lani_ collection.\"\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/pages/{{lani_page_slug}}"
+          }
+        },
+        {
+          "name": "Update Home Hero (full demo)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionKey\": \"hero\",\n  \"content\": {\n    \"eyebrow\": \"Kostümschneiderei Basel\",\n    \"heading\": \"Ihre Kostüme.\\nUnser Handwerk.\",\n    \"headingAccent\": \"Handwerk.\",\n    \"subtext\": \"Massgeschneiderte Kostüme für Guggenmusiken, Cliquen und Einzelpersonen.\",\n    \"ctaPrimaryLabel\": \"Beratung buchen\",\n    \"ctaPrimaryUrl\": \"/termin\",\n    \"ctaSecondaryLabel\": \"Service\",\n    \"ctaSecondaryUrl\": \"/service\"\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/pages/home"
+          }
+        },
+        {
+          "name": "Update Über uns Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectionKey\": \"team\",\n  \"content\": {\n    \"members\": [\n      {\n        \"name\": \"Lani Müller\",\n        \"role\": \"Inhaberin & Schneiderin\",\n        \"icon\": \"tailor-dummy-fashion-sewing-tailoring.svg\",\n        \"bio\": \"Seit über 20 Jahren lebe ich meine Leidenschaft für das Kostümhandwerk.\"\n      }\n    ]\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/pages/ueber-uns"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. CMS — Products",
+      "item": [
+        {
+          "name": "List Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (Array.isArray(json) && json.length > 0) {",
+                  "  pm.collectionVariables.set('lani_product_id', json[0].id);",
+                  "  pm.collectionVariables.set('lani_product_slug', json[0].slug);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/products"
+          }
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('lani_product_id', json.id);",
+                  "  pm.collectionVariables.set('lani_product_slug', json.slug);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Kostüm\",\n  \"slug\": \"postman-test-{{lani_demo_timestamp}}\",\n  \"description\": \"Test product via Postman.\",\n  \"price\": \"CHF 250\",\n  \"category\": \"Einzelperson\",\n  \"tier\": \"Standard\",\n  \"inStock\": true,\n  \"sortOrder\": 50\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/products"
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/products/{{lani_product_id}}"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Kostüm (updated)\",\n  \"price\": \"CHF 275\",\n  \"inStock\": true\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/products/{{lani_product_id}}"
+          }
+        },
+        {
+          "name": "Toggle Product Out of Stock",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inStock\": false\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/products/{{lani_product_id}}"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/products/{{lani_product_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. CMS — Settings",
+      "item": [
+        {
+          "name": "Get All Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/settings"
+          }
+        },
+        {
+          "name": "Update Contact & Social",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contact\": {\n    \"phone\": \"+41 61 123 45 67\",\n    \"email\": \"info@kostuemschneiderei.ch\",\n    \"whatsapp\": \"+41 79 123 45 67\"\n  },\n  \"social\": {\n    \"instagram\": \"https://instagram.com/kostuemschneiderei\",\n    \"facebook\": \"https://facebook.com/kostuemschneiderei\"\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/settings"
+          }
+        },
+        {
+          "name": "Update Location Pratteln",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_pratteln\": {\n    \"id\": \"pratteln\",\n    \"name\": \"Atelier Pratteln\",\n    \"address\": \"Musterstrasse 1\",\n    \"city\": \"4133 Pratteln\",\n    \"phone\": \"+41 61 123 45 67\",\n    \"mapsUrl\": \"https://maps.google.com\",\n    \"mapsEmbed\": \"https://www.google.com/maps/embed?pb=...\"\n  }\n}"
+            },
+            "url": "{{lani_base_url}}/admin/api/settings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. CMS — Media",
+      "item": [
+        {
+          "name": "List Media Files",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (Array.isArray(json) && json.length > 0) {",
+                  "  pm.collectionVariables.set('lani_media_id', json[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/upload"
+          }
+        },
+        {
+          "name": "Upload Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('lani_media_id', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select a local image file in Postman"
+                },
+                {
+                  "key": "altText",
+                  "value": "Postman upload demo",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": "{{lani_base_url}}/admin/api/upload"
+          }
+        },
+        {
+          "name": "Delete Media File",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{lani_base_url}}/admin/api/media/{{lani_media_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Portal — Customer",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const t = pm.collectionVariables.get('lani_portal_session_token');",
+              "if (t) pm.request.headers.upsert({ key: 'Cookie', value: 'portal_session=' + t });"
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.response.headers.all().filter(h => h.key.toLowerCase() === 'set-cookie').forEach(h => {",
+                  "  const match = h.value.match(/portal_session=([^;]+)/);",
+                  "  if (match) pm.collectionVariables.set('lani_portal_session_token', match[1]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{lani_portal_email}}\",\n  \"accessCode\": \"{{lani_portal_access_code}}\"\n}"
+            },
+            "url": "{{lani_base_url}}/kundenbereich/api/auth/login"
+          }
+        },
+        {
+          "name": "Login (Anna — demo)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.response.headers.all().filter(h => h.key.toLowerCase() === 'set-cookie').forEach(h => {",
+                  "  const match = h.value.match(/portal_session=([^;]+)/);",
+                  "  if (match) pm.collectionVariables.set('lani_portal_session_token', match[1]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"anna@example.com\",\n  \"accessCode\": \"BASel482\"\n}"
+            },
+            "url": "{{lani_base_url}}/kundenbereich/api/auth/login"
+          }
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('lani_portal_session_token', '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{lani_base_url}}/kundenbereich/api/auth/logout"
+          }
+        },
+        {
+          "name": "Submit Massblatt (measurements)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "o", "value": "175", "type": "text", "description": "Körpergrösse" },
+                { "key": "a", "value": "38", "type": "text" },
+                { "key": "b", "value": "40", "type": "text" },
+                { "key": "c1", "value": "45", "type": "text" },
+                { "key": "c2", "value": "42", "type": "text" },
+                { "key": "d", "value": "98", "type": "text" },
+                { "key": "e", "value": "82", "type": "text" },
+                { "key": "f1", "value": "95", "type": "text" },
+                { "key": "f2", "value": "96", "type": "text" },
+                { "key": "g", "value": "58", "type": "text" },
+                { "key": "h", "value": "40", "type": "text" },
+                { "key": "i1", "value": "78", "type": "text" },
+                { "key": "k1a", "value": "110", "type": "text" },
+                { "key": "k1b", "value": "112", "type": "text" },
+                { "key": "k1c", "value": "114", "type": "text" },
+                { "key": "k2a", "value": "105", "type": "text" },
+                { "key": "k2b", "value": "107", "type": "text" },
+                { "key": "k2c", "value": "109", "type": "text" },
+                { "key": "l", "value": "60", "type": "text" },
+                { "key": "n", "value": "32", "type": "text" },
+                { "key": "notes", "value": "Demo Massblatt via Postman lani_", "type": "text" }
+              ]
+            },
+            "url": "{{lani_base_url}}/kundenbereich/api/massblatt"
+          }
+        }
+      ]
+    }
+  ]
+}
