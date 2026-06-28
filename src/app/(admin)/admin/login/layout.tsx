@@ -1,13 +1,11 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Login · CMS",
-};
+import { SessionProvider } from "next-auth/react";
 
 export default function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <SessionProvider>{children}</SessionProvider>;
 }
