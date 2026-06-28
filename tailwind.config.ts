@@ -15,6 +15,17 @@ const config: Config = {
           lighter: "#E8EAF7",
           dark: "#7880B8",
           deep: "#565EA0",
+          // Numeric aliases for admin UI components
+          50: "#F0F1FA",
+          100: "#E8EAF7",
+          200: "#BCC2E4",
+          300: "#A8B0D9",
+          400: "#9DA5D0",
+          500: "#8A92C4",
+          600: "#7880B8",
+          700: "#565EA0",
+          800: "#424882",
+          900: "#2F3464",
         },
         // ── Soft accent: champagne gold (subtle, not yellow) ─────────────────
         gold: {
