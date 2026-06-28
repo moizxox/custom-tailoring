@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface PasswordInputProps {
   id: string;
@@ -22,6 +23,7 @@ export default function PasswordInput({
   minLength,
 }: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
+  const t = useTranslations("auth");
 
   return (
     <div className="relative">
@@ -40,7 +42,7 @@ export default function PasswordInput({
         type="button"
         onClick={() => setVisible((v) => !v)}
         className="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700 z-10"
-        aria-label={visible ? "Hide password" : "Show password"}
+        aria-label={visible ? t("hidePassword") : t("showPassword")}
       >
         {visible ? (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5" aria-hidden>

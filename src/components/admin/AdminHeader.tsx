@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import type { User } from "next-auth";
 
 interface AdminHeaderProps {
@@ -8,6 +9,8 @@ interface AdminHeaderProps {
 }
 
 export default function AdminHeader({ user }: AdminHeaderProps) {
+  const t = useTranslations("nav");
+
   return (
     <header className="h-14 flex items-center justify-between px-6 bg-white border-b border-gray-200 shrink-0">
       <div className="lg:hidden flex items-center gap-2">
@@ -16,7 +19,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
           </svg>
         </div>
-        <span className="text-sm font-semibold text-gray-900">CMS Admin</span>
+        <span className="text-sm font-semibold text-gray-900">{t("cmsAdmin")}</span>
       </div>
 
       <div className="ml-auto flex items-center gap-3">
@@ -27,12 +30,12 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
           className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Abmelden"
+          title={t("signOut")}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-5 h-5 shrink-0">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          <span className="hidden sm:inline">Abmelden</span>
+          <span className="hidden sm:inline">{t("signOut")}</span>
         </button>
       </div>
     </header>

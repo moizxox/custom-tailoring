@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import type { Product } from "@prisma/client";
 
@@ -35,6 +36,8 @@ function slugify(str: string): string {
 
 export default function ProductForm({ product, mode }: ProductFormProps) {
   const router = useRouter();
+  const t = useTranslations("products");
+  const tc = useTranslations("common");
   const [form, setForm] = useState<FormData>({
     name: product?.name ?? "",
     slug: product?.slug ?? "",
@@ -80,13 +83,13 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error ?? "Fehler beim Speichern.");
+        setError(data.error ?? t("saveError"));
       } else {
         router.push("/admin/products");
         router.refresh();
       }
     } catch {
-      setError("Netzwerkfehler.");
+      setError(tc("networkError"));
     } finally {
       setLoading(false);
     }
@@ -95,22 +98,22 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Produktdaten</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("productData")}</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Name *</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("nameLabel")} *</label>
             <input
               required
               type="text"
               value={form.name}
               onChange={(e) => handleChange("name", e.target.value)}
               className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-              placeholder="z.B. Einzelkostüm Premium"
+              placeholder={t("namePlaceholder")}
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Slug *</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("slugLabel")} *</label>
             <input
               required
               type="text"
@@ -123,30 +126,30 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">Beschreibung</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("descriptionLabel")}</label>
           <textarea
             rows={3}
             value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
             className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition resize-y"
-            placeholder="Produktbeschreibung…"
+            placeholder={t("descriptionPlaceholder")}
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Preis *</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("priceLabel")} *</label>
             <input
               required
               type="text"
               value={form.price}
               onChange={(e) => handleChange("price", e.target.value)}
               className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-              placeholder="CHF 320"
+              placeholder={t("pricePlaceholder")}
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Kategorie</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("categoryLabel")}</label>
             <select
               value={form.category}
               onChange={(e) => handleChange("category", e.target.value)}
@@ -156,7 +159,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Tier</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("tierLabel")}</label>
             <select
               value={form.tier}
               onChange={(e) => handleChange("tier", e.target.value)}
@@ -169,10 +172,10 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Bild & Status</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("imageAndStatus")}</h2>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">Bild-URL</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("imageUrlLabel")}</label>
           <input
             type="url"
             value={form.imageUrl}
@@ -190,11 +193,11 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
           >
             <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${form.inStock ? "translate-x-6" : "translate-x-1"}`} />
           </button>
-          <span className="text-sm text-gray-700">Auf Lager</span>
+          <span className="text-sm text-gray-700">{t("inStockLabel")}</span>
         </div>
 
         <div className="w-32">
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">Sortierung</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("sortOrderLabel")}</label>
           <input
             type="number"
             min={0}
@@ -215,10 +218,10 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
           disabled={loading}
           className="px-5 py-2.5 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
         >
-          {loading ? "Speichern…" : mode === "new" ? "Produkt erstellen" : "Änderungen speichern"}
+          {loading ? t("saveChanges") + "…" : mode === "new" ? t("createProduct") : t("saveChanges")}
         </button>
         <Link href="/admin/products" className="px-5 py-2.5 border border-gray-300 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition">
-          Abbrechen
+          {t("cancel")}
         </Link>
       </div>
     </form>

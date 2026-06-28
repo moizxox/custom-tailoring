@@ -1,6 +1,6 @@
 /**
  * Defines which sections are editable for each page.
- * The `fields` array maps section data keys to editor field types.
+ * Labels are in English (admin UI). Content you enter stays in German for the public site.
  */
 
 export type FieldType =
@@ -37,111 +37,111 @@ export interface CmsPageSchema {
 export const PAGE_SCHEMAS: CmsPageSchema[] = [
   {
     slug: "home",
-    label: "Startseite",
+    label: "Home",
     icon: "🏠",
     path: "/",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
-        description: "Hauptüberschrift und Einstiegstext der Startseite",
+        label: "Hero section",
+        description: "Main headline and intro text on the homepage",
         fields: [
-          { key: "eyebrow", label: "Eyebrow-Text", type: "text", placeholder: "Ihre Kostüme. Unser Handwerk." },
-          { key: "heading", label: "Hauptüberschrift", type: "text" },
-          { key: "headingAccent", label: "Akzent-Wort (farbig)", type: "text", hint: "Wort(e) die farbig hervorgehoben werden" },
-          { key: "subtext", label: "Einleitungstext", type: "textarea" },
-          { key: "ctaPrimaryLabel", label: "Button 1 — Text", type: "text" },
-          { key: "ctaPrimaryUrl", label: "Button 1 — Link", type: "url" },
-          { key: "ctaSecondaryLabel", label: "Button 2 — Text", type: "text" },
-          { key: "ctaSecondaryUrl", label: "Button 2 — Link", type: "url" },
+          { key: "eyebrow", label: "Eyebrow text", type: "text", placeholder: "Ihre Kostüme. Unser Handwerk." },
+          { key: "heading", label: "Main heading", type: "text" },
+          { key: "headingAccent", label: "Accent word(s)", type: "text", hint: "Word(s) highlighted in color" },
+          { key: "subtext", label: "Intro text", type: "textarea" },
+          { key: "ctaPrimaryLabel", label: "Button 1 — label", type: "text" },
+          { key: "ctaPrimaryUrl", label: "Button 1 — link", type: "url" },
+          { key: "ctaSecondaryLabel", label: "Button 2 — label", type: "text" },
+          { key: "ctaSecondaryUrl", label: "Button 2 — link", type: "url" },
         ],
       },
     ],
   },
   {
     slug: "ueber-uns",
-    label: "Über uns",
+    label: "About us",
     icon: "👥",
     path: "/ueber-uns",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Einleitungstext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Intro text", type: "textarea" },
         ],
       },
       {
         key: "team",
         label: "Team",
-        description: "Teammitglieder (JSON-Array)",
+        description: "Team members (JSON array)",
         fields: [
-          { key: "members", label: "Teammitglieder", type: "array", hint: "Jedes Mitglied: name, role, bio" },
+          { key: "members", label: "Team members", type: "array", hint: "Each member: name, role, bio" },
         ],
       },
     ],
   },
   {
     slug: "kontakt",
-    label: "Kontakt",
+    label: "Contact",
     icon: "📬",
     path: "/kontakt",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
     ],
   },
   {
     slug: "service",
-    label: "Service",
+    label: "Services",
     icon: "✂️",
     path: "/service",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
       {
         key: "offerings",
-        label: "Leistungen",
-        description: "Liste der Serviceleistungen",
+        label: "Services list",
+        description: "List of service offerings",
         fields: [
-          { key: "items", label: "Leistungen", type: "array" },
+          { key: "items", label: "Services", type: "array" },
         ],
       },
     ],
   },
   {
     slug: "galerie",
-    label: "Galerie",
+    label: "Gallery",
     icon: "🖼️",
     path: "/galerie",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
       {
         key: "gallery",
-        label: "Galerie-Bilder",
-        description: "Bilder und Kategorien der Galerie",
+        label: "Gallery images",
+        description: "Gallery images and categories",
         fields: [
-          { key: "items", label: "Galerie-Einträge", type: "array" },
+          { key: "items", label: "Gallery entries", type: "array" },
         ],
       },
     ],
@@ -154,93 +154,93 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
     ],
   },
   {
     slug: "termin",
-    label: "Terminbuchung",
+    label: "Appointments",
     icon: "📅",
     path: "/termin",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
     ],
   },
   {
     slug: "massfertigung",
-    label: "Massfertigung",
+    label: "Custom tailoring",
     icon: "📏",
     path: "/massfertigung",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
     ],
   },
   {
     slug: "stoffe",
-    label: "Stoffe & Materialien",
+    label: "Fabrics & materials",
     icon: "🧵",
     path: "/stoffe",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
     ],
   },
   {
     slug: "kostuemveredelung",
-    label: "Kostümveredelung",
+    label: "Costume finishing",
     icon: "✨",
     path: "/kostuemveredelung",
     sections: [
       {
         key: "hero",
-        label: "Hero-Bereich",
+        label: "Hero section",
         fields: [
-          { key: "heading", label: "Überschrift", type: "text" },
-          { key: "subtext", label: "Untertext", type: "textarea" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "textarea" },
         ],
       },
     ],
   },
   {
     slug: "impressum",
-    label: "Impressum",
+    label: "Legal notice",
     icon: "📄",
     path: "/impressum",
     sections: [
       {
         key: "company",
-        label: "Firmendaten",
+        label: "Company details",
         fields: [
-          { key: "name", label: "Firmenname", type: "text" },
-          { key: "owner", label: "Inhaberin", type: "text" },
+          { key: "name", label: "Company name", type: "text" },
+          { key: "owner", label: "Owner", type: "text" },
           { key: "uid", label: "UID", type: "text" },
-          { key: "phone", label: "Telefon", type: "text" },
-          { key: "email", label: "E-Mail", type: "text" },
+          { key: "phone", label: "Phone", type: "text" },
+          { key: "email", label: "Email", type: "text" },
         ],
       },
     ],

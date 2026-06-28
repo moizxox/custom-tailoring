@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Props {
   productId: string;
@@ -10,6 +11,8 @@ interface Props {
 
 export default function ProductDeleteButton({ productId, productName }: Props) {
   const router = useRouter();
+  const t = useTranslations("products");
+  const tc = useTranslations("common");
   const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -28,11 +31,11 @@ export default function ProductDeleteButton({ productId, productName }: Props) {
     return (
       <span className="flex items-center gap-1.5 text-xs">
         <button onClick={handleDelete} disabled={loading} className="text-red-600 hover:underline">
-          {loading ? "…" : "Ja, löschen"}
+          {loading ? "…" : t("deleteConfirm")}
         </button>
         <span className="text-gray-300">|</span>
         <button onClick={() => setConfirming(false)} className="text-gray-500 hover:underline">
-          Abbrechen
+          {tc("cancel")}
         </button>
       </span>
     );
@@ -42,9 +45,9 @@ export default function ProductDeleteButton({ productId, productName }: Props) {
     <button
       onClick={() => setConfirming(true)}
       className="text-xs text-red-500 hover:text-red-700"
-      title={`${productName} löschen`}
+      title={t("deleteTitle", { name: productName })}
     >
-      Löschen
+      {t("delete")}
     </button>
   );
 }

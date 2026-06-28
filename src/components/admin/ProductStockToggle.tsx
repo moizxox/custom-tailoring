@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface Props {
   productId: string;
@@ -10,6 +11,7 @@ interface Props {
 
 export default function ProductStockToggle({ productId, inStock }: Props) {
   const router = useRouter();
+  const t = useTranslations("products");
   const [value, setValue] = useState(inStock);
   const [loading, setLoading] = useState(false);
 
@@ -36,9 +38,9 @@ export default function ProductStockToggle({ productId, inStock }: Props) {
       onClick={toggle}
       disabled={loading}
       className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors disabled:opacity-50 focus:outline-none ${value ? "bg-periwinkle-600" : "bg-gray-200"}`}
-      title={value ? "Auf Lager" : "Nicht auf Lager"}
+      title={value ? t("inStock") : t("outOfStock")}
     >
-      <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform shadow-sm ${value ? "translate-x-4.5" : "translate-x-0.5"}`} />
+      <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform shadow-sm ${value ? "translate-x-4" : "translate-x-0.5"}`} />
     </button>
   );
 }

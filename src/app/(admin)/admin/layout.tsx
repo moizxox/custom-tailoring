@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdminIntlProvider from "@/lib/i18n/AdminIntlProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -12,5 +13,5 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <AdminIntlProvider>{children}</AdminIntlProvider>;
 }

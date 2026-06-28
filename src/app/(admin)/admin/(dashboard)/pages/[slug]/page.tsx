@@ -1,5 +1,7 @@
 import { getPageSchema } from "@/lib/cms/page-schemas";
 import { prisma } from "@/lib/db/prisma";
+import { getAdminT, getSchemaTranslator } from "@/lib/i18n/admin";
+import { localizePageSchema } from "@/lib/i18n/schema-labels";
 import { notFound } from "next/navigation";
 import PageSectionEditor from "@/components/admin/PageSectionEditor";
 import Link from "next/link";
@@ -12,7 +14,10 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const schema = getPageSchema(slug);
-  return { title: schema ? `${schema.label} bearbeiten` : "Seite bearbeiten" };
+  const ts = getSchemaTranslator();
+  const t = getAdminT("pages");
+  const localized = schema ? localizePageSchema(ts, schema) : null;
+  return { title: localized ? localized.label : t("editPageTitle") };
 }
 
 async function loadSectionContent(pageSlug: string): Promise<Record<string, unknown>> {
@@ -30,22 +35,25 @@ export default async function PageEditorPage({ params }: Props) {
   if (!schema) notFound();
 
   const savedContent = await loadSectionContent(slug);
+  const t = getAdminT("pages");
+  const ts = getSchemaTranslator();
+  const localized = localizePageSchema(ts, schema);
 
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
         <Link href="/admin/pages" className="text-sm text-gray-400 hover:text-gray-600">
-          ← Seiten
+          ← {t("backToPages")}
         </Link>
         <span className="text-gray-300">/</span>
         <div className="flex items-center gap-2">
-          <span className="text-xl">{schema.icon}</span>
-          <h1 className="text-xl font-bold text-gray-900">{schema.label}</h1>
+          <span className="text-xl">{localized.icon}</span>
+          <h1 className="text-xl font-bold text-gray-900">{localized.label}</h1>
         </div>
       </div>
 
       <div className="space-y-4">
-        {schema.sections.map((section) => (
+        {localized.sections.map((section) => (
           <PageSectionEditor
             key={section.key}
             pageSlug={slug}

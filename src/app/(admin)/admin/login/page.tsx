@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import PasswordInput from "@/components/admin/PasswordInput";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("auth");
   const errorParam = searchParams.get("error");
   const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
 
@@ -16,9 +18,9 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(
     errorParam === "CredentialsSignin"
-      ? "Ungültige E-Mail/Benutzername oder Passwort."
+      ? t("invalidCredentials")
       : errorParam
-      ? "Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+      ? t("loginFailed")
       : ""
   );
   const [loading, setLoading] = useState(false);
@@ -37,7 +39,7 @@ export default function AdminLoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Ungültige E-Mail/Benutzername oder Passwort.");
+      setError(t("invalidCredentials"));
       return;
     }
 
@@ -55,16 +57,16 @@ export default function AdminLoginPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Kostümschneiderei</h1>
-          <p className="text-sm text-gray-500 mt-1">CMS Administration</p>
+          <p className="text-sm text-gray-500 mt-1">{t("brandSubtitle")}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">Anmelden</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">{t("loginTitle")}</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-1.5">
-                E-Mail oder Benutzername
+                {t("identifierLabel")}
               </label>
               <input
                 id="identifier"
@@ -74,17 +76,17 @@ export default function AdminLoginPage() {
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-                placeholder="moizxox oder admin@example.com"
+                placeholder={t("identifierPlaceholder")}
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Passwort
+                  {t("passwordLabel")}
                 </label>
                 <Link href="/admin/forgot-password" className="text-xs text-periwinkle-600 hover:text-periwinkle-700">
-                  Passwort vergessen?
+                  {t("forgotPassword")}
                 </Link>
               </div>
               <PasswordInput
@@ -108,14 +110,12 @@ export default function AdminLoginPage() {
               disabled={loading}
               className="w-full py-2.5 px-4 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:ring-offset-2"
             >
-              {loading ? "Anmelden…" : "Anmelden"}
+              {loading ? t("signingIn") : t("signIn")}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
-          Kostümschneiderei Basel · CMS v1.0
-        </p>
+        <p className="text-center text-xs text-gray-400 mt-6">{t("footer")}</p>
       </div>
     </div>
   );

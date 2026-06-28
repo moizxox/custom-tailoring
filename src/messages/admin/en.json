@@ -1,0 +1,330 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "pages": "Pages",
+    "products": "Products",
+    "media": "Media",
+    "settings": "Settings",
+    "addAdmin": "Add admin",
+    "viewWebsite": "View website",
+    "cmsAdmin": "CMS Admin",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "brandSubtitle": "CMS Administration",
+    "loginTitle": "Sign in",
+    "identifierLabel": "Email or username",
+    "identifierPlaceholder": "moizxox or admin@example.com",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "invalidCredentials": "Invalid email/username or password.",
+    "loginFailed": "Sign in failed. Please try again.",
+    "footer": "Kostümschneiderei Basel · CMS v1.0",
+    "registerTitle": "Register admin",
+    "registerSubtitle": "Create a new admin account",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "moizxox",
+    "emailLabel": "Email",
+    "passwordMinPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm password",
+    "createAccount": "Create account",
+    "registering": "Registering…",
+    "alreadyHaveAccount": "Already have an account? Sign in",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "registerFailed": "Registration failed.",
+    "networkError": "Network error.",
+    "forgotTitle": "Reset password",
+    "forgotSubtitle": "We'll send you a reset link",
+    "sendResetLink": "Send reset link",
+    "sending": "Sending…",
+    "backToLogin": "Back to sign in",
+    "checkEmail": "If an account exists for that email, we've sent a reset link.",
+    "checkEmailWithAddress": "If an account exists for {email}, we've sent a reset link.",
+    "emailAddressLabel": "Email address",
+    "emailSendError": "Failed to send email.",
+    "resetTitle": "New password",
+    "resetSubtitle": "Choose a secure password",
+    "invalidToken": "Invalid or expired link.",
+    "requestNewLink": "Request a new reset link",
+    "newPasswordLabel": "New password",
+    "savePassword": "Save password",
+    "saving": "Saving…",
+    "resetSuccess": "Password changed successfully. Redirecting…",
+    "resetFailed": "Failed to reset password.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "dashboard": {
+    "greetingMorning": "Good morning",
+    "greetingDay": "Good afternoon",
+    "greetingEvening": "Good evening",
+    "welcome": "Welcome to the Kostümschneiderei Basel CMS.",
+    "statProducts": "Products",
+    "statPagesEdited": "Pages edited",
+    "statMedia": "Media",
+    "quickLinks": "Quick links",
+    "editPages": "Edit pages",
+    "editPagesDesc": "Update text and images on all pages",
+    "addProduct": "Add product",
+    "addProductDesc": "Create a new shop product",
+    "manageMedia": "Manage media",
+    "manageMediaDesc": "Upload and manage images",
+    "settingsDesc": "Update contact details and locations",
+    "phaseTitle": "CMS Phase 1",
+    "phaseBody": "To edit content, connect a Neon database in your environment variables. Until then, the website shows static default content."
+  },
+  "pages": {
+    "title": "Pages",
+    "subtitle": "Select a page to edit its content.",
+    "columnPage": "Page",
+    "columnPath": "Path",
+    "columnStatus": "Status",
+    "statusEdited": "Edited",
+    "statusDefault": "Default",
+    "edit": "Edit",
+    "backToPages": "Pages",
+    "editPageTitle": "Edit page"
+  },
+  "products": {
+    "title": "Products",
+    "count": "{count} products",
+    "newProduct": "New product",
+    "empty": "No products yet. Add the first one!",
+    "addProductLink": "Add product",
+    "columnProduct": "Product",
+    "columnCategory": "Category",
+    "columnTier": "Tier",
+    "columnPrice": "Price",
+    "columnInStock": "In stock",
+    "edit": "Edit",
+    "backToProducts": "Products",
+    "editProduct": "Edit product",
+    "productData": "Product details",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Premium single costume",
+    "slugLabel": "Slug",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Product description…",
+    "priceLabel": "Price",
+    "pricePlaceholder": "CHF 320",
+    "categoryLabel": "Category",
+    "tierLabel": "Tier",
+    "imageAndStatus": "Image & status",
+    "imageUrlLabel": "Image URL",
+    "inStockLabel": "In stock",
+    "sortOrderLabel": "Sort order",
+    "createProduct": "Create product",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "saveError": "Failed to save.",
+    "delete": "Delete",
+    "deleteConfirm": "Yes, delete",
+    "deleteTitle": "Delete {name}",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock"
+  },
+  "media": {
+    "title": "Media",
+    "count": "{count} files",
+    "upload": "Upload image",
+    "uploading": "Uploading…",
+    "uploadFailed": "Upload failed.",
+    "cloudinaryHint": "Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET in .env.local",
+    "empty": "No images yet. Upload the first one!",
+    "copyUrl": "Copy URL",
+    "copied": "Copied!",
+    "delete": "Delete",
+    "pickerTitle": "Choose image from media library",
+    "pickerEmpty": "No images available. Upload images first."
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage contact details, locations, and social media links.",
+    "contactSection": "Contact details",
+    "phone": "Phone",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "socialSection": "Social media",
+    "instagramUrl": "Instagram URL",
+    "facebookUrl": "Facebook URL",
+    "locationSection": "Location: {name}",
+    "name": "Name",
+    "city": "City",
+    "address": "Address",
+    "mapsUrl": "Google Maps URL",
+    "mapsEmbed": "Google Maps embed URL",
+    "saveSettings": "Save settings",
+    "saveError": "Failed to save."
+  },
+  "editor": {
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "saveFailed": "Failed to save. Please try again.",
+    "arrayPlaceholder": "Enter JSON array",
+    "imagePlaceholder": "https://… or pick from media library",
+    "chooseImage": "Choose image"
+  },
+  "api": {
+    "unauthorized": "Unauthorized.",
+    "fieldsRequired": "Email, username, and password are required.",
+    "usernameInvalid": "Username: 3–30 characters, lowercase letters, numbers, underscore only.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "emailTaken": "This email is already registered.",
+    "usernameTaken": "This username is already taken.",
+    "serverError": "Server error."
+  },
+  "common": {
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "networkError": "Network error."
+  },
+  "schemas": {
+    "home": {
+      "label": "Home",
+      "hero": {
+        "label": "Hero section",
+        "description": "Main headline and intro text on the homepage",
+        "fields": {
+          "eyebrow": { "label": "Eyebrow text" },
+          "heading": { "label": "Main heading" },
+          "headingAccent": { "label": "Accent word(s)", "hint": "Word(s) highlighted in color" },
+          "subtext": { "label": "Intro text" },
+          "ctaPrimaryLabel": { "label": "Button 1 — label" },
+          "ctaPrimaryUrl": { "label": "Button 1 — link" },
+          "ctaSecondaryLabel": { "label": "Button 2 — label" },
+          "ctaSecondaryUrl": { "label": "Button 2 — link" }
+        }
+      }
+    },
+    "ueber-uns": {
+      "label": "About us",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Intro text" }
+        }
+      },
+      "team": {
+        "label": "Team",
+        "description": "Team members (JSON array)",
+        "fields": {
+          "members": { "label": "Team members", "hint": "Each member: name, role, bio" }
+        }
+      }
+    },
+    "kontakt": {
+      "label": "Contact",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      }
+    },
+    "service": {
+      "label": "Services",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      },
+      "offerings": {
+        "label": "Services list",
+        "description": "List of service offerings",
+        "fields": {
+          "items": { "label": "Services" }
+        }
+      }
+    },
+    "galerie": {
+      "label": "Gallery",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      },
+      "gallery": {
+        "label": "Gallery images",
+        "description": "Gallery images and categories",
+        "fields": {
+          "items": { "label": "Gallery entries" }
+        }
+      }
+    },
+    "atelier": {
+      "label": "Atelier",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      }
+    },
+    "termin": {
+      "label": "Appointments",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      }
+    },
+    "massfertigung": {
+      "label": "Custom tailoring",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      }
+    },
+    "stoffe": {
+      "label": "Fabrics & materials",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      }
+    },
+    "kostuemveredelung": {
+      "label": "Costume finishing",
+      "hero": {
+        "label": "Hero section",
+        "fields": {
+          "heading": { "label": "Heading" },
+          "subtext": { "label": "Subtext" }
+        }
+      }
+    },
+    "impressum": {
+      "label": "Legal notice",
+      "company": {
+        "label": "Company details",
+        "fields": {
+          "name": { "label": "Company name" },
+          "owner": { "label": "Owner" },
+          "uid": { "label": "UID" },
+          "phone": { "label": "Phone" },
+          "email": { "label": "Email" }
+        }
+      }
+    }
+  }
+}

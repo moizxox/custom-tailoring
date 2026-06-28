@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAdminT } from "@/lib/i18n/admin";
 import Link from "next/link";
 import type { Metadata } from "next";
 import ProductStockToggle from "@/components/admin/ProductStockToggle";
 import ProductDeleteButton from "@/components/admin/ProductDeleteButton";
 
-export const metadata: Metadata = { title: "Produkte" };
+export const metadata: Metadata = { title: "Products" };
 
 async function getProducts() {
   try {
@@ -16,6 +17,7 @@ async function getProducts() {
 
 export default async function ProductsListPage() {
   const products = await getProducts();
+  const t = getAdminT("products");
 
   const tierColors: Record<string, string> = {
     Einfach: "bg-gray-100 text-gray-600",
@@ -27,22 +29,22 @@ export default async function ProductsListPage() {
     <div className="max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Produkte</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{products.length} Produkte</p>
+          <h1 className="text-xl font-bold text-gray-900">{t("title")}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t("count", { count: products.length })}</p>
         </div>
         <Link
           href="/admin/products/new"
           className="px-4 py-2 bg-periwinkle-600 hover:bg-periwinkle-700 text-white text-sm font-medium rounded-lg transition"
         >
-          + Neues Produkt
+          + {t("newProduct")}
         </Link>
       </div>
 
       {products.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <p className="text-gray-400 text-sm">Noch keine Produkte. Fügen Sie das erste hinzu!</p>
+          <p className="text-gray-400 text-sm">{t("empty")}</p>
           <Link href="/admin/products/new" className="mt-3 inline-block text-sm text-periwinkle-600 hover:underline">
-            Produkt hinzufügen →
+            {t("addProductLink")} →
           </Link>
         </div>
       ) : (
@@ -50,11 +52,11 @@ export default async function ProductsListPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">Produkt</th>
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">Kategorie</th>
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden md:table-cell">Tier</th>
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">Preis</th>
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">Lagernd</th>
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">{t("columnProduct")}</th>
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">{t("columnCategory")}</th>
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden md:table-cell">{t("columnTier")}</th>
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">{t("columnPrice")}</th>
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">{t("columnInStock")}</th>
                 <th className="px-5 py-3" />
               </tr>
             </thead>
@@ -94,7 +96,7 @@ export default async function ProductsListPage() {
                         href={`/admin/products/${product.id}`}
                         className="text-xs font-medium text-periwinkle-600 hover:text-periwinkle-700"
                       >
-                        Bearbeiten
+                        {t("edit")}
                       </Link>
                       <ProductDeleteButton productId={product.id} productName={product.name} />
                     </div>

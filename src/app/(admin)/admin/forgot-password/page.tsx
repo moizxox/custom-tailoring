@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,12 +24,12 @@ export default function ForgotPasswordPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error ?? "Fehler beim Senden der E-Mail.");
+        setError(data.error ?? t("emailSendError"));
       } else {
         setSubmitted(true);
       }
     } catch {
-      setError("Netzwerkfehler. Bitte erneut versuchen.");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -42,8 +44,8 @@ export default function ForgotPasswordPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Passwort zurücksetzen</h1>
-          <p className="text-sm text-gray-500 mt-1">Wir senden Ihnen einen Reset-Link</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("forgotTitle")}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t("forgotSubtitle")}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
@@ -55,17 +57,17 @@ export default function ForgotPasswordPage() {
                 </svg>
               </div>
               <p className="text-sm text-gray-600">
-                Falls ein Konto für <strong>{email}</strong> existiert, haben wir einen Reset-Link gesendet.
+                {t("checkEmailWithAddress", { email })}
               </p>
               <Link href="/admin/login" className="inline-block text-sm text-periwinkle-600 hover:underline">
-                Zurück zum Login
+                {t("backToLogin")}
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  E-Mail-Adresse
+                  {t("emailAddressLabel")}
                 </label>
                 <input
                   id="email"
@@ -87,12 +89,12 @@ export default function ForgotPasswordPage() {
                 disabled={loading}
                 className="w-full py-2.5 px-4 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
               >
-                {loading ? "Senden…" : "Reset-Link senden"}
+                {loading ? t("sending") : t("sendResetLink")}
               </button>
 
               <div className="text-center">
                 <Link href="/admin/login" className="text-xs text-gray-500 hover:text-gray-700">
-                  ← Zurück zum Login
+                  ← {t("backToLogin")}
                 </Link>
               </div>
             </form>

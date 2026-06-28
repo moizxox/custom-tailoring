@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
+import PasswordInput from "@/components/admin/PasswordInput";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations("auth");
   const token = searchParams.get("token") ?? "";
 
   const [password, setPassword] = useState("");
@@ -18,11 +21,11 @@ export default function ResetPasswordPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
-      setError("Passwörter stimmen nicht überein.");
+      setError(t("passwordMismatch"));
       return;
     }
     if (password.length < 8) {
-      setError("Passwort muss mindestens 8 Zeichen lang sein.");
+      setError(t("passwordTooShort"));
       return;
     }
     setError("");
@@ -35,13 +38,13 @@ export default function ResetPasswordPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error ?? "Fehler beim Zurücksetzen.");
+        setError(data.error ?? t("resetFailed"));
       } else {
         setDone(true);
         setTimeout(() => router.push("/admin/login"), 2500);
       }
     } catch {
-      setError("Netzwerkfehler.");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -51,9 +54,9 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">Ungültiger oder abgelaufener Link.</p>
+          <p className="text-gray-600 mb-4">{t("invalidToken")}</p>
           <Link href="/admin/forgot-password" className="text-periwinkle-600 hover:underline text-sm">
-            Neuen Reset-Link anfordern
+            {t("requestNewLink")}
           </Link>
         </div>
       </div>
@@ -64,8 +67,8 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Neues Passwort</h1>
-          <p className="text-sm text-gray-500 mt-1">Bitte wählen Sie ein sicheres Passwort</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("resetTitle")}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t("resetSubtitle")}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
@@ -76,36 +79,32 @@ export default function ResetPasswordPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="text-sm text-gray-600">Passwort erfolgreich geändert. Weiterleitung…</p>
+              <p className="text-sm text-gray-600">{t("resetSuccess")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Neues Passwort
+                  {t("newPasswordLabel")}
                 </label>
-                <input
+                <PasswordInput
                   id="password"
-                  type="password"
-                  required
-                  minLength={8}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-                  placeholder="Mindestens 8 Zeichen"
+                  onChange={setPassword}
+                  autoComplete="new-password"
+                  minLength={8}
+                  placeholder={t("passwordMinPlaceholder")}
                 />
               </div>
               <div>
                 <label htmlFor="confirm" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Passwort bestätigen
+                  {t("confirmPasswordLabel")}
                 </label>
-                <input
+                <PasswordInput
                   id="confirm"
-                  type="password"
-                  required
                   value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+                  onChange={setConfirm}
+                  autoComplete="new-password"
                   placeholder="••••••••"
                 />
               </div>
@@ -119,7 +118,7 @@ export default function ResetPasswordPage() {
                 disabled={loading}
                 className="w-full py-2.5 px-4 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
               >
-                {loading ? "Speichern…" : "Passwort speichern"}
+                {loading ? t("saving") : t("savePassword")}
               </button>
             </form>
           )}

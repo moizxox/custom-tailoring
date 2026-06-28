@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { CmsSection } from "@/lib/cms/page-schemas";
 import MediaPickerModal from "@/components/admin/MediaPickerModal";
 
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function PageSectionEditor({ pageSlug, section, initialContent }: Props) {
+  const t = useTranslations("editor");
   const [values, setValues] = useState<Record<string, string>>(
     Object.fromEntries(
       section.fields.map((f) => [
@@ -43,11 +45,11 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sectionKey: section.key, content: parseContent(values, section) }),
       });
-      if (!res.ok) throw new Error("Speichern fehlgeschlagen");
+      if (!res.ok) throw new Error("save failed");
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch {
-      setError("Fehler beim Speichern. Bitte erneut versuchen.");
+      setError(t("saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -99,7 +101,7 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
                     rows={6}
                     value={values[field.key] ?? ""}
                     onChange={(e) => handleChange(field.key, e.target.value)}
-                    placeholder={field.placeholder ?? "JSON-Array eingeben"}
+                    placeholder={field.placeholder ?? t("arrayPlaceholder")}
                     className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition resize-y"
                   />
                 ) : field.type === "image" ? (
@@ -108,7 +110,7 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
                       type="text"
                       value={values[field.key] ?? ""}
                       onChange={(e) => handleChange(field.key, e.target.value)}
-                      placeholder="https://... oder aus Medienbibliothek wählen"
+                      placeholder={t("imagePlaceholder")}
                       className="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
                     />
                     <button
@@ -116,7 +118,7 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
                       onClick={() => setImagePickerField(field.key)}
                       className="px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors whitespace-nowrap"
                     >
-                      Bild wählen
+                      {t("chooseImage")}
                     </button>
                   </div>
                 ) : (
@@ -141,7 +143,7 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  Gespeichert
+                  {t("saved")}
                 </span>
               )}
               <button
@@ -150,7 +152,7 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
                 disabled={saving}
                 className="ml-auto px-4 py-2 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
               >
-                {saving ? "Speichern…" : "Speichern"}
+                {saving ? t("saving") : t("save")}
               </button>
             </div>
           </div>

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import PasswordInput from "@/components/admin/PasswordInput";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const t = useTranslations("auth");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -18,11 +20,11 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
-      setError("Passwörter stimmen nicht überein.");
+      setError(t("passwordMismatch"));
       return;
     }
     if (password.length < 8) {
-      setError("Passwort muss mindestens 8 Zeichen lang sein.");
+      setError(t("passwordTooShort"));
       return;
     }
     setError("");
@@ -35,12 +37,12 @@ export default function RegisterPage() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error ?? "Registrierung fehlgeschlagen.");
-      } else {
-        router.push("/admin/login?registered=1");
+        setError(data.error ?? t("registerFailed"));
+        return;
       }
+      router.push("/admin/login");
     } catch {
-      setError("Netzwerkfehler.");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -50,26 +52,25 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Admin registrieren</h1>
-          <p className="text-sm text-gray-500 mt-1">Neues Admin-Konto erstellen</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("registerTitle")}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t("registerSubtitle")}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">{t("nameLabel")}</label>
               <input
                 id="name"
                 type="text"
-                required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-                placeholder="Ihr Name"
+                placeholder={t("namePlaceholder")}
               />
             </div>
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1.5">Benutzername</label>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1.5">{t("usernameLabel")}</label>
               <input
                 id="username"
                 type="text"
@@ -78,11 +79,11 @@ export default function RegisterPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase())}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-                placeholder="moizxox"
+                placeholder={t("usernamePlaceholder")}
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">E-Mail</label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">{t("emailLabel")}</label>
               <input
                 id="email"
                 type="email"
@@ -94,18 +95,18 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">Passwort</label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">{t("passwordLabel")}</label>
               <PasswordInput
                 id="password"
                 value={password}
                 onChange={setPassword}
                 autoComplete="new-password"
                 minLength={8}
-                placeholder="Mindestens 8 Zeichen"
+                placeholder={t("passwordMinPlaceholder")}
               />
             </div>
             <div>
-              <label htmlFor="confirm" className="block text-sm font-medium text-gray-700 mb-1.5">Passwort bestätigen</label>
+              <label htmlFor="confirm" className="block text-sm font-medium text-gray-700 mb-1.5">{t("confirmPasswordLabel")}</label>
               <PasswordInput
                 id="confirm"
                 value={confirm}
@@ -124,12 +125,12 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full py-2.5 px-4 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
             >
-              {loading ? "Registrieren…" : "Konto erstellen"}
+              {loading ? t("registering") : t("createAccount")}
             </button>
 
             <div className="text-center">
               <Link href="/admin/login" className="text-xs text-gray-500 hover:text-gray-700">
-                Bereits ein Konto? Anmelden
+                {t("alreadyHaveAccount")}
               </Link>
             </div>
           </form>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { AtelierLocation } from "@/lib/site-content";
 
 interface Props {
@@ -16,6 +17,9 @@ interface Props {
 }
 
 export default function SettingsEditor({ saved, defaultContact, defaultLocations }: Props) {
+  const t = useTranslations("settings");
+  const te = useTranslations("editor");
+
   const savedContact = (saved.contact as typeof defaultContact) ?? defaultContact;
   const savedSocial = (saved.social as { instagram?: string; facebook?: string }) ?? {};
 
@@ -53,11 +57,11 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Speichern fehlgeschlagen");
+      if (!res.ok) throw new Error("save failed");
       setSavedOk(true);
       setTimeout(() => setSavedOk(false), 3000);
     } catch {
-      setError("Fehler beim Speichern.");
+      setError(t("saveError"));
     } finally {
       setSaving(false);
     }
@@ -73,13 +77,14 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
 
   return (
     <div className="space-y-4">
-      {/* Contact */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Kontaktdaten</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("contactSection")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {(["phone", "email", "whatsapp"] as const).map((key) => (
             <div key={key}>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5 capitalize">{key === "phone" ? "Telefon" : key === "email" ? "E-Mail" : "WhatsApp"}</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                {key === "phone" ? t("phone") : key === "email" ? t("email") : t("whatsapp")}
+              </label>
               <input
                 type="text"
                 value={contact[key]}
@@ -91,12 +96,11 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
         </div>
       </div>
 
-      {/* Social */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Social Media</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("socialSection")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Instagram-URL</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("instagramUrl")}</label>
             <input
               type="url"
               value={social.instagram}
@@ -106,7 +110,7 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Facebook-URL</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("facebookUrl")}</label>
             <input
               type="url"
               value={social.facebook}
@@ -118,38 +122,37 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
         </div>
       </div>
 
-      {/* Locations */}
       {locations.map((loc, idx) => (
         <div key={loc.id} className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Standort: {loc.name}</h2>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("locationSection", { name: loc.name })}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Name</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("name")}</label>
               <input type="text" value={loc.name} onChange={(e) => updateLocation(idx, "name", e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Stadt</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("city")}</label>
               <input type="text" value={loc.city} onChange={(e) => updateLocation(idx, "city", e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition" />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Adresse</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("address")}</label>
               <input type="text" value={loc.address} onChange={(e) => updateLocation(idx, "address", e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Telefon</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("phone")}</label>
               <input type="text" value={loc.phone ?? ""} onChange={(e) => updateLocation(idx, "phone", e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Google Maps URL</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("mapsUrl")}</label>
               <input type="url" value={loc.mapsUrl} onChange={(e) => updateLocation(idx, "mapsUrl", e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition" />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Google Maps Embed-URL</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("mapsEmbed")}</label>
               <input type="url" value={loc.mapsEmbed} onChange={(e) => updateLocation(idx, "mapsEmbed", e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
                 placeholder="https://www.google.com/maps/embed?pb=…" />
@@ -169,14 +172,14 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
           disabled={saving}
           className="px-5 py-2.5 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
         >
-          {saving ? "Speichern…" : "Einstellungen speichern"}
+          {saving ? te("saving") : t("saveSettings")}
         </button>
         {saved_ok && (
           <span className="text-xs text-green-600 flex items-center gap-1.5">
             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            Gespeichert
+            {te("saved")}
           </span>
         )}
       </div>
