@@ -1,6 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { AcfAboutBand } from "@/types";
+interface AcfAboutBand {
+  acf_fc_layout: "about_band";
+  section_label?: string;
+  heading: string;
+  heading_accent?: string;
+  body_text: string;
+  cta_label: string;
+  cta_url: string;
+  cta_secondary_label?: string;
+  cta_secondary_url?: string;
+  usps: { icon_slug: string; title: string; description: string }[];
+}
 
 const DEFAULT_DATA: AcfAboutBand = {
   acf_fc_layout: "about_band",

@@ -2,8 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { AcfHero } from "@/types";
 import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
+
+interface AcfHero {
+  acf_fc_layout: "hero";
+  eyebrow_text: string;
+  heading: string;
+  heading_accent: string;
+  subtext: string;
+  cta_primary_label: string;
+  cta_primary_url: string;
+  cta_secondary_label?: string;
+  cta_secondary_url?: string;
+  show_contact_form: boolean;
+  badges: { icon_slug: string; label: string }[];
+}
 
 const DEFAULT_DATA: AcfHero = {
   acf_fc_layout: "hero",

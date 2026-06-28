@@ -1,4 +1,10 @@
-import type { AcfProcess } from "@/types";
+interface AcfProcess {
+  acf_fc_layout: "process";
+  section_label?: string;
+  heading: string;
+  heading_accent?: string;
+  steps: { number: string; title: string; description: string }[];
+}
 
 const DEFAULT_DATA: AcfProcess = {
   acf_fc_layout: "process",

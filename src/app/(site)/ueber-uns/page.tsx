@@ -4,13 +4,14 @@ import { ContentSection } from "@/components/sections/ContentSection";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getCmsContent } from "@/lib/cms/content";
 
 export const metadata: Metadata = {
   title: "Über uns",
   description: "Lernen Sie das Team der Kostümschneiderei Basel kennen.",
 };
 
-const TEAM = [
+const DEFAULT_TEAM = [
   {
     name: "Lani Müller",
     role: "Inhaberin & Schneiderin",
@@ -37,14 +38,21 @@ const VALUES = [
   { icon: "button-sewing-tailoring-handcraft.svg", title: "Persönlichkeit", text: "Wir nehmen uns Zeit für Sie. Ihre Wünsche stehen bei uns an erster Stelle." },
 ];
 
-export default function UeberUnsPage() {
+export default async function UeberUnsPage() {
+  const heroContent = await getCmsContent("ueber-uns", "hero", {
+    heading: "Leidenschaft für das Handwerk",
+    subtext: "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe.",
+  });
+  const teamContent = await getCmsContent<{ members?: typeof DEFAULT_TEAM }>("ueber-uns", "team", {});
+  const TEAM = teamContent.members ?? DEFAULT_TEAM;
+
   return (
     <>
       <PageHero
         label="Wer wir sind"
-        title="Leidenschaft für das Handwerk"
+        title={(heroContent.heading as string) || "Leidenschaft für das Handwerk"}
         titleAccent="Handwerk"
-        subtitle="Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe."
+        subtitle={(heroContent.subtext as string) || "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe."}
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
       />
 

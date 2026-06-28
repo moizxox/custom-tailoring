@@ -1,7 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { AcfServicesGrid, AcfServiceItem } from "@/types";
+interface AcfServiceItem {
+  title: string;
+  description: string;
+  icon_slug: string;
+  link_url?: string;
+}
+
+interface AcfServicesGrid {
+  acf_fc_layout: "services_grid";
+  section_label?: string;
+  heading: string;
+  heading_accent?: string;
+  subtext?: string;
+  services: AcfServiceItem[];
+  show_cta: boolean;
+  cta_label?: string;
+  cta_url?: string;
+}
 
 // ─── Default ACF data ─────────────────────────────────────────────────────────
 const DEFAULT_DATA: AcfServicesGrid = {
