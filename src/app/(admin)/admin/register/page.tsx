@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import PasswordInput from "@/components/admin/PasswordInput";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -29,7 +31,7 @@ export default function RegisterPage() {
       const res = await fetch("/admin/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, username, email, password }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -67,6 +69,19 @@ export default function RegisterPage() {
               />
             </div>
             <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1.5">Benutzername</label>
+              <input
+                id="username"
+                type="text"
+                required
+                pattern="[a-z0-9_]{3,30}"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+                placeholder="moizxox"
+              />
+            </div>
+            <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">E-Mail</label>
               <input
                 id="email"
@@ -80,26 +95,22 @@ export default function RegisterPage() {
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">Passwort</label>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
-                required
-                minLength={8}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+                onChange={setPassword}
+                autoComplete="new-password"
+                minLength={8}
                 placeholder="Mindestens 8 Zeichen"
               />
             </div>
             <div>
               <label htmlFor="confirm" className="block text-sm font-medium text-gray-700 mb-1.5">Passwort bestätigen</label>
-              <input
+              <PasswordInput
                 id="confirm"
-                type="password"
-                required
                 value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+                onChange={setConfirm}
+                autoComplete="new-password"
                 placeholder="••••••••"
               />
             </div>

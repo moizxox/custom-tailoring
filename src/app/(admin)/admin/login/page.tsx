@@ -4,15 +4,23 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import PasswordInput from "@/components/admin/PasswordInput";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const errorParam = searchParams.get("error");
   const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
 
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    errorParam === "CredentialsSignin"
+      ? "Ungültige E-Mail/Benutzername oder Passwort."
+      : errorParam
+      ? "Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+      : ""
+  );
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -21,7 +29,7 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     const result = await signIn("credentials", {
-      email,
+      identifier,
       password,
       redirect: false,
     });
@@ -29,7 +37,7 @@ export default function AdminLoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Ungültige E-Mail-Adresse oder Passwort.");
+      setError("Ungültige E-Mail/Benutzername oder Passwort.");
       return;
     }
 
@@ -40,7 +48,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md">
-        {/* Logo / Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-periwinkle-600 mb-4 shadow-lg">
             <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 text-white" stroke="currentColor" strokeWidth={1.8}>
@@ -51,24 +58,23 @@ export default function AdminLoginPage() {
           <p className="text-sm text-gray-500 mt-1">CMS Administration</p>
         </div>
 
-        {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
           <h2 className="text-lg font-semibold text-gray-900 mb-6">Anmelden</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                E-Mail
+              <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-1.5">
+                E-Mail oder Benutzername
               </label>
               <input
-                id="email"
-                type="email"
-                autoComplete="email"
+                id="identifier"
+                type="text"
+                autoComplete="username"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-                placeholder="admin@example.com"
+                placeholder="moizxox oder admin@example.com"
               />
             </div>
 
@@ -81,15 +87,10 @@ export default function AdminLoginPage() {
                   Passwort vergessen?
                 </Link>
               </div>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
-                autoComplete="current-password"
-                required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-                placeholder="••••••••"
+                onChange={setPassword}
               />
             </div>
 

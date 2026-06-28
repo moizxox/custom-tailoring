@@ -8,18 +8,20 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash("Admin@123", 12);
 
-  const admin = await prisma.admin.upsert({
-    where: { email: "mainmoiz899@gmail.com" },
-    update: {},
-    create: {
+  // Reset admin users — single owner account
+  await prisma.admin.deleteMany({});
+
+  const admin = await prisma.admin.create({
+    data: {
       email: "mainmoiz899@gmail.com",
+      username: "moizxox",
       password: hashedPassword,
-      name: "Admin",
+      name: "Moiz",
       role: "admin",
     },
   });
 
-  console.log(`Created admin: ${admin.email}`);
+  console.log(`Created admin: ${admin.email} (@${admin.username})`);
 
   // Seed initial products from static data
   const products = [
