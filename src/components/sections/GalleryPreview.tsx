@@ -40,7 +40,6 @@ const DEFAULT_DATA: AcfGalleryPreview = {
   show_cta: true,
   cta_label: "Zur Galerie",
   cta_url: "/galerie",
-  items: [],
 };
 
 interface GalleryPreviewProps {
