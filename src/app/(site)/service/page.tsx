@@ -2,6 +2,8 @@ import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
 import type { Metadata } from "next";
 
@@ -10,14 +12,26 @@ export const metadata: Metadata = {
   description: "Fasnachtsatelier — Mass und Budget im Einklang. Leistungen und Bestellprozess für Guggenmusik, Cliquen und Einzelpersonen.",
 };
 
-export default function ServicePage() {
+const DEFAULT_HERO = {
+  label: "Fasnachtsatelier",
+  title: "Mass und Budget im Einklang",
+  titleAccent: "Einklang",
+  subtitle: "Unsere Leistungen im Überblick — für Guggenmusik, Cliquen und Einzelmasken.",
+  headingTag: "h1" as const,
+};
+
+export default async function ServicePage() {
+  const heroContent = await getCmsContent("service", "hero", {});
+  const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
+
   return (
     <>
       <PageHero
-        label="Fasnachtsatelier"
-        title="Mass und Budget im Einklang"
-        titleAccent="Einklang"
-        subtitle="Unsere Leistungen im Überblick — für Guggenmusik, Cliquen und Einzelmasken."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Service", href: "/service" }]}
       />
 

@@ -17,29 +17,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!credentials?.identifier || !credentials?.password) return null;
 
         const identifier = (credentials.identifier as string).trim();
+        const password = (credentials.password as string).trim();
+        if (!identifier || !password) return null;
 
-        const admin = await prisma.admin.findFirst({
-          where: {
-            OR: [{ email: identifier }, { username: identifier }],
-          },
-        });
+        try {
+          const admin = await prisma.admin.findFirst({
+            where: {
+              OR: [
+                { email: { equals: identifier, mode: "insensitive" } },
+                { username: { equals: identifier, mode: "insensitive" } },
+              ],
+            },
+          });
 
-        if (!admin) return null;
+          if (!admin) return null;
 
-        const passwordMatch = await bcrypt.compare(
-          credentials.password as string,
-          admin.password
-        );
+          const passwordMatch = await bcrypt.compare(password, admin.password);
+          if (!passwordMatch) return null;
 
-        if (!passwordMatch) return null;
-
-        return {
-          id: admin.id,
-          email: admin.email,
-          name: admin.name ?? admin.username,
-          role: admin.role,
-          username: admin.username,
-        };
+          return {
+            id: admin.id,
+            email: admin.email,
+            name: admin.name ?? admin.username,
+            role: admin.role,
+            username: admin.username,
+          };
+        } catch (error) {
+          console.error("[auth] credentials lookup failed:", error);
+          return null;
+        }
       },
     }),
   ],

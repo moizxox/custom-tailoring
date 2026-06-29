@@ -2,6 +2,9 @@ import Link from "next/link";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
 
+import type { HeadingTag } from "@/lib/cms/helpers";
+import { createElement } from "react";
+
 interface Breadcrumb {
   label: string;
   href: string;
@@ -13,9 +16,17 @@ interface PageHeroProps {
   titleAccent?: string;
   subtitle?: string;
   breadcrumbs?: Breadcrumb[];
+  headingTag?: HeadingTag;
 }
 
-export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: PageHeroProps) {
+export function PageHero({
+  label,
+  title,
+  titleAccent,
+  subtitle,
+  breadcrumbs,
+  headingTag = "h1",
+}: PageHeroProps) {
   const renderTitle = () => {
     if (!titleAccent || !title.includes(titleAccent)) return title;
     const parts = title.split(titleAccent);
@@ -66,7 +77,14 @@ export function PageHero({ label, title, titleAccent, subtitle, breadcrumbs }: P
             </div>
           )}
 
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance">{renderTitle()}</h1>
+          {createElement(
+            headingTag,
+            {
+              className:
+                "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
+            },
+            renderTitle()
+          )}
 
           {subtitle && <p className="font-sans text-[15px] text-charcoal-light leading-relaxed mt-5 max-w-2xl mx-auto">{subtitle}</p>}
         </div>

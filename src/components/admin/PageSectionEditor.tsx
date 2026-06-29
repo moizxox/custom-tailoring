@@ -15,14 +15,13 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
   const t = useTranslations("editor");
   const [values, setValues] = useState<Record<string, string>>(
     Object.fromEntries(
-      section.fields.map((f) => [
-        f.key,
-        typeof initialContent[f.key] === "string"
-          ? (initialContent[f.key] as string)
-          : typeof initialContent[f.key] === "object"
-          ? JSON.stringify(initialContent[f.key], null, 2)
-          : "",
-      ])
+      section.fields.map((f) => {
+        const raw = initialContent[f.key];
+        if (typeof raw === "string") return [f.key, raw];
+        if (typeof raw === "number") return [f.key, String(raw)];
+        if (typeof raw === "object" && raw !== null) return [f.key, JSON.stringify(raw, null, 2)];
+        return [f.key, ""];
+      })
     )
   );
   const [saving, setSaving] = useState(false);
@@ -121,6 +120,27 @@ export default function PageSectionEditor({ pageSlug, section, initialContent }:
                       {t("chooseImage")}
                     </button>
                   </div>
+                ) : field.type === "select" ? (
+                  <select
+                    value={values[field.key] ?? ""}
+                    onChange={(e) => handleChange(field.key, e.target.value)}
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition bg-white"
+                  >
+                    <option value="">{t("selectPlaceholder")}</option>
+                    {field.options?.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : field.type === "number" ? (
+                  <input
+                    type="number"
+                    value={values[field.key] ?? ""}
+                    onChange={(e) => handleChange(field.key, e.target.value)}
+                    placeholder={field.placeholder}
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+                  />
                 ) : (
                   <input
                     type={field.type === "url" ? "url" : "text"}
@@ -185,6 +205,9 @@ function parseContent(
       } catch {
         result[field.key] = v;
       }
+    } else if (field.type === "number") {
+      const n = parseFloat(v);
+      result[field.key] = Number.isFinite(n) ? n : v;
     } else {
       result[field.key] = v;
     }

@@ -9,7 +9,14 @@ export type FieldType =
   | "richtext"
   | "image"
   | "url"
-  | "array";
+  | "array"
+  | "select"
+  | "number";
+
+export interface CmsFieldOption {
+  value: string;
+  label: string;
+}
 
 export interface CmsField {
   key: string;
@@ -17,6 +24,30 @@ export interface CmsField {
   type: FieldType;
   placeholder?: string;
   hint?: string;
+  options?: CmsFieldOption[];
+}
+
+const HEADING_TAG_FIELD: CmsField = {
+  key: "headingTag",
+  label: "Heading tag",
+  type: "select",
+  options: [
+    { value: "h1", label: "H1" },
+    { value: "h2", label: "H2" },
+    { value: "h3", label: "H3" },
+    { value: "h4", label: "H4" },
+  ],
+  hint: "HTML heading level for SEO",
+};
+
+function pageHeroFields(): CmsField[] {
+  return [
+    { key: "label", label: "Section label", type: "text" },
+    { key: "heading", label: "Heading", type: "text" },
+    { key: "headingAccent", label: "Accent word(s)", type: "text", hint: "Word(s) highlighted in color" },
+    { key: "subtext", label: "Subtext", type: "textarea" },
+    HEADING_TAG_FIELD,
+  ];
 }
 
 export interface CmsSection {
@@ -54,6 +85,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "ctaPrimaryUrl", label: "Button 1 — link", type: "url" },
           { key: "ctaSecondaryLabel", label: "Button 2 — label", type: "text" },
           { key: "ctaSecondaryUrl", label: "Button 2 — link", type: "url" },
+          HEADING_TAG_FIELD,
         ],
       },
     ],
@@ -67,10 +99,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Intro text", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
       {
         key: "team",
@@ -91,9 +120,22 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
+        fields: pageHeroFields(),
+      },
+      {
+        key: "contactForm",
+        label: "Contact form",
+        description: "Form labels and placeholders",
         fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
+          { key: "title", label: "Form title", type: "text" },
+          { key: "subtitle", label: "Form intro", type: "text" },
+          { key: "namePlaceholder", label: "Name field placeholder", type: "text" },
+          { key: "phonePlaceholder", label: "Phone field placeholder", type: "text" },
+          { key: "emailPlaceholder", label: "Email field placeholder", type: "text" },
+          { key: "messagePlaceholder", label: "Message field placeholder", type: "text" },
+          { key: "submitLabel", label: "Submit button label", type: "text" },
+          { key: "successTitle", label: "Success title", type: "text" },
+          { key: "successMessage", label: "Success message", type: "textarea" },
         ],
       },
     ],
@@ -107,10 +149,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
       {
         key: "offerings",
@@ -131,10 +170,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
       {
         key: "gallery",
@@ -155,10 +191,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
     ],
   },
@@ -171,9 +204,32 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
+        fields: pageHeroFields(),
+      },
+      {
+        key: "booking",
+        label: "Online booking",
+        description: "Appointment types, time slots, and walk-in section",
         fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
+          { key: "daysAhead", label: "Days shown in calendar", type: "number", hint: "1–14 days ahead" },
+          {
+            key: "timeSlots",
+            label: "Time slots",
+            type: "array",
+            hint: 'JSON array, e.g. ["09:00","10:00","14:00"]',
+          },
+          {
+            key: "appointmentTypes",
+            label: "Appointment types",
+            type: "array",
+            hint: "JSON array: id, label, description per entry",
+          },
+          { key: "walkInTitle", label: "Walk-in section title", type: "text" },
+          { key: "walkInDescription", label: "Walk-in section text", type: "textarea" },
+          { key: "namePlaceholder", label: "Name field placeholder", type: "text" },
+          { key: "emailPlaceholder", label: "Email field placeholder", type: "text" },
+          { key: "phonePlaceholder", label: "Phone field placeholder", type: "text" },
+          { key: "notesPlaceholder", label: "Notes field placeholder", type: "text" },
         ],
       },
     ],
@@ -187,10 +243,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
     ],
   },
@@ -203,10 +256,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
     ],
   },
@@ -219,10 +269,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "hero",
         label: "Hero section",
-        fields: [
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-        ],
+        fields: pageHeroFields(),
       },
     ],
   },

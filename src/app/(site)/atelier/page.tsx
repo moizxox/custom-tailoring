@@ -2,6 +2,8 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { PhotoSlider } from "@/components/ui/PhotoSlider";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -17,14 +19,23 @@ export const metadata: Metadata = {
   description: "Unser Atelier in Basel – der Ort, wo Kostüme entstehen.",
 };
 
-export default function AtelierPage() {
+export default async function AtelierPage() {
+  const hero = mapPageHeroContent(await getCmsContent("atelier", "hero", {}), {
+    label: "Unser Standort",
+    title: "Das Atelier",
+    titleAccent: "Atelier",
+    subtitle: "In der Greifengasse 20, mitten in Basel, befindet sich unser Atelier – der Ort, wo Ideen zu Kostümen werden.",
+    headingTag: "h1",
+  });
+
   return (
     <>
       <PageHero
-        label="Unser Standort"
-        title="Das Atelier"
-        titleAccent="Atelier"
-        subtitle="In der Greifengasse 20, mitten in Basel, befindet sich unser Atelier – der Ort, wo Ideen zu Kostümen werden."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 

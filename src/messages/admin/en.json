@@ -168,7 +168,8 @@
     "saveFailed": "Failed to save. Please try again.",
     "arrayPlaceholder": "Enter JSON array",
     "imagePlaceholder": "https://… or pick from media library",
-    "chooseImage": "Choose image"
+    "chooseImage": "Choose image",
+    "selectPlaceholder": "Select…"
   },
   "api": {
     "unauthorized": "Unauthorized.",

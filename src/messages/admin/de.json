@@ -168,7 +168,8 @@
     "saveFailed": "Fehler beim Speichern. Bitte erneut versuchen.",
     "arrayPlaceholder": "JSON-Array eingeben",
     "imagePlaceholder": "https://… oder aus Medienbibliothek wählen",
-    "chooseImage": "Bild wählen"
+    "chooseImage": "Bild wählen",
+    "selectPlaceholder": "Auswählen…"
   },
   "api": {
     "unauthorized": "Nicht autorisiert.",

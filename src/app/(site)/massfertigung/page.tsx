@@ -1,6 +1,8 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -17,14 +19,23 @@ const STEPS_DETAIL = [
   { icon: "sewing-machine-sewing-tailoring-cloth.svg", title: "Anfertigung", text: "Jeder Schritt der Produktion erfolgt in unserem Basler Atelier, von Hand und mit grösster Sorgfalt." },
 ];
 
-export default function MassfertigungPage() {
+export default async function MassfertigungPage() {
+  const hero = mapPageHeroContent(await getCmsContent("massfertigung", "hero", {}), {
+    label: "Massgeschneidert für Sie",
+    title: "Massfertigung",
+    titleAccent: "Massfertigung",
+    subtitle: "Kein Kostüm von der Stange. Jedes Stück wird für Sie persönlich entworfen, gemessen und in Handarbeit gefertigt.",
+    headingTag: "h1",
+  });
+
   return (
     <>
       <PageHero
-        label="Massgeschneidert für Sie"
-        title="Massfertigung"
-        titleAccent="Massfertigung"
-        subtitle="Kein Kostüm von der Stange. Jedes Stück wird für Sie persönlich entworfen, gemessen und in Handarbeit gefertigt."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Massfertigung", href: "/massfertigung" }]}
       />
 

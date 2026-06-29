@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { createElement } from "react";
 import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
+import type { HeadingTag } from "@/lib/cms/helpers";
 
 interface AcfHero {
   acf_fc_layout: "hero";
@@ -45,9 +47,10 @@ const INTRO_POINTS = [
 
 interface HeroSectionProps {
   acf?: Partial<AcfHero>;
+  headingTag?: HeadingTag;
 }
 
-export function HeroSection({ acf }: HeroSectionProps) {
+export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
   const data = { ...DEFAULT_DATA, ...acf };
 
   const renderHeading = () => {
@@ -82,9 +85,14 @@ export function HeroSection({ acf }: HeroSectionProps) {
             <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-gold-deeper">{data.eyebrow_text}</span>
           </div>
 
-          <h1 className="font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0">
-            {renderHeading()}
-          </h1>
+          {createElement(
+            headingTag,
+            {
+              className:
+                "font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
+            },
+            renderHeading()
+          )}
 
           <div className="flex items-center justify-center gap-3 mb-6 animate-fade-up [animation-delay:100ms] opacity-0">
             <div className="line-gold-dashed w-12 shrink-0 opacity-90" />

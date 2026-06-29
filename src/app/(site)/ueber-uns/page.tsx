@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 
 export const metadata: Metadata = {
   title: "Über uns",
@@ -39,9 +40,14 @@ const VALUES = [
 ];
 
 export default async function UeberUnsPage() {
-  const heroContent = await getCmsContent("ueber-uns", "hero", {
-    heading: "Leidenschaft für das Handwerk",
-    subtext: "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe.",
+  const heroContent = await getCmsContent("ueber-uns", "hero", {});
+  const hero = mapPageHeroContent(heroContent, {
+    label: "Wer wir sind",
+    title: "Leidenschaft für das Handwerk",
+    titleAccent: "Handwerk",
+    subtitle:
+      "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe.",
+    headingTag: "h1",
   });
   const teamContent = await getCmsContent<{ members?: typeof DEFAULT_TEAM }>("ueber-uns", "team", {});
   const TEAM = teamContent.members ?? DEFAULT_TEAM;
@@ -49,10 +55,11 @@ export default async function UeberUnsPage() {
   return (
     <>
       <PageHero
-        label="Wer wir sind"
-        title={(heroContent.heading as string) || "Leidenschaft für das Handwerk"}
-        titleAccent="Handwerk"
-        subtitle={(heroContent.subtext as string) || "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe."}
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
       />
 

@@ -1,4 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Image from "next/image";
 import type { Metadata } from "next";
 
@@ -62,14 +64,23 @@ const GALLERY_ITEMS = [
   },
 ];
 
-export default function GaleriePage() {
+export default async function GaleriePage() {
+  const hero = mapPageHeroContent(await getCmsContent("galerie", "hero", {}), {
+    label: "Unsere Arbeiten",
+    title: "Galerie",
+    titleAccent: "Galerie",
+    subtitle: "Einblicke in unsere Handwerkskunst – Fasnachtskostüme für Cliquen, Guggenmusiken und Einzelpersonen.",
+    headingTag: "h1",
+  });
+
   return (
     <>
       <PageHero
-        label="Unsere Arbeiten"
-        title="Galerie"
-        titleAccent="Galerie"
-        subtitle="Einblicke in unsere Handwerkskunst – Fasnachtskostüme für Cliquen, Guggenmusiken und Einzelpersonen."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
 
