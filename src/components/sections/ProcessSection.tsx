@@ -40,7 +40,13 @@ interface ProcessSectionProps {
 }
 
 export function ProcessSection({ acf }: ProcessSectionProps) {
-  const data = { ...DEFAULT_DATA, ...acf };
+  const data = {
+    ...DEFAULT_DATA,
+    ...acf,
+    steps: Array.isArray(acf?.steps) && acf.steps.length > 0
+      ? acf.steps as typeof DEFAULT_DATA.steps
+      : DEFAULT_DATA.steps,
+  };
 
   return (
     <section className="py-24 card-gradient-glass">
@@ -53,7 +59,7 @@ export function ProcessSection({ acf }: ProcessSectionProps) {
             </div>
           )}
           <h2 className="section-heading">
-            {data.heading} {data.heading_accent && <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>}
+            {data.heading} {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
           </h2>
         </div>
 

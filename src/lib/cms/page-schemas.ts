@@ -14,11 +14,18 @@ export type FieldType =
   | "number"
   | "color"
   | "icon"
-  | "toggle";
+  | "toggle"
+  | "items"; // repeating card items with icon picker
 
 export interface CmsFieldOption {
   value: string;
   label: string;
+}
+
+export interface CmsItemField {
+  key: string;
+  label: string;
+  type: "text" | "textarea" | "url" | "icon_slug";
 }
 
 export interface CmsField {
@@ -28,6 +35,7 @@ export interface CmsField {
   placeholder?: string;
   hint?: string;
   options?: CmsFieldOption[];
+  itemFields?: CmsItemField[]; // for type "items"
 }
 
 const HEADING_TAG_FIELD: CmsField = {
@@ -94,6 +102,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "servicesGrid",
         label: "Services section",
+        description: "Service cards grid — edit icons, titles, descriptions",
         fields: [
           { key: "section_label", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
@@ -101,15 +110,39 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "subtext", label: "Subtext", type: "textarea" },
           { key: "cta_label", label: "CTA label", type: "text" },
           { key: "cta_url", label: "CTA link", type: "url" },
+          {
+            key: "services",
+            label: "Service cards",
+            type: "items",
+            hint: "Each card shown in the grid",
+            itemFields: [
+              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+              { key: "link_url", label: "Link URL", type: "url" },
+            ],
+          },
         ],
       },
       {
         key: "process",
         label: "Process section",
+        description: "Step-by-step process cards",
         fields: [
           { key: "section_label", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
           { key: "heading_accent", label: "Accent word(s)", type: "text" },
+          {
+            key: "steps",
+            label: "Process steps",
+            type: "items",
+            hint: "Each step in the process",
+            itemFields: [
+              { key: "number", label: "Number", type: "text" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+            ],
+          },
         ],
       },
       {
@@ -127,6 +160,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "aboutBand",
         label: "About band",
+        description: "Text + USP feature cards with icons",
         fields: [
           { key: "section_label", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
@@ -136,6 +170,17 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "cta_url", label: "Primary CTA link", type: "url" },
           { key: "cta_secondary_label", label: "Secondary CTA label", type: "text" },
           { key: "cta_secondary_url", label: "Secondary CTA link", type: "url" },
+          {
+            key: "usps",
+            label: "Feature USPs",
+            type: "items",
+            hint: "Small cards on the right side",
+            itemFields: [
+              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+            ],
+          },
         ],
       },
       {

@@ -144,7 +144,13 @@ interface ServicesGridProps {
 }
 
 export function ServicesGrid({ acf }: ServicesGridProps) {
-  const data = { ...DEFAULT_DATA, ...acf };
+  const data = {
+    ...DEFAULT_DATA,
+    ...acf,
+    services: Array.isArray(acf?.services) && acf.services.length > 0
+      ? acf.services as AcfServiceItem[]
+      : DEFAULT_DATA.services,
+  };
 
   return (
     <section className="py-24 section-bg-white">
@@ -160,7 +166,7 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
             {data.heading_accent ? (
               <>
                 {data.heading.split(data.heading_accent)[0]}
-                <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+                <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
                 {data.heading.split(data.heading_accent)[1]}
               </>
             ) : (

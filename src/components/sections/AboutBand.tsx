@@ -48,7 +48,13 @@ interface AboutBandProps {
 }
 
 export function AboutBand({ acf }: AboutBandProps) {
-  const data = { ...DEFAULT_DATA, ...acf };
+  const data = {
+    ...DEFAULT_DATA,
+    ...acf,
+    usps: Array.isArray(acf?.usps) && acf.usps.length > 0
+      ? acf.usps as typeof DEFAULT_DATA.usps
+      : DEFAULT_DATA.usps,
+  };
 
   return (
     <section className="py-20 section-bg-clean">
@@ -65,7 +71,7 @@ export function AboutBand({ acf }: AboutBandProps) {
                   ? data.heading.includes(data.heading_accent)
                     ? <>
                         {data.heading.split(data.heading_accent)[0]}
-                        <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+                        <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
                         {data.heading.split(data.heading_accent)[1]}
                       </>
                     : data.heading
