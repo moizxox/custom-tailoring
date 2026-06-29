@@ -13,7 +13,8 @@
     "db:seed": "dotenv -e .env.local -- prisma db seed",
     "db:reset-admin": "dotenv -e .env.local -- tsx prisma/reset-admin.ts",
     "db:create-admin": "dotenv -e .env.local -- tsx prisma/create-admin.ts",
-    "db:studio": "dotenv -e .env.local -- prisma studio"
+    "db:studio": "dotenv -e .env.local -- prisma studio",
+    "upload:cloudinary": "dotenv -e .env.local -- tsx scripts/upload-to-cloudinary.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

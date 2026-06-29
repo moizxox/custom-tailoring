@@ -38,7 +38,7 @@ export default async function KostuemveredelungPage() {
         label="Textilveredelung"
         heading="Stickerei & Stoffdruck"
         headingAccent="Stickerei"
-        imageSrc="/images/gallery/schloesslischraenzer-major.jpeg"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/schloesslischraenzer-major.jpg"
         imageAlt="Veredeltes Kostüm"
         imagePosition="right"
         paragraphs={[

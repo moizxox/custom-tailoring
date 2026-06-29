@@ -13,22 +13,11 @@ interface AcfGalleryPreview {
   preview_items?: { src: string; category: string; title: string }[];
 }
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const PREVIEW_ITEMS = [
-  {
-    src: "/images/gallery/schloesslischraenzer-major.jpeg",
-    category: "Major",
-    title: "Schlösslischränzer Major",
-  },
-  {
-    src: "/images/gallery/gwuerztraminer-2026.jpeg",
-    category: "Guggenmusik",
-    title: "Gwürztraminer Waageclique",
-  },
-  {
-    src: "/images/gallery/waageclique-edelwaggis.jpeg",
-    category: "Clique",
-    title: "Edelwaggis Waageclique",
-  },
+  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, category: "Major", title: "Schlösslischränzer Major" },
+  { src: `${CDN}/gallery/gwuerztraminer-2026.jpg`, category: "Guggenmusik", title: "Gwürztraminer Waageclique" },
+  { src: `${CDN}/gallery/waageclique-edelwaggis.jpg`, category: "Clique", title: "Edelwaggis Waageclique" },
 ];
 
 const DEFAULT_DATA: AcfGalleryPreview = {

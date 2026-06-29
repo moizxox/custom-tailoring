@@ -83,7 +83,7 @@ export default async function MassfertigungPage() {
         label="Präzision"
         heading="Mass nehmen mit Sorgfalt und Erfahrung"
         headingAccent="Sorgfalt"
-        imageSrc="/images/figures/woman-measurement.png"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/figures/woman-measurement.png"
         imageAlt="Massnehmen für Massanfertigung"
         imagePosition="left"
         paragraphs={[

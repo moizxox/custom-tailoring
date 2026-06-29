@@ -4,10 +4,11 @@ import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const MEASUREMENT_TYPES = [
-  { src: "/images/figures/man-measurement.png", label: "Herren", desc: "Massblatt für Herrenkostüme" },
-  { src: "/images/figures/woman-measurement.png", label: "Damen", desc: "Massblatt für Damenkostüme" },
-  { src: "/images/figures/child-measurement.png", label: "Kinder", desc: "Massblatt für Kinderkostüme" },
+  { src: `${CDN}/figures/man-measurement.png`, label: "Herren", desc: "Massblatt für Herrenkostüme" },
+  { src: `${CDN}/figures/woman-measurement.png`, label: "Damen", desc: "Massblatt für Damenkostüme" },
+  { src: `${CDN}/figures/child-measurement.png`, label: "Kinder", desc: "Massblatt für Kinderkostüme" },
 ];
 
 export function MeasurementCards() {

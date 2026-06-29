@@ -1,16 +1,17 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const MARQUEE_PHOTOS = [
-  { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt" },
-  { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Schlösslischränzer Major" },
-  { src: "/images/atelier/atelier-2.jpg", alt: "Näharbeit im Atelier" },
-  { src: "/images/gallery/gwuerztraminer-2026.jpeg", alt: "Gwürztraminer Waageclique" },
-  { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-  { src: "/images/gallery/waageclique-edelwaggis.jpeg", alt: "Edelwaggis Waageclique" },
-  { src: "/images/gallery/baenkli-clique.jpeg", alt: "Bänkli Clique" },
-  { src: "/images/gallery/waggis-clique.jpeg", alt: "Waggis Clique" },
-] as const;
+  { src: `${CDN}/atelier/atelier-1.png`, alt: "Atelier – Werkstatt" },
+  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, alt: "Schlösslischränzer Major" },
+  { src: `${CDN}/atelier/atelier-2.jpg`, alt: "Näharbeit im Atelier" },
+  { src: `${CDN}/gallery/gwuerztraminer-2026.jpg`, alt: "Gwürztraminer Waageclique" },
+  { src: `${CDN}/atelier/atelier-3.jpg`, alt: "Stoffe und Materialien" },
+  { src: `${CDN}/gallery/waageclique-edelwaggis.jpg`, alt: "Edelwaggis Waageclique" },
+  { src: `${CDN}/gallery/baenkli-clique.jpg`, alt: "Bänkli Clique" },
+  { src: `${CDN}/gallery/waggis-clique.jpg`, alt: "Waggis Clique" },
+];
 
 interface PhotoMarqueeProps {
   className?: string;

@@ -67,7 +67,7 @@ export default async function StoffePage() {
         label="Persönliche Beratung"
         heading="Gemeinsam den passenden Stoff finden"
         headingAccent="Stoff"
-        imageSrc="/images/atelier/atelier-3.jpg"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/atelier/atelier-3.jpg"
         imageAlt="Stoffberatung im Atelier"
         imagePosition="right"
         className="section-bg-white"

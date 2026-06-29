@@ -7,11 +7,12 @@ import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const ATELIER_SLIDES = [
-  { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt und Nähmaschinen" },
-  { src: "/images/atelier/atelier-2.jpg", alt: "Handarbeit und Nähzubehör im Atelier" },
-  { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-  { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Fertiges Kostüm im Atelier" },
+  { src: `${CDN}/atelier/atelier-1.png`, alt: "Atelier – Werkstatt und Nähmaschinen" },
+  { src: `${CDN}/atelier/atelier-2.jpg`, alt: "Handarbeit und Nähzubehör im Atelier" },
+  { src: `${CDN}/atelier/atelier-3.jpg`, alt: "Stoffe und Materialien" },
+  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, alt: "Fertiges Kostüm im Atelier" },
 ];
 
 export const metadata: Metadata = {
@@ -82,7 +83,7 @@ export default async function AtelierPage() {
         label="Unsere Werkstatt"
         heading="Wo jedes Kostüm Gestalt annimmt"
         headingAccent="Gestalt"
-        imageSrc="/images/atelier/atelier-2.jpg"
+        imageSrc={`${CDN}/atelier/atelier-2.jpg`}
         imageAlt="Näharbeit im Atelier"
         imagePosition="left"
         paragraphs={[
@@ -97,7 +98,7 @@ export default async function AtelierPage() {
         label="Stoffe & Materialien"
         heading="Die richtige Auswahl für Ihr Projekt"
         headingAccent="Auswahl"
-        imageSrc="/images/atelier/atelier-3.jpg"
+        imageSrc={`${CDN}/atelier/atelier-3.jpg`}
         imageAlt="Stoffauswahl im Atelier"
         imagePosition="right"
         className="section-bg-white"

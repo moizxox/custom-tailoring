@@ -64,9 +64,9 @@ export const HOME_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
     cta_label: "Zur Galerie",
     cta_url: "/galerie",
     preview_items: [
-      { src: "/images/gallery/schloesslischraenzer-major.jpeg", category: "Major", title: "Schlösslischränzer Major" },
-      { src: "/images/gallery/gwuerztraminer-2026.jpeg", category: "Guggenmusik", title: "Gwürztraminer Waageclique" },
-      { src: "/images/gallery/waageclique-edelwaggis.jpeg", category: "Clique", title: "Edelwaggis Waageclique" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/schloesslischraenzer-major.jpg", category: "Major", title: "Schlösslischränzer Major" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/gwuerztraminer-2026.jpg", category: "Guggenmusik", title: "Gwürztraminer Waageclique" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/waageclique-edelwaggis.jpg", category: "Clique", title: "Edelwaggis Waageclique" },
     ],
   },
   aboutBand: {
@@ -92,14 +92,14 @@ export const HOME_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
     subtext:
       "Ein Blick hinter die Kulissen — Werkstatt, Stoffe und fertige Arbeiten aus unserem Atelier in Basel.",
     photos: [
-      { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt" },
-      { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Schlösslischränzer Major" },
-      { src: "/images/atelier/atelier-2.jpg", alt: "Näharbeit im Atelier" },
-      { src: "/images/gallery/gwuerztraminer-2026.jpeg", alt: "Gwürztraminer Waageclique" },
-      { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-      { src: "/images/gallery/waageclique-edelwaggis.jpeg", alt: "Edelwaggis Waageclique" },
-      { src: "/images/gallery/baenkli-clique.jpeg", alt: "Bänkli Clique" },
-      { src: "/images/gallery/waggis-clique.jpeg", alt: "Waggis Clique" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/atelier/atelier-1.png", alt: "Atelier – Werkstatt" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/schloesslischraenzer-major.jpg", alt: "Schlösslischränzer Major" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/atelier/atelier-2.jpg", alt: "Näharbeit im Atelier" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/gwuerztraminer-2026.jpg", alt: "Gwürztraminer Waageclique" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/waageclique-edelwaggis.jpg", alt: "Edelwaggis Waageclique" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/baenkli-clique.jpg", alt: "Bänkli Clique" },
+      { src: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/waggis-clique.jpg", alt: "Waggis Clique" },
     ],
   },
   contactSection: {

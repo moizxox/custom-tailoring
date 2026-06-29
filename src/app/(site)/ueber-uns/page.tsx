@@ -103,7 +103,7 @@ export default async function UeberUnsPage() {
         label="Unsere Arbeit"
         heading="Kostüme für Fasnacht, Bühne und besondere Momente"
         headingAccent="Fasnacht"
-        imageSrc="/images/gallery/gwuerztraminer-2026.jpeg"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/gwuerztraminer-2026.jpg"
         imageAlt="Gwürztraminer Waageclique – Gruppenausstattung"
         imagePosition="right"
         className="section-bg-white"
