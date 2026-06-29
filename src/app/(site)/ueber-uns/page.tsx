@@ -4,13 +4,15 @@ import { ContentSection } from "@/components/sections/ContentSection";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 
 export const metadata: Metadata = {
   title: "Über uns",
   description: "Lernen Sie das Team der Kostümschneiderei Basel kennen.",
 };
 
-const TEAM = [
+const DEFAULT_TEAM = [
   {
     name: "Lani Müller",
     role: "Inhaberin & Schneiderin",
@@ -37,14 +39,27 @@ const VALUES = [
   { icon: "button-sewing-tailoring-handcraft.svg", title: "Persönlichkeit", text: "Wir nehmen uns Zeit für Sie. Ihre Wünsche stehen bei uns an erster Stelle." },
 ];
 
-export default function UeberUnsPage() {
+export default async function UeberUnsPage() {
+  const heroContent = await getCmsContent("ueber-uns", "hero", {});
+  const hero = mapPageHeroContent(heroContent, {
+    label: "Wer wir sind",
+    title: "Leidenschaft für das Handwerk",
+    titleAccent: "Handwerk",
+    subtitle:
+      "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe.",
+    headingTag: "h1",
+  });
+  const teamContent = await getCmsContent<{ members?: typeof DEFAULT_TEAM }>("ueber-uns", "team", {});
+  const TEAM = teamContent.members ?? DEFAULT_TEAM;
+
   return (
     <>
       <PageHero
-        label="Wer wir sind"
-        title="Leidenschaft für das Handwerk"
-        titleAccent="Handwerk"
-        subtitle="Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
       />
 
@@ -88,7 +103,7 @@ export default function UeberUnsPage() {
         label="Unsere Arbeit"
         heading="Kostüme für Fasnacht, Bühne und besondere Momente"
         headingAccent="Fasnacht"
-        imageSrc="/images/gallery/gwuerztraminer-2026.jpeg"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/gwuerztraminer-2026.jpg"
         imageAlt="Gwürztraminer Waageclique – Gruppenausstattung"
         imagePosition="right"
         className="section-bg-white"

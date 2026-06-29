@@ -1,0 +1,332 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "pages": "Seiten",
+    "navigation": "Navigation",
+    "products": "Produkte",
+    "media": "Medien",
+    "settings": "Einstellungen",
+    "addAdmin": "Admin hinzufügen",
+    "viewWebsite": "Website ansehen",
+    "cmsAdmin": "CMS Admin",
+    "signOut": "Abmelden"
+  },
+  "auth": {
+    "brandSubtitle": "CMS Administration",
+    "loginTitle": "Anmelden",
+    "identifierLabel": "E-Mail oder Benutzername",
+    "identifierPlaceholder": "moizxox oder admin@example.com",
+    "passwordLabel": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "signIn": "Anmelden",
+    "signingIn": "Anmelden…",
+    "invalidCredentials": "Ungültige E-Mail/Benutzername oder Passwort.",
+    "loginFailed": "Anmeldung fehlgeschlagen. Bitte erneut versuchen.",
+    "footer": "Kostümschneiderei Basel · CMS v1.0",
+    "registerTitle": "Admin registrieren",
+    "registerSubtitle": "Neues Admin-Konto erstellen",
+    "nameLabel": "Name",
+    "namePlaceholder": "Ihr Name",
+    "usernameLabel": "Benutzername",
+    "usernamePlaceholder": "moizxox",
+    "emailLabel": "E-Mail",
+    "passwordMinPlaceholder": "Mindestens 8 Zeichen",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "createAccount": "Konto erstellen",
+    "registering": "Registrieren…",
+    "alreadyHaveAccount": "Bereits ein Konto? Anmelden",
+    "passwordMismatch": "Passwörter stimmen nicht überein.",
+    "passwordTooShort": "Passwort muss mindestens 8 Zeichen lang sein.",
+    "registerFailed": "Registrierung fehlgeschlagen.",
+    "networkError": "Netzwerkfehler.",
+    "forgotTitle": "Passwort zurücksetzen",
+    "forgotSubtitle": "Wir senden Ihnen einen Reset-Link",
+    "sendResetLink": "Reset-Link senden",
+    "sending": "Senden…",
+    "backToLogin": "Zurück zum Login",
+    "checkEmail": "Falls ein Konto existiert, haben wir einen Reset-Link gesendet.",
+    "checkEmailWithAddress": "Falls ein Konto für {email} existiert, haben wir einen Reset-Link gesendet.",
+    "emailAddressLabel": "E-Mail-Adresse",
+    "emailSendError": "Fehler beim Senden der E-Mail.",
+    "resetTitle": "Neues Passwort",
+    "resetSubtitle": "Bitte wählen Sie ein sicheres Passwort",
+    "invalidToken": "Ungültiger oder abgelaufener Link.",
+    "requestNewLink": "Neuen Reset-Link anfordern",
+    "newPasswordLabel": "Neues Passwort",
+    "savePassword": "Passwort speichern",
+    "saving": "Speichern…",
+    "resetSuccess": "Passwort erfolgreich geändert. Weiterleitung…",
+    "resetFailed": "Fehler beim Zurücksetzen.",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen"
+  },
+  "dashboard": {
+    "greetingMorning": "Guten Morgen",
+    "greetingDay": "Guten Tag",
+    "greetingEvening": "Guten Abend",
+    "welcome": "Willkommen im CMS der Kostümschneiderei Basel.",
+    "statProducts": "Produkte",
+    "statPagesEdited": "Seiten bearbeitet",
+    "statMedia": "Medien",
+    "quickLinks": "Schnellzugriff",
+    "editPages": "Seiten bearbeiten",
+    "editPagesDesc": "Texte und Bilder auf allen Seiten anpassen",
+    "addProduct": "Produkt hinzufügen",
+    "addProductDesc": "Neues Produkt im Shop erstellen",
+    "manageMedia": "Medien verwalten",
+    "manageMediaDesc": "Bilder hochladen und verwalten",
+    "settingsDesc": "Kontaktdaten und Standorte aktualisieren",
+    "phaseTitle": "CMS Phase 1",
+    "phaseBody": "Um Inhalte zu bearbeiten, verbinden Sie zuerst eine Neon-Datenbank in den Umgebungsvariablen. Bis dahin zeigt die Website die statischen Standardinhalte."
+  },
+  "pages": {
+    "title": "Seiten",
+    "subtitle": "Wählen Sie eine Seite, um Inhalte zu bearbeiten.",
+    "columnPage": "Seite",
+    "columnPath": "Pfad",
+    "columnStatus": "Status",
+    "statusEdited": "Bearbeitet",
+    "statusDefault": "Standard",
+    "edit": "Bearbeiten",
+    "backToPages": "Seiten",
+    "editPageTitle": "Seite bearbeiten"
+  },
+  "products": {
+    "title": "Produkte",
+    "count": "{count} Produkte",
+    "newProduct": "Neues Produkt",
+    "empty": "Noch keine Produkte. Fügen Sie das erste hinzu!",
+    "addProductLink": "Produkt hinzufügen",
+    "columnProduct": "Produkt",
+    "columnCategory": "Kategorie",
+    "columnTier": "Tier",
+    "columnPrice": "Preis",
+    "columnInStock": "Lagernd",
+    "edit": "Bearbeiten",
+    "backToProducts": "Produkte",
+    "editProduct": "Produkt bearbeiten",
+    "productData": "Produktdaten",
+    "nameLabel": "Name",
+    "namePlaceholder": "z.B. Einzelkostüm Premium",
+    "slugLabel": "Slug",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Produktbeschreibung…",
+    "priceLabel": "Preis",
+    "pricePlaceholder": "CHF 320",
+    "categoryLabel": "Kategorie",
+    "tierLabel": "Tier",
+    "imageAndStatus": "Bild & Status",
+    "imageUrlLabel": "Bild-URL",
+    "inStockLabel": "Auf Lager",
+    "sortOrderLabel": "Sortierung",
+    "createProduct": "Produkt erstellen",
+    "saveChanges": "Änderungen speichern",
+    "cancel": "Abbrechen",
+    "saveError": "Fehler beim Speichern.",
+    "delete": "Löschen",
+    "deleteConfirm": "Ja, löschen",
+    "deleteTitle": "{name} löschen",
+    "inStock": "Auf Lager",
+    "outOfStock": "Nicht auf Lager"
+  },
+  "media": {
+    "title": "Medien",
+    "count": "{count} Dateien",
+    "upload": "Bild hochladen",
+    "uploading": "Uploading…",
+    "uploadFailed": "Upload fehlgeschlagen.",
+    "cloudinaryHint": "Bitte setzen Sie CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY und CLOUDINARY_API_SECRET in .env.local",
+    "empty": "Noch keine Bilder. Laden Sie das erste hoch!",
+    "copyUrl": "URL kopieren",
+    "copied": "Kopiert!",
+    "delete": "Löschen",
+    "pickerTitle": "Bild aus Medienbibliothek wählen",
+    "pickerEmpty": "Keine Bilder vorhanden. Laden Sie zuerst Bilder hoch."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Kontaktdaten, Standorte und Social-Media-Links verwalten.",
+    "contactSection": "Kontaktdaten",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "whatsapp": "WhatsApp",
+    "socialSection": "Social Media",
+    "instagramUrl": "Instagram-URL",
+    "facebookUrl": "Facebook-URL",
+    "locationSection": "Standort: {name}",
+    "name": "Name",
+    "city": "Stadt",
+    "address": "Adresse",
+    "mapsUrl": "Google Maps URL",
+    "mapsEmbed": "Google Maps Embed-URL",
+    "saveSettings": "Einstellungen speichern",
+    "saveError": "Fehler beim Speichern."
+  },
+  "editor": {
+    "save": "Speichern",
+    "saving": "Speichern…",
+    "saved": "Gespeichert",
+    "saveFailed": "Fehler beim Speichern. Bitte erneut versuchen.",
+    "arrayPlaceholder": "JSON-Array eingeben",
+    "imagePlaceholder": "https://… oder aus Medienbibliothek wählen",
+    "chooseImage": "Bild wählen",
+    "selectPlaceholder": "Auswählen…"
+  },
+  "api": {
+    "unauthorized": "Nicht autorisiert.",
+    "fieldsRequired": "E-Mail, Benutzername und Passwort erforderlich.",
+    "usernameInvalid": "Benutzername: 3–30 Zeichen, nur Kleinbuchstaben, Zahlen, Unterstrich.",
+    "passwordTooShort": "Passwort muss mindestens 8 Zeichen lang sein.",
+    "emailTaken": "Diese E-Mail-Adresse ist bereits registriert.",
+    "usernameTaken": "Dieser Benutzername ist bereits vergeben.",
+    "serverError": "Serverfehler."
+  },
+  "common": {
+    "saved": "Gespeichert",
+    "cancel": "Abbrechen",
+    "networkError": "Netzwerkfehler."
+  },
+  "schemas": {
+    "home": {
+      "label": "Startseite",
+      "hero": {
+        "label": "Hero-Bereich",
+        "description": "Hauptüberschrift und Einstiegstext der Startseite",
+        "fields": {
+          "eyebrow": { "label": "Eyebrow-Text" },
+          "heading": { "label": "Hauptüberschrift" },
+          "headingAccent": { "label": "Akzent-Wort (farbig)", "hint": "Wort(e) die farbig hervorgehoben werden" },
+          "subtext": { "label": "Einleitungstext" },
+          "ctaPrimaryLabel": { "label": "Button 1 — Text" },
+          "ctaPrimaryUrl": { "label": "Button 1 — Link" },
+          "ctaSecondaryLabel": { "label": "Button 2 — Text" },
+          "ctaSecondaryUrl": { "label": "Button 2 — Link" }
+        }
+      }
+    },
+    "ueber-uns": {
+      "label": "Über uns",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Einleitungstext" }
+        }
+      },
+      "team": {
+        "label": "Team",
+        "description": "Teammitglieder (JSON-Array)",
+        "fields": {
+          "members": { "label": "Teammitglieder", "hint": "Jedes Mitglied: name, role, bio" }
+        }
+      }
+    },
+    "kontakt": {
+      "label": "Kontakt",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      }
+    },
+    "service": {
+      "label": "Service",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      },
+      "offerings": {
+        "label": "Leistungen",
+        "description": "Liste der Serviceleistungen",
+        "fields": {
+          "items": { "label": "Leistungen" }
+        }
+      }
+    },
+    "galerie": {
+      "label": "Galerie",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      },
+      "gallery": {
+        "label": "Galerie-Bilder",
+        "description": "Bilder und Kategorien der Galerie",
+        "fields": {
+          "items": { "label": "Galerie-Einträge" }
+        }
+      }
+    },
+    "atelier": {
+      "label": "Atelier",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      }
+    },
+    "termin": {
+      "label": "Terminbuchung",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      }
+    },
+    "massfertigung": {
+      "label": "Massfertigung",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      }
+    },
+    "stoffe": {
+      "label": "Stoffe & Materialien",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      }
+    },
+    "kostuemveredelung": {
+      "label": "Kostümveredelung",
+      "hero": {
+        "label": "Hero-Bereich",
+        "fields": {
+          "heading": { "label": "Überschrift" },
+          "subtext": { "label": "Untertext" }
+        }
+      }
+    },
+    "impressum": {
+      "label": "Impressum",
+      "company": {
+        "label": "Firmendaten",
+        "fields": {
+          "name": { "label": "Firmenname" },
+          "owner": { "label": "Inhaberin" },
+          "uid": { "label": "UID" },
+          "phone": { "label": "Telefon" },
+          "email": { "label": "E-Mail" }
+        }
+      }
+    }
+  }
+}

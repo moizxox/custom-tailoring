@@ -1,7 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { AcfServicesGrid, AcfServiceItem } from "@/types";
+interface AcfServiceItem {
+  title: string;
+  description: string;
+  icon_slug: string;
+  link_url?: string;
+}
+
+interface AcfServicesGrid {
+  acf_fc_layout: "services_grid";
+  section_label?: string;
+  heading: string;
+  heading_accent?: string;
+  subtext?: string;
+  services: AcfServiceItem[];
+  show_cta: boolean;
+  cta_label?: string;
+  cta_url?: string;
+}
 
 // ─── Default ACF data ─────────────────────────────────────────────────────────
 const DEFAULT_DATA: AcfServicesGrid = {
@@ -127,7 +144,13 @@ interface ServicesGridProps {
 }
 
 export function ServicesGrid({ acf }: ServicesGridProps) {
-  const data = { ...DEFAULT_DATA, ...acf };
+  const data = {
+    ...DEFAULT_DATA,
+    ...acf,
+    services: Array.isArray(acf?.services) && acf.services.length > 0
+      ? acf.services as AcfServiceItem[]
+      : DEFAULT_DATA.services,
+  };
 
   return (
     <section className="py-24 section-bg-white">
@@ -143,7 +166,7 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
             {data.heading_accent ? (
               <>
                 {data.heading.split(data.heading_accent)[0]}
-                <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+                <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
                 {data.heading.split(data.heading_accent)[1]}
               </>
             ) : (

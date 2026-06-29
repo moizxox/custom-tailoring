@@ -2,8 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { AcfHero } from "@/types";
+import { createElement } from "react";
 import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
+import type { HeadingTag } from "@/lib/cms/helpers";
+
+interface AcfHero {
+  acf_fc_layout: "hero";
+  eyebrow_text: string;
+  heading: string;
+  heading_accent: string;
+  subtext: string;
+  cta_primary_label: string;
+  cta_primary_url: string;
+  cta_secondary_label?: string;
+  cta_secondary_url?: string;
+  show_contact_form: boolean;
+  badges: { icon_slug: string; label: string }[];
+  intro_points?: { text: string }[];
+}
 
 const DEFAULT_DATA: AcfHero = {
   acf_fc_layout: "hero",
@@ -24,7 +40,7 @@ const DEFAULT_DATA: AcfHero = {
   ],
 };
 
-const INTRO_POINTS = [
+const DEFAULT_INTRO_POINTS = [
   "Kostüme für Fasnacht, Bühne und besondere Anlässe",
   "Beratung, Schnitt und Anfertigung aus einer Hand",
   "Persönlicher Service – von der Idee bis zur letzten Naht",
@@ -32,20 +48,33 @@ const INTRO_POINTS = [
 
 interface HeroSectionProps {
   acf?: Partial<AcfHero>;
+  headingTag?: HeadingTag;
 }
 
-export function HeroSection({ acf }: HeroSectionProps) {
-  const data = { ...DEFAULT_DATA, ...acf };
+export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
+  const data = {
+    ...DEFAULT_DATA,
+    ...acf,
+    badges: Array.isArray(acf?.badges) && acf.badges.length > 0
+      ? acf.badges as typeof DEFAULT_DATA.badges
+      : DEFAULT_DATA.badges,
+  };
+  const introPoints: string[] = Array.isArray(acf?.intro_points) && (acf.intro_points as unknown[]).length > 0
+    ? (acf.intro_points as { text: string }[]).map((p) => p.text)
+    : DEFAULT_INTRO_POINTS;
 
   const renderHeading = () => {
-    const lines = data.heading.split("\n");
+    const normalizedHeading = data.heading
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/\r\n/g, "\n");
+    const lines = normalizedHeading.split("\n");
     return lines.map((line, li) => {
       if (data.heading_accent && line.includes(data.heading_accent)) {
         const parts = line.split(data.heading_accent);
         return (
           <span key={li} className="block">
             {parts[0]}
-            <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+            <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
             {parts[1]}
           </span>
         );
@@ -69,9 +98,14 @@ export function HeroSection({ acf }: HeroSectionProps) {
             <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-gold-deeper">{data.eyebrow_text}</span>
           </div>
 
-          <h1 className="font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0">
-            {renderHeading()}
-          </h1>
+          {createElement(
+            headingTag,
+            {
+              className:
+                "font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
+            },
+            renderHeading()
+          )}
 
           <div className="flex items-center justify-center gap-3 mb-6 animate-fade-up [animation-delay:100ms] opacity-0">
             <div className="line-gold-dashed w-12 shrink-0 opacity-90" />
@@ -84,7 +118,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
           </p>
 
           <ul className="inline-flex flex-col items-start gap-2.5 mb-8 max-w-2xl text-left animate-fade-up [animation-delay:160ms] opacity-0">
-            {INTRO_POINTS.map((point) => (
+            {introPoints.map((point) => (
               <li key={point} className="flex items-start gap-2.5 font-sans text-sm sm:text-[15px] text-charcoal-light">
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-periwinkle shrink-0" />
                 {point}

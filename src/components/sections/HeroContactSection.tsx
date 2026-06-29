@@ -6,10 +6,57 @@ import { useState } from "react";
 
 interface FormState { name: string; email: string; phone: string; message: string }
 
-export function HeroContactSection() {
+interface HeroContactCopy {
+  section_label?: string;
+  heading?: string;
+  headingAccent?: string;
+  subtext?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  formTitle?: string;
+  formSubtitle?: string;
+  nameLabel?: string;
+  namePlaceholder?: string;
+  phoneLabel?: string;
+  phonePlaceholder?: string;
+  emailLabel?: string;
+  emailPlaceholder?: string;
+  messageLabel?: string;
+  messagePlaceholder?: string;
+  submitLabel?: string;
+  successTitle?: string;
+  successMessage?: string;
+}
+
+const DEFAULT_COPY: Required<HeroContactCopy> = {
+  section_label: "Kontakt",
+  heading: "Haben Sie eine Frage oder ein Projekt?",
+  headingAccent: "Frage",
+  subtext:
+    "Schreiben Sie uns — wir melden uns persönlich und zeitnah. Für eine ausführliche Beratung können Sie auch direkt einen Termin buchen.",
+  ctaLabel: "Termin buchen",
+  ctaUrl: "/termin",
+  formTitle: "Anfrage senden",
+  formSubtitle: "Wir antworten persönlich und zeitnah.",
+  nameLabel: "Name *",
+  namePlaceholder: "Ihr Name",
+  phoneLabel: "Telefon",
+  phonePlaceholder: "+41 ...",
+  emailLabel: "E-Mail *",
+  emailPlaceholder: "ihre@email.ch",
+  messageLabel: "Nachricht",
+  messagePlaceholder: "Wie können wir Ihnen helfen?",
+  submitLabel: "Anfrage absenden",
+  successTitle: "Vielen Dank!",
+  successMessage: "Wir melden uns persönlich und zeitnah bei Ihnen.",
+};
+
+export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
   const [form, setForm] = useState<FormState>({ name: "", email: "", phone: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const data = { ...DEFAULT_COPY, ...acf };
+  const hasAccent = Boolean(data.headingAccent && data.heading?.includes(data.headingAccent));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,16 +71,23 @@ export function HeroContactSection() {
       <div className="container-site">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] gap-10 xl:gap-16 items-start">
           <div className="max-w-xl">
-            <p className="section-label mb-4">Kontakt</p>
+            <p className="section-label mb-4">{data.section_label}</p>
             <h2 className="font-serif text-3xl sm:text-4xl text-charcoal leading-snug mb-4">
-              Haben Sie eine <em className="not-italic italic text-periwinkle-dark">Frage</em> oder ein Projekt?
+              {hasAccent ? (
+                <>
+                  {data.heading.split(data.headingAccent)[0]}
+                  <em className="italic text-periwinkle-dark">{data.headingAccent}</em>
+                  {data.heading.split(data.headingAccent)[1]}
+                </>
+              ) : (
+                data.heading
+              )}
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-6">
-              Schreiben Sie uns — wir melden uns persönlich und zeitnah. Für eine ausführliche
-              Beratung können Sie auch direkt einen Termin buchen.
+              {data.subtext}
             </p>
-            <Link href="/termin" className="btn-secondary inline-flex">
-              Termin buchen
+            <Link href={data.ctaUrl} className="btn-secondary inline-flex">
+              {data.ctaLabel}
             </Link>
           </div>
 
@@ -53,9 +107,9 @@ export function HeroContactSection() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="font-serif text-2xl text-charcoal">Vielen Dank!</h3>
+                    <h3 className="font-serif text-2xl text-charcoal">{data.successTitle}</h3>
                     <p className="font-sans text-sm text-charcoal-light max-w-[220px] leading-relaxed">
-                      Wir melden uns persönlich und zeitnah bei Ihnen.
+                      {data.successMessage}
                     </p>
                     <button onClick={() => setSubmitted(false)} className="text-xs font-sans text-periwinkle-dark hover:underline mt-1">
                       Neue Anfrage senden
@@ -68,29 +122,29 @@ export function HeroContactSection() {
                         <Image src="/icons/sewing/pencil-sewing-tailoring-drawing.svg" alt="" width={20} height={20} className="icon-periwinkle" />
                       </div>
                       <div>
-                        <h3 className="font-serif text-lg text-charcoal leading-tight">Anfrage senden</h3>
-                        <p className="font-sans text-[11px] text-charcoal-lighter">Wir antworten persönlich und zeitnah.</p>
+                        <h3 className="font-serif text-lg text-charcoal leading-tight">{data.formTitle}</h3>
+                        <p className="font-sans text-[11px] text-charcoal-lighter">{data.formSubtitle}</p>
                       </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">Name *</label>
-                          <input type="text" required placeholder="Ihr Name" className="input-field text-[13px] py-2.5" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
+                          <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">{data.nameLabel}</label>
+                          <input type="text" required placeholder={data.namePlaceholder} className="input-field text-[13px] py-2.5" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
                         </div>
                         <div>
-                          <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">Telefon</label>
-                          <input type="tel" placeholder="+41 ..." className="input-field text-[13px] py-2.5" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
+                          <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">{data.phoneLabel}</label>
+                          <input type="tel" placeholder={data.phonePlaceholder} className="input-field text-[13px] py-2.5" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                         </div>
                       </div>
                       <div>
-                        <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">E-Mail *</label>
-                        <input type="email" required placeholder="ihre@email.ch" className="input-field text-[13px] py-2.5" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                        <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">{data.emailLabel}</label>
+                        <input type="email" required placeholder={data.emailPlaceholder} className="input-field text-[13px] py-2.5" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                       </div>
                       <div>
-                        <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">Nachricht</label>
-                        <textarea rows={3} placeholder="Wie können wir Ihnen helfen?" className="input-field resize-none text-[13px]" value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
+                        <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">{data.messageLabel}</label>
+                        <textarea rows={3} placeholder={data.messagePlaceholder} className="input-field resize-none text-[13px]" value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
                       </div>
 
                       <button
@@ -98,7 +152,7 @@ export function HeroContactSection() {
                         disabled={submitting}
                         className="w-full mt-1 flex items-center justify-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white font-sans font-medium text-sm py-3 rounded-xl transition-all duration-200 disabled:opacity-50"
                       >
-                        {submitting ? "Wird gesendet…" : "Anfrage absenden"}
+                        {submitting ? "Wird gesendet…" : data.submitLabel}
                       </button>
                     </form>
                   </>

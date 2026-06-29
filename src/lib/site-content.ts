@@ -193,7 +193,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     qualityTier: "standard",
     priceFrom: "Ab CHF 450.–",
     shortDescription: "Klassischer Basler Waggis — nach Mass, in der Qualitätsstufe Ihrer Wahl.",
-    imageSrc: "/images/gallery/waggis-clique.jpeg",
+    imageSrc: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/waggis-clique.jpg",
   },
   {
     id: "edelwaggis-premium",
@@ -203,7 +203,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     qualityTier: "premium",
     priceFrom: "Ab CHF 680.–",
     shortDescription: "Edle Ausführung mit hochwertigen Stoffen und verstärkten Details.",
-    imageSrc: "/images/gallery/waageclique-edelwaggis.jpeg",
+    imageSrc: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/waageclique-edelwaggis.jpg",
   },
   {
     id: "clique-stamm-einfach",
@@ -213,7 +213,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     qualityTier: "einfach",
     priceFrom: "Ab CHF 280.–",
     shortDescription: "Einheitliches Clique-Kostüm für Gruppen — robust und budgetfreundlich.",
-    imageSrc: "/images/gallery/gwuerztraminer-2026.jpeg",
+    imageSrc: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/gwuerztraminer-2026.jpg",
   },
   {
     id: "kinder-lager",
@@ -224,7 +224,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     priceFrom: "Ab CHF 120.–",
     shortDescription: "Sofort verfügbar — begrenzte Grössenauswahl, attraktives Preis-Leistungs-Verhältnis.",
     inStock: true,
-    imageSrc: "/images/gallery/baenkli-clique.jpeg",
+    imageSrc: "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/baenkli-clique.jpg",
   },
 ];
 

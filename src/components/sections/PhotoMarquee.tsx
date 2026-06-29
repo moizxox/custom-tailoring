@@ -1,23 +1,43 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const MARQUEE_PHOTOS = [
-  { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt" },
-  { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Schlösslischränzer Major" },
-  { src: "/images/atelier/atelier-2.jpg", alt: "Näharbeit im Atelier" },
-  { src: "/images/gallery/gwuerztraminer-2026.jpeg", alt: "Gwürztraminer Waageclique" },
-  { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-  { src: "/images/gallery/waageclique-edelwaggis.jpeg", alt: "Edelwaggis Waageclique" },
-  { src: "/images/gallery/baenkli-clique.jpeg", alt: "Bänkli Clique" },
-  { src: "/images/gallery/waggis-clique.jpeg", alt: "Waggis Clique" },
-] as const;
+  { src: `${CDN}/atelier/atelier-1.png`, alt: "Atelier – Werkstatt" },
+  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, alt: "Schlösslischränzer Major" },
+  { src: `${CDN}/atelier/atelier-2.jpg`, alt: "Näharbeit im Atelier" },
+  { src: `${CDN}/gallery/gwuerztraminer-2026.jpg`, alt: "Gwürztraminer Waageclique" },
+  { src: `${CDN}/atelier/atelier-3.jpg`, alt: "Stoffe und Materialien" },
+  { src: `${CDN}/gallery/waageclique-edelwaggis.jpg`, alt: "Edelwaggis Waageclique" },
+  { src: `${CDN}/gallery/baenkli-clique.jpg`, alt: "Bänkli Clique" },
+  { src: `${CDN}/gallery/waggis-clique.jpg`, alt: "Waggis Clique" },
+];
 
 interface PhotoMarqueeProps {
   className?: string;
+  acf?: {
+    section_label?: string;
+    heading?: string;
+    heading_accent?: string;
+    subtext?: string;
+    photos?: { src: string; alt: string }[];
+  };
 }
 
-export function PhotoMarquee({ className }: PhotoMarqueeProps) {
-  const track = [...MARQUEE_PHOTOS, ...MARQUEE_PHOTOS];
+const DEFAULT_COPY = {
+  section_label: "Im Atelier",
+  heading: "Wo Ihre Kostüme",
+  heading_accent: "entstehen",
+  subtext:
+    "Ein Blick hinter die Kulissen — Werkstatt, Stoffe und fertige Arbeiten aus unserem Atelier in Basel.",
+};
+
+export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
+  const photos = Array.isArray(acf?.photos) && acf.photos.length > 0
+    ? acf.photos
+    : MARQUEE_PHOTOS;
+  const track = [...photos, ...photos];
+  const data = { ...DEFAULT_COPY, ...acf };
 
   return (
     <section
@@ -26,13 +46,14 @@ export function PhotoMarquee({ className }: PhotoMarqueeProps) {
     >
       <div className="container-site text-center mb-10 lg:mb-12">
         <div className="divider-ornament justify-center mb-5">
-          <span>Im Atelier</span>
+          <span>{data.section_label}</span>
         </div>
         <h2 className="section-heading mb-4">
-          Wo Ihre Kostüme <em className="not-italic italic text-periwinkle-dark">entstehen</em>
+          {data.heading}{" "}
+          {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
         </h2>
         <p className="section-subtext max-w-lg mx-auto">
-          Ein Blick hinter die Kulissen — Werkstatt, Stoffe und fertige Arbeiten aus unserem Atelier in Basel.
+          {data.subtext}
         </p>
       </div>
 

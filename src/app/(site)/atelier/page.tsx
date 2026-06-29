@@ -2,14 +2,17 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { PhotoSlider } from "@/components/ui/PhotoSlider";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Link from "next/link";
 import type { Metadata } from "next";
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const ATELIER_SLIDES = [
-  { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt und Nähmaschinen" },
-  { src: "/images/atelier/atelier-2.jpg", alt: "Handarbeit und Nähzubehör im Atelier" },
-  { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
-  { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Fertiges Kostüm im Atelier" },
+  { src: `${CDN}/atelier/atelier-1.png`, alt: "Atelier – Werkstatt und Nähmaschinen" },
+  { src: `${CDN}/atelier/atelier-2.jpg`, alt: "Handarbeit und Nähzubehör im Atelier" },
+  { src: `${CDN}/atelier/atelier-3.jpg`, alt: "Stoffe und Materialien" },
+  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, alt: "Fertiges Kostüm im Atelier" },
 ];
 
 export const metadata: Metadata = {
@@ -17,14 +20,23 @@ export const metadata: Metadata = {
   description: "Unser Atelier in Basel – der Ort, wo Kostüme entstehen.",
 };
 
-export default function AtelierPage() {
+export default async function AtelierPage() {
+  const hero = mapPageHeroContent(await getCmsContent("atelier", "hero", {}), {
+    label: "Unser Standort",
+    title: "Das Atelier",
+    titleAccent: "Atelier",
+    subtitle: "In der Greifengasse 20, mitten in Basel, befindet sich unser Atelier – der Ort, wo Ideen zu Kostümen werden.",
+    headingTag: "h1",
+  });
+
   return (
     <>
       <PageHero
-        label="Unser Standort"
-        title="Das Atelier"
-        titleAccent="Atelier"
-        subtitle="In der Greifengasse 20, mitten in Basel, befindet sich unser Atelier – der Ort, wo Ideen zu Kostümen werden."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 
@@ -71,7 +83,7 @@ export default function AtelierPage() {
         label="Unsere Werkstatt"
         heading="Wo jedes Kostüm Gestalt annimmt"
         headingAccent="Gestalt"
-        imageSrc="/images/atelier/atelier-2.jpg"
+        imageSrc={`${CDN}/atelier/atelier-2.jpg`}
         imageAlt="Näharbeit im Atelier"
         imagePosition="left"
         paragraphs={[
@@ -86,7 +98,7 @@ export default function AtelierPage() {
         label="Stoffe & Materialien"
         heading="Die richtige Auswahl für Ihr Projekt"
         headingAccent="Auswahl"
-        imageSrc="/images/atelier/atelier-3.jpg"
+        imageSrc={`${CDN}/atelier/atelier-3.jpg`}
         imageAlt="Stoffauswahl im Atelier"
         imagePosition="right"
         className="section-bg-white"

@@ -1,6 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { AcfAboutBand } from "@/types";
+interface AcfAboutBand {
+  acf_fc_layout: "about_band";
+  section_label?: string;
+  heading: string;
+  heading_accent?: string;
+  body_text: string;
+  cta_label: string;
+  cta_url: string;
+  cta_secondary_label?: string;
+  cta_secondary_url?: string;
+  usps: { icon_slug: string; title: string; description: string }[];
+}
 
 const DEFAULT_DATA: AcfAboutBand = {
   acf_fc_layout: "about_band",
@@ -37,7 +48,13 @@ interface AboutBandProps {
 }
 
 export function AboutBand({ acf }: AboutBandProps) {
-  const data = { ...DEFAULT_DATA, ...acf };
+  const data = {
+    ...DEFAULT_DATA,
+    ...acf,
+    usps: Array.isArray(acf?.usps) && acf.usps.length > 0
+      ? acf.usps as typeof DEFAULT_DATA.usps
+      : DEFAULT_DATA.usps,
+  };
 
   return (
     <section className="py-20 section-bg-clean">
@@ -54,7 +71,7 @@ export function AboutBand({ acf }: AboutBandProps) {
                   ? data.heading.includes(data.heading_accent)
                     ? <>
                         {data.heading.split(data.heading_accent)[0]}
-                        <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>
+                        <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
                         {data.heading.split(data.heading_accent)[1]}
                       </>
                     : data.heading

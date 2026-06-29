@@ -1,6 +1,8 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -9,14 +11,26 @@ export const metadata: Metadata = {
   description: "Stickerei, Stoffdruck und textile Veredelung für Ihre Fasnachtskostüme.",
 };
 
-export default function KostuemveredelungPage() {
+const DEFAULT_HERO = {
+  label: "Veredelung",
+  title: "Kostümveredelung",
+  titleAccent: "Veredelung",
+  subtitle: "Stickerei, Stoffdruck und individuelle Details — damit Ihr Kostüm einzigartig wird.",
+  headingTag: "h1" as const,
+};
+
+export default async function KostuemveredelungPage() {
+  const heroContent = await getCmsContent("kostuemveredelung", "hero", {});
+  const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
+
   return (
     <>
       <PageHero
-        label="Veredelung"
-        title="Kostümveredelung"
-        titleAccent="Veredelung"
-        subtitle="Stickerei, Stoffdruck und individuelle Details — damit Ihr Kostüm einzigartig wird."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Kostümveredelung", href: "/kostuemveredelung" }]}
       />
 
@@ -24,7 +38,7 @@ export default function KostuemveredelungPage() {
         label="Textilveredelung"
         heading="Stickerei & Stoffdruck"
         headingAccent="Stickerei"
-        imageSrc="/images/gallery/schloesslischraenzer-major.jpeg"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/schloesslischraenzer-major.jpg"
         imageAlt="Veredeltes Kostüm"
         imagePosition="right"
         paragraphs={[

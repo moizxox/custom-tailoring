@@ -1,6 +1,8 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -19,14 +21,23 @@ const FABRICS = [
   { name: "Spezialgewebe", desc: "Stretchmaterialien, Lackstoffe und mehr auf Anfrage.", icon: "velcro-tape-sewing-tailoring.svg", gradient: "from-stone-light to-sand-light" },
 ];
 
-export default function StoffePage() {
+export default async function StoffePage() {
+  const hero = mapPageHeroContent(await getCmsContent("stoffe", "hero", {}), {
+    label: "Materialien",
+    title: "Stoffe & Materialien",
+    titleAccent: "Stoffe",
+    subtitle: "Wir führen eine grosse Auswahl hochwertiger Stoffe und beraten Sie persönlich bei der Wahl.",
+    headingTag: "h1",
+  });
+
   return (
     <>
       <PageHero
-        label="Materialien"
-        title="Stoffe & Materialien"
-        titleAccent="Stoffe"
-        subtitle="Wir führen eine grosse Auswahl hochwertiger Stoffe und beraten Sie persönlich bei der Wahl."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Stoffe & Materialien", href: "/stoffe" }]}
       />
 
@@ -56,7 +67,7 @@ export default function StoffePage() {
         label="Persönliche Beratung"
         heading="Gemeinsam den passenden Stoff finden"
         headingAccent="Stoff"
-        imageSrc="/images/atelier/atelier-3.jpg"
+        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/atelier/atelier-3.jpg"
         imageAlt="Stoffberatung im Atelier"
         imagePosition="right"
         className="section-bg-white"

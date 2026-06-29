@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { NAV_LINKS } from "@/lib/site-content";
 import { SiteSearch } from "@/components/layout/SiteSearch";
+import type { NavItem } from "@/lib/cms/navigation";
 
-export function Navbar() {
+interface NavbarProps {
+  navItems: NavItem[];
+  ctaLabel?: string;
+  ctaUrl?: string;
+}
+
+export function Navbar({ navItems, ctaLabel = "Termin buchen", ctaUrl = "/termin" }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -35,9 +41,14 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <ul className="hidden xl:flex items-center gap-5 bg-periwinkle-lighter/60 border border-periwinkle-light/40 rounded-full px-6 py-2.5">
-            {NAV_LINKS.map((link) => (
+            {navItems.map((link) => (
               <li key={link.href} className="whitespace-nowrap">
-                <Link href={link.href} className="nav-link text-[13px] whitespace-nowrap">
+                <Link
+                  href={link.href}
+                  className="nav-link text-[13px] whitespace-nowrap"
+                  target={link.openInNewTab ? "_blank" : undefined}
+                  rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+                >
                   {link.label}
                 </Link>
               </li>
@@ -50,7 +61,7 @@ export function Navbar() {
             <SiteSearch className="md:hidden" variant="compact" onNavigate={() => setMobileOpen(false)} />
 
             <Link
-              href="/termin"
+              href={ctaUrl}
               className={cn(
                 "hidden sm:inline-flex items-center gap-2",
                 "bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white",
@@ -58,7 +69,7 @@ export function Navbar() {
                 "transition-all duration-200 shadow-soft hover:shadow-periwinkle",
               )}
             >
-              Termin buchen
+              {ctaLabel}
             </Link>
 
             {/* Hamburger */}
@@ -88,18 +99,20 @@ export function Navbar() {
         )}
       >
         <div className="container-site flex flex-col pb-5">
-          {NAV_LINKS.map((link) => (
+          {navItems.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
+              target={link.openInNewTab ? "_blank" : undefined}
+              rel={link.openInNewTab ? "noopener noreferrer" : undefined}
               className="py-3.5 text-sm font-sans text-charcoal-light hover:text-charcoal border-b border-stone-light/60 last:border-0 transition-colors"
             >
               {link.label}
             </Link>
           ))}
-          <Link href="/termin" onClick={() => setMobileOpen(false)} className="mt-4 btn-primary justify-center">
-            Termin buchen
+          <Link href={ctaUrl} onClick={() => setMobileOpen(false)} className="mt-4 btn-primary justify-center">
+            {ctaLabel}
           </Link>
         </div>
       </div>

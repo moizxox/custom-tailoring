@@ -2,33 +2,68 @@ import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
+import { SERVICE_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import type { Metadata } from "next";
+
+interface ServiceItem { title: string; description: string; }
+interface ProcessStep { number: string; title: string; description: string; }
+interface FaqItem { q: string; a: string; }
 
 export const metadata: Metadata = {
   title: "Service",
   description: "Fasnachtsatelier — Mass und Budget im Einklang. Leistungen und Bestellprozess für Guggenmusik, Cliquen und Einzelpersonen.",
 };
 
-export default function ServicePage() {
+const DEFAULT_HERO = {
+  label: "Fasnachtsatelier",
+  title: "Mass und Budget im Einklang",
+  titleAccent: "Einklang",
+  subtitle: "Unsere Leistungen im Überblick — für Guggenmusik, Cliquen und Einzelmasken.",
+  headingTag: "h1" as const,
+};
+
+export default async function ServicePage() {
+  const [heroContent, offeringsContent, processContent, faqsContent] = await Promise.all([
+    getCmsContent("service", "hero", {}),
+    getCmsContent("service", "offerings", {}),
+    getCmsContent("service", "orderProcess", {}),
+    getCmsContent("service", "faqs", {}),
+  ]);
+  const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
+
+  const offeringsData = { ...SERVICE_SECTION_DEFAULTS.offerings, ...offeringsContent } as { heading: string; items: ServiceItem[] };
+  const processData = { ...SERVICE_SECTION_DEFAULTS.orderProcess, ...processContent } as { heading: string; steps: ProcessStep[] };
+  const faqsData = { ...SERVICE_SECTION_DEFAULTS.faqs, ...faqsContent } as { items: FaqItem[] };
+
+  const offerings: ServiceItem[] = Array.isArray(offeringsData.items) && offeringsData.items.length > 0
+    ? offeringsData.items : SERVICE_OFFERINGS.map((o) => ({ title: o.title, description: o.description }));
+  const processSteps: ProcessStep[] = Array.isArray(processData.steps) && processData.steps.length > 0
+    ? processData.steps : ORDER_PROCESS_STEPS.map((s) => ({ number: s.number, title: s.title, description: s.description }));
+  const faqs: FaqItem[] = Array.isArray(faqsData.items) && faqsData.items.length > 0
+    ? faqsData.items : SERVICE_FAQS.map((f) => ({ q: f.q, a: f.a }));
+
   return (
     <>
       <PageHero
-        label="Fasnachtsatelier"
-        title="Mass und Budget im Einklang"
-        titleAccent="Einklang"
-        subtitle="Unsere Leistungen im Überblick — für Guggenmusik, Cliquen und Einzelmasken."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Service", href: "/service" }]}
       />
 
-      {/* Leistungen overview — from old /service */}
+      {/* Leistungen overview */}
       <section className="py-20 section-bg-lavender">
         <div className="container-site">
           <div className="text-center mb-12">
-            <h2 className="section-heading mb-4">Unsere Leistungen im Überblick</h2>
+            <h2 className="section-heading mb-4">{offeringsData.heading}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {SERVICE_OFFERINGS.map((item) => (
+            {offerings.map((item) => (
               <article key={item.title} className="rounded-2xl bg-white/80 border border-periwinkle-light/40 p-6 hover:shadow-soft transition-shadow">
                 <h3 className="font-serif text-lg text-charcoal mb-2">{item.title}</h3>
                 <p className="font-sans text-sm text-charcoal-light leading-relaxed">{item.description}</p>
@@ -51,29 +86,17 @@ export default function ServicePage() {
         <div className="container-site max-w-4xl">
           <div className="text-center mb-14">
             <p className="section-label mb-3">Bestellprozess</p>
-            <h2 className="section-heading">
-              So funktioniert der Bestellprozess für Ihr <em className="not-italic italic text-periwinkle-dark">Fasnachtskostüm</em>
-            </h2>
+            <h2 className="section-heading">{processData.heading}</h2>
           </div>
           <ol className="flex flex-col gap-8">
-            {ORDER_PROCESS_STEPS.map((step) => (
+            {processSteps.map((step) => (
               <li key={step.number} className="flex gap-5 sm:gap-6">
                 <div className="w-12 h-12 rounded-full bg-periwinkle-lighter border-2 border-periwinkle-light flex items-center justify-center shrink-0">
                   <span className="font-serif text-lg text-periwinkle-dark font-semibold">{step.number}</span>
                 </div>
                 <div className="flex-1 pt-1">
                   <h3 className="font-serif text-xl text-charcoal mb-2">{step.title}</h3>
-                  <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-3">{step.description}</p>
-                  {step.bullets.length > 0 && (
-                    <ul className="flex flex-col gap-1.5">
-                      {step.bullets.map((b) => (
-                        <li key={b} className="flex items-start gap-2 font-sans text-[13px] text-charcoal-lighter">
-                          <span className="w-1.5 h-1.5 rounded-full bg-periwinkle shrink-0 mt-1.5" />
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <p className="font-sans text-sm text-charcoal-light leading-relaxed">{step.description}</p>
                 </div>
               </li>
             ))}
@@ -102,7 +125,7 @@ export default function ServicePage() {
             <p className="font-sans text-sm text-charcoal-lighter">{SERVICE_FAQS[0]?.category}</p>
           </div>
           <div className="flex flex-col gap-3">
-            {SERVICE_FAQS.map((faq) => (
+            {faqs.map((faq) => (
               <details key={faq.q} className="group rounded-xl border border-stone-light bg-white overflow-hidden">
                 <summary className="cursor-pointer px-6 py-4 font-sans text-sm font-medium text-charcoal hover:bg-offwhite-warm transition-colors list-none flex justify-between items-center gap-4">
                   {faq.q}

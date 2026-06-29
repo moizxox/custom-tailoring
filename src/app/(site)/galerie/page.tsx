@@ -1,4 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Image from "next/image";
 import type { Metadata } from "next";
 
@@ -9,67 +11,37 @@ export const metadata: Metadata = {
 
 const CATEGORIES = ["Alle", "Guggenmusik", "Clique", "Major", "Sujet"];
 
+const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const GALLERY_ITEMS = [
-  {
-    src: "/images/gallery/gwuerztraminer-2026.jpeg",
-    category: "Guggenmusik",
-    title: "Gwürztraminer Waageclique 2026",
-  },
-  {
-    src: "/images/gallery/schloesslischraenzer-major.jpeg",
-    category: "Major",
-    title: "Schlösslischränzer Major",
-  },
-  {
-    src: "/images/gallery/waageclique-edelwaggis.jpeg",
-    category: "Clique",
-    title: "Edelwaggis Waageclique",
-  },
-  {
-    src: "/images/gallery/waggis-clique.jpeg",
-    category: "Guggenmusik",
-    title: "Waggis Clique",
-  },
-  {
-    src: "/images/gallery/schloesslischraenzer-aesch.jpeg",
-    category: "Clique",
-    title: "Schlösslischränzer Aesch",
-  },
-  {
-    src: "/images/gallery/rumpfel-pfyffer.jpeg",
-    category: "Clique",
-    title: "Rumpfel Pfyffer Pratteln",
-  },
-  {
-    src: "/images/gallery/baenkli-clique.jpeg",
-    category: "Clique",
-    title: "Bänkli Clique Oberrohrdorf",
-  },
-  {
-    src: "/images/gallery/wiler-zipfel.jpeg",
-    category: "Clique",
-    title: "Wiler Zipfel Clique",
-  },
-  {
-    src: "/images/gallery/chaote-sujet.jpeg",
-    category: "Sujet",
-    title: "Chaote Sujetkostüme",
-  },
-  {
-    src: "/images/gallery/hudibras-solothurn.jpeg",
-    category: "Sujet",
-    title: "Hudibras Chutze Solothurn",
-  },
+  { src: `${CDN}/gallery/gwuerztraminer-2026.jpg`, category: "Guggenmusik", title: "Gwürztraminer Waageclique 2026" },
+  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, category: "Major", title: "Schlösslischränzer Major" },
+  { src: `${CDN}/gallery/waageclique-edelwaggis.jpg`, category: "Clique", title: "Edelwaggis Waageclique" },
+  { src: `${CDN}/gallery/waggis-clique.jpg`, category: "Guggenmusik", title: "Waggis Clique" },
+  { src: `${CDN}/gallery/schloesslischraenzer-aesch.jpg`, category: "Clique", title: "Schlösslischränzer Aesch" },
+  { src: `${CDN}/gallery/rumpfel-pfyffer.jpg`, category: "Clique", title: "Rumpfel Pfyffer Pratteln" },
+  { src: `${CDN}/gallery/baenkli-clique.jpg`, category: "Clique", title: "Bänkli Clique Oberrohrdorf" },
+  { src: `${CDN}/gallery/wiler-zipfel.jpg`, category: "Clique", title: "Wiler Zipfel Clique" },
+  { src: `${CDN}/gallery/chaote-sujet.jpg`, category: "Sujet", title: "Chaote Sujetkostüme" },
+  { src: `${CDN}/gallery/hudibras-solothurn.jpg`, category: "Sujet", title: "Hudibras Chutze Solothurn" },
 ];
 
-export default function GaleriePage() {
+export default async function GaleriePage() {
+  const hero = mapPageHeroContent(await getCmsContent("galerie", "hero", {}), {
+    label: "Unsere Arbeiten",
+    title: "Galerie",
+    titleAccent: "Galerie",
+    subtitle: "Einblicke in unsere Handwerkskunst – Fasnachtskostüme für Cliquen, Guggenmusiken und Einzelpersonen.",
+    headingTag: "h1",
+  });
+
   return (
     <>
       <PageHero
-        label="Unsere Arbeiten"
-        title="Galerie"
-        titleAccent="Galerie"
-        subtitle="Einblicke in unsere Handwerkskunst – Fasnachtskostüme für Cliquen, Guggenmusiken und Einzelpersonen."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
 
