@@ -82,7 +82,7 @@ export default function ServicePage() {
       </section>
 
       {/* Massen ohne Termin — links to timetable */}
-      <section className="py-16 section-bg-sky border-y border-periwinkle-light/30">
+      <section id="massen-ohne-termin" className="py-16 section-bg-white border-y border-periwinkle-light/30">
         <div className="container-site max-w-5xl">
           <div className="text-center mb-10">
             <h2 className="font-serif text-2xl text-charcoal mb-2">Massnehmen ohne Voranmeldung</h2>

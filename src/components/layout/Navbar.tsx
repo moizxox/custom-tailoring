@@ -34,10 +34,10 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <ul className="hidden lg:flex items-center gap-7 bg-periwinkle-lighter/60 border border-periwinkle-light/40 rounded-full px-7 py-2.5">
+          <ul className="hidden xl:flex items-center gap-5 bg-periwinkle-lighter/60 border border-periwinkle-light/40 rounded-full px-6 py-2.5">
             {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="nav-link text-[13px]">
+              <li key={link.href} className="whitespace-nowrap">
+                <Link href={link.href} className="nav-link text-[13px] whitespace-nowrap">
                   {link.label}
                 </Link>
               </li>
@@ -58,12 +58,12 @@ export function Navbar() {
                 "transition-all duration-200 shadow-soft hover:shadow-periwinkle",
               )}
             >
-              Beratung buchen
+              Termin buchen
             </Link>
 
             {/* Hamburger */}
             <button
-              className="lg:hidden p-2 -mr-1 rounded-lg hover:bg-sand-light transition-colors"
+              className="xl:hidden p-2 -mr-1 rounded-lg hover:bg-sand-light transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Menü öffnen"
               aria-expanded={mobileOpen}
@@ -82,7 +82,7 @@ export function Navbar() {
       {/* Mobile Drawer */}
       <div
         className={cn(
-          "lg:hidden overflow-hidden transition-all duration-300",
+          "xl:hidden overflow-hidden transition-all duration-300",
           "bg-offwhite-pure/98 backdrop-blur-sm border-t border-stone-light",
           mobileOpen ? "max-h-[500px] py-2" : "max-h-0",
         )}
@@ -99,7 +99,7 @@ export function Navbar() {
             </Link>
           ))}
           <Link href="/termin" onClick={() => setMobileOpen(false)} className="mt-4 btn-primary justify-center">
-            Beratung buchen
+            Termin buchen
           </Link>
         </div>
       </div>

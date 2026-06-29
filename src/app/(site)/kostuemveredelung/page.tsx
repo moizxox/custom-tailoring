@@ -31,11 +31,11 @@ export default function KostuemveredelungPage() {
           "Auf Wunsch veredeln wir Ihre Kostüme mit Stickerei, Applikationen oder Stoffdruck. Logos, Cliquen-Symbole, Namen oder dekorative Elemente werden präzise und langlebig umgesetzt.",
           "Gemeinsam klären wir Motiv, Grösse, Farbe und Platzierung — abgestimmt auf Stoff, Tragekomfort und Ihr Budget.",
         ]}
-        ctaLabel="Beratung buchen"
+        ctaLabel="Termin buchen"
         ctaHref="/termin"
       />
 
-      <section className="py-20 section-bg-blush">
+      <section className="py-20 section-bg-lavender">
         <div className="container-site max-w-3xl">
           <h2 className="font-serif text-3xl text-charcoal mb-6 text-center">Unsere Veredelungsleistungen</h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
