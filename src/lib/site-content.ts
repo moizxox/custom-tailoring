@@ -239,7 +239,7 @@ export const LEGAL_LINKS = [
 export const NAV_LINKS = [
   { label: "Galerie", href: "/galerie" },
   { label: "Shop", href: "/shop" },
-  { label: "Mass Nehmen", href: "/massfertigung" },
+  { label: "Massnehmen", href: "/massfertigung" },
   { label: "Kostümveredelung", href: "/kostuemveredelung" },
   { label: "Team", href: "/ueber-uns#team" },
   { label: "Service", href: "/service" },

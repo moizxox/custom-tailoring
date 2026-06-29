@@ -25,7 +25,7 @@ const DEFAULT_DATA: AcfHero = {
   heading_accent: "Handwerk.",
   subtext:
     "Wir sind Ihre Kostümschneiderei in Basel – spezialisiert auf massgeschneiderte Kostüme für Guggenmusiken, Cliquen und Einzelpersonen. Von der ersten Skizze über Massnehmen und Stoffauswahl bis zur finalen Anprobe begleiten wir Sie persönlich, präzise und mit echter Leidenschaft fürs Handwerk.",
-  cta_primary_label: "Beratung buchen",
+  cta_primary_label: "Termin buchen",
   cta_primary_url: "/termin",
   cta_secondary_label: "Leistungen entdecken",
   cta_secondary_url: "/leistungen",
@@ -76,7 +76,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
       <HeroConfettiBackground className="z-0" />
 
       <div className="relative z-10 flex-1 flex flex-col justify-center w-full px-5 sm:px-8 lg:px-12 xl:px-16 pt-28 pb-16 lg:pt-36 lg:pb-24 ">
-        <div className="w-full  container-site">
+        <div className="w-full container-site text-center">
           <div className="inline-flex items-center gap-2.5 bg-white/90 border border-periwinkle-light/50 ring-1 ring-gold-muted/30 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
             <span className="w-1.5 h-1.5 rounded-full bg-gold-muted shrink-0" />
             <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-gold-deeper">{data.eyebrow_text}</span>
@@ -86,17 +86,17 @@ export function HeroSection({ acf }: HeroSectionProps) {
             {renderHeading()}
           </h1>
 
-          <div className="flex items-center gap-3 mb-6 animate-fade-up [animation-delay:100ms] opacity-0">
+          <div className="flex items-center justify-center gap-3 mb-6 animate-fade-up [animation-delay:100ms] opacity-0">
             <div className="line-gold-dashed w-12 shrink-0 opacity-90" />
             <Image src="/icons/sewing/needle-threader-fashion-design-sewing-tailoring.svg" alt="" width={22} height={22} className="icon-gold" />
             <div className="line-gold-dashed flex-1 max-w-[120px] opacity-75" />
           </div>
 
-          <p className="font-sans text-base sm:text-[17px] lg:text-lg text-charcoal-light leading-[1.75] max-w-5xl mb-6 animate-fade-up [animation-delay:140ms] opacity-0">
+          <p className="font-sans text-base sm:text-[17px] lg:text-lg text-charcoal-light leading-[1.75] max-w-4xl mx-auto mb-6 animate-fade-up [animation-delay:140ms] opacity-0">
             {data.subtext}
           </p>
 
-          <ul className="flex flex-col gap-2.5 mb-8 max-w-2xl animate-fade-up [animation-delay:160ms] opacity-0">
+          <ul className="inline-flex flex-col items-start gap-2.5 mb-8 max-w-2xl text-left animate-fade-up [animation-delay:160ms] opacity-0">
             {INTRO_POINTS.map((point) => (
               <li key={point} className="flex items-start gap-2.5 font-sans text-sm sm:text-[15px] text-charcoal-light">
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-periwinkle shrink-0" />
@@ -105,7 +105,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
             ))}
           </ul>
 
-          <div className="flex flex-wrap items-center gap-3 mb-8 animate-fade-up [animation-delay:180ms] opacity-0">
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-8 animate-fade-up [animation-delay:180ms] opacity-0">
             <Link
               href={data.cta_primary_url}
               className="inline-flex items-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white font-sans font-medium text-sm px-6 py-3 rounded-full transition-all duration-200 shadow-soft hover:shadow-periwinkle"
@@ -123,7 +123,7 @@ export function HeroSection({ acf }: HeroSectionProps) {
           </div>
 
           {data.badges.length > 0 && (
-            <div className="flex flex-wrap gap-2.5 animate-fade-up [animation-delay:220ms] opacity-0">
+            <div className="flex flex-wrap justify-center gap-2.5 animate-fade-up [animation-delay:220ms] opacity-0">
               {data.badges.map((badge) => (
                 <div key={badge.label} className="flex items-center gap-2 bg-white/85 border border-periwinkle-light/40 ring-1 ring-gold-muted/15 rounded-full pl-2 pr-4 py-1.5">
                   <div className="w-9 h-9 rounded-full bg-gold-lighter/60 flex items-center justify-center">

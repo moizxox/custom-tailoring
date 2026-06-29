@@ -47,7 +47,7 @@ export default function StoffePage() {
           </div>
           <div className="mt-12 text-center">
             <p className="font-sans text-sm text-charcoal-light mb-5">Möchten Sie Muster sehen oder haben Sie spezielle Anforderungen?</p>
-            <Link href="/termin" className="btn-primary inline-flex">Beratungstermin buchen</Link>
+            <Link href="/termin" className="btn-primary inline-flex">Termin buchen</Link>
           </div>
         </div>
       </section>
@@ -64,7 +64,7 @@ export default function StoffePage() {
           "Die Wahl des richtigen Stoffes entscheidet über Tragekomfort, Haltbarkeit und Ausstrahlung Ihres Kostüms. Wir zeigen Ihnen Muster, erklären Eigenschaften und helfen bei der Entscheidung – ohne Druck.",
           "Für Gruppenausstattungen achten wir auf einheitliche Farben und gleichbleibende Qualität über alle Stücke hinweg. Spezialgewebe und Sonderwünsche beschaffen wir auf Anfrage.",
         ]}
-        ctaLabel="Beratung buchen"
+        ctaLabel="Termin buchen"
         ctaHref="/termin"
       />
 

@@ -20,7 +20,7 @@ const DEFAULT_DATA: AcfAboutBand = {
   heading_accent: "Tradition",
   body_text:
     "Moderne in jeder Linie. Für Menschen mit Stilgefühl und Anspruch – wir schaffen Kostüme, die Persönlichkeit und Handwerk vereinen.",
-  cta_label: "Beratung buchen",
+  cta_label: "Termin buchen",
   cta_url: "/termin",
   cta_secondary_label: "Unser Angebot",
   cta_secondary_url: "/leistungen",

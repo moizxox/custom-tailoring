@@ -107,7 +107,7 @@ export function LoginForm({ nextPath = "/kundenbereich", tokenHint }: LoginFormP
       <p className="text-[11px] text-charcoal-lighter text-center leading-relaxed">
         Noch kein Auftrag?{" "}
         <Link href="/termin" className="text-periwinkle-dark hover:underline">
-          Beratung buchen
+          Termin buchen
         </Link>
       </p>
     </form>

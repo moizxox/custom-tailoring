@@ -9,6 +9,15 @@ import { APPOINTMENT_TYPES, ATELIER_LOCATIONS, SITE_CONTACT, type LocationId } f
 import { cn } from "@/lib/utils";
 
 const TIME_SLOTS = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+const BOOKING_DATES = Array.from({ length: 5 }, (_, index) => {
+  const date = new Date();
+  date.setDate(date.getDate() + index + 1);
+  return {
+    value: date.toISOString().slice(0, 10),
+    weekday: new Intl.DateTimeFormat("de-CH", { weekday: "short" }).format(date),
+    label: new Intl.DateTimeFormat("de-CH", { day: "2-digit", month: "2-digit" }).format(date),
+  };
+});
 
 function TerminBooking() {
   const searchParams = useSearchParams();
@@ -21,6 +30,7 @@ function TerminBooking() {
     ATELIER_LOCATIONS.some((l) => l.id === initialLocation) ? initialLocation : "pratteln",
   );
   const [selectedService, setSelectedService] = useState(preselected?.label ?? "");
+  const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -35,7 +45,7 @@ function TerminBooking() {
 
   return (
     <>
-      <section className="py-16 section-bg-lavender border-b border-periwinkle-light/30">
+      <section id="massen-ohne-termin" className="py-16 section-bg-lavender border-b border-periwinkle-light/30 scroll-mt-24">
         <div className="container-site max-w-5xl">
           <div className="text-center mb-10">
             <p className="section-label mb-3 justify-center">Hochsaison</p>
@@ -44,12 +54,20 @@ function TerminBooking() {
               In der Fasnachts-Hochsaison sind wir zu festen Zeiten im Atelier. Für individuelle Beratungen und
               Anfertigungen buchen Sie bitte einen Termin nach Vereinbarung.
             </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <a href="#termin-buchen" className="btn-primary">
+                Termin buchen
+              </a>
+              <a href="#massen-ohne-termin" className="btn-outline-dark">
+                Feste Masszeiten ansehen
+              </a>
+            </div>
           </div>
           <AtelierTimetable />
         </div>
       </section>
 
-      <section className="py-20 section-bg-white">
+      <section id="termin-buchen" className="py-20 section-bg-white scroll-mt-24">
         <div className="container-site max-w-2xl mx-auto">
           {/* Quick book — like kostuemschneiderei.ch/bookonline */}
           <div className="mb-10">
@@ -116,7 +134,7 @@ function TerminBooking() {
                     >
                       {s}
                     </span>
-                    {s === 1 ? "Standort" : s === 2 ? "Service" : s === 3 ? "Zeitwahl" : "Kontakt"}
+                    {s === 1 ? "Standort" : s === 2 ? "Service" : s === 3 ? "Datum & Zeit" : "Kontakt"}
                   </div>
                 ))}
               </div>
@@ -192,10 +210,28 @@ function TerminBooking() {
 
                 {step === 3 && (
                   <div>
-                    <h2 className="font-serif text-2xl text-charcoal mb-2">Wählen Sie eine Zeit</h2>
+                    <h2 className="font-serif text-2xl text-charcoal mb-2">Wählen Sie Datum und Zeit</h2>
                     <p className="font-sans text-sm text-charcoal-lighter mb-6">
-                      Verfügbare Termine für Atelier {locationLabel} — nächste Woche
+                      Verfügbare Termine für Atelier {locationLabel}
                     </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+                      {BOOKING_DATES.map((date) => (
+                        <button
+                          key={date.value}
+                          type="button"
+                          onClick={() => setSelectedDate(date.value)}
+                          className={cn(
+                            "py-3 rounded-xl border text-sm font-sans font-medium transition-all duration-200",
+                            selectedDate === date.value
+                              ? "border-periwinkle bg-periwinkle-lighter text-charcoal"
+                              : "border-stone-light bg-white text-charcoal-light hover:border-periwinkle-light",
+                          )}
+                        >
+                          <span className="block text-[11px] uppercase tracking-[0.12em] text-charcoal-lighter">{date.weekday}</span>
+                          {date.label}
+                        </button>
+                      ))}
+                    </div>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-6">
                       {TIME_SLOTS.map((t) => (
                         <button
@@ -219,7 +255,7 @@ function TerminBooking() {
                       </button>
                       <button
                         type="button"
-                        disabled={!selectedTime}
+                        disabled={!selectedDate || !selectedTime}
                         onClick={() => setStep(4)}
                         className="btn-primary flex-1 justify-center disabled:opacity-40"
                       >
@@ -238,6 +274,9 @@ function TerminBooking() {
                       </span>
                       <span>
                         <strong className="text-charcoal">Service:</strong> {selectedService}
+                      </span>
+                      <span>
+                        <strong className="text-charcoal">Datum:</strong> {selectedDate}
                       </span>
                       <span>
                         <strong className="text-charcoal">Zeit:</strong> {selectedTime} Uhr
@@ -295,7 +334,7 @@ export default function TerminPage() {
     <>
       <PageHero
         label="Terminbuchung"
-        title="Beratung buchen"
+        title="Termin buchen"
         titleAccent="buchen"
         subtitle="Vereinbaren Sie ein persönliches Gespräch — mit Standortwahl für Pratteln oder Therwil."
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
