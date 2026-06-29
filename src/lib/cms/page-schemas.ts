@@ -11,7 +11,10 @@ export type FieldType =
   | "url"
   | "array"
   | "select"
-  | "number";
+  | "number"
+  | "color"
+  | "icon"
+  | "toggle";
 
 export interface CmsFieldOption {
   value: string;

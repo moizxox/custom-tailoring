@@ -43,6 +43,15 @@ const NAV_ITEMS = [
     ),
   },
   {
+    href: "/admin/navigation",
+    key: "navigation" as const,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-5 h-5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/settings",
     key: "settings" as const,
     icon: (

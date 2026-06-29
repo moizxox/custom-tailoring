@@ -4,7 +4,7 @@ import { getAdminT, getSchemaTranslator } from "@/lib/i18n/admin";
 import { localizePageSchema } from "@/lib/i18n/schema-labels";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { notFound } from "next/navigation";
-import PageSectionEditor from "@/components/admin/PageSectionEditor";
+import PageEditorClient from "./PageEditorClient";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -40,10 +40,18 @@ export default async function PageEditorPage({ params }: Props) {
   const ts = getSchemaTranslator();
   const localized = localizePageSchema(ts, schema);
 
+  // Merge defaults with saved content for each section
+  const initialContents: Record<string, Record<string, unknown>> = {};
+  for (const section of localized.sections) {
+    const saved = (savedContent[section.key] as Record<string, unknown>) ?? {};
+    const defaults = getDefaultSectionContent(slug, section.key);
+    initialContents[section.key] = { ...defaults, ...saved };
+  }
+
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/admin/pages" className="text-sm text-gray-400 hover:text-gray-600">
+        <Link href="/admin/pages" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
           ← {t("backToPages")}
         </Link>
         <span className="text-gray-300">/</span>
@@ -53,21 +61,13 @@ export default async function PageEditorPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {localized.sections.map((section) => {
-          const saved = (savedContent[section.key] as Record<string, unknown>) ?? {};
-          const defaults = getDefaultSectionContent(slug, section.key);
-          const initialContent = { ...defaults, ...saved };
-          return (
-            <PageSectionEditor
-              key={section.key}
-              pageSlug={slug}
-              section={section}
-              initialContent={initialContent}
-            />
-          );
-        })}
-      </div>
+      <PageEditorClient
+        pageSlug={slug}
+        sections={localized.sections}
+        initialContents={initialContents}
+        pageLabel={localized.label}
+        pageIcon={localized.icon ?? "📄"}
+      />
     </div>
   );
 }

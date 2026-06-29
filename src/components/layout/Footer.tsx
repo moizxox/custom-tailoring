@@ -4,25 +4,42 @@ import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
 import { CookieSettingsButton } from "@/components/layout/CookieSettingsButton";
 import { ATELIER_LOCATIONS, LEGAL_LINKS, SITE_CONTACT } from "@/lib/site-content";
+import type { FooterContent } from "@/lib/cms/navigation";
 
-const FOOTER_LINKS = {
-  Navigation: [
-    { label: "Shop", href: "/shop" },
-    { label: "Galerie", href: "/galerie" },
-    { label: "Mass Nehmen", href: "/massfertigung" },
-    { label: "Kostümveredelung", href: "/kostuemveredelung" },
-    { label: "Team", href: "/ueber-uns#team" },
-    { label: "Kontakt", href: "/kontakt" },
-  ],
-  Service: [
-    { label: "Termin buchen", href: "/termin" },
-    { label: "Leistungen", href: "/service" },
-    { label: "FAQs", href: "/faqs" },
-    { label: "Atelier", href: "/atelier" },
-  ],
-};
+interface FooterProps {
+  footerContent?: FooterContent;
+}
 
-export function Footer() {
+export function Footer({ footerContent }: FooterProps) {
+  const columns = footerContent?.columns ?? [
+    {
+      heading: "Navigation",
+      links: [
+        { label: "Shop", href: "/shop" },
+        { label: "Galerie", href: "/galerie" },
+        { label: "Mass Nehmen", href: "/massfertigung" },
+        { label: "Kostümveredelung", href: "/kostuemveredelung" },
+        { label: "Team", href: "/ueber-uns#team" },
+        { label: "Kontakt", href: "/kontakt" },
+      ],
+    },
+    {
+      heading: "Service",
+      links: [
+        { label: "Termin buchen", href: "/termin" },
+        { label: "Leistungen", href: "/service" },
+        { label: "FAQs", href: "/faqs" },
+        { label: "Atelier", href: "/atelier" },
+      ],
+    },
+  ];
+  const ctaHeading = footerContent?.ctaHeading ?? "Ihr Traumkostüm beginnt hier.";
+  const ctaSubheading = footerContent?.ctaSubheading ?? "Handwerk. Individualität. Fasnacht.";
+  const ctaPrimaryLabel = footerContent?.ctaPrimaryLabel ?? "Termin buchen";
+  const ctaPrimaryUrl = footerContent?.ctaPrimaryUrl ?? "/termin";
+  const ctaSecondaryLabel = footerContent?.ctaSecondaryLabel ?? "Anfrage senden";
+  const ctaSecondaryUrl = footerContent?.ctaSecondaryUrl ?? "/kontakt";
+  const copyrightText = footerContent?.copyrightText ?? "Kostümschneiderei. Alle Rechte vorbehalten.";
   return (
     <footer className="relative overflow-hidden mt-4 site-footer-enter">
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
@@ -45,16 +62,12 @@ export function Footer() {
         <div className="glass-footer-panel p-8 md:p-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
-              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">Handwerk. Individualität. Fasnacht.</p>
-              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">Ihr Traumkostüm beginnt hier.</p>
+              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">{ctaSubheading}</p>
+              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">{ctaHeading}</p>
             </div>
             <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center">
-              <Link href="/termin" className="btn-primary shadow-soft">
-                Termin buchen
-              </Link>
-              <Link href="/kontakt" className="btn-secondary">
-                Anfrage senden
-              </Link>
+              <Link href={ctaPrimaryUrl} className="btn-primary shadow-soft">{ctaPrimaryLabel}</Link>
+              <Link href={ctaSecondaryUrl} className="btn-secondary">{ctaSecondaryLabel}</Link>
             </div>
           </div>
         </div>
@@ -114,12 +127,12 @@ export function Footer() {
               </div>
             </div>
 
-            {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
-              <div key={heading} className="glass-footer-column">
-                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/40 mb-4">{heading}</h4>
+            {columns.map((col) => (
+              <div key={col.heading} className="glass-footer-column">
+                <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/40 mb-4">{col.heading}</h4>
                 <ul className="flex flex-col gap-2.5">
-                  {links.map((l) => (
-                    <li key={l.href}>
+                  {col.links.map((l) => (
+                    <li key={l.label + l.href}>
                       <Link href={l.href} className="text-[13px] text-charcoal/65 hover:text-periwinkle-dark font-medium transition-colors">
                         {l.label}
                       </Link>
@@ -142,7 +155,7 @@ export function Footer() {
               <CookieSettingsButton />
             </div>
             <p className="text-[11px] text-charcoal/50 text-center sm:text-left">
-              © {new Date().getFullYear()} Kostümschneiderei. Alle Rechte vorbehalten.
+              © {new Date().getFullYear()} {copyrightText}
             </p>
           </div>
         </div>
