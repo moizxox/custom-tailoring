@@ -257,7 +257,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
         </div>
 
         {filteredSections.length === 0 && (
-          <div className="text-center py-16 text-sm text-gray-400">No sections match "{search}"</div>
+          <div className="text-center py-16 text-sm text-gray-400">No sections match &ldquo;{search}&rdquo;</div>
         )}
 
         {filteredSections.map((section) => {

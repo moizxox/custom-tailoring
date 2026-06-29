@@ -130,7 +130,7 @@ function IconPicker({ value, onChange }: { value: string; onChange: (v: string) 
                 </button>
               ))}
               {filtered.length === 0 && (
-                <div className="col-span-full text-center text-xs text-gray-400 py-4">No icons match "{q}"</div>
+                <div className="col-span-full text-center text-xs text-gray-400 py-4">No icons match &ldquo;{q}&rdquo;</div>
               )}
             </div>
           </div>
@@ -164,7 +164,12 @@ export default function ItemsEditor({ value, onChange, itemFields }: ItemsEditor
 
   function emit(next: ItemWithId[]) {
     setItems(next);
-    onChange(next.map(({ __id, ...rest }) => rest as ItemRecord));
+    onChange(
+      next.map(
+        (item) =>
+          Object.fromEntries(Object.entries(item).filter(([key]) => key !== "__id")) as ItemRecord,
+      ),
+    );
   }
 
   function addItem() {

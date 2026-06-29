@@ -3,7 +3,11 @@ import { prisma } from "@/lib/db/prisma";
 import { randomBytes } from "crypto";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  return new Resend(apiKey);
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,7 +33,9 @@ export async function POST(request: NextRequest) {
     const resetUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/admin/reset-password?token=${token}`;
 
     if (process.env.RESEND_API_KEY) {
-      await resend.emails.send({
+      const resend = getResend();
+      if (resend) {
+        await resend.emails.send({
         from: "Kostümschneiderei CMS <noreply@kostuemschneiderei.ch>",
         to: email,
         subject: "Passwort zurücksetzen",
@@ -40,7 +46,8 @@ export async function POST(request: NextRequest) {
           <p>Dieser Link ist 1 Stunde gültig.</p>
           <p>Falls Sie keinen Reset angefordert haben, können Sie diese E-Mail ignorieren.</p>
         `,
-      });
+        });
+      }
     } else {
       // Development: log to console
       console.log(`[Dev] Password reset link: ${resetUrl}`);

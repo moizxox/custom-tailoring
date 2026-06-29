@@ -9,6 +9,7 @@ import { getCmsContent } from "@/lib/cms/content";
 import { HOME_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import { mapHomeHeroContent, parseHeadingTag } from "@/lib/cms/helpers";
 import type { Metadata } from "next";
+import type { ComponentProps } from "react";
 
 export const metadata: Metadata = {
   title: "Kostümschneiderei Basel – Ihre Kostüme. Unser Handwerk.",
@@ -30,12 +31,12 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection acf={heroAcf} headingTag={headingTag} />
-      <ServicesGrid acf={servicesGridContent as any} />
-      <ProcessSection acf={processContent as any} />
-      <GalleryPreview acf={galleryPreviewContent as any} />
-      <AboutBand acf={aboutBandContent as any} />
-      <PhotoMarquee acf={photoMarqueeContent as any} />
-      <HeroContactSection acf={contactSectionContent as any} />
+      <ServicesGrid acf={servicesGridContent as ComponentProps<typeof ServicesGrid>["acf"]} />
+      <ProcessSection acf={processContent as ComponentProps<typeof ProcessSection>["acf"]} />
+      <GalleryPreview acf={galleryPreviewContent as ComponentProps<typeof GalleryPreview>["acf"]} />
+      <AboutBand acf={aboutBandContent as ComponentProps<typeof AboutBand>["acf"]} />
+      <PhotoMarquee acf={photoMarqueeContent as ComponentProps<typeof PhotoMarquee>["acf"]} />
+      <HeroContactSection acf={contactSectionContent as ComponentProps<typeof HeroContactSection>["acf"]} />
     </>
   );
 }
