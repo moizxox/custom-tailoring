@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db/prisma";
 import { getAdminT } from "@/lib/i18n/admin";
 import Link from "next/link";
+import { FileText, ShoppingBag, ImageIcon, Settings, Plus, Menu, ArrowRight } from "lucide-react";
 
 async function getStats() {
   try {
@@ -25,63 +26,77 @@ export default async function AdminDashboardPage() {
   const greeting =
     hour < 12 ? t("greetingMorning") : hour < 18 ? t("greetingDay") : t("greetingEvening");
 
+  const statCards = [
+    { label: t("statProducts"), value: stats.products, icon: ShoppingBag, color: "text-blue-600 bg-blue-50" },
+    { label: t("statPagesEdited"), value: stats.pagesEdited, icon: FileText, color: "text-violet-600 bg-violet-50" },
+    { label: t("statMedia"), value: stats.media, icon: ImageIcon, color: "text-emerald-600 bg-emerald-50" },
+  ];
+
   const quickLinks = [
-    { href: "/admin/pages", label: t("editPages"), description: t("editPagesDesc"), icon: "📄", color: "bg-blue-50 border-blue-200 hover:bg-blue-100" },
-    { href: "/admin/products/new", label: t("addProduct"), description: t("addProductDesc"), icon: "➕", color: "bg-green-50 border-green-200 hover:bg-green-100" },
-    { href: "/admin/media", label: t("manageMedia"), description: t("manageMediaDesc"), icon: "🖼️", color: "bg-purple-50 border-purple-200 hover:bg-purple-100" },
-    { href: "/admin/settings", label: tNav("settings"), description: t("settingsDesc"), icon: "⚙️", color: "bg-orange-50 border-orange-200 hover:bg-orange-100" },
+    { href: "/admin/pages", label: t("editPages"), description: t("editPagesDesc"), icon: FileText, accent: "border-violet-200 hover:border-violet-300 hover:bg-violet-50/50" },
+    { href: "/admin/navigation", label: tNav("navigation"), description: "Edit nav links, header CTA, footer content", icon: Menu, accent: "border-blue-200 hover:border-blue-300 hover:bg-blue-50/50" },
+    { href: "/admin/products/new", label: t("addProduct"), description: t("addProductDesc"), icon: Plus, accent: "border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50/50" },
+    { href: "/admin/media", label: t("manageMedia"), description: t("manageMediaDesc"), icon: ImageIcon, accent: "border-orange-200 hover:border-orange-300 hover:bg-orange-50/50" },
+    { href: "/admin/settings", label: tNav("settings"), description: t("settingsDesc"), icon: Settings, accent: "border-gray-200 hover:border-gray-300 hover:bg-gray-50" },
   ];
 
   return (
     <div className="max-w-5xl mx-auto">
+      {/* Greeting */}
       <div className="mb-8">
+        <p className="text-xs font-semibold text-violet-600 uppercase tracking-widest mb-1">Dashboard</p>
         <h1 className="text-2xl font-bold text-gray-900">
-          {greeting}, {session?.user?.name ?? "Admin"} 👋
+          {greeting}, {session?.user?.name ?? "Admin"}
         </h1>
         <p className="text-gray-500 mt-1 text-sm">{t("welcome")}</p>
       </div>
 
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{t("statProducts")}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">{stats.products}</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{t("statPagesEdited")}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">{stats.pagesEdited}</p>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{t("statMedia")}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">{stats.media}</p>
-        </div>
+        {statCards.map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="bg-white rounded-2xl border border-gray-200 p-5 flex items-start gap-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
+              <Icon className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide leading-none mb-1">{label}</p>
+              <p className="text-3xl font-bold text-gray-900">{value}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
+      {/* Quick links */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">{t("quickLinks")}</h2>
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">{t("quickLinks")}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {quickLinks.map((item) => (
+          {quickLinks.map(({ href, label, description, icon: Icon, accent }) => (
             <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-start gap-4 p-5 rounded-xl border transition-colors ${item.color}`}
+              key={href}
+              href={href}
+              className={`group flex items-center gap-4 p-5 bg-white rounded-2xl border transition-all ${accent}`}
             >
-              <span className="text-2xl">{item.icon}</span>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">{item.label}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
+              <div className="w-10 h-10 rounded-xl bg-gray-100 group-hover:bg-white flex items-center justify-center shrink-0 transition-colors border border-gray-200">
+                <Icon className="w-5 h-5 text-gray-600 group-hover:text-gray-900" />
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900">{label}</p>
+                <p className="text-xs text-gray-500 mt-0.5 truncate">{description}</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 shrink-0 transition-colors" />
             </Link>
           ))}
         </div>
       </div>
 
-      <div className="mt-8 p-4 bg-periwinkle-50 border border-periwinkle-200 rounded-xl flex items-start gap-3">
-        <svg className="w-5 h-5 text-periwinkle-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-        </svg>
+      {/* Tip banner */}
+      <div className="mt-8 p-4 bg-violet-50 border border-violet-200 rounded-2xl flex items-start gap-3">
+        <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center shrink-0 mt-0.5">
+          <FileText className="w-4 h-4 text-violet-600" />
+        </div>
         <div>
-          <p className="text-sm font-medium text-periwinkle-800">{t("phaseTitle")}</p>
-          <p className="text-xs text-periwinkle-700 mt-0.5">{t("phaseBody")}</p>
+          <p className="text-sm font-semibold text-violet-900">{t("phaseTitle")}</p>
+          <p className="text-xs text-violet-700 mt-0.5 leading-relaxed">{t("phaseBody")}</p>
         </div>
       </div>
     </div>

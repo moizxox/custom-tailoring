@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import type { CmsSection, CmsField } from "@/lib/cms/page-schemas";
 import MediaPickerModal from "@/components/admin/MediaPickerModal";
 import { cn } from "@/lib/utils";
+import { ChevronDown, Check, Search, Image as ImageIcon } from "lucide-react";
 
 interface SectionState {
   values: Record<string, string>;
@@ -58,7 +59,7 @@ function FieldInput({
   onImagePick: () => void;
   t: ReturnType<typeof useTranslations>;
 }) {
-  const base = "w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-periwinkle-400 focus:border-transparent transition bg-gray-50 focus:bg-white";
+  const base = "w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition bg-gray-50 focus:bg-white";
 
   if (field.type === "textarea" || field.type === "richtext") {
     return (
@@ -100,8 +101,9 @@ function FieldInput({
           <button
             type="button"
             onClick={onImagePick}
-            className="px-3 py-2.5 border border-gray-200 rounded-lg text-xs text-gray-600 hover:bg-gray-50 transition-colors whitespace-nowrap bg-white"
+            className="flex items-center gap-1.5 px-3 py-2.5 border border-gray-200 rounded-lg text-xs text-gray-600 hover:bg-gray-50 transition-colors whitespace-nowrap bg-white"
           >
+            <ImageIcon className="w-3.5 h-3.5" />
             {t("chooseImage")}
           </button>
         </div>
@@ -160,8 +162,8 @@ function FieldInput({
         aria-checked={value === "true"}
         onClick={() => onChange(value === "true" ? "false" : "true")}
         className={cn(
-          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-periwinkle-400 focus:ring-offset-2",
-          value === "true" ? "bg-periwinkle-600" : "bg-gray-200"
+          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2",
+          value === "true" ? "bg-violet-600" : "bg-gray-200"
         )}
       >
         <span
@@ -187,9 +189,9 @@ function FieldInput({
               type="button"
               onClick={() => onChange(icon)}
               className={cn(
-                "w-9 h-9 text-lg rounded-lg border transition-colors hover:border-periwinkle-400",
+                "w-9 h-9 text-lg rounded-lg border transition-colors hover:border-violet-400",
                 value === icon
-                  ? "border-periwinkle-500 bg-periwinkle-50"
+                  ? "border-violet-500 bg-violet-50"
                   : "border-gray-200 bg-white hover:bg-gray-50"
               )}
             >
@@ -304,15 +306,13 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
 
           {/* Search */}
           <div className="relative">
-            <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Find section…"
-              className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-periwinkle-400 bg-gray-50 focus:bg-white transition"
+              className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400 bg-gray-50 focus:bg-white transition"
             />
           </div>
 
@@ -331,7 +331,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                     isMatch
                       ? "text-gray-700 hover:bg-gray-100"
                       : "text-gray-300 hover:bg-gray-50",
-                    st?.expanded && "bg-periwinkle-50 text-periwinkle-700 font-medium"
+                    st?.expanded && "bg-violet-50 text-violet-700 font-medium"
                   )}
                 >
                   <span className="truncate">{sec.label}</span>
@@ -353,15 +353,13 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
       <div className="flex-1 min-w-0 space-y-3">
         {/* Mobile search */}
         <div className="xl:hidden relative">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search sections…"
-            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-periwinkle-400 bg-gray-50 focus:bg-white transition"
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 bg-gray-50 focus:bg-white transition"
           />
         </div>
 
@@ -388,13 +386,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                 className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <svg
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className={cn("w-4 h-4 text-gray-300 shrink-0 transition-transform duration-200", st.expanded ? "rotate-180" : "")}
-                  >
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
+                  <ChevronDown className={cn("w-4 h-4 text-gray-300 shrink-0 transition-transform duration-200", st.expanded ? "rotate-180" : "")} />
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-gray-900 truncate">{section.label}</p>
                     {section.description && (
@@ -405,10 +397,8 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
 
                 <div className="flex items-center gap-2 shrink-0 ml-3">
                   {st.saved && (
-                    <span className="text-xs text-green-600 flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
+                    <span className="text-xs text-green-600 flex items-center gap-1 font-medium">
+                      <Check className="w-3 h-3" />
                       Saved
                     </span>
                   )}
@@ -447,7 +437,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                       type="button"
                       onClick={() => saveSection(section.key, section)}
                       disabled={st.saving}
-                      className="px-5 py-2 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
+                      className="px-5 py-2 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
                     >
                       {st.saving ? t("saving") : t("save")}
                     </button>

@@ -3,7 +3,8 @@ import Image from "next/image";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
 import { CookieSettingsButton } from "@/components/layout/CookieSettingsButton";
-import { ATELIER_LOCATIONS, LEGAL_LINKS, SITE_CONTACT } from "@/lib/site-content";
+import { LEGAL_LINKS } from "@/lib/site-content";
+import { DEFAULT_FOOTER } from "@/lib/cms/navigation";
 import type { FooterContent } from "@/lib/cms/navigation";
 
 interface FooterProps {
@@ -11,35 +12,8 @@ interface FooterProps {
 }
 
 export function Footer({ footerContent }: FooterProps) {
-  const columns = footerContent?.columns ?? [
-    {
-      heading: "Navigation",
-      links: [
-        { label: "Shop", href: "/shop" },
-        { label: "Galerie", href: "/galerie" },
-        { label: "Mass Nehmen", href: "/massfertigung" },
-        { label: "Kostümveredelung", href: "/kostuemveredelung" },
-        { label: "Team", href: "/ueber-uns#team" },
-        { label: "Kontakt", href: "/kontakt" },
-      ],
-    },
-    {
-      heading: "Service",
-      links: [
-        { label: "Termin buchen", href: "/termin" },
-        { label: "Leistungen", href: "/service" },
-        { label: "FAQs", href: "/faqs" },
-        { label: "Atelier", href: "/atelier" },
-      ],
-    },
-  ];
-  const ctaHeading = footerContent?.ctaHeading ?? "Ihr Traumkostüm beginnt hier.";
-  const ctaSubheading = footerContent?.ctaSubheading ?? "Handwerk. Individualität. Fasnacht.";
-  const ctaPrimaryLabel = footerContent?.ctaPrimaryLabel ?? "Termin buchen";
-  const ctaPrimaryUrl = footerContent?.ctaPrimaryUrl ?? "/termin";
-  const ctaSecondaryLabel = footerContent?.ctaSecondaryLabel ?? "Anfrage senden";
-  const ctaSecondaryUrl = footerContent?.ctaSecondaryUrl ?? "/kontakt";
-  const copyrightText = footerContent?.copyrightText ?? "Kostümschneiderei. Alle Rechte vorbehalten.";
+  const d = { ...DEFAULT_FOOTER, ...footerContent };
+
   return (
     <footer className="relative overflow-hidden mt-4 site-footer-enter">
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
@@ -59,21 +33,24 @@ export function Footer({ footerContent }: FooterProps) {
       <div className="absolute inset-x-0 top-0 z-[5] h-[200px] bg-gradient-to-b from-white via-white/70 to-transparent pointer-events-none" aria-hidden />
 
       <div className="relative z-20 container-site py-12 lg:py-16 flex flex-col gap-5">
+        {/* CTA banner */}
         <div className="glass-footer-panel p-8 md:p-10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
-              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">{ctaSubheading}</p>
-              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">{ctaHeading}</p>
+              <p className="font-sans text-[11px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">{d.ctaSubheading}</p>
+              <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">{d.ctaHeading}</p>
             </div>
             <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center">
-              <Link href={ctaPrimaryUrl} className="btn-primary shadow-soft">{ctaPrimaryLabel}</Link>
-              <Link href={ctaSecondaryUrl} className="btn-secondary">{ctaSecondaryLabel}</Link>
+              <Link href={d.ctaPrimaryUrl} className="btn-primary shadow-soft">{d.ctaPrimaryLabel}</Link>
+              <Link href={d.ctaSecondaryUrl} className="btn-secondary">{d.ctaSecondaryLabel}</Link>
             </div>
           </div>
         </div>
 
+        {/* Main grid */}
         <div className="glass-footer-panel p-8 md:p-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            {/* Brand + contact */}
             <div className="lg:col-span-2 flex flex-col gap-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 ring-1 ring-gold-muted/20 flex items-center justify-center shadow-soft">
@@ -81,53 +58,65 @@ export function Footer({ footerContent }: FooterProps) {
                 </div>
                 <div>
                   <span className="font-serif text-lg text-charcoal tracking-[0.1em] uppercase block leading-tight">
-                    Kostüm<span className="text-periwinkle-dark">schneiderei</span>
+                    {d.brandName}<span className="text-periwinkle-dark">{d.brandAccent}</span>
                   </span>
-                  <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-charcoal/45">Pratteln & Therwil</span>
+                  <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-charcoal/45">{d.brandSubline}</span>
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                {ATELIER_LOCATIONS.map((loc) => (
-                  <address key={loc.id} className="not-italic text-sm text-charcoal/65">
-                    <span className="font-medium text-charcoal block mb-1">Atelier {loc.name}</span>
-                    <span>{loc.address}</span>
-                    <br />
-                    <span>{loc.city}</span>
-                  </address>
-                ))}
-              </div>
+              {/* Locations */}
+              {d.locations.length > 0 && (
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {d.locations.map((loc) => (
+                    <address key={loc.name} className="not-italic text-sm text-charcoal/65">
+                      <span className="font-medium text-charcoal block mb-1">Atelier {loc.name}</span>
+                      <span>{loc.address}</span>
+                      <br />
+                      <span>{loc.city}</span>
+                    </address>
+                  ))}
+                </div>
+              )}
 
+              {/* Contact */}
               <div className="flex flex-col gap-1 text-sm text-charcoal/65">
-                <a href={SITE_CONTACT.phoneHref} className="hover:text-periwinkle-dark transition-colors w-fit">
-                  {SITE_CONTACT.phone}
-                </a>
-                <a href={`mailto:${SITE_CONTACT.email}`} className="hover:text-periwinkle-dark transition-colors w-fit">
-                  {SITE_CONTACT.email}
-                </a>
-                <span className="text-charcoal/50 text-[13px]">{SITE_CONTACT.hoursDefault}</span>
+                {d.phone && (
+                  <a href={d.phoneHref || `tel:${d.phone}`} className="hover:text-periwinkle-dark transition-colors w-fit">
+                    {d.phone}
+                  </a>
+                )}
+                {d.email && (
+                  <a href={`mailto:${d.email}`} className="hover:text-periwinkle-dark transition-colors w-fit">
+                    {d.email}
+                  </a>
+                )}
+                {d.hours && <span className="text-charcoal/50 text-[13px]">{d.hours}</span>}
               </div>
 
+              {/* Social */}
               <div className="flex gap-2.5">
                 {[
-                  { label: "Instagram", href: SITE_CONTACT.instagram },
-                  { label: "Facebook", href: SITE_CONTACT.facebook },
-                ].map((s) => (
-                  <a
-                    key={s.label}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 flex items-center justify-center text-charcoal/50 hover:text-periwinkle-dark hover:bg-white/80 transition-all duration-200 shadow-soft text-[10px] font-semibold"
-                  >
-                    {s.label.slice(0, 2)}
-                  </a>
-                ))}
+                  { label: "Instagram", href: d.instagramUrl },
+                  { label: "Facebook", href: d.facebookUrl },
+                ]
+                  .filter((s) => s.href)
+                  .map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.label}
+                      className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 flex items-center justify-center text-charcoal/50 hover:text-periwinkle-dark hover:bg-white/80 transition-all duration-200 shadow-soft text-[10px] font-semibold"
+                    >
+                      {s.label.slice(0, 2)}
+                    </a>
+                  ))}
               </div>
             </div>
 
-            {columns.map((col) => (
+            {/* Link columns */}
+            {d.columns.map((col) => (
               <div key={col.heading} className="glass-footer-column">
                 <h4 className="font-sans text-[10px] font-semibold tracking-[0.22em] uppercase text-charcoal/40 mb-4">{col.heading}</h4>
                 <ul className="flex flex-col gap-2.5">
@@ -144,6 +133,7 @@ export function Footer({ footerContent }: FooterProps) {
           </div>
         </div>
 
+        {/* Bottom bar */}
         <div className="glass-footer-subtle px-6 py-4">
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2 text-[11px] text-charcoal/50">
@@ -155,7 +145,7 @@ export function Footer({ footerContent }: FooterProps) {
               <CookieSettingsButton />
             </div>
             <p className="text-[11px] text-charcoal/50 text-center sm:text-left">
-              © {new Date().getFullYear()} {copyrightText}
+              © {new Date().getFullYear()} {d.copyrightText}
             </p>
           </div>
         </div>

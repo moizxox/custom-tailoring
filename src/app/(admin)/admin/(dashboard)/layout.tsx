@@ -16,11 +16,11 @@ export default async function AdminDashboardLayout({
 
   return (
     <SessionProvider session={session}>
-      <div className="min-h-screen flex bg-gray-50">
+      <div className="min-h-screen flex bg-gray-50/70">
         <AdminSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <AdminHeader user={session.user} />
-          <main className="flex-1 p-6 overflow-auto">{children}</main>
+          <main className="flex-1 p-6 lg:p-8 overflow-auto">{children}</main>
         </div>
       </div>
     </SessionProvider>

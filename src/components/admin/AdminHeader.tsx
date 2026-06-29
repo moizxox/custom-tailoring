@@ -3,6 +3,7 @@
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import type { User } from "next-auth";
+import { LogOut, Scissors } from "lucide-react";
 
 interface AdminHeaderProps {
   user: User;
@@ -13,29 +14,35 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
 
   return (
     <header className="h-14 flex items-center justify-between px-6 bg-white border-b border-gray-200 shrink-0">
-      <div className="lg:hidden flex items-center gap-2">
-        <div className="w-7 h-7 rounded-md bg-periwinkle-600 flex items-center justify-center">
-          <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-white" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-          </svg>
+      {/* Mobile brand */}
+      <div className="lg:hidden flex items-center gap-2.5">
+        <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center shadow-sm">
+          <Scissors className="w-3.5 h-3.5 text-white" />
         </div>
         <span className="text-sm font-semibold text-gray-900">{t("cmsAdmin")}</span>
       </div>
 
       <div className="ml-auto flex items-center gap-3">
-        <div className="text-right hidden sm:block">
-          <p className="text-sm font-medium text-gray-900 leading-none">{user.name ?? user.email}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{user.email}</p>
+        {/* User info */}
+        <div className="hidden sm:flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-700 font-semibold text-xs">
+            {(user.name ?? user.email ?? "A").slice(0, 1).toUpperCase()}
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-medium text-gray-900 leading-none">{user.name ?? user.email}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">Administrator</p>
+          </div>
         </div>
+
+        <div className="w-px h-5 bg-gray-200 hidden sm:block" />
+
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           title={t("signOut")}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-5 h-5 shrink-0">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span className="hidden sm:inline">{t("signOut")}</span>
+          <LogOut className="w-4 h-4 shrink-0" />
+          <span className="hidden sm:inline text-sm">{t("signOut")}</span>
         </button>
       </div>
     </header>
