@@ -54,7 +54,10 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
   const data = { ...DEFAULT_DATA, ...acf };
 
   const renderHeading = () => {
-    const lines = data.heading.split("\n");
+    const normalizedHeading = data.heading
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/\r\n/g, "\n");
+    const lines = normalizedHeading.split("\n");
     return lines.map((line, li) => {
       if (data.heading_accent && line.includes(data.heading_accent)) {
         const parts = line.split(data.heading_accent);

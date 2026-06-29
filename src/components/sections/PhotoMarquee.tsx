@@ -14,10 +14,25 @@ const MARQUEE_PHOTOS = [
 
 interface PhotoMarqueeProps {
   className?: string;
+  acf?: {
+    section_label?: string;
+    heading?: string;
+    heading_accent?: string;
+    subtext?: string;
+  };
 }
 
-export function PhotoMarquee({ className }: PhotoMarqueeProps) {
+const DEFAULT_COPY = {
+  section_label: "Im Atelier",
+  heading: "Wo Ihre Kostüme",
+  heading_accent: "entstehen",
+  subtext:
+    "Ein Blick hinter die Kulissen — Werkstatt, Stoffe und fertige Arbeiten aus unserem Atelier in Basel.",
+};
+
+export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
   const track = [...MARQUEE_PHOTOS, ...MARQUEE_PHOTOS];
+  const data = { ...DEFAULT_COPY, ...acf };
 
   return (
     <section
@@ -26,13 +41,14 @@ export function PhotoMarquee({ className }: PhotoMarqueeProps) {
     >
       <div className="container-site text-center mb-10 lg:mb-12">
         <div className="divider-ornament justify-center mb-5">
-          <span>Im Atelier</span>
+          <span>{data.section_label}</span>
         </div>
         <h2 className="section-heading mb-4">
-          Wo Ihre Kostüme <em className="not-italic italic text-periwinkle-dark">entstehen</em>
+          {data.heading}{" "}
+          {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
         </h2>
         <p className="section-subtext max-w-lg mx-auto">
-          Ein Blick hinter die Kulissen — Werkstatt, Stoffe und fertige Arbeiten aus unserem Atelier in Basel.
+          {data.subtext}
         </p>
       </div>
 

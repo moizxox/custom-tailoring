@@ -2,6 +2,7 @@ import { getPageSchema } from "@/lib/cms/page-schemas";
 import { prisma } from "@/lib/db/prisma";
 import { getAdminT, getSchemaTranslator } from "@/lib/i18n/admin";
 import { localizePageSchema } from "@/lib/i18n/schema-labels";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { notFound } from "next/navigation";
 import PageSectionEditor from "@/components/admin/PageSectionEditor";
 import Link from "next/link";
@@ -53,14 +54,19 @@ export default async function PageEditorPage({ params }: Props) {
       </div>
 
       <div className="space-y-4">
-        {localized.sections.map((section) => (
-          <PageSectionEditor
-            key={section.key}
-            pageSlug={slug}
-            section={section}
-            initialContent={(savedContent[section.key] as Record<string, unknown>) ?? {}}
-          />
-        ))}
+        {localized.sections.map((section) => {
+          const saved = (savedContent[section.key] as Record<string, unknown>) ?? {};
+          const defaults = getDefaultSectionContent(slug, section.key);
+          const initialContent = { ...defaults, ...saved };
+          return (
+            <PageSectionEditor
+              key={section.key}
+              pageSlug={slug}
+              section={section}
+              initialContent={initialContent}
+            />
+          );
+        })}
       </div>
     </div>
   );
