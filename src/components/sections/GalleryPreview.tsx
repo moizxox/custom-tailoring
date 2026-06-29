@@ -10,6 +10,7 @@ interface AcfGalleryPreview {
   show_cta: boolean;
   cta_label?: string;
   cta_url?: string;
+  preview_items?: { src: string; category: string; title: string }[];
 }
 
 const PREVIEW_ITEMS = [
@@ -48,6 +49,9 @@ interface GalleryPreviewProps {
 
 export function GalleryPreview({ acf }: GalleryPreviewProps) {
   const data = { ...DEFAULT_DATA, ...acf };
+  const previewItems = Array.isArray(acf?.preview_items) && acf.preview_items.length > 0
+    ? acf.preview_items
+    : PREVIEW_ITEMS;
 
   return (
     <section className="py-24 section-bg-white">
@@ -59,13 +63,13 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
             </div>
           )}
           <h2 className="section-heading mb-4">
-            {data.heading} {data.heading_accent && <em className="not-italic italic text-periwinkle-dark">{data.heading_accent}</em>}
+            {data.heading} {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
           </h2>
           {data.subtext && <p className="section-subtext max-w-md mx-auto">{data.subtext}</p>}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {PREVIEW_ITEMS.map((item) => (
+          {previewItems.map((item) => (
             <Link
               key={item.src}
               href="/galerie"

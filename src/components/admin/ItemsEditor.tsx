@@ -2,9 +2,10 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Plus, Trash2, GripVertical, ChevronDown } from "lucide-react";
+import { Plus, Trash2, GripVertical, ChevronDown, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CmsItemField } from "@/lib/cms/page-schemas";
+import MediaPickerModal from "@/components/admin/MediaPickerModal";
 
 const ALL_ICONS = [
   "backstitch-sewing-tailoring-needle.svg",
@@ -159,6 +160,7 @@ export default function ItemsEditor({ value, onChange, itemFields }: ItemsEditor
   const [items, setItems] = useState<ItemWithId[]>(() => ensureId(value));
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const dragIndex = useRef<number | null>(null);
+  const [mediaPicker, setMediaPicker] = useState<{ itemId: string; fieldKey: string } | null>(null);
 
   function emit(next: ItemWithId[]) {
     setItems(next);
@@ -257,6 +259,29 @@ export default function ItemsEditor({ value, onChange, itemFields }: ItemsEditor
                         value={item[field.key] ?? ""}
                         onChange={(v) => updateItem(item.__id, field.key, v)}
                       />
+                    ) : field.type === "image" ? (
+                      <div className="space-y-1.5">
+                        {item[field.key] && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={item[field.key]} alt="" className="w-24 h-16 rounded-lg object-cover border border-gray-200" />
+                        )}
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={item[field.key] ?? ""}
+                            onChange={(e) => updateItem(item.__id, field.key, e.target.value)}
+                            placeholder="/images/..."
+                            className={cn(inp, "flex-1 font-mono text-xs")}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setMediaPicker({ itemId: item.__id, fieldKey: field.key })}
+                            className="flex items-center gap-1.5 px-3 py-2 border border-gray-200 rounded-lg text-xs text-gray-600 hover:bg-gray-50 transition-colors bg-white whitespace-nowrap"
+                          >
+                            <ImageIcon className="w-3.5 h-3.5" /> Pick
+                          </button>
+                        </div>
+                      </div>
                     ) : field.type === "textarea" ? (
                       <textarea
                         rows={2}
@@ -287,6 +312,16 @@ export default function ItemsEditor({ value, onChange, itemFields }: ItemsEditor
       >
         <Plus className="w-4 h-4" /> Add item
       </button>
+
+      {mediaPicker && (
+        <MediaPickerModal
+          onSelect={(url) => {
+            updateItem(mediaPicker.itemId, mediaPicker.fieldKey, url);
+            setMediaPicker(null);
+          }}
+          onClose={() => setMediaPicker(null)}
+        />
+      )}
     </div>
   );
 }

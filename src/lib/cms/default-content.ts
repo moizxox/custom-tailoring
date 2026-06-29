@@ -10,6 +10,16 @@ export const HOME_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
     ctaSecondaryLabel: "Leistungen entdecken",
     ctaSecondaryUrl: "/leistungen",
     headingTag: "h1",
+    intro_points: [
+      { text: "Kostüme für Fasnacht, Bühne und besondere Anlässe" },
+      { text: "Beratung, Schnitt und Anfertigung aus einer Hand" },
+      { text: "Persönlicher Service – von der Idee bis zur letzten Naht" },
+    ],
+    badges: [
+      { icon_slug: "tailor-dummy-fashion-sewing-tailoring.svg", label: "Massanfertigung" },
+      { icon_slug: "tape-measure-sewing-tailoring-size.svg", label: "Massnehmen" },
+      { icon_slug: "scissor-cut-fabric-sewing.svg", label: "Handarbeit" },
+    ],
   },
   servicesGrid: {
     section_label: "Von der Idee bis zum fertigen Kostüm",
@@ -53,6 +63,11 @@ export const HOME_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
       "Von der Guggenmusik bis zur Einzelanfertigung — jedes Projekt erzählt eine eigene Geschichte. Ein Einblick in unsere Arbeit.",
     cta_label: "Zur Galerie",
     cta_url: "/galerie",
+    preview_items: [
+      { src: "/images/gallery/schloesslischraenzer-major.jpeg", category: "Major", title: "Schlösslischränzer Major" },
+      { src: "/images/gallery/gwuerztraminer-2026.jpeg", category: "Guggenmusik", title: "Gwürztraminer Waageclique" },
+      { src: "/images/gallery/waageclique-edelwaggis.jpeg", category: "Clique", title: "Edelwaggis Waageclique" },
+    ],
   },
   aboutBand: {
     section_label: "Bereit für Ihr Projekt?",
@@ -76,6 +91,16 @@ export const HOME_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
     heading_accent: "entstehen",
     subtext:
       "Ein Blick hinter die Kulissen — Werkstatt, Stoffe und fertige Arbeiten aus unserem Atelier in Basel.",
+    photos: [
+      { src: "/images/atelier/atelier-1.png", alt: "Atelier – Werkstatt" },
+      { src: "/images/gallery/schloesslischraenzer-major.jpeg", alt: "Schlösslischränzer Major" },
+      { src: "/images/atelier/atelier-2.jpg", alt: "Näharbeit im Atelier" },
+      { src: "/images/gallery/gwuerztraminer-2026.jpeg", alt: "Gwürztraminer Waageclique" },
+      { src: "/images/atelier/atelier-3.jpg", alt: "Stoffe und Materialien" },
+      { src: "/images/gallery/waageclique-edelwaggis.jpeg", alt: "Edelwaggis Waageclique" },
+      { src: "/images/gallery/baenkli-clique.jpeg", alt: "Bänkli Clique" },
+      { src: "/images/gallery/waggis-clique.jpeg", alt: "Waggis Clique" },
+    ],
   },
   contactSection: {
     section_label: "Kontakt",
@@ -101,7 +126,59 @@ export const HOME_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
   },
 };
 
+export const SERVICE_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
+  offerings: {
+    heading: "Unsere Leistungen im Überblick",
+    items: [
+      { title: "Individuelle Beratung & Entwurfskizzen", description: "Gemeinsam entwickeln wir Ihre Kostümidee." },
+      { title: "Massanfertigung", description: "Wir schneidern passgenau und sorgen für einen optimalen Sitz und angenehmen Tragekomfort." },
+      { title: "Auswahl hochwertiger Stoffe & Materialien", description: "Von klassischen Stoffen bis hin zu Glitzer, Samt, Satin oder Spezialtextilien." },
+      { title: "Optional Stoffdruck & Stickerei", description: "Logos, Muster, Namen oder Vereinsfarben — individuelle Drucke oder Stickereien." },
+      { title: "Veredelung & Applikationen", description: "Ob Borten, Glöckchen, Fransen oder Accessoires — der finale Schliff für Ihr Kostüm." },
+      { title: "Kostüme für Gruppen & Einzelpersonen", description: "Einheitlich im Stil, aber auf jedes Gruppenmitglied abgestimmt." },
+    ],
+  },
+  orderProcess: {
+    heading: "So funktioniert der Bestellprozess für Ihr Fasnachtskostüm",
+    steps: [
+      { number: "1", title: "Kontaktaufnahme & erste Informationen", description: "Sie erreichen uns per E-Mail, Telefon oder Kontaktformular — oder buchen direkt online." },
+      { number: "2", title: "Beratung & Offerte", description: "Nach dem Erstkontakt erhalten Sie persönliche Beratung, Stoff- und Gestaltungsvorschläge sowie eine unverbindliche Offerte." },
+      { number: "3", title: "Definitive Bestellung", description: "Sobald Sie den Auftrag bestätigen, planen wir Ihr Projekt verbindlich ein." },
+      { number: "4", title: "Massnehmen & Produktionsbeginn", description: "In der Hochsaison veröffentlichen wir feste Zeitfenster für Massnehmen ohne Voranmeldung." },
+      { number: "5", title: "Feinarbeit & Veredelung", description: "Applikationen, Stickereien und individuelle Details verleihen dem Kostüm seine charakteristische Ausstrahlung." },
+      { number: "6", title: "Abholung / Übergabe", description: "Nach Fertigstellung vereinbaren wir einen individuellen Abhol- oder Übergabetermin." },
+    ],
+  },
+  faqs: {
+    items: [
+      { q: "Gibt es eine Anprobe vor der Fertigstellung?", a: "In der Regel nicht nötig. Bei kurzfristiger Lieferung vor der Fasnacht empfehlen wir eine Anprobe zur Sicherheit." },
+      { q: "Was ist, wenn sich meine Masse nach der ersten Massaufnahme stark ändern?", a: "Wir fertigen das Kostüm anhand der Körpermasse an, die zum Zeitpunkt der Massaufnahme ermittelt wurden. Nachträgliche Änderungen werden als individuelle Nachanpassungen berechnet." },
+      { q: "Wie aufwendig sind Änderungen nach der Fertigstellung?", a: "Kleinere Änderungen sind in der Regel unkompliziert. Grössere Anpassungen erfordern einen höheren Aufwand und sind kostenpflichtig." },
+    ],
+  },
+};
+
+export const MASSFERTIGUNG_SECTION_DEFAULTS: Record<string, Record<string, unknown>> = {
+  steps: {
+    heading: "So entsteht Ihr Kostüm",
+    items: [
+      { icon: "tailor-dummy-ruler-sewing-tailoring.svg", title: "Mass nehmen", text: "Wir nehmen alle relevanten Masse präzise auf — persönlich im Atelier oder über Ihren geschützten Kundenbereich." },
+      { icon: "pencil-sewing-tailoring-drawing.svg", title: "Schnittmuster", text: "Auf Basis Ihrer Masse erstellen wir ein individuelles Schnittmuster. Kein Kostüm von der Stange – jedes wird neu konstruiert." },
+      { icon: "fabric-cloth-sewing-tailoring.svg", title: "Stoffauswahl", text: "Gemeinsam wählen wir die passenden Materialien aus. Wir helfen Ihnen, das Richtige zu finden – nach Budget und Wunsch." },
+      { icon: "sewing-machine-sewing-tailoring-cloth.svg", title: "Anfertigung", text: "Jeder Schritt der Produktion erfolgt in unserem Basler Atelier, von Hand und mit grösster Sorgfalt." },
+    ],
+  },
+  cta: {
+    heading: "Bereit für Ihr Kostüm?",
+    subtext: "Buchen Sie Ihr kostenloses Erstgespräch. Wir freuen uns auf Sie.",
+    buttonLabel: "Termin buchen",
+    buttonUrl: "/termin",
+  },
+};
+
 export function getDefaultSectionContent(pageSlug: string, sectionKey: string): Record<string, unknown> {
   if (pageSlug === "home") return HOME_SECTION_DEFAULTS[sectionKey] ?? {};
+  if (pageSlug === "service") return SERVICE_SECTION_DEFAULTS[sectionKey] ?? {};
+  if (pageSlug === "massfertigung") return MASSFERTIGUNG_SECTION_DEFAULTS[sectionKey] ?? {};
   return {};
 }

@@ -19,6 +19,7 @@ interface PhotoMarqueeProps {
     heading?: string;
     heading_accent?: string;
     subtext?: string;
+    photos?: { src: string; alt: string }[];
   };
 }
 
@@ -31,7 +32,10 @@ const DEFAULT_COPY = {
 };
 
 export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
-  const track = [...MARQUEE_PHOTOS, ...MARQUEE_PHOTOS];
+  const photos = Array.isArray(acf?.photos) && acf.photos.length > 0
+    ? acf.photos
+    : MARQUEE_PHOTOS;
+  const track = [...photos, ...photos];
   const data = { ...DEFAULT_COPY, ...acf };
 
   return (

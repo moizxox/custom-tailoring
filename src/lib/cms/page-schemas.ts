@@ -25,7 +25,7 @@ export interface CmsFieldOption {
 export interface CmsItemField {
   key: string;
   label: string;
-  type: "text" | "textarea" | "url" | "icon_slug";
+  type: "text" | "textarea" | "url" | "icon_slug" | "image";
 }
 
 export interface CmsField {
@@ -97,6 +97,25 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "ctaSecondaryLabel", label: "Button 2 — label", type: "text" },
           { key: "ctaSecondaryUrl", label: "Button 2 — link", type: "url" },
           HEADING_TAG_FIELD,
+          {
+            key: "intro_points",
+            label: "Bullet points",
+            type: "items",
+            hint: "Short bullet lines below the intro text",
+            itemFields: [
+              { key: "text", label: "Text", type: "text" },
+            ],
+          },
+          {
+            key: "badges",
+            label: "Service badge pills",
+            type: "items",
+            hint: "Icon pills shown below the buttons",
+            itemFields: [
+              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "label", label: "Label", type: "text" },
+            ],
+          },
         ],
       },
       {
@@ -148,6 +167,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "galleryPreview",
         label: "Gallery preview",
+        description: "3-photo preview grid and text",
         fields: [
           { key: "section_label", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
@@ -155,6 +175,17 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "subtext", label: "Subtext", type: "textarea" },
           { key: "cta_label", label: "CTA label", type: "text" },
           { key: "cta_url", label: "CTA link", type: "url" },
+          {
+            key: "preview_items",
+            label: "Preview photos",
+            type: "items",
+            hint: "Photos in the 3-card grid",
+            itemFields: [
+              { key: "src", label: "Image URL", type: "image" },
+              { key: "category", label: "Category tag", type: "text" },
+              { key: "title", label: "Title", type: "text" },
+            ],
+          },
         ],
       },
       {
@@ -186,11 +217,22 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "photoMarquee",
         label: "Atelier marquee",
+        description: "Scrolling photo strip and text above it",
         fields: [
           { key: "section_label", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
           { key: "heading_accent", label: "Accent word(s)", type: "text" },
           { key: "subtext", label: "Subtext", type: "textarea" },
+          {
+            key: "photos",
+            label: "Marquee photos",
+            type: "items",
+            hint: "Photos in the scrolling strip",
+            itemFields: [
+              { key: "src", label: "Image URL", type: "image" },
+              { key: "alt", label: "Alt text", type: "text" },
+            ],
+          },
         ],
       },
       {
@@ -283,10 +325,55 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       },
       {
         key: "offerings",
-        label: "Services list",
-        description: "List of service offerings",
+        label: "Services overview",
+        description: "Cards shown in the services grid",
         fields: [
-          { key: "items", label: "Services", type: "array" },
+          {
+            key: "heading", label: "Section heading", type: "text",
+          },
+          {
+            key: "items",
+            label: "Service cards",
+            type: "items",
+            itemFields: [
+              { key: "title", label: "Title", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "orderProcess",
+        label: "Order process",
+        description: "Numbered steps for the ordering process",
+        fields: [
+          { key: "heading", label: "Section heading", type: "text" },
+          {
+            key: "steps",
+            label: "Process steps",
+            type: "items",
+            itemFields: [
+              { key: "number", label: "Number", type: "text" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "faqs",
+        label: "FAQs",
+        description: "Frequently asked questions",
+        fields: [
+          {
+            key: "items",
+            label: "FAQ items",
+            type: "items",
+            itemFields: [
+              { key: "q", label: "Question", type: "text" },
+              { key: "a", label: "Answer", type: "textarea" },
+            ],
+          },
         ],
       },
     ],
@@ -374,6 +461,34 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
         key: "hero",
         label: "Hero section",
         fields: pageHeroFields(),
+      },
+      {
+        key: "steps",
+        label: "Process steps",
+        description: "4-step 'How it works' cards with icons",
+        fields: [
+          { key: "heading", label: "Section heading", type: "text" },
+          {
+            key: "items",
+            label: "Steps",
+            type: "items",
+            itemFields: [
+              { key: "icon", label: "Icon", type: "icon_slug" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "text", label: "Description", type: "textarea" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "cta",
+        label: "Bottom CTA",
+        fields: [
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "subtext", label: "Subtext", type: "text" },
+          { key: "buttonLabel", label: "Button label", type: "text" },
+          { key: "buttonUrl", label: "Button link", type: "url" },
+        ],
       },
     ],
   },
