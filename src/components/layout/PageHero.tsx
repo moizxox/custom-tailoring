@@ -74,7 +74,7 @@ export function PageHero({
             headingTag,
             {
               className:
-                "font-sans font-semibold tracking-tight text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
+                "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
             },
             renderTitle()
           )}

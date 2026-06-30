@@ -67,7 +67,7 @@ export function AboutBand({ acf }: AboutBandProps) {
               {data.section_label && (
                 <p className="section-label mb-4">{data.section_label}</p>
               )}
-              <h2 className="font-sans font-semibold tracking-tight text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
+              <h2 className="font-serif text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
                 <AccentHeadingText heading={data.heading} accent={data.heading_accent} />
               </h2>
               <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8 max-w-sm">

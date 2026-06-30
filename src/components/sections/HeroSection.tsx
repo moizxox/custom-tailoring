@@ -100,7 +100,7 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
             headingTag,
             {
               className:
-                "font-sans font-semibold tracking-tight text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
+                "font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
             },
             renderHeading()
           )}

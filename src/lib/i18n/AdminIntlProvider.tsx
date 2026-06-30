@@ -1,7 +1,7 @@
 "use client";
 
 import { NextIntlClientProvider } from "next-intl";
-import { getAdminLocale, getAdminMessages } from "@/lib/i18n/admin";
+import { getAdminLocale, getAdminMessages, ADMIN_TIME_ZONE } from "@/lib/i18n/admin";
 
 export default function AdminIntlProvider({
   children,
@@ -11,7 +11,7 @@ export default function AdminIntlProvider({
   const locale = getAdminLocale();
 
   return (
-    <NextIntlClientProvider locale={locale} messages={getAdminMessages(locale)}>
+    <NextIntlClientProvider locale={locale} messages={getAdminMessages(locale)} timeZone={ADMIN_TIME_ZONE}>
       {children}
     </NextIntlClientProvider>
   );

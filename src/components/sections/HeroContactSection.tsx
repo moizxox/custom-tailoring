@@ -72,7 +72,7 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] gap-10 xl:gap-16 items-start">
           <div className="max-w-xl">
             <p className="section-label mb-4">{data.section_label}</p>
-            <h2 className="font-sans font-semibold tracking-tight text-3xl sm:text-4xl text-charcoal leading-snug mb-4">
+            <h2 className="font-serif text-3xl sm:text-4xl text-charcoal leading-snug mb-4">
               <AccentHeadingText heading={data.heading} accent={data.headingAccent} />
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-6">

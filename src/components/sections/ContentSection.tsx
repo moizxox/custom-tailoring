@@ -35,7 +35,7 @@ export function ContentSection({
   const textBlock = (
     <div>
       {label && <p className="section-label mb-4">{label}</p>}
-      <h2 className="font-sans font-semibold tracking-tight text-3xl text-charcoal mb-5 leading-snug">{renderHeading()}</h2>
+      <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">{renderHeading()}</h2>
       <div className="flex flex-col gap-4">
         {paragraphs.map((paragraph) => (
           <p key={paragraph.slice(0, 40)} className="font-sans text-sm text-charcoal-light leading-relaxed">

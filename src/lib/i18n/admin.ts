@@ -6,6 +6,9 @@ import type { SchemaTranslator } from "@/lib/i18n/schema-labels";
 export const ADMIN_LOCALES = ["en", "de"] as const;
 export type AdminLocale = (typeof ADMIN_LOCALES)[number];
 
+/** Swiss business timezone — avoids next-intl ENVIRONMENT_FALLBACK in dev/build. */
+export const ADMIN_TIME_ZONE = "Europe/Zurich";
+
 /** Production/GitHub default: German. Set NEXT_PUBLIC_ADMIN_LOCALE=en in .env.local for English. */
 export function getAdminLocale(): AdminLocale {
   const raw = process.env.NEXT_PUBLIC_ADMIN_LOCALE?.trim().toLowerCase();
@@ -27,6 +30,7 @@ export function getAdminT(namespace?: keyof AdminMessages, locale?: AdminLocale)
     locale: resolvedLocale,
     messages: getAdminMessages(resolvedLocale),
     namespace,
+    timeZone: ADMIN_TIME_ZONE,
   });
 }
 
