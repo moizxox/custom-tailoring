@@ -1,19 +1,24 @@
-import { ATELIER_LOCATIONS, MEASUREMENT_TIMETABLES, type LocationId } from "@/lib/site-content";
+import { ATELIER_LOCATIONS, MEASUREMENT_TIMETABLES, type AtelierLocation, type LocationId } from "@/lib/site-content";
+import type { CmsTimetable } from "@/lib/cms/timetables";
 import { cn } from "@/lib/utils";
 
 interface AtelierTimetableProps {
   className?: string;
-  /** Show both locations side by side, or filter to one */
   locationId?: LocationId;
+  timetables?: CmsTimetable[];
+  locations?: AtelierLocation[];
 }
 
-export function AtelierTimetable({ className, locationId }: AtelierTimetableProps) {
-  const locations = locationId ? ATELIER_LOCATIONS.filter((l) => l.id === locationId) : ATELIER_LOCATIONS;
+export function AtelierTimetable({ className, locationId, timetables, locations }: AtelierTimetableProps) {
+  const locs = locations ?? ATELIER_LOCATIONS;
+  const filteredLocs = locationId ? locs.filter((l) => l.id === locationId) : locs;
 
   return (
     <div className={cn("grid grid-cols-1 lg:grid-cols-2 gap-6", className)}>
-      {locations.map((location) => {
-        const timetable = MEASUREMENT_TIMETABLES[location.id];
+      {filteredLocs.map((location) => {
+        const cmsTable = timetables?.find((t) => t.locationId === location.id);
+        const fallback = MEASUREMENT_TIMETABLES[location.id];
+        const timetable = cmsTable ?? { ...fallback, locationId: location.id };
         if (!timetable.active) return null;
 
         return (

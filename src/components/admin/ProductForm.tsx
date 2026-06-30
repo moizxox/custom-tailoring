@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { ImageIcon } from "lucide-react";
 import type { Product } from "@prisma/client";
+import MediaPickerModal from "@/components/admin/MediaPickerModal";
 
 type FormData = {
   name: string;
@@ -51,6 +53,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
 
   function handleChange(key: keyof FormData, value: string | boolean) {
     setForm((prev) => {
@@ -176,13 +179,26 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("imageUrlLabel")}</label>
-          <input
-            type="url"
-            value={form.imageUrl}
-            onChange={(e) => handleChange("imageUrl", e.target.value)}
-            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-            placeholder="https://res.cloudinary.com/…"
-          />
+          {form.imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={form.imageUrl} alt="" className="w-32 h-20 rounded-lg object-cover border border-gray-200 mb-2" />
+          )}
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={form.imageUrl}
+              onChange={(e) => handleChange("imageUrl", e.target.value)}
+              className="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+              placeholder="https://res.cloudinary.com/…"
+            />
+            <button
+              type="button"
+              onClick={() => setMediaPickerOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors bg-white whitespace-nowrap"
+            >
+              <ImageIcon className="w-4 h-4" /> Pick
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -207,6 +223,16 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
           />
         </div>
       </div>
+
+      {mediaPickerOpen && (
+        <MediaPickerModal
+          onSelect={(url) => {
+            handleChange("imageUrl", url);
+            setMediaPickerOpen(false);
+          }}
+          onClose={() => setMediaPickerOpen(false)}
+        />
+      )}
 
       {error && (
         <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>

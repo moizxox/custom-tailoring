@@ -1,4 +1,7 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -8,73 +11,46 @@ export const metadata: Metadata = {
   description: "Einblicke in das Kostümhandwerk – Tipps, Inspirationen und Neuigkeiten.",
 };
 
-const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
-const POSTS = [
-  {
-    slug: "massanfertigung-vs-konfektionskostuem",
-    category: "Ratgeber",
-    date: "15. März 2025",
-    title: "Massanfertigung oder Konfektionskostüm?",
-    excerpt: "Was sind die Unterschiede – und wann lohnt sich die Investition in ein massgefertigtes Kostüm?",
-    image: `${CDN}/gallery/schloesslischraenzer-major.jpg`,
-  },
-  {
-    slug: "fasnacht-2025-trends",
-    category: "Trends",
-    date: "8. Januar 2025",
-    title: "Fasnacht 2025: Die Kostüm-Trends",
-    excerpt: "Welche Farben, Schnitte und Materialien werden diese Fasnacht dominieren? Ein Blick auf aktuelle Tendenzen.",
-    image: `${CDN}/gallery/gwuerztraminer-2026.jpg`,
-  },
-  {
-    slug: "pflege-von-kostuemen",
-    category: "Pflege",
-    date: "20. November 2024",
-    title: "Kostüme richtig pflegen und lagern",
-    excerpt: "Mit der richtigen Pflege halten Kostüme viele Jahre. Unsere Tipps für Reinigung, Lagerung und Reparatur.",
-    image: `${CDN}/gallery/wiler-zipfel.jpg`,
-  },
-  {
-    slug: "stoffe-fuer-guggenmusik",
-    category: "Material",
-    date: "3. September 2024",
-    title: "Die besten Stoffe für Guggenmusik-Kostüme",
-    excerpt: "Haltbarkeit, Komfort und Optik – welche Materialien sich für Gruppenausstattungen am besten eignen.",
-    image: `${CDN}/gallery/baenkli-clique.jpg`,
-  },
-  {
-    slug: "massnehmen-tipps",
-    category: "Ratgeber",
-    date: "12. Juli 2024",
-    title: "So nehmen Sie Masse korrekt ab",
-    excerpt: "Eine Schritt-für-Schritt-Anleitung, bevor Sie zu uns kommen – für ein noch genaueres Ergebnis.",
-    image: `${CDN}/figures/woman-measurement.png`,
-  },
-  {
-    slug: "atelier-einblick",
-    category: "Atelier",
-    date: "5. Mai 2024",
-    title: "Einblick in unser Basler Atelier",
-    excerpt: "Wo Ideen entstehen und Kostüme Realität werden – ein Blick hinter die Kulissen.",
-    image: `${CDN}/atelier/atelier-2.jpg`,
-  },
-];
+interface JournalPost {
+  slug: string;
+  category: string;
+  date: string;
+  title: string;
+  excerpt: string;
+  image: string;
+}
 
-export default function JournalPage() {
+export default async function JournalPage() {
+  const [heroContent, postsContent] = await Promise.all([
+    getCmsContent("journal", "hero", {}),
+    getCmsContent("journal", "posts", {}),
+  ]);
+  const hero = mapPageHeroContent(heroContent, {
+    label: "Wissen & Inspiration",
+    title: "Journal",
+    titleAccent: "Journal",
+    subtitle: "Einblicke in das Kostümhandwerk – Tipps, Trends und Geschichten aus unserem Atelier.",
+    headingTag: "h1",
+  });
+  const defaults = getDefaultSectionContent("journal", "posts");
+  const postsData = { ...defaults, ...postsContent } as { items: JournalPost[] };
+  const posts = postsData.items ?? [];
+
   return (
     <>
       <PageHero
-        label="Wissen & Inspiration"
-        title="Journal"
-        titleAccent="Journal"
-        subtitle="Einblicke in das Kostümhandwerk – Tipps, Trends und Geschichten aus unserem Atelier."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Journal", href: "/journal" }]}
       />
 
       <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {POSTS.map((post) => (
+            {posts.map((post) => (
               <article
                 key={post.slug}
                 className="bg-white rounded-2xl border border-stone-light hover:border-periwinkle-light hover:shadow-card-hover transition-all duration-300 group overflow-hidden flex flex-col"

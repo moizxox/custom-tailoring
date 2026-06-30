@@ -1,3 +1,4 @@
+import { getShopProducts } from "@/lib/products";
 import { LEGAL_LINKS, NAV_LINKS, SHOP_CATEGORIES, SHOP_PRODUCTS, SHOP_QUALITY_TIERS } from "@/lib/site-content";
 
 export type SearchResultType = "page" | "product" | "category" | "legal";
@@ -10,8 +11,7 @@ export interface SearchResult {
   keywords?: string;
 }
 
-/** Static index — replace/extend via CMS search API in a later phase */
-export const SEARCH_INDEX: SearchResult[] = [
+const STATIC_PAGES: SearchResult[] = [
   { title: "Startseite", description: "Kostümschneiderei für Guggenmusik, Cliquen und Einzelpersonen", href: "/", type: "page", keywords: "home fasnacht basel" },
   { title: "Shop", description: "Fasnachtskostüme online — Stammkostüme, Sujet, ab Lager", href: "/shop", type: "page", keywords: "kaufen bestellen online" },
   { title: "Galerie", description: "Unsere fertigen Kostüme und Referenzen", href: "/galerie", type: "page", keywords: "bilder fotos referenzen gugge clique" },
@@ -38,13 +38,6 @@ export const SEARCH_INDEX: SearchResult[] = [
     type: "category" as const,
     keywords: cat.slug,
   })),
-  ...SHOP_PRODUCTS.map((product) => ({
-    title: product.name,
-    description: product.shortDescription,
-    href: `/shop#${product.slug}`,
-    type: "product" as const,
-    keywords: `${product.priceFrom} ${product.qualityTier ?? ""}`,
-  })),
   ...SHOP_QUALITY_TIERS.map((tier) => ({
     title: `Qualität ${tier.name}`,
     description: tier.tagline,
@@ -60,6 +53,18 @@ export const SEARCH_INDEX: SearchResult[] = [
   })),
 ];
 
+/** @deprecated Use buildSearchIndex() for fresh DB products */
+export const SEARCH_INDEX: SearchResult[] = [
+  ...STATIC_PAGES,
+  ...SHOP_PRODUCTS.map((product) => ({
+    title: product.name,
+    description: product.shortDescription,
+    href: `/shop#${product.slug}`,
+    type: "product" as const,
+    keywords: `${product.priceFrom} ${product.qualityTier ?? ""}`,
+  })),
+];
+
 function normalize(text: string) {
   return text
     .toLowerCase()
@@ -71,11 +76,23 @@ function normalize(text: string) {
     .replace(/ß/g, "ss");
 }
 
-export function searchSite(query: string, limit = 8): SearchResult[] {
+export async function buildSearchIndex(): Promise<SearchResult[]> {
+  const { products } = await getShopProducts();
+  const productResults: SearchResult[] = products.map((product) => ({
+    title: product.name,
+    description: product.description,
+    href: `/shop#${product.slug}`,
+    type: "product",
+    keywords: `${product.price} ${product.tier ?? ""} ${product.category}`,
+  }));
+  return [...STATIC_PAGES, ...productResults];
+}
+
+export function searchSiteWithIndex(index: SearchResult[], query: string, limit = 8): SearchResult[] {
   const q = normalize(query.trim());
   if (!q || q.length < 2) return [];
 
-  const scored = SEARCH_INDEX.map((item) => {
+  const scored = index.map((item) => {
     const haystack = normalize([item.title, item.description, item.keywords].filter(Boolean).join(" "));
     let score = 0;
     if (normalize(item.title) === q) score += 100;
@@ -99,6 +116,10 @@ export function searchSite(query: string, limit = 8): SearchResult[] {
     if (results.length >= limit) break;
   }
   return results;
+}
+
+export function searchSite(query: string, limit = 8): SearchResult[] {
+  return searchSiteWithIndex(SEARCH_INDEX, query, limit);
 }
 
 export const SEARCH_TYPE_LABELS: Record<SearchResultType, string> = {

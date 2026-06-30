@@ -7,6 +7,7 @@ import { LocationCards } from "@/components/sections/LocationCards";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import type { ContactFormConfig, PageHeroCms } from "@/lib/cms/helpers";
 import type { SiteContactInfo } from "@/lib/cms/site-contact";
+import type { CmsTimetable } from "@/lib/cms/timetables";
 import type { AtelierLocation } from "@/lib/site-content";
 
 interface KontaktPageContentProps {
@@ -14,9 +15,10 @@ interface KontaktPageContentProps {
   form: ContactFormConfig;
   contact: SiteContactInfo;
   locations: AtelierLocation[];
+  timetables: CmsTimetable[];
 }
 
-export function KontaktPageContent({ hero, form, contact, locations }: KontaktPageContentProps) {
+export function KontaktPageContent({ hero, form, contact, locations, timetables }: KontaktPageContentProps) {
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -63,7 +65,7 @@ export function KontaktPageContent({ hero, form, contact, locations }: KontaktPa
             <h2 className="font-serif text-2xl text-charcoal mb-2">Massen ohne Termin — Hochsaison</h2>
             <p className="font-sans text-sm text-charcoal-light">Feste Zeiten pro Standort während der Fasnachts-Saison</p>
           </div>
-          <AtelierTimetable />
+          <AtelierTimetable timetables={timetables} locations={locations} />
         </div>
       </section>
 

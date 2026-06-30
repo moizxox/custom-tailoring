@@ -2,6 +2,7 @@ import { KontaktPageContent } from "@/app/(site)/kontakt/KontaktPageContent";
 import { getCmsContent } from "@/lib/cms/content";
 import { getAtelierLocations } from "@/lib/cms/site-locations";
 import { getSiteContactInfo } from "@/lib/cms/site-contact";
+import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { mapContactFormConfig, mapPageHeroContent } from "@/lib/cms/helpers";
 import type { Metadata } from "next";
 
@@ -31,15 +32,16 @@ const DEFAULT_FORM = {
 };
 
 export default async function KontaktPage() {
-  const [heroContent, formContent, contact, locations] = await Promise.all([
+  const [heroContent, formContent, contact, locations, timetables] = await Promise.all([
     getCmsContent("kontakt", "hero", {}),
     getCmsContent("kontakt", "contactForm", {}),
     getSiteContactInfo(),
     getAtelierLocations(),
+    getMeasurementTimetables(),
   ]);
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
 
   const form = mapContactFormConfig(formContent, DEFAULT_FORM);
 
-  return <KontaktPageContent hero={hero} form={form} contact={contact} locations={locations} />;
+  return <KontaktPageContent hero={hero} form={form} contact={contact} locations={locations} timetables={timetables} />;
 }

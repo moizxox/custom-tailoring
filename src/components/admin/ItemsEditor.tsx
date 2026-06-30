@@ -294,6 +294,22 @@ export default function ItemsEditor({ value, onChange, itemFields }: ItemsEditor
                         onChange={(e) => updateItem(item.__id, field.key, e.target.value)}
                         className={cn(inp, "resize-none")}
                       />
+                    ) : field.type === "select" ? (
+                      <select
+                        value={item[field.key] ?? ""}
+                        onChange={(e) => updateItem(item.__id, field.key, e.target.value)}
+                        className={cn(inp, "bg-white")}
+                      >
+                        <option value="">—</option>
+                        {(field.options ?? [
+                          { value: "h1", label: "H1" },
+                          { value: "h2", label: "H2" },
+                          { value: "h3", label: "H3" },
+                          { value: "h4", label: "H4" },
+                        ]).map((opt) => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
                     ) : (
                       <input
                         type={field.type === "url" ? "url" : "text"}

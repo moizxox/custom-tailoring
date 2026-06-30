@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { getShopProducts } from "@/lib/products";
-import { SHOP_CATEGORIES, SHOP_QUALITY_TIERS } from "@/lib/site-content";
+import { splitLines } from "@/lib/cms/section-helpers";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,12 +22,32 @@ const DEFAULT_HERO = {
   headingTag: "h1" as const,
 };
 
+interface TierItem {
+  name: string;
+  badge: string;
+  tagline: string;
+  features: string;
+  recommendation: string;
+}
+
+interface CategoryItem {
+  name: string;
+  description: string;
+  slug: string;
+}
+
 export default async function ShopPage() {
-  const [heroContent, shopData] = await Promise.all([
+  const [heroContent, tiersContent, categoriesContent, shopData] = await Promise.all([
     getCmsContent("shop", "hero", {}),
+    getCmsContent("shop", "tiers", {}),
+    getCmsContent("shop", "categories", {}),
     getShopProducts(),
   ]);
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
+  const tiersDefaults = getDefaultSectionContent("shop", "tiers");
+  const categoriesDefaults = getDefaultSectionContent("shop", "categories");
+  const tiersData = { ...tiersDefaults, ...tiersContent } as { heading: string; subtext: string; items: TierItem[] };
+  const categoriesData = { ...categoriesDefaults, ...categoriesContent } as { heading: string; items: CategoryItem[] };
   const { products, source } = shopData;
 
   return (
@@ -40,26 +61,21 @@ export default async function ShopPage() {
         breadcrumbs={[{ label: "Shop", href: "/shop" }]}
       />
 
-      {/* Quality tiers */}
       <section className="py-20 section-bg-lavender">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Für jedes Budget</p>
-            <h2 className="section-heading mb-4">Qualitätsstufen im Überblick</h2>
-            <p className="section-subtext max-w-2xl mx-auto">
-              Drei Stufen — unterschiedlich in Material, Verarbeitung und Ausstattung. So erhalten Sie genau die Qualität, die zu Ihrem Projekt passt.
-            </p>
+            <h2 className="section-heading mb-4">{tiersData.heading}</h2>
+            <p className="section-subtext max-w-2xl mx-auto">{tiersData.subtext}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {SHOP_QUALITY_TIERS.map((tier, i) => (
-              <article key={tier.id} className="rounded-3xl card-gradient border border-periwinkle-light/40 p-7 flex flex-col">
-                <span className="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">
-                  {i === 0 ? "Einstieg" : i === 1 ? "Beliebt" : "Premium"}
-                </span>
+            {(tiersData.items ?? []).map((tier) => (
+              <article key={tier.name} className="rounded-3xl card-gradient border border-periwinkle-light/40 p-7 flex flex-col">
+                <span className="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">{tier.badge}</span>
                 <h3 className="font-serif text-2xl text-charcoal mb-2">{tier.name}</h3>
                 <p className="font-sans text-sm text-charcoal-light mb-5">{tier.tagline}</p>
                 <ul className="flex flex-col gap-2 mb-6 flex-1">
-                  {tier.features.map((f) => (
+                  {splitLines(tier.features).map((f) => (
                     <li key={f} className="flex items-start gap-2 font-sans text-sm text-charcoal-light">
                       <span className="text-periwinkle-dark mt-0.5">✔</span>
                       {f}
@@ -73,15 +89,14 @@ export default async function ShopPage() {
         </div>
       </section>
 
-      {/* Categories + products */}
       <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="text-center mb-12">
-            <h2 className="section-heading mb-4">Unsere Angebote</h2>
+            <h2 className="section-heading mb-4">{categoriesData.heading}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-16">
-            {SHOP_CATEGORIES.map((cat) => (
-              <div key={cat.id} className="rounded-2xl border border-stone-light p-6 hover:border-periwinkle-light hover:shadow-soft transition-all">
+            {(categoriesData.items ?? []).map((cat) => (
+              <div key={cat.name} className="rounded-2xl border border-stone-light p-6 hover:border-periwinkle-light hover:shadow-soft transition-all">
                 <h3 className="font-serif text-xl text-charcoal mb-2">{cat.name}</h3>
                 <p className="font-sans text-sm text-charcoal-light leading-relaxed">{cat.description}</p>
               </div>
@@ -130,7 +145,6 @@ export default async function ShopPage() {
         </div>
       </section>
 
-      {/* Custom-made notice */}
       <section className="py-16 section-bg-sky border-y border-periwinkle-light/30">
         <div className="container-site max-w-3xl text-center">
           <h2 className="font-serif text-2xl text-charcoal mb-4">Massanfertigung & verbindliche Bestellung</h2>

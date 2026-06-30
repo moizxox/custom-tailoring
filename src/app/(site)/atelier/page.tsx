@@ -2,18 +2,13 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { PhotoSlider } from "@/components/ui/PhotoSlider";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
+import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import type { Metadata } from "next";
-
-const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
-const ATELIER_SLIDES = [
-  { src: `${CDN}/atelier/atelier-1.png`, alt: "Atelier – Werkstatt und Nähmaschinen" },
-  { src: `${CDN}/atelier/atelier-2.jpg`, alt: "Handarbeit und Nähzubehör im Atelier" },
-  { src: `${CDN}/atelier/atelier-3.jpg`, alt: "Stoffe und Materialien" },
-  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, alt: "Fertiges Kostüm im Atelier" },
-];
 
 export const metadata: Metadata = {
   title: "Atelier",
@@ -21,13 +16,23 @@ export const metadata: Metadata = {
 };
 
 export default async function AtelierPage() {
-  const hero = mapPageHeroContent(await getCmsContent("atelier", "hero", {}), {
+  const [heroContent, introContent, workshopContent, materialsContent] = await Promise.all([
+    getCmsContent("atelier", "hero", {}),
+    getCmsContent("atelier", "intro", {}),
+    getCmsContent("atelier", "workshop", {}),
+    getCmsContent("atelier", "materials", {}),
+  ]);
+  const hero = mapPageHeroContent(heroContent, {
     label: "Unser Standort",
     title: "Das Atelier",
     titleAccent: "Atelier",
     subtitle: "In der Greifengasse 20, mitten in Basel, befindet sich unser Atelier – der Ort, wo Ideen zu Kostümen werden.",
     headingTag: "h1",
   });
+  const intro = { ...getDefaultSectionContent("atelier", "intro"), ...introContent } as Record<string, unknown>;
+  const workshop = mapContentBlock({ ...getDefaultSectionContent("atelier", "workshop"), ...workshopContent });
+  const materials = mapContentBlock({ ...getDefaultSectionContent("atelier", "materials"), ...materialsContent });
+  const slides = (Array.isArray(intro.slides) ? intro.slides : []) as { src: string; alt: string }[];
 
   return (
     <>
@@ -43,72 +48,74 @@ export default async function AtelierPage() {
       <section className="py-20 section-bg-white">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="section-label mb-4">Handwerk vor Ort</p>
+            {typeof intro.label === "string" && <p className="section-label mb-4">{intro.label}</p>}
             <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
-              Wo Tradition und
-              <br />
-              <span className="text-periwinkle-dark">Kreativität</span> aufeinandertreffen
+              <AccentHeadingText
+                heading={typeof intro.heading === "string" ? intro.heading : ""}
+                accent={typeof intro.headingAccent === "string" ? intro.headingAccent : undefined}
+              />
             </h2>
-            <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-4">
-              Unser Atelier ist mehr als ein Arbeitsplatz. Hier riecht es nach Stoff, klingt es nach Nähmaschinen, und jede Ecke erzählt eine Geschichte von Handwerk und
-              Leidenschaft.
-            </p>
-            <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-7">
-              Besuchen Sie uns – ob für eine Beratung, eine Anprobe oder einfach um die Atmosphäre zu erleben. Wir heissen Sie herzlich willkommen.
-            </p>
-            <div className="flex flex-col gap-2 text-sm font-sans text-charcoal-light mb-7">
-              <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
-                Greifengasse 20, 4052 Basel
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
-                Mo–Fr: 08:30 – 17:30 Uhr
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
-                Sa nach Vereinbarung
-              </span>
+            <div className="flex flex-col gap-4 font-sans text-sm text-charcoal-light leading-relaxed mb-7">
+              {splitParagraphs(typeof intro.paragraphs === "string" ? intro.paragraphs : "").map((p) => (
+                <p key={p.slice(0, 40)}>{p}</p>
+              ))}
             </div>
-            <Link href="/termin" className="btn-primary inline-flex">
-              Besuch vereinbaren
-            </Link>
+            <div className="flex flex-col gap-2 text-sm font-sans text-charcoal-light mb-7">
+              {typeof intro.addressLine === "string" && (
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
+                  {intro.addressLine}
+                </span>
+              )}
+              {typeof intro.hoursWeekday === "string" && (
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
+                  {intro.hoursWeekday}
+                </span>
+              )}
+              {typeof intro.hoursSaturday === "string" && (
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-periwinkle" />
+                  {intro.hoursSaturday}
+                </span>
+              )}
+            </div>
+            {typeof intro.ctaLabel === "string" && typeof intro.ctaUrl === "string" && (
+              <Link href={intro.ctaUrl} className="btn-primary inline-flex">{intro.ctaLabel}</Link>
+            )}
           </div>
-
-          <PhotoSlider slides={ATELIER_SLIDES} />
+          {slides.length > 0 && <PhotoSlider slides={slides} />}
         </div>
       </section>
 
-      <ContentSection
-        label="Unsere Werkstatt"
-        heading="Wo jedes Kostüm Gestalt annimmt"
-        headingAccent="Gestalt"
-        imageSrc={`${CDN}/atelier/atelier-2.jpg`}
-        imageAlt="Näharbeit im Atelier"
-        imagePosition="left"
-        paragraphs={[
-          "In unserer Werkstatt arbeiten wir mit modernen Nähmaschinen und klassischen Handwerkstechniken. Jeder Schnitt wird geprüft, jede Naht sitzt – damit Ihr Kostüm nicht nur schön aussieht, sondern auch beim Tragen überzeugt.",
-          "Von der ersten Skizze an der Arbeitstafel bis zur letzten Knopfloch-Naht begleiten wir jedes Projekt persönlich. So entstehen Kostüme, die zu Ihnen passen – in Form, Stoff und Charakter.",
-        ]}
-        ctaLabel="Atelier besuchen"
-        ctaHref="/termin"
-      />
+      {workshop.imageSrc && (
+        <ContentSection
+          label={workshop.label}
+          heading={workshop.heading}
+          headingAccent={workshop.headingAccent}
+          imageSrc={workshop.imageSrc}
+          imageAlt={workshop.imageAlt}
+          imagePosition={workshop.imagePosition}
+          paragraphs={workshop.paragraphs}
+          ctaLabel={workshop.ctaLabel}
+          ctaHref={workshop.ctaHref}
+        />
+      )}
 
-      <ContentSection
-        label="Stoffe & Materialien"
-        heading="Die richtige Auswahl für Ihr Projekt"
-        headingAccent="Auswahl"
-        imageSrc={`${CDN}/atelier/atelier-3.jpg`}
-        imageAlt="Stoffauswahl im Atelier"
-        imagePosition="right"
-        className="section-bg-white"
-        paragraphs={[
-          "In unserem Atelier finden Sie eine sorgfältig zusammengestellte Auswahl an Stoffen – von robusten Wollstoffen für die Fasnacht bis zu edlen Materialien für besondere Anlässe.",
-          "Wir beraten Sie ehrlich: welcher Stoff hält, was er kostet und wie er sich im Alltag trägt. Gemeinsam finden wir die Lösung, die zu Ihrem Budget und Ihrem Wunschkostüm passt.",
-        ]}
-        ctaLabel="Stoffe entdecken"
-        ctaHref="/stoffe"
-      />
+      {materials.imageSrc && (
+        <ContentSection
+          label={materials.label}
+          heading={materials.heading}
+          headingAccent={materials.headingAccent}
+          imageSrc={materials.imageSrc}
+          imageAlt={materials.imageAlt}
+          imagePosition={materials.imagePosition}
+          className="section-bg-white"
+          paragraphs={materials.paragraphs}
+          ctaLabel={materials.ctaLabel}
+          ctaHref={materials.ctaHref}
+        />
+      )}
 
       <PeriwinkleCtaSection />
     </>

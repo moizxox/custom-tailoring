@@ -1,36 +1,40 @@
 import { PageHero } from "@/components/layout/PageHero";
-import { DATENSCHUTZ_SECTIONS } from "@/content/legal";
+import { CmsDocumentSections } from "@/components/sections/CmsDocumentSections";
+import { getCmsContent } from "@/lib/cms/content";
+import { getCmsDocumentSections } from "@/lib/cms/section-helpers";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Datenschutz" };
 
-export default function DatenschutzPage() {
+export default async function DatenschutzPage() {
+  const [heroContent, doc] = await Promise.all([
+    getCmsContent("datenschutz", "hero", {}),
+    getCmsDocumentSections("datenschutz", "sections"),
+  ]);
+  const hero = mapPageHeroContent(heroContent, {
+    label: "",
+    title: "Datenschutzerklärung",
+    titleAccent: "",
+    subtitle: "",
+    headingTag: "h1",
+  });
+
   return (
     <>
-      <PageHero
-        title="Datenschutzerklärung"
-        breadcrumbs={[{ label: "Datenschutz", href: "/datenschutz" }]}
-      />
+      <PageHero title={hero.title} headingTag={hero.headingTag} breadcrumbs={[{ label: "Datenschutz", href: "/datenschutz" }]} />
       <section className="py-20 section-bg-white">
         <div className="container-site max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl border border-stone-light p-8 flex flex-col gap-8 font-sans text-sm text-charcoal-light leading-relaxed">
-            <p className="text-[12px] text-charcoal-lighter">
-              Quelle: bestehende Datenschutzerklärung von{" "}
-              <a href="https://www.kostuemschneiderei.ch/datenschutz" className="text-periwinkle-dark hover:underline" target="_blank" rel="noopener noreferrer">
-                kostuemschneiderei.ch
-              </a>{" "}
-              — strukturiert für die neue Website. Vollständige Fassung kann im CMS ergänzt werden.
-            </p>
-            {DATENSCHUTZ_SECTIONS.map((section) => (
-              <div key={section.title}>
-                <h2 className="font-serif text-xl text-charcoal mb-3">{section.title}</h2>
-                <div className="flex flex-col gap-2">
-                  {section.paragraphs.map((p) => (
-                    <p key={p.slice(0, 48)}>{p}</p>
-                  ))}
-                </div>
-              </div>
-            ))}
+            {doc.intro && (
+              <p className="text-[12px] text-charcoal-lighter">
+                {doc.intro}{" "}
+                <a href="https://www.kostuemschneiderei.ch/datenschutz" className="text-periwinkle-dark hover:underline" target="_blank" rel="noopener noreferrer">
+                  kostuemschneiderei.ch
+                </a>
+              </p>
+            )}
+            <CmsDocumentSections sections={doc.sections} />
           </div>
         </div>
       </section>

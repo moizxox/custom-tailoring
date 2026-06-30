@@ -5,14 +5,17 @@ import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import { buildBookingDates, type BookingConfig } from "@/lib/cms/helpers";
-import { ATELIER_LOCATIONS, SITE_CONTACT, type LocationId } from "@/lib/site-content";
+import type { CmsTimetable } from "@/lib/cms/timetables";
+import { SITE_CONTACT, type AtelierLocation, type LocationId } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
 
 interface TerminBookingProps {
   config: BookingConfig;
+  locations: AtelierLocation[];
+  timetables?: CmsTimetable[];
 }
 
-export function TerminBooking({ config }: TerminBookingProps) {
+export function TerminBooking({ config, locations, timetables }: TerminBookingProps) {
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get("standort") as LocationId) || "pratteln";
   const initialTyp = searchParams.get("typ");
@@ -22,7 +25,7 @@ export function TerminBooking({ config }: TerminBookingProps) {
 
   const [step, setStep] = useState(preselected ? 2 : 1);
   const [selectedLocation, setSelectedLocation] = useState<LocationId>(
-    ATELIER_LOCATIONS.some((l) => l.id === initialLocation) ? initialLocation : "pratteln"
+    locations.some((l) => l.id === initialLocation) ? initialLocation : (locations[0]?.id ?? "pratteln"),
   );
   const [selectedService, setSelectedService] = useState(preselected?.label ?? "");
   const [selectedDate, setSelectedDate] = useState("");
@@ -30,7 +33,7 @@ export function TerminBooking({ config }: TerminBookingProps) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
   const [submitted, setSubmitted] = useState(false);
 
-  const locationLabel = ATELIER_LOCATIONS.find((l) => l.id === selectedLocation)?.name ?? "";
+  const locationLabel = locations.find((l) => l.id === selectedLocation)?.name ?? "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +58,7 @@ export function TerminBooking({ config }: TerminBookingProps) {
               </a>
             </div>
           </div>
-          <AtelierTimetable />
+          <AtelierTimetable timetables={timetables} locations={locations} />
         </div>
       </section>
 
@@ -136,7 +139,7 @@ export function TerminBooking({ config }: TerminBookingProps) {
                     <h2 className="font-serif text-2xl text-charcoal mb-2">Wo möchten Sie uns besuchen?</h2>
                     <p className="font-sans text-sm text-charcoal-lighter mb-6">Bitte wählen Sie Ihr Atelier.</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {ATELIER_LOCATIONS.map((loc) => (
+                      {locations.map((loc) => (
                         <button
                           key={loc.id}
                           type="button"

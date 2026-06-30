@@ -25,8 +25,45 @@ export interface CmsFieldOption {
 export interface CmsItemField {
   key: string;
   label: string;
-  type: "text" | "textarea" | "url" | "icon_slug" | "image";
+  type: "text" | "textarea" | "url" | "icon_slug" | "image" | "select";
+  hint?: string;
+  options?: CmsFieldOption[];
 }
+
+const LEGAL_SECTION_ITEM_FIELDS: CmsItemField[] = [
+  { key: "title", label: "Section title", type: "text" },
+  {
+    key: "headingTag",
+    label: "Heading tag",
+    type: "select",
+    options: [
+      { value: "h2", label: "H2" },
+      { value: "h3", label: "H3" },
+      { value: "h4", label: "H4" },
+    ],
+  },
+  { key: "body", label: "Content", type: "textarea", hint: "Separate paragraphs with a blank line" },
+];
+
+const CONTENT_BLOCK_FIELDS: CmsField[] = [
+  { key: "label", label: "Section label", type: "text" },
+  { key: "heading", label: "Heading", type: "text" },
+  { key: "headingAccent", label: "Accent word(s)", type: "text" },
+  { key: "paragraphs", label: "Body text", type: "textarea", hint: "Separate paragraphs with a blank line" },
+  { key: "imageSrc", label: "Image", type: "image" },
+  { key: "imageAlt", label: "Image alt text", type: "text" },
+  {
+    key: "imagePosition",
+    label: "Image position",
+    type: "select",
+    options: [
+      { value: "left", label: "Left" },
+      { value: "right", label: "Right" },
+    ],
+  },
+  { key: "ctaLabel", label: "CTA label", type: "text" },
+  { key: "ctaUrl", label: "CTA link", type: "url" },
+];
 
 export interface CmsField {
   key: string;
@@ -276,9 +313,54 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "team",
         label: "Team",
-        description: "Team members (JSON array)",
+        description: "Team members shown on the page",
         fields: [
-          { key: "members", label: "Team members", type: "array", hint: "Each member: name, role, bio" },
+          {
+            key: "items",
+            label: "Team members",
+            type: "items",
+            itemFields: [
+              { key: "name", label: "Name", type: "text" },
+              { key: "role", label: "Role", type: "text" },
+              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "bio", label: "Bio", type: "textarea" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "story",
+        label: "Story section",
+        fields: [
+          { key: "label", label: "Section label", type: "text" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "headingAccent", label: "Accent word(s)", type: "text" },
+          { key: "paragraphs", label: "Body text", type: "textarea", hint: "Separate paragraphs with a blank line" },
+          { key: "ctaLabel", label: "CTA label", type: "text" },
+          { key: "ctaUrl", label: "CTA link", type: "url" },
+        ],
+      },
+      {
+        key: "work",
+        label: "Work section",
+        fields: CONTENT_BLOCK_FIELDS,
+      },
+      {
+        key: "values",
+        label: "Values",
+        fields: [
+          { key: "sectionLabel", label: "Section label", type: "text" },
+          { key: "heading", label: "Heading", type: "text" },
+          {
+            key: "items",
+            label: "Value cards",
+            type: "items",
+            itemFields: [
+              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "text", label: "Description", type: "textarea" },
+            ],
+          },
         ],
       },
     ],
@@ -392,9 +474,18 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
       {
         key: "gallery",
         label: "Gallery images",
-        description: "Gallery images and categories",
+        description: "Gallery grid images and categories",
         fields: [
-          { key: "items", label: "Gallery entries", type: "array" },
+          {
+            key: "items",
+            label: "Gallery entries",
+            type: "items",
+            itemFields: [
+              { key: "src", label: "Image", type: "image" },
+              { key: "category", label: "Category", type: "text" },
+              { key: "title", label: "Title", type: "text" },
+            ],
+          },
         ],
       },
     ],
@@ -405,11 +496,33 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     icon: "🏛️",
     path: "/atelier",
     sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
       {
-        key: "hero",
-        label: "Hero section",
-        fields: pageHeroFields(),
+        key: "intro",
+        label: "Intro section",
+        fields: [
+          { key: "label", label: "Section label", type: "text" },
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "headingAccent", label: "Accent word(s)", type: "text" },
+          { key: "paragraphs", label: "Body text", type: "textarea" },
+          { key: "addressLine", label: "Address line", type: "text" },
+          { key: "hoursWeekday", label: "Weekday hours", type: "text" },
+          { key: "hoursSaturday", label: "Saturday hours", type: "text" },
+          { key: "ctaLabel", label: "CTA label", type: "text" },
+          { key: "ctaUrl", label: "CTA link", type: "url" },
+          {
+            key: "slides",
+            label: "Photo slider",
+            type: "items",
+            itemFields: [
+              { key: "src", label: "Image", type: "image" },
+              { key: "alt", label: "Alt text", type: "text" },
+            ],
+          },
+        ],
       },
+      { key: "workshop", label: "Workshop section", fields: CONTENT_BLOCK_FIELDS },
+      { key: "materials", label: "Materials section", fields: CONTENT_BLOCK_FIELDS },
     ],
   },
   {
@@ -422,6 +535,43 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
         key: "hero",
         label: "Hero section",
         fields: pageHeroFields(),
+      },
+      {
+        key: "timetables",
+        label: "Walk-in timetables",
+        description: "Fixed measurement times per location (Hochsaison)",
+        fields: [
+          { key: "heading", label: "Section heading", type: "text" },
+          { key: "subtext", label: "Section subtext", type: "textarea" },
+          {
+            key: "items",
+            label: "Location timetables",
+            type: "items",
+            itemFields: [
+              {
+                key: "locationId",
+                label: "Location",
+                type: "select",
+                options: [
+                  { value: "pratteln", label: "Pratteln" },
+                  { value: "therwil", label: "Therwil" },
+                ],
+              },
+              { key: "label", label: "Card title", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+              {
+                key: "active",
+                label: "Active",
+                type: "select",
+                options: [
+                  { value: "true", label: "Yes" },
+                  { value: "false", label: "No" },
+                ],
+              },
+              { key: "slots", label: "Time slots", type: "textarea", hint: "One per line: Montag: 14:00–18:00 (optional note)" },
+            ],
+          },
+        ],
       },
       {
         key: "booking",
@@ -498,10 +648,35 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     icon: "🧵",
     path: "/stoffe",
     sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
       {
-        key: "hero",
-        label: "Hero section",
-        fields: pageHeroFields(),
+        key: "fabrics",
+        label: "Fabric cards",
+        fields: [
+          {
+            key: "items",
+            label: "Fabric types",
+            type: "items",
+            itemFields: [
+              { key: "name", label: "Name", type: "text" },
+              { key: "desc", label: "Description", type: "textarea" },
+              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "gradient", label: "Gradient classes", type: "text", hint: "e.g. from-periwinkle-lighter to-sand-light" },
+            ],
+          },
+          { key: "ctaText", label: "CTA intro text", type: "text" },
+          { key: "ctaLabel", label: "CTA button label", type: "text" },
+          { key: "ctaUrl", label: "CTA link", type: "url" },
+        ],
+      },
+      { key: "advisory", label: "Advisory section", fields: CONTENT_BLOCK_FIELDS },
+      {
+        key: "bottomCta",
+        label: "Bottom CTA",
+        fields: [
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "text", label: "Text", type: "textarea" },
+        ],
       },
     ],
   },
@@ -511,10 +686,22 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     icon: "✨",
     path: "/kostuemveredelung",
     sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      { key: "main", label: "Main section", fields: CONTENT_BLOCK_FIELDS },
       {
-        key: "hero",
-        label: "Hero section",
-        fields: pageHeroFields(),
+        key: "services",
+        label: "Services list",
+        fields: [
+          { key: "heading", label: "Section heading", type: "text" },
+          {
+            key: "items",
+            label: "Service items",
+            type: "items",
+            itemFields: [{ key: "label", label: "Label", type: "text" }],
+          },
+          { key: "ctaLabel", label: "CTA label", type: "text" },
+          { key: "ctaUrl", label: "CTA link", type: "url" },
+        ],
       },
     ],
   },
@@ -524,10 +711,97 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     icon: "🛍️",
     path: "/shop",
     sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
       {
-        key: "hero",
-        label: "Hero section",
-        fields: pageHeroFields(),
+        key: "tiers",
+        label: "Quality tiers",
+        fields: [
+          { key: "heading", label: "Section heading", type: "text" },
+          { key: "subtext", label: "Section subtext", type: "textarea" },
+          {
+            key: "items",
+            label: "Tier cards",
+            type: "items",
+            itemFields: [
+              { key: "name", label: "Name", type: "text" },
+              { key: "badge", label: "Badge label", type: "text" },
+              { key: "tagline", label: "Tagline", type: "text" },
+              { key: "features", label: "Features", type: "textarea", hint: "One feature per line" },
+              { key: "recommendation", label: "Recommendation", type: "textarea" },
+            ],
+          },
+        ],
+      },
+      {
+        key: "categories",
+        label: "Shop categories",
+        fields: [
+          { key: "heading", label: "Section heading", type: "text" },
+          {
+            key: "items",
+            label: "Categories",
+            type: "items",
+            itemFields: [
+              { key: "name", label: "Name", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+              { key: "slug", label: "Anchor slug", type: "text" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "journal",
+    label: "Journal",
+    icon: "📰",
+    path: "/journal",
+    sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      {
+        key: "posts",
+        label: "Journal posts",
+        fields: [
+          {
+            key: "items",
+            label: "Posts",
+            type: "items",
+            itemFields: [
+              { key: "slug", label: "URL slug", type: "text" },
+              { key: "category", label: "Category", type: "text" },
+              { key: "date", label: "Date label", type: "text" },
+              { key: "title", label: "Title", type: "text" },
+              { key: "excerpt", label: "Excerpt", type: "textarea" },
+              { key: "image", label: "Cover image", type: "image" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "faqs",
+    label: "FAQs",
+    icon: "❓",
+    path: "/faqs",
+    sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      {
+        key: "items",
+        label: "FAQ list",
+        fields: [
+          {
+            key: "items",
+            label: "Questions",
+            type: "items",
+            itemFields: [
+              { key: "q", label: "Question", type: "text" },
+              { key: "a", label: "Answer", type: "textarea" },
+            ],
+          },
+          { key: "ctaText", label: "CTA text", type: "text" },
+          { key: "ctaButton", label: "CTA button label", type: "text" },
+        ],
       },
     ],
   },
@@ -537,15 +811,124 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     icon: "📄",
     path: "/impressum",
     sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
       {
         key: "company",
         label: "Company details",
         fields: [
           { key: "name", label: "Company name", type: "text" },
           { key: "owner", label: "Owner", type: "text" },
-          { key: "uid", label: "UID", type: "text" },
+          { key: "address", label: "Street address", type: "text" },
+          { key: "city", label: "City / ZIP", type: "text" },
+          { key: "country", label: "Country", type: "text" },
+          { key: "secondLocation", label: "Second location", type: "text" },
           { key: "phone", label: "Phone", type: "text" },
+          { key: "phoneHref", label: "Phone link", type: "url" },
           { key: "email", label: "Email", type: "text" },
+          { key: "companyId", label: "Company ID", type: "text" },
+          { key: "vatId", label: "VAT ID", type: "text" },
+          { key: "purpose", label: "Company purpose", type: "text" },
+        ],
+      },
+      {
+        key: "sections",
+        label: "Additional sections",
+        description: "Haftung, Urheberrecht, or any extra legal blocks",
+        fields: [
+          {
+            key: "items",
+            label: "Sections",
+            type: "items",
+            itemFields: LEGAL_SECTION_ITEM_FIELDS,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "datenschutz",
+    label: "Privacy policy",
+    icon: "🔒",
+    path: "/datenschutz",
+    sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      {
+        key: "sections",
+        label: "Policy sections",
+        fields: [
+          { key: "intro", label: "Intro note", type: "textarea" },
+          {
+            key: "items",
+            label: "Sections",
+            type: "items",
+            itemFields: LEGAL_SECTION_ITEM_FIELDS,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "agb",
+    label: "Terms & conditions",
+    icon: "📋",
+    path: "/agb",
+    sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      {
+        key: "sections",
+        label: "AGB sections",
+        fields: [
+          { key: "intro", label: "Intro note", type: "textarea" },
+          {
+            key: "items",
+            label: "Sections",
+            type: "items",
+            itemFields: LEGAL_SECTION_ITEM_FIELDS,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "widerruf",
+    label: "Right of withdrawal",
+    icon: "↩️",
+    path: "/widerruf",
+    sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      {
+        key: "sections",
+        label: "Withdrawal sections",
+        fields: [
+          { key: "intro", label: "Intro note", type: "textarea" },
+          {
+            key: "items",
+            label: "Sections",
+            type: "items",
+            itemFields: LEGAL_SECTION_ITEM_FIELDS,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "shop-bedingungen",
+    label: "Shop terms",
+    icon: "🛒",
+    path: "/shop-bedingungen",
+    sections: [
+      { key: "hero", label: "Hero section", fields: pageHeroFields() },
+      {
+        key: "sections",
+        label: "Shop terms sections",
+        fields: [
+          { key: "intro", label: "Intro note", type: "textarea" },
+          {
+            key: "items",
+            label: "Sections",
+            type: "items",
+            itemFields: LEGAL_SECTION_ITEM_FIELDS,
+          },
         ],
       },
     ],

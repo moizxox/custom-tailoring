@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { DEFAULT_LEGAL_LINKS } from "@/lib/cms/extra-defaults";
 import { NAV_LINKS } from "@/lib/site-content";
 
 export interface NavItem {
@@ -38,6 +39,7 @@ export interface FooterContent {
   locations: FooterLocation[];
   /* Link columns */
   columns: { heading: string; links: { label: string; href: string }[] }[];
+  legalLinks: { label: string; href: string }[];
   /* Bottom */
   copyrightText: string;
 }
@@ -91,6 +93,7 @@ export const DEFAULT_FOOTER: FooterContent = {
       ],
     },
   ],
+  legalLinks: DEFAULT_LEGAL_LINKS,
   copyrightText: "Kostümschneiderei. Alle Rechte vorbehalten.",
 };
 

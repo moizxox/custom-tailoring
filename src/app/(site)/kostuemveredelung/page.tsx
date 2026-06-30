@@ -1,7 +1,9 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
+import { mapContentBlock } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -11,17 +13,26 @@ export const metadata: Metadata = {
   description: "Stickerei, Stoffdruck und textile Veredelung für Ihre Fasnachtskostüme.",
 };
 
-const DEFAULT_HERO = {
-  label: "Veredelung",
-  title: "Kostümveredelung",
-  titleAccent: "Veredelung",
-  subtitle: "Stickerei, Stoffdruck und individuelle Details — damit Ihr Kostüm einzigartig wird.",
-  headingTag: "h1" as const,
-};
-
 export default async function KostuemveredelungPage() {
-  const heroContent = await getCmsContent("kostuemveredelung", "hero", {});
-  const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
+  const [heroContent, mainContent, servicesContent] = await Promise.all([
+    getCmsContent("kostuemveredelung", "hero", {}),
+    getCmsContent("kostuemveredelung", "main", {}),
+    getCmsContent("kostuemveredelung", "services", {}),
+  ]);
+  const hero = mapPageHeroContent(heroContent, {
+    label: "Veredelung",
+    title: "Kostümveredelung",
+    titleAccent: "Veredelung",
+    subtitle: "Stickerei, Stoffdruck und individuelle Details — damit Ihr Kostüm einzigartig wird.",
+    headingTag: "h1",
+  });
+  const main = mapContentBlock({ ...getDefaultSectionContent("kostuemveredelung", "main"), ...mainContent });
+  const servicesData = { ...getDefaultSectionContent("kostuemveredelung", "services"), ...servicesContent } as {
+    heading?: string;
+    items?: { label: string }[];
+    ctaLabel?: string;
+    ctaUrl?: string;
+  };
 
   return (
     <>
@@ -34,44 +45,36 @@ export default async function KostuemveredelungPage() {
         breadcrumbs={[{ label: "Kostümveredelung", href: "/kostuemveredelung" }]}
       />
 
-      <ContentSection
-        label="Textilveredelung"
-        heading="Stickerei & Stoffdruck"
-        headingAccent="Stickerei"
-        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/schloesslischraenzer-major.jpg"
-        imageAlt="Veredeltes Kostüm"
-        imagePosition="right"
-        paragraphs={[
-          "Auf Wunsch veredeln wir Ihre Kostüme mit Stickerei, Applikationen oder Stoffdruck. Logos, Cliquen-Symbole, Namen oder dekorative Elemente werden präzise und langlebig umgesetzt.",
-          "Gemeinsam klären wir Motiv, Grösse, Farbe und Platzierung — abgestimmt auf Stoff, Tragekomfort und Ihr Budget.",
-        ]}
-        ctaLabel="Termin buchen"
-        ctaHref="/termin"
-      />
+      {main.imageSrc && (
+        <ContentSection
+          label={main.label}
+          heading={main.heading}
+          headingAccent={main.headingAccent}
+          imageSrc={main.imageSrc}
+          imageAlt={main.imageAlt}
+          imagePosition={main.imagePosition}
+          paragraphs={main.paragraphs}
+          ctaLabel={main.ctaLabel}
+          ctaHref={main.ctaHref}
+        />
+      )}
 
       <section className="py-20 section-bg-lavender">
         <div className="container-site max-w-3xl">
-          <h2 className="font-serif text-3xl text-charcoal mb-6 text-center">Unsere Veredelungsleistungen</h2>
+          <h2 className="font-serif text-3xl text-charcoal mb-6 text-center">{servicesData.heading}</h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              "Stickerei (Maschine & Hand)",
-              "Stoffdruck & Transfer",
-              "Applikationen & Patches",
-              "Cliquen-Logos & Schriftzüge",
-              "Namensstickerei",
-              "Dekorative Borten & Details",
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-3 bg-white/70 rounded-xl border border-white px-5 py-4 font-sans text-sm text-charcoal-light">
+            {(servicesData.items ?? []).map((item) => (
+              <li key={item.label} className="flex items-center gap-3 bg-white/70 rounded-xl border border-white px-5 py-4 font-sans text-sm text-charcoal-light">
                 <span className="w-2 h-2 rounded-full bg-periwinkle shrink-0" />
-                {item}
+                {item.label}
               </li>
             ))}
           </ul>
-          <p className="text-center mt-8">
-            <Link href="/kontakt" className="btn-primary inline-flex">
-              Anfrage senden
-            </Link>
-          </p>
+          {servicesData.ctaLabel && servicesData.ctaUrl && (
+            <p className="text-center mt-8">
+              <Link href={servicesData.ctaUrl} className="btn-primary inline-flex">{servicesData.ctaLabel}</Link>
+            </p>
+          )}
         </div>
       </section>
 

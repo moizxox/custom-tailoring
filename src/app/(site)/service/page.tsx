@@ -4,8 +4,9 @@ import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
-import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
+import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { SERVICE_SECTION_DEFAULTS } from "@/lib/cms/default-content";
+import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
 import type { Metadata } from "next";
 
 interface ServiceItem { title: string; description: string; }
@@ -26,11 +27,12 @@ const DEFAULT_HERO = {
 };
 
 export default async function ServicePage() {
-  const [heroContent, offeringsContent, processContent, faqsContent] = await Promise.all([
+  const [heroContent, offeringsContent, processContent, faqsContent, timetables] = await Promise.all([
     getCmsContent("service", "hero", {}),
     getCmsContent("service", "offerings", {}),
     getCmsContent("service", "orderProcess", {}),
     getCmsContent("service", "faqs", {}),
+    getMeasurementTimetables(),
   ]);
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
 
@@ -113,7 +115,7 @@ export default async function ServicePage() {
               Die aktuellen Zeitfenster für das Massnehmen veröffentlichen wir auf unserer Webseite — pro Standort Pratteln und Therwil.
             </p>
           </div>
-          <AtelierTimetable />
+          <AtelierTimetable timetables={timetables} />
         </div>
       </section>
 

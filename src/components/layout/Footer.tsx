@@ -3,9 +3,7 @@ import Image from "next/image";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
 import { CookieSettingsButton } from "@/components/layout/CookieSettingsButton";
-import { LEGAL_LINKS } from "@/lib/site-content";
-import { DEFAULT_FOOTER } from "@/lib/cms/navigation";
-import type { FooterContent } from "@/lib/cms/navigation";
+import { DEFAULT_FOOTER, type FooterContent } from "@/lib/cms/navigation";
 
 interface FooterProps {
   footerContent?: FooterContent;
@@ -137,7 +135,7 @@ export function Footer({ footerContent }: FooterProps) {
         <div className="glass-footer-subtle px-6 py-4">
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2 text-[11px] text-charcoal/50">
-              {LEGAL_LINKS.map((link) => (
+              {(d.legalLinks ?? DEFAULT_FOOTER.legalLinks).map((link) => (
                 <Link key={link.href} href={link.href} className="hover:text-charcoal transition-colors">
                   {link.label}
                 </Link>

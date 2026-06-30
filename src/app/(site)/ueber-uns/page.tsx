@@ -1,56 +1,57 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { AboutBand } from "@/components/sections/AboutBand";
 import { ContentSection } from "@/components/sections/ContentSection";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getCmsContent } from "@/lib/cms/content";
-import { mapPageHeroContent } from "@/lib/cms/helpers";
 
 export const metadata: Metadata = {
   title: "Über uns",
   description: "Lernen Sie das Team der Kostümschneiderei Basel kennen.",
 };
 
-const DEFAULT_TEAM = [
-  {
-    name: "Lani Müller",
-    role: "Inhaberin & Schneiderin",
-    icon: "tailor-dummy-fashion-sewing-tailoring.svg",
-    bio: "Seit über 20 Jahren lebe ich meine Leidenschaft für das Kostümhandwerk. Jedes Projekt ist für mich ein neues Abenteuer.",
-  },
-  {
-    name: "Sarah Keller",
-    role: "Designerin & Beraterin",
-    icon: "pencil-sewing-tailoring-drawing.svg",
-    bio: "Kreativität und Präzision vereinen sich in meiner Arbeit. Ich begleite Sie von der ersten Skizze bis zum fertigen Kostüm.",
-  },
-  {
-    name: "Marco Brun",
-    role: "Zuschneider",
-    icon: "scissor-cut-fabric-sewing.svg",
-    bio: "Ein perfekter Schnitt ist die Grundlage jedes guten Kostüms. Diese Überzeugung treibt mich täglich an.",
-  },
-];
+interface TeamMember {
+  name: string;
+  role: string;
+  icon_slug: string;
+  bio: string;
+}
 
-const VALUES = [
-  { icon: "tailor-dummy-ruler-sewing-tailoring.svg", title: "Qualität", text: "Wir verwenden nur hochwertige Materialien und verarbeiten sie mit grösster Sorgfalt." },
-  { icon: "embroidery-sewing-needlework-handcraft.svg", title: "Handwerk", text: "Jedes Kostüm wird von Hand gefertigt – mit traditionellen Techniken und modernem Know-how." },
-  { icon: "button-sewing-tailoring-handcraft.svg", title: "Persönlichkeit", text: "Wir nehmen uns Zeit für Sie. Ihre Wünsche stehen bei uns an erster Stelle." },
-];
+interface ValueItem {
+  icon_slug: string;
+  title: string;
+  text: string;
+}
 
 export default async function UeberUnsPage() {
-  const heroContent = await getCmsContent("ueber-uns", "hero", {});
+  const [heroContent, storyContent, workContent, valuesContent, teamContent] = await Promise.all([
+    getCmsContent("ueber-uns", "hero", {}),
+    getCmsContent("ueber-uns", "story", {}),
+    getCmsContent("ueber-uns", "work", {}),
+    getCmsContent("ueber-uns", "values", {}),
+    getCmsContent("ueber-uns", "team", {}),
+  ]);
   const hero = mapPageHeroContent(heroContent, {
     label: "Wer wir sind",
     title: "Leidenschaft für das Handwerk",
     titleAccent: "Handwerk",
-    subtitle:
-      "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe.",
+    subtitle: "Seit über 20 Jahren schaffen wir in Basel Kostüme, die begeistern – für Fasnacht, Bühne und besondere Anlässe.",
     headingTag: "h1",
   });
-  const teamContent = await getCmsContent<{ members?: typeof DEFAULT_TEAM }>("ueber-uns", "team", {});
-  const TEAM = teamContent.members ?? DEFAULT_TEAM;
+  const story = { ...getDefaultSectionContent("ueber-uns", "story"), ...storyContent } as Record<string, string>;
+  const work = mapContentBlock({ ...getDefaultSectionContent("ueber-uns", "work"), ...workContent });
+  const valuesData = { ...getDefaultSectionContent("ueber-uns", "values"), ...valuesContent } as {
+    sectionLabel?: string;
+    heading?: string;
+    items?: ValueItem[];
+  };
+  const teamData = { ...getDefaultSectionContent("ueber-uns", "team"), ...teamContent } as { items?: TeamMember[] };
+  const TEAM = teamData.items ?? [];
 
   return (
     <>
@@ -63,24 +64,23 @@ export default async function UeberUnsPage() {
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
       />
 
-      {/* Story section */}
       <section className="py-20 section-bg-white">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
-            <p className="section-label mb-4">Unsere Geschichte</p>
+            {story.label && <p className="section-label mb-4">{story.label}</p>}
             <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
-              Tradition in jedem Stich.<br />
-              <span className="text-periwinkle-dark">Moderne in jeder Linie.</span>
+              <AccentHeadingText heading={story.heading ?? ""} accent={story.headingAccent} />
             </h2>
             <div className="flex flex-col gap-4 font-sans text-sm text-charcoal-light leading-relaxed">
-              <p>Was 2003 als kleines Atelier in Basel begann, ist heute ein geschätzter Treffpunkt für alle, die Wert auf massgeschneiderte Kostüme legen. Unsere Werkstatt liegt mitten in Basel und ist mehr als ein Arbeitsplatz – sie ist unser kreatives Zuhause.</p>
-              <p>Ob für die Basler Fasnacht, einen Theaterauftritt oder eine private Feier – wir begleiten Sie von der ersten Idee bis zur finalen Anprobe. Persönlich, zuverlässig und mit einem Blick fürs Detail, der uns auszeichnet.</p>
-              <p>Unsere Kundschaft reicht von Einzelpersonen über Cliquen bis hin zu grossen Guggenmusiken. Jedes Projekt ist einzigartig – und wird von uns so behandelt.</p>
+              {splitParagraphs(story.paragraphs ?? "").map((p) => (
+                <p key={p.slice(0, 48)}>{p}</p>
+              ))}
             </div>
-            <Link href="/termin" className="btn-primary mt-7 inline-flex">Uns kennenlernen →</Link>
+            {story.ctaLabel && story.ctaUrl && (
+              <Link href={story.ctaUrl} className="btn-primary mt-7 inline-flex">{story.ctaLabel}</Link>
+            )}
           </div>
 
-          {/* Visual card */}
           <div className="rounded-2xl bg-gradient-to-br from-periwinkle-lighter via-sand-light to-offwhite-warm border border-periwinkle-light/40 p-10 flex flex-col items-center text-center gap-5">
             <Image src="/icons/sewing/sewing-machine-sewing-tailoring-cloth.svg" alt="" width={64} height={64} className="icon-periwinkle" />
             <div>
@@ -99,34 +99,32 @@ export default async function UeberUnsPage() {
         </div>
       </section>
 
-      <ContentSection
-        label="Unsere Arbeit"
-        heading="Kostüme für Fasnacht, Bühne und besondere Momente"
-        headingAccent="Fasnacht"
-        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/gallery/gwuerztraminer-2026.jpg"
-        imageAlt="Gwürztraminer Waageclique – Gruppenausstattung"
-        imagePosition="right"
-        className="section-bg-white"
-        paragraphs={[
-          "Ob Einzelperson, Clique oder ganze Guggenmusik – wir kennen die Anforderungen der Basler Fasnacht. Haltbare Stoffe, einheitliche Gruppenoptik und Kostüme, die den ganzen Umzug überstehen.",
-          "Neben der Fasnacht fertigen wir auch Bühnenkostüme und individuelle Aufträge. Jedes Projekt beginnt mit einem Gespräch – denn nur wer versteht, was Sie brauchen, kann das richtige Kostüm schaffen.",
-        ]}
-        ctaLabel="Zur Galerie"
-        ctaHref="/galerie"
-      />
+      {work.imageSrc && (
+        <ContentSection
+          label={work.label}
+          heading={work.heading}
+          headingAccent={work.headingAccent}
+          imageSrc={work.imageSrc}
+          imageAlt={work.imageAlt}
+          imagePosition={work.imagePosition}
+          className="section-bg-white"
+          paragraphs={work.paragraphs}
+          ctaLabel={work.ctaLabel}
+          ctaHref={work.ctaHref}
+        />
+      )}
 
-      {/* Values */}
       <section className="py-16 section-bg-white">
         <div className="container-site">
           <div className="text-center mb-12">
-            <p className="section-label mb-3">Was uns antreibt</p>
-            <h2 className="section-heading">Unsere Werte</h2>
+            {valuesData.sectionLabel && <p className="section-label mb-3">{valuesData.sectionLabel}</p>}
+            <h2 className="section-heading">{valuesData.heading}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {VALUES.map((v) => (
+            {(valuesData.items ?? []).map((v) => (
               <div key={v.title} className="bg-white rounded-2xl border border-stone-light p-7 text-center flex flex-col items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-periwinkle-lighter flex items-center justify-center">
-                  <Image src={`/icons/sewing/${v.icon}`} alt="" width={28} height={28} className="icon-periwinkle" />
+                  <Image src={`/icons/sewing/${v.icon_slug}`} alt="" width={28} height={28} className="icon-periwinkle" />
                 </div>
                 <h3 className="font-serif text-xl text-charcoal">{v.title}</h3>
                 <p className="font-sans text-sm text-charcoal-lighter leading-relaxed">{v.text}</p>
@@ -136,7 +134,6 @@ export default async function UeberUnsPage() {
         </div>
       </section>
 
-      {/* Team */}
       <section id="team" className="py-16 section-bg-white scroll-mt-28">
         <div className="container-site">
           <div className="text-center mb-12">
@@ -147,7 +144,7 @@ export default async function UeberUnsPage() {
             {TEAM.map((m) => (
               <div key={m.name} className="bg-white rounded-2xl border border-stone-light p-7 flex flex-col items-center text-center gap-4">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-periwinkle-lighter to-sand-light flex items-center justify-center">
-                  <Image src={`/icons/sewing/${m.icon}`} alt="" width={36} height={36} className="icon-periwinkle" />
+                  <Image src={`/icons/sewing/${m.icon_slug}`} alt="" width={36} height={36} className="icon-periwinkle" />
                 </div>
                 <div>
                   <h3 className="font-serif text-lg text-charcoal">{m.name}</h3>

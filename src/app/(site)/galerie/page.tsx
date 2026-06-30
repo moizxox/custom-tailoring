@@ -1,4 +1,5 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import Image from "next/image";
@@ -11,28 +12,27 @@ export const metadata: Metadata = {
 
 const CATEGORIES = ["Alle", "Guggenmusik", "Clique", "Major", "Sujet"];
 
-const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
-const GALLERY_ITEMS = [
-  { src: `${CDN}/gallery/gwuerztraminer-2026.jpg`, category: "Guggenmusik", title: "Gwürztraminer Waageclique 2026" },
-  { src: `${CDN}/gallery/schloesslischraenzer-major.jpg`, category: "Major", title: "Schlösslischränzer Major" },
-  { src: `${CDN}/gallery/waageclique-edelwaggis.jpg`, category: "Clique", title: "Edelwaggis Waageclique" },
-  { src: `${CDN}/gallery/waggis-clique.jpg`, category: "Guggenmusik", title: "Waggis Clique" },
-  { src: `${CDN}/gallery/schloesslischraenzer-aesch.jpg`, category: "Clique", title: "Schlösslischränzer Aesch" },
-  { src: `${CDN}/gallery/rumpfel-pfyffer.jpg`, category: "Clique", title: "Rumpfel Pfyffer Pratteln" },
-  { src: `${CDN}/gallery/baenkli-clique.jpg`, category: "Clique", title: "Bänkli Clique Oberrohrdorf" },
-  { src: `${CDN}/gallery/wiler-zipfel.jpg`, category: "Clique", title: "Wiler Zipfel Clique" },
-  { src: `${CDN}/gallery/chaote-sujet.jpg`, category: "Sujet", title: "Chaote Sujetkostüme" },
-  { src: `${CDN}/gallery/hudibras-solothurn.jpg`, category: "Sujet", title: "Hudibras Chutze Solothurn" },
-];
+interface GalleryItem {
+  src: string;
+  category: string;
+  title: string;
+}
 
 export default async function GaleriePage() {
-  const hero = mapPageHeroContent(await getCmsContent("galerie", "hero", {}), {
+  const [heroContent, galleryContent] = await Promise.all([
+    getCmsContent("galerie", "hero", {}),
+    getCmsContent("galerie", "gallery", {}),
+  ]);
+  const hero = mapPageHeroContent(heroContent, {
     label: "Unsere Arbeiten",
     title: "Galerie",
     titleAccent: "Galerie",
     subtitle: "Einblicke in unsere Handwerkskunst – Fasnachtskostüme für Cliquen, Guggenmusiken und Einzelpersonen.",
     headingTag: "h1",
   });
+  const defaults = getDefaultSectionContent("galerie", "gallery");
+  const galleryData = { ...defaults, ...galleryContent } as { items: GalleryItem[] };
+  const items = galleryData.items ?? [];
 
   return (
     <>
@@ -63,7 +63,7 @@ export default async function GaleriePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {GALLERY_ITEMS.map((item) => (
+            {items.map((item) => (
               <article
                 key={item.src}
                 className="group relative overflow-hidden rounded-2xl border border-stone-light bg-white hover:border-periwinkle-light hover:shadow-card-hover transition-all duration-300"

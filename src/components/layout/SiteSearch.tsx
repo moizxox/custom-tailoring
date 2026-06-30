@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,9 +25,17 @@ export function SiteSearch({ className, variant = "bar", onNavigate }: SiteSearc
 
   const runSearch = useCallback((value: string) => {
     setQuery(value);
-    const next = searchSite(value);
-    setResults(next);
-    setOpen(value.trim().length >= 2);
+    const trimmed = value.trim();
+    if (trimmed.length < 2) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
+    setOpen(true);
+    fetch(`/api/search?q=${encodeURIComponent(trimmed)}&limit=8`)
+      .then((res) => res.json())
+      .then((data: { results?: SearchResult[] }) => setResults(data.results ?? []))
+      .catch(() => setResults(searchSite(trimmed)));
   }, []);
 
   useEffect(() => {

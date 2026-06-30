@@ -378,6 +378,36 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
             </div>
           </Section>
 
+          {/* Legal links */}
+          <Section title="Legal footer links" icon={<Columns3 className="w-4 h-4" />}>
+            <p className="text-xs text-gray-400 -mt-2">Impressum, AGB, Datenschutz, etc. shown in the footer bar.</p>
+            <div className="space-y-2">
+              {(footer.legalLinks ?? []).map((link, i) => (
+                <div key={i} className="flex gap-2 items-center">
+                  <input
+                    value={link.label}
+                    onChange={(e) => setF("legalLinks", footer.legalLinks.map((l, idx) => idx === i ? { ...l, label: e.target.value } : l))}
+                    placeholder="Label"
+                    className={cn(inp, "flex-1")}
+                  />
+                  <input
+                    value={link.href}
+                    onChange={(e) => setF("legalLinks", footer.legalLinks.map((l, idx) => idx === i ? { ...l, href: e.target.value } : l))}
+                    placeholder="/impressum"
+                    className={cn(inp, "flex-1 font-mono")}
+                  />
+                  <button type="button" onClick={() => setF("legalLinks", footer.legalLinks.filter((_, idx) => idx !== i))} className="p-2 text-gray-300 hover:text-red-400">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              <button type="button" onClick={() => setF("legalLinks", [...(footer.legalLinks ?? []), { label: "", href: "" }])}
+                className="w-full flex items-center justify-center gap-2 py-2 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-violet-300 hover:text-violet-600 transition-colors">
+                <Plus className="w-4 h-4" /> Add legal link
+              </button>
+            </div>
+          </Section>
+
           {/* Copyright */}
           <Section title="Copyright text" icon={<Type className="w-4 h-4" />}>
             <Field label="Copyright line" hint="Year is added automatically">

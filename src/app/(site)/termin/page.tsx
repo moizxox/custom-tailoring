@@ -1,5 +1,7 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { TerminBooking } from "@/components/termin/TerminBooking";
+import { getAtelierLocations } from "@/lib/cms/site-locations";
+import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapBookingConfig, mapPageHeroContent } from "@/lib/cms/helpers";
 import { APPOINTMENT_TYPES } from "@/lib/site-content";
@@ -33,10 +35,13 @@ const DEFAULT_BOOKING = {
 };
 
 export default async function TerminPage() {
-  const heroContent = await getCmsContent("termin", "hero", {});
+  const [heroContent, bookingContent, locations, timetables] = await Promise.all([
+    getCmsContent("termin", "hero", {}),
+    getCmsContent("termin", "booking", {}),
+    getAtelierLocations(),
+    getMeasurementTimetables(),
+  ]);
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
-
-  const bookingContent = await getCmsContent("termin", "booking", {});
   const booking = mapBookingConfig(bookingContent, DEFAULT_BOOKING);
 
   return (
@@ -50,7 +55,7 @@ export default async function TerminPage() {
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
       />
       <Suspense fallback={<div className="py-20 text-center text-charcoal-lighter">Laden…</div>}>
-        <TerminBooking config={booking} />
+        <TerminBooking config={booking} locations={locations} timetables={timetables} />
       </Suspense>
     </>
   );
