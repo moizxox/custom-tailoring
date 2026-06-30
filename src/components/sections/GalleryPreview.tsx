@@ -52,7 +52,10 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
             </div>
           )}
           <h2 className="section-heading mb-4">
-            {data.heading} {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
+            {data.heading}{" "}
+            {data.heading_accent && (
+              <span className="text-periwinkle-dark">{data.heading_accent}</span>
+            )}
           </h2>
           {data.subtext && <p className="section-subtext max-w-md mx-auto">{data.subtext}</p>}
         </div>

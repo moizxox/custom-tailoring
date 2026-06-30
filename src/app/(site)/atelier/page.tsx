@@ -47,7 +47,7 @@ export default async function AtelierPage() {
             <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
               Wo Tradition und
               <br />
-              <em className="not-italic italic text-periwinkle-dark">Kreativität</em> aufeinandertreffen
+              <span className="text-periwinkle-dark">Kreativität</span> aufeinandertreffen
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-4">
               Unser Atelier ist mehr als ein Arbeitsplatz. Hier riecht es nach Stoff, klingt es nach Nähmaschinen, und jede Ecke erzählt eine Geschichte von Handwerk und

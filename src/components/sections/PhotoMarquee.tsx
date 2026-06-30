@@ -50,7 +50,9 @@ export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
         </div>
         <h2 className="section-heading mb-4">
           {data.heading}{" "}
-          {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
+          {data.heading_accent && (
+            <span className="text-periwinkle-dark">{data.heading_accent}</span>
+          )}
         </h2>
         <p className="section-subtext max-w-lg mx-auto">
           {data.subtext}
@@ -58,9 +60,6 @@ export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
       </div>
 
       <div className="relative overflow-hidden">
-        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
         <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
           {track.map((photo, index) => (
             <div

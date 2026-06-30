@@ -53,7 +53,7 @@ export default async function MassfertigungPage() {
           <p className="section-label mb-3">Massblätter</p>
           <h2 className="section-heading text-3xl mb-4">
             Vertrauliche Masseingabe für{" "}
-            <em className="italic text-periwinkle-dark">unsere Kundinnen & Kunden</em>
+            <span className="text-periwinkle-dark">unsere Kundinnen & Kunden</span>
           </h2>
           <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8">
             Unsere Massblätter und der genaue Messprozess sind nicht öffentlich einsehbar.

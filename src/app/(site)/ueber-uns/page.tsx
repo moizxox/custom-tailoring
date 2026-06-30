@@ -70,7 +70,7 @@ export default async function UeberUnsPage() {
             <p className="section-label mb-4">Unsere Geschichte</p>
             <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
               Tradition in jedem Stich.<br />
-              <em className="not-italic italic text-periwinkle-dark">Moderne in jeder Linie.</em>
+              <span className="text-periwinkle-dark">Moderne in jeder Linie.</span>
             </h2>
             <div className="flex flex-col gap-4 font-sans text-sm text-charcoal-light leading-relaxed">
               <p>Was 2003 als kleines Atelier in Basel begann, ist heute ein geschätzter Treffpunkt für alle, die Wert auf massgeschneiderte Kostüme legen. Unsere Werkstatt liegt mitten in Basel und ist mehr als ein Arbeitsplatz – sie ist unser kreatives Zuhause.</p>
@@ -141,7 +141,7 @@ export default async function UeberUnsPage() {
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Unser Team</p>
-            <h2 className="section-heading">Menschen hinter den <em className="not-italic italic text-periwinkle-dark">Kostümen</em></h2>
+            <h2 className="section-heading">Menschen hinter den <span className="text-periwinkle-dark">Kostümen</span></h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {TEAM.map((m) => (

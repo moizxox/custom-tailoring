@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 interface AcfAboutBand {
   acf_fc_layout: "about_band";
   section_label?: string;
@@ -66,16 +67,8 @@ export function AboutBand({ acf }: AboutBandProps) {
               {data.section_label && (
                 <p className="section-label mb-4">{data.section_label}</p>
               )}
-              <h2 className="font-serif text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
-                {data.heading_accent
-                  ? data.heading.includes(data.heading_accent)
-                    ? <>
-                        {data.heading.split(data.heading_accent)[0]}
-                        <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
-                        {data.heading.split(data.heading_accent)[1]}
-                      </>
-                    : data.heading
-                  : data.heading}
+              <h2 className="font-sans font-semibold tracking-tight text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
+                <AccentHeadingText heading={data.heading} accent={data.heading_accent} />
               </h2>
               <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8 max-w-sm">
                 {data.body_text}

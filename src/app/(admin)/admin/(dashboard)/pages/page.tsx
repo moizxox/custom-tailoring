@@ -43,10 +43,7 @@ export default async function PagesListPage() {
             {pages.map((page) => (
               <tr key={page.slug} className="hover:bg-gray-50 transition-colors">
                 <td className="px-5 py-3.5">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">{page.icon}</span>
-                    <span className="font-medium text-gray-900">{page.label}</span>
-                  </div>
+                  <span className="font-medium text-gray-900">{page.label}</span>
                 </td>
                 <td className="px-5 py-3.5 text-gray-400 font-mono text-xs">{page.path}</td>
                 <td className="px-5 py-3.5">

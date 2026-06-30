@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 
 interface FormState { name: string; email: string; phone: string; message: string }
 
@@ -56,7 +57,6 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const data = { ...DEFAULT_COPY, ...acf };
-  const hasAccent = Boolean(data.headingAccent && data.heading?.includes(data.headingAccent));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,16 +72,8 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] gap-10 xl:gap-16 items-start">
           <div className="max-w-xl">
             <p className="section-label mb-4">{data.section_label}</p>
-            <h2 className="font-serif text-3xl sm:text-4xl text-charcoal leading-snug mb-4">
-              {hasAccent ? (
-                <>
-                  {data.heading.split(data.headingAccent)[0]}
-                  <em className="italic text-periwinkle-dark">{data.headingAccent}</em>
-                  {data.heading.split(data.headingAccent)[1]}
-                </>
-              ) : (
-                data.heading
-              )}
+            <h2 className="font-sans font-semibold tracking-tight text-3xl sm:text-4xl text-charcoal leading-snug mb-4">
+              <AccentHeadingText heading={data.heading} accent={data.headingAccent} />
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-6">
               {data.subtext}

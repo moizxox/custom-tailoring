@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import { cn } from "@/lib/utils";
 interface AcfServiceItem {
   title: string;
@@ -163,15 +164,7 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
             </div>
           )}
           <h2 className="section-heading mb-4">
-            {data.heading_accent ? (
-              <>
-                {data.heading.split(data.heading_accent)[0]}
-                <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
-                {data.heading.split(data.heading_accent)[1]}
-              </>
-            ) : (
-              data.heading
-            )}
+            <AccentHeadingText heading={data.heading} accent={data.heading_accent} />
           </h2>
           {data.subtext && <p className="section-subtext max-w-xl mx-auto">{data.subtext}</p>}
         </div>

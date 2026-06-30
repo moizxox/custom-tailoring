@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createElement } from "react";
 import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import type { HeadingTag } from "@/lib/cms/helpers";
 
 interface AcfHero {
@@ -70,12 +71,9 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
     const lines = normalizedHeading.split("\n");
     return lines.map((line, li) => {
       if (data.heading_accent && line.includes(data.heading_accent)) {
-        const parts = line.split(data.heading_accent);
         return (
           <span key={li} className="block">
-            {parts[0]}
-            <em className="italic text-periwinkle-dark">{data.heading_accent}</em>
-            {parts[1]}
+            <AccentHeadingText heading={line} accent={data.heading_accent} />
           </span>
         );
       }
@@ -102,7 +100,7 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
             headingTag,
             {
               className:
-                "font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
+                "font-sans font-semibold tracking-tight text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
             },
             renderHeading()
           )}

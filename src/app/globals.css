@@ -194,7 +194,7 @@
   }
 
   .section-heading {
-    @apply font-serif text-4xl xl:text-5xl text-charcoal leading-tight;
+    @apply font-sans font-semibold tracking-tight text-4xl xl:text-5xl text-charcoal leading-tight;
   }
 
   .section-subtext {

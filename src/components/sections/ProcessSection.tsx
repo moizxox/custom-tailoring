@@ -59,7 +59,10 @@ export function ProcessSection({ acf }: ProcessSectionProps) {
             </div>
           )}
           <h2 className="section-heading">
-            {data.heading} {data.heading_accent && <em className="italic text-periwinkle-dark">{data.heading_accent}</em>}
+            {data.heading}{" "}
+            {data.heading_accent && (
+              <span className="text-periwinkle-dark">{data.heading_accent}</span>
+            )}
           </h2>
         </div>
 

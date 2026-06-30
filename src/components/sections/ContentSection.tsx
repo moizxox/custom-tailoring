@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import { cn } from "@/lib/utils";
 
 interface ContentSectionProps {
@@ -27,22 +28,14 @@ export function ContentSection({
   ctaLabel,
   ctaHref,
 }: ContentSectionProps) {
-  const renderHeading = () => {
-    if (!headingAccent || !heading.includes(headingAccent)) return heading;
-    const parts = heading.split(headingAccent);
-    return (
-      <>
-        {parts[0]}
-        <em className="not-italic italic text-periwinkle-dark">{headingAccent}</em>
-        {parts[1]}
-      </>
-    );
-  };
+  const renderHeading = () => (
+    <AccentHeadingText heading={heading} accent={headingAccent} />
+  );
 
   const textBlock = (
     <div>
       {label && <p className="section-label mb-4">{label}</p>}
-      <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">{renderHeading()}</h2>
+      <h2 className="font-sans font-semibold tracking-tight text-3xl text-charcoal mb-5 leading-snug">{renderHeading()}</h2>
       <div className="flex flex-col gap-4">
         {paragraphs.map((paragraph) => (
           <p key={paragraph.slice(0, 40)} className="font-sans text-sm text-charcoal-light leading-relaxed">

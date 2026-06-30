@@ -1,3 +1,4 @@
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
@@ -27,17 +28,9 @@ export function PageHero({
   breadcrumbs,
   headingTag = "h1",
 }: PageHeroProps) {
-  const renderTitle = () => {
-    if (!titleAccent || !title.includes(titleAccent)) return title;
-    const parts = title.split(titleAccent);
-    return (
-      <>
-        {parts[0]}
-        <em className="not-italic italic text-periwinkle-dark">{titleAccent}</em>
-        {parts[1]}
-      </>
-    );
-  };
+  const renderTitle = () => (
+    <AccentHeadingText heading={title} accent={titleAccent} />
+  );
 
   return (
     <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24 min-h-[60vh]">
@@ -81,7 +74,7 @@ export function PageHero({
             headingTag,
             {
               className:
-                "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
+                "font-sans font-semibold tracking-tight text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
             },
             renderTitle()
           )}
