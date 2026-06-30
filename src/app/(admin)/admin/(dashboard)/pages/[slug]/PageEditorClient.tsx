@@ -25,7 +25,6 @@ interface Props {
   sections: CmsSection[];
   initialContents: Record<string, Record<string, unknown>>;
   pageLabel: string;
-  pageIcon: string;
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────────────── */
@@ -159,7 +158,7 @@ function FieldInput({
 }
 
 /* ─── Main component ─────────────────────────────────────────────────────── */
-export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel, pageIcon }: Props) {
+export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel }: Props) {
   const t = useTranslations("editor");
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [imagePickerMeta, setImagePickerMeta] = useState<{ sectionKey: string; fieldKey: string } | null>(null);
@@ -218,7 +217,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
       <aside className="hidden xl:flex flex-col w-56 shrink-0">
         <div className="sticky top-6 space-y-2">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest px-1 mb-3">
-            {pageIcon} {pageLabel}
+            {pageLabel}
           </p>
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />

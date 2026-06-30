@@ -56,7 +56,6 @@ export default async function PageEditorPage({ params }: Props) {
         </Link>
         <span className="text-gray-300">/</span>
         <div className="flex items-center gap-2">
-          <span className="text-xl">{localized.icon}</span>
           <h1 className="text-xl font-bold text-gray-900">{localized.label}</h1>
         </div>
       </div>
@@ -66,7 +65,6 @@ export default async function PageEditorPage({ params }: Props) {
         sections={localized.sections}
         initialContents={initialContents}
         pageLabel={localized.label}
-        pageIcon={localized.icon ?? "📄"}
       />
     </div>
   );
