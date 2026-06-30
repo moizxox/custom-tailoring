@@ -2,7 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
-import { SHOP_CATEGORIES, SHOP_PRODUCTS, SHOP_QUALITY_TIERS } from "@/lib/site-content";
+import { getCmsContent } from "@/lib/cms/content";
+import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { getShopProducts } from "@/lib/products";
+import { SHOP_CATEGORIES, SHOP_QUALITY_TIERS } from "@/lib/site-content";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,14 +13,30 @@ export const metadata: Metadata = {
   description: "Basler Fasnachtskostüme, Stammkostüme und Sujetkostüme — in den Qualitätsstufen Einfach, Standard und Premium.",
 };
 
-export default function ShopPage() {
+const DEFAULT_HERO = {
+  label: "Online Shop",
+  title: "Fasnachtskostüme",
+  titleAccent: "Kostüme",
+  subtitle: "Stammkostüme, Sujetkostüme und Basler Fasnachtskostüme — in Einfach, Standard oder Premium.",
+  headingTag: "h1" as const,
+};
+
+export default async function ShopPage() {
+  const [heroContent, shopData] = await Promise.all([
+    getCmsContent("shop", "hero", {}),
+    getShopProducts(),
+  ]);
+  const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
+  const { products, source } = shopData;
+
   return (
     <>
       <PageHero
-        label="Online Shop"
-        title="Fasnachtskostüme"
-        titleAccent="Kostüme"
-        subtitle="Stammkostüme, Sujetkostüme und Basler Fasnachtskostüme — in Einfach, Standard oder Premium."
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Shop", href: "/shop" }]}
       />
 
@@ -54,7 +73,7 @@ export default function ShopPage() {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Categories + products */}
       <section className="py-20 section-bg-white">
         <div className="container-site">
           <div className="text-center mb-12">
@@ -69,40 +88,44 @@ export default function ShopPage() {
             ))}
           </div>
 
-          {/* Starter products — client can add more via CMS */}
           <div className="text-center mb-10">
             <p className="section-label mb-3">Auswahl</p>
-            <h3 className="font-serif text-2xl text-charcoal">Beispielprodukte</h3>
+            <h3 className="font-serif text-2xl text-charcoal">{source === "database" ? "Unsere Produkte" : "Beispielprodukte"}</h3>
             <p className="font-sans text-sm text-charcoal-lighter mt-2 max-w-lg mx-auto">
-              Diese Produkte können Sie später im CMS selbst pflegen. Preise sind Richtwerte — verbindlich wird die Bestellung erst nach Bestätigung.
+              {source === "database"
+                ? "Produkte werden im Admin unter Produkte gepflegt. Preise sind Richtwerte — verbindlich wird die Bestellung erst nach Bestätigung."
+                : "Legen Sie Produkte im Admin unter Produkte an, um sie hier anzuzeigen."}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {SHOP_PRODUCTS.map((product) => {
-              const tier = SHOP_QUALITY_TIERS.find((t) => t.id === product.qualityTier);
-              return (
-                <article key={product.id} className="rounded-2xl border border-stone-light overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 bg-white">
-                  <div className="relative h-44 bg-sand-light/30">
-                    {product.imageSrc && (
-                      <Image src={product.imageSrc} alt={product.name} fill className="object-cover" sizes="(max-width:768px) 100vw, 25vw" />
-                    )}
-                    {tier && (
-                      <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold tracking-wide uppercase bg-white/90 text-periwinkle-dark px-2.5 py-1 rounded-full">
-                        {tier.name}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-5">
-                    <h4 className="font-serif text-lg text-charcoal mb-1">{product.name}</h4>
-                    <p className="font-sans text-xs text-charcoal-lighter mb-3 leading-relaxed">{product.shortDescription}</p>
-                    <p className="font-sans text-sm font-semibold text-periwinkle-dark mb-4">{product.priceFrom}</p>
-                    <Link href="/kontakt" className="btn-outline-dark w-full justify-center text-xs">
-                      Anfrage senden
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
+            {products.map((product) => (
+              <article key={product.id} className="rounded-2xl border border-stone-light overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 bg-white">
+                <div className="relative h-44 bg-sand-light/30">
+                  {product.imageUrl && (
+                    <Image src={product.imageUrl} alt={product.name} fill className="object-cover" sizes="(max-width:768px) 100vw, 25vw" />
+                  )}
+                  {product.tier && (
+                    <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold tracking-wide uppercase bg-white/90 text-periwinkle-dark px-2.5 py-1 rounded-full">
+                      {product.tier}
+                    </span>
+                  )}
+                  {!product.inStock && (
+                    <span className="absolute top-3 right-3 text-[10px] font-sans font-semibold tracking-wide uppercase bg-charcoal/80 text-white px-2.5 py-1 rounded-full">
+                      Ausverkauft
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <p className="font-sans text-[10px] font-semibold tracking-[0.14em] uppercase text-warmgrey mb-1">{product.category}</p>
+                  <h4 className="font-serif text-lg text-charcoal mb-1">{product.name}</h4>
+                  <p className="font-sans text-xs text-charcoal-lighter mb-3 leading-relaxed line-clamp-3">{product.description}</p>
+                  <p className="font-sans text-sm font-semibold text-periwinkle-dark mb-4">{product.price}</p>
+                  <Link href={`/kontakt?produkt=${encodeURIComponent(product.name)}`} className="btn-outline-dark w-full justify-center text-xs">
+                    Anfrage senden
+                  </Link>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

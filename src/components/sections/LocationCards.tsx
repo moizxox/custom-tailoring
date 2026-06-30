@@ -1,16 +1,17 @@
 import Link from "next/link";
-import { ATELIER_LOCATIONS } from "@/lib/site-content";
+import type { AtelierLocation } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
 
 interface LocationCardsProps {
+  locations: AtelierLocation[];
   className?: string;
   showBookingLink?: boolean;
 }
 
-export function LocationCards({ className, showBookingLink = true }: LocationCardsProps) {
+export function LocationCards({ locations, className, showBookingLink = true }: LocationCardsProps) {
   return (
     <div className={cn("grid grid-cols-1 lg:grid-cols-2 gap-6", className)}>
-      {ATELIER_LOCATIONS.map((location) => (
+      {locations.map((location) => (
         <article
           key={location.id}
           className="rounded-3xl border border-periwinkle-light/50 bg-white shadow-card overflow-hidden flex flex-col"

@@ -519,6 +519,19 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     ],
   },
   {
+    slug: "shop",
+    label: "Shop",
+    icon: "🛍️",
+    path: "/shop",
+    sections: [
+      {
+        key: "hero",
+        label: "Hero section",
+        fields: pageHeroFields(),
+      },
+    ],
+  },
+  {
     slug: "impressum",
     label: "Legal notice",
     icon: "📄",

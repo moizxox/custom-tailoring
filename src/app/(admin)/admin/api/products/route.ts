@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
+import { revalidateShopPage } from "@/lib/cms/revalidate";
 
 export async function GET() {
   const session = await auth();
@@ -42,6 +43,8 @@ export async function POST(request: NextRequest) {
         sortOrder: Number(sortOrder) || 0,
       },
     });
+
+    revalidateShopPage();
 
     return NextResponse.json(product, { status: 201 });
   } catch (err: unknown) {

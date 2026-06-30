@@ -6,14 +6,17 @@ import { useState } from "react";
 import { LocationCards } from "@/components/sections/LocationCards";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import type { ContactFormConfig, PageHeroCms } from "@/lib/cms/helpers";
-import { SITE_CONTACT } from "@/lib/site-content";
+import type { SiteContactInfo } from "@/lib/cms/site-contact";
+import type { AtelierLocation } from "@/lib/site-content";
 
 interface KontaktPageContentProps {
   hero: PageHeroCms;
   form: ContactFormConfig;
+  contact: SiteContactInfo;
+  locations: AtelierLocation[];
 }
 
-export function KontaktPageContent({ hero, form }: KontaktPageContentProps) {
+export function KontaktPageContent({ hero, form, contact, locations }: KontaktPageContentProps) {
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -48,9 +51,9 @@ export function KontaktPageContent({ hero, form }: KontaktPageContentProps) {
           <div className="text-center mb-12">
             <p className="section-label mb-3">Unsere Standorte</p>
             <h2 className="font-serif text-3xl text-charcoal mb-3">Atelier Pratteln & Therwil</h2>
-            <p className="font-sans text-sm text-charcoal-light max-w-xl mx-auto">{SITE_CONTACT.hoursDefault}</p>
+            <p className="font-sans text-sm text-charcoal-light max-w-xl mx-auto">{contact.hours}</p>
           </div>
-          <LocationCards />
+          <LocationCards locations={locations} />
         </div>
       </section>
 
@@ -70,9 +73,9 @@ export function KontaktPageContent({ hero, form }: KontaktPageContentProps) {
             <h2 className="font-serif text-2xl text-charcoal">Direkt erreichen</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { label: "Telefon", value: SITE_CONTACT.phone, href: SITE_CONTACT.phoneHref },
-                { label: "E-Mail", value: SITE_CONTACT.email, href: `mailto:${SITE_CONTACT.email}` },
-                { label: "WhatsApp", value: "Chat starten", href: SITE_CONTACT.whatsapp },
+                { label: "Telefon", value: contact.phone, href: contact.phoneHref },
+                { label: "E-Mail", value: contact.email, href: `mailto:${contact.email}` },
+                { label: "WhatsApp", value: "Chat starten", href: contact.whatsapp },
                 { label: "Termin", value: "Online buchen", href: "/termin" },
               ].map((item) => (
                 <a

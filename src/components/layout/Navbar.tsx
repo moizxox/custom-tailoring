@@ -10,9 +10,19 @@ interface NavbarProps {
   navItems: NavItem[];
   ctaLabel?: string;
   ctaUrl?: string;
+  brandName?: string;
+  brandAccent?: string;
+  brandSubline?: string;
 }
 
-export function Navbar({ navItems, ctaLabel = "Termin buchen", ctaUrl = "/termin" }: NavbarProps) {
+export function Navbar({
+  navItems,
+  ctaLabel = "Termin buchen",
+  ctaUrl = "/termin",
+  brandName = "Kostüm",
+  brandAccent = "Schneiderei",
+  brandSubline = "Pratteln & Therwil",
+}: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -34,9 +44,9 @@ export function Navbar({ navItems, ctaLabel = "Termin buchen", ctaUrl = "/termin
         <nav className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex flex-col leading-[1.1] group shrink-0">
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">Kostüm</span>
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-periwinkle-dark">Schneiderei</span>
-            <span className="font-sans text-[7px] tracking-[0.22em] uppercase text-warmgrey mt-0.5">Pratteln & Therwil</span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">{brandName}</span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-periwinkle-dark">{brandAccent}</span>
+            <span className="font-sans text-[7px] tracking-[0.22em] uppercase text-warmgrey mt-0.5">{brandSubline}</span>
           </Link>
 
           {/* Desktop Nav */}

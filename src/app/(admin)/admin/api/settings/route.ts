@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
+import { revalidateSiteShell } from "@/lib/cms/revalidate";
 
 export async function GET() {
   const session = await auth();
@@ -31,6 +32,8 @@ export async function PUT(request: NextRequest) {
         create: { key, value: value as any },
       });
     }
+
+    revalidateSiteShell();
 
     return NextResponse.json({ ok: true });
   } catch (err) {

@@ -15,6 +15,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         navItems={navItems}
         ctaLabel={footerContent.ctaPrimaryLabel}
         ctaUrl={footerContent.ctaPrimaryUrl}
+        brandName={footerContent.brandName}
+        brandAccent={footerContent.brandAccent}
+        brandSubline={footerContent.brandSubline}
       />
       <main className="flex-1 site-shell">{children}</main>
       <Footer footerContent={footerContent} />

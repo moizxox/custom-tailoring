@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
+import { revalidateShopPage } from "@/lib/cms/revalidate";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -41,6 +42,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
     if (sortOrder !== undefined) data.sortOrder = Number(sortOrder) || 0;
 
     const product = await prisma.product.update({ where: { id }, data });
+    revalidateShopPage();
     return NextResponse.json(product);
   } catch (err) {
     console.error(err);
@@ -55,6 +57,7 @@ export async function DELETE(_req: NextRequest, { params }: Props) {
   const { id } = await params;
   try {
     await prisma.product.delete({ where: { id } });
+    revalidateShopPage();
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Server error" }, { status: 500 });

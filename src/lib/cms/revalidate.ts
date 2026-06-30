@@ -9,6 +9,11 @@ export function revalidateCmsPage(slug: string) {
   }
 }
 
+/** Shop product list is rendered on /shop. */
+export function revalidateShopPage() {
+  revalidatePath("/shop");
+}
+
 /** Nav/footer live in the site layout — refresh layout + all public pages. */
 export function revalidateSiteShell() {
   revalidatePath("/", "layout");
