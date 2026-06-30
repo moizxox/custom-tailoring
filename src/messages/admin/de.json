@@ -15,7 +15,7 @@
     "brandSubtitle": "CMS Administration",
     "loginTitle": "Anmelden",
     "identifierLabel": "E-Mail oder Benutzername",
-    "identifierPlaceholder": "moizxox oder admin@example.com",
+    "identifierPlaceholder": "admin@example.com",
     "passwordLabel": "Passwort",
     "forgotPassword": "Passwort vergessen?",
     "signIn": "Anmelden",
