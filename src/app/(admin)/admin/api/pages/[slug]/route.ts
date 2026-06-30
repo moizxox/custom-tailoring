@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
 import { getPageSchema } from "@/lib/cms/page-schemas";
+import { revalidateCmsPage } from "@/lib/cms/revalidate";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,6 +41,8 @@ export async function PUT(request: NextRequest, { params }: Props) {
       update: { content },
       create: { pageSlug: slug, sectionKey, content },
     });
+
+    revalidateCmsPage(slug);
 
     return NextResponse.json({ ok: true });
   } catch (err) {

@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db/prisma";
+import { revalidateSiteShell } from "@/lib/cms/revalidate";
 import { NextResponse } from "next/server";
 
 export async function PUT(request: Request) {
@@ -16,6 +17,8 @@ export async function PUT(request: Request) {
     update: { value: body.value as never },
     create: { key: body.key, value: body.value as never },
   });
+
+  revalidateSiteShell();
 
   return NextResponse.json({ ok: true });
 }
