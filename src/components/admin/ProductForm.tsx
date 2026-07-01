@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ImageIcon, Plus, Trash2 } from "lucide-react";
 import type { Product } from "@prisma/client";
 import MediaPickerModal from "@/components/admin/MediaPickerModal";
+import { cn } from "@/lib/utils";
 import {
   buildStoredPriceLabel,
   normalizeTierPricing,
@@ -14,10 +15,12 @@ import {
   parseTierPricing,
   TIER_KEYS,
   TIER_LABELS,
+  TIER_STYLES,
   tierPricingFromForm,
   tierPricingToForm,
   type TierKey,
 } from "@/lib/product-tiers";
+import { DEFAULT_PRODUCT_CATEGORY, PRODUCT_CATEGORIES } from "@/lib/product-categories";
 
 type TierFormRow = { price: string; description: string; enabled: boolean };
 
@@ -37,7 +40,7 @@ interface ProductFormProps {
   mode: "new" | "edit";
 }
 
-const CATEGORIES = ["Einzelperson", "Gruppe", "Veredelung", "Sonstiges"];
+const CATEGORIES = [...PRODUCT_CATEGORIES];
 
 function slugify(str: string): string {
   return str
@@ -63,7 +66,7 @@ function initialForm(product?: Product): FormData {
     name: product?.name ?? "",
     slug: product?.slug ?? "",
     description: product?.description ?? "",
-    category: product?.category ?? "Einzelperson",
+    category: product?.category ?? DEFAULT_PRODUCT_CATEGORY,
     imageUrl: cover,
     galleryUrls: extraGallery,
     tiers: tierPricingToForm(tierPricing),
@@ -288,7 +291,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
         <div className="space-y-4">
           {TIER_KEYS.map((key) => (
-            <div key={key} className="rounded-xl border border-gray-200 p-4 space-y-3">
+            <div key={key} className={cn("rounded-xl border-2 p-4 space-y-3", TIER_STYLES[key].pill)}>
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -296,7 +299,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                   onChange={(e) => updateTier(key, { enabled: e.target.checked })}
                   className="rounded border-gray-300 text-periwinkle-600 focus:ring-periwinkle-500"
                 />
-                <span className="text-sm font-medium text-gray-800">{TIER_LABELS[key]}</span>
+                <span className={cn("text-sm font-medium", TIER_STYLES[key].accent)}>{TIER_LABELS[key]}</span>
               </label>
               {form.tiers[key].enabled && (
                 <>

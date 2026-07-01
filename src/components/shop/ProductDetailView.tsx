@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import {
   getEnabledTiers,
   mergeTierDefinitions,
+  TIER_STYLES,
   type ShopTierDefinition,
   type TierKey,
   type TierPricing,
@@ -58,11 +59,12 @@ function QualityAccordion({
   onToggle: () => void;
   isSelected: boolean;
 }) {
+  const style = TIER_STYLES[tier.key];
   return (
     <div
       className={cn(
         "border-b border-stone-light transition-colors",
-        isSelected && "bg-periwinkle-lighter/10",
+        isSelected && "bg-sand-light/40",
       )}
     >
       <button
@@ -71,9 +73,7 @@ function QualityAccordion({
         className="flex w-full items-center justify-between gap-4 px-0 py-4 text-left"
       >
         <div className="flex items-center gap-3">
-          {isSelected && (
-            <span className="w-1.5 h-1.5 rounded-full bg-periwinkle-dark shrink-0" />
-          )}
+          <span className={cn("w-2.5 h-2.5 rounded-full shrink-0", style.dot)} />
           <span className="font-serif text-base text-charcoal">{tier.name}</span>
           {tier.tagline && (
             <span className="hidden sm:inline font-sans text-[11px] text-charcoal-lighter">
@@ -83,7 +83,7 @@ function QualityAccordion({
         </div>
         <div className="flex items-center gap-4 shrink-0">
           {tier.price && (
-            <span className="font-sans text-sm font-semibold text-periwinkle-dark">
+            <span className={cn("font-sans text-sm font-semibold", style.accent)}>
               {tier.price}
             </span>
           )}
@@ -106,7 +106,7 @@ function QualityAccordion({
               <ul className="space-y-2">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 font-sans text-sm text-charcoal-light">
-                    <svg className="w-3.5 h-3.5 text-periwinkle-dark mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={cn("w-3.5 h-3.5 mt-0.5 shrink-0", style.accent)} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                     {f}
@@ -166,20 +166,20 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
                   type="button"
                   onClick={() => setActiveImage(i)}
                   className={cn(
-                    "relative shrink-0 w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-xl overflow-hidden border-2 transition-all",
+                    "relative shrink-0 w-[60px] aspect-[3/4] sm:w-[68px] rounded-xl overflow-hidden border-2 transition-all bg-sand-light/40",
                     activeImage === i
-                      ? "border-periwinkle-dark shadow-soft"
+                      ? "border-periwinkle-dark shadow-soft opacity-100"
                       : "border-stone-light/60 hover:border-periwinkle-light opacity-70 hover:opacity-100",
                   )}
                 >
-                  <Image src={src} alt="" fill className="object-cover" sizes="80px" />
+                  <Image src={src} alt="" fill className="object-contain p-1" sizes="80px" />
                 </button>
               ))}
             </div>
           )}
 
           {/* Main image */}
-          <div className="relative flex-1 aspect-[3/4] max-h-[680px] rounded-2xl overflow-hidden bg-sand-light/30">
+          <div className="relative flex-1 aspect-[3/4] max-h-[720px] rounded-2xl overflow-hidden bg-sand-light/30">
             {images.map((src, i) => (
               <Image
                 key={`main-${src}`}
@@ -188,7 +188,7 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
                 fill
                 priority={i === 0}
                 className={cn(
-                  "object-cover transition-opacity duration-300 absolute inset-0",
+                  "object-contain p-4 sm:p-6 transition-opacity duration-300 absolute inset-0",
                   activeImage === i ? "opacity-100" : "opacity-0",
                 )}
                 sizes="(max-width: 1024px) 100vw, 55vw"
@@ -224,28 +224,42 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
                 <p className="font-sans text-[11px] font-semibold tracking-[0.15em] uppercase text-charcoal/50">
                   Qualitätsstufe
                 </p>
-                <p className="font-serif text-2xl text-charcoal">{selectedPrice}</p>
+                <p className={cn("font-serif text-2xl", TIER_STYLES[selectedTier].accent)}>{selectedPrice}</p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {enabledTiers.map(({ key, label, option }) => (
+              <div className="flex flex-col gap-2">
+                {enabledTiers.map(({ key, label, option }) => {
+                  const style = TIER_STYLES[key];
+                  const isActive = selectedTier === key;
+                  return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => setSelectedTier(key)}
                     className={cn(
-                      "px-4 py-2 rounded-xl text-sm font-sans font-medium border transition-all duration-150",
-                      selectedTier === key
-                        ? "bg-charcoal text-white border-charcoal shadow-soft"
-                        : "bg-white text-charcoal border-stone-light hover:border-charcoal/40",
+                      "flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-sans font-medium border-2 transition-all duration-150",
+                      isActive ? style.pillSelected : style.pill,
                     )}
                   >
-                    {label}
-                    <span className={cn("ml-2 text-[11px]", selectedTier === key ? "text-white/70" : "text-charcoal-lighter")}>
+                    <span className="flex items-center gap-2.5">
+                      <span className={cn("w-2 h-2 rounded-full shrink-0", style.dot)} />
+                      {label}
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[12px] font-semibold",
+                        isActive
+                          ? key === "einfach"
+                            ? "text-white/85"
+                            : "text-charcoal/70"
+                          : "text-charcoal-lighter",
+                      )}
+                    >
                       {option.price}
                     </span>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ) : (

@@ -157,29 +157,29 @@ export const SHOP_QUALITY_TIERS: ShopQualityTier[] = [
 
 export const SHOP_CATEGORIES: ShopCategory[] = [
   {
-    id: "stammkostueme",
-    name: "Stammkostüme",
-    slug: "stammkostueme",
-    description: "Einheitliche Kostüme für Cliquen und Guggen — robust, langlebig und ausdrucksstark.",
-  },
-  {
-    id: "sujetkostueme",
-    name: "Sujetkostüme",
-    slug: "sujetkostueme",
-    description: "Kreativ gestaltete Sujetkostüme, perfekt abgestimmt auf Ihr Sujet und professionell ausgearbeitet.",
-  },
-  {
-    id: "basler-nach-mass",
-    name: "Basler Fasnachtskostüme nach Mass",
-    slug: "basler-nach-mass",
+    id: "basler-fasnachtskostueme",
+    name: "Basler Fasnachtskostüme",
+    slug: "basler-fasnachtskostueme",
     description:
       "Passgenaue Kostüme für klassische Figuren wie Waggis, Ueli, Blätzlibajass, Edelwaggis, Harlekin, Pierrot und viele weitere.",
   },
   {
-    id: "basler-ab-lager",
-    name: "Basler Fasnachtskostüme ab Lager",
-    slug: "basler-ab-lager",
-    description: "Vorproduzierte Auswahl für Kinder und Erwachsene — sofort verfügbar zu attraktiven Preisen.",
+    id: "fasnachtskostueme-lager",
+    name: "Fasnachtskostüme (Lager)",
+    slug: "fasnachtskostueme-lager",
+    description: "Vorproduzierte Fasnachtskostüme für Erwachsene — sofort verfügbar zu attraktiven Preisen.",
+  },
+  {
+    id: "kinder-fasnachtskostueme-lager",
+    name: "Kinder Fasnachtskostüme (Lager)",
+    slug: "kinder-fasnachtskostueme-lager",
+    description: "Vorproduzierte Kostüme in Kindergrössen — bereit zur Anprobe und Abholung.",
+  },
+  {
+    id: "zubehoer",
+    name: "Zubehör",
+    slug: "zubehoer",
+    description: "Accessoires, Ergänzungen und Einzelteile für Ihr Kostüm.",
   },
 ];
 

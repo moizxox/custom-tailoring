@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { ShopProductGrid } from "@/components/shop/ShopProductGrid";
@@ -7,6 +8,7 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { getShopProducts } from "@/lib/products";
 import { splitLines } from "@/lib/cms/section-helpers";
+import { TIER_KEYS, TIER_STYLES } from "@/lib/product-tiers";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -69,9 +71,17 @@ export default async function ShopPage() {
             <p className="section-subtext max-w-2xl mx-auto">{tiersData.subtext}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(tiersData.items ?? []).map((tier) => (
-              <article key={tier.name} className="rounded-3xl card-gradient border border-periwinkle-light/40 p-7 flex flex-col">
-                <span className="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">{tier.badge}</span>
+            {(tiersData.items ?? []).map((tier, index) => {
+              const tierKey = TIER_KEYS[index] ?? "standard";
+              const style = TIER_STYLES[tierKey];
+              return (
+              <article
+                key={tier.name}
+                className={cn("rounded-3xl card-gradient border-2 p-7 flex flex-col", style.border)}
+              >
+                <span className={cn("font-sans text-[10px] font-semibold tracking-[0.2em] uppercase mb-2", style.accent)}>
+                  {tier.badge}
+                </span>
                 <h3 className="font-serif text-2xl text-charcoal mb-2">{tier.name}</h3>
                 <p className="font-sans text-sm text-charcoal-light mb-5">{tier.tagline}</p>
                 <ul className="flex flex-col gap-2 mb-6 flex-1">
@@ -84,7 +94,8 @@ export default async function ShopPage() {
                 </ul>
                 <p className="font-sans text-[12px] text-charcoal-lighter leading-relaxed border-t border-periwinkle-light/30 pt-4">{tier.recommendation}</p>
               </article>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

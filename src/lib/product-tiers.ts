@@ -7,6 +7,44 @@ export const TIER_LABELS: Record<TierKey, string> = {
   premium: "Premium",
 };
 
+/** Bronze / silver / gold styling for quality tiers. */
+export const TIER_STYLES: Record<
+  TierKey,
+  {
+    pill: string;
+    pillSelected: string;
+    dot: string;
+    accent: string;
+    ring: string;
+    border: string;
+  }
+> = {
+  einfach: {
+    pill: "border-[#c48a4a]/50 bg-[#c48a4a]/8 text-charcoal hover:border-[#c48a4a]/70",
+    pillSelected: "border-[#b87333] bg-gradient-to-br from-[#d4a574] to-[#b87333] text-white shadow-[0_2px_14px_rgba(184,115,51,0.4)]",
+    dot: "bg-[#b87333]",
+    accent: "text-[#b87333]",
+    ring: "ring-[#c48a4a]/30",
+    border: "border-[#c48a4a]/45",
+  },
+  standard: {
+    pill: "border-[#b8bcc4]/60 bg-[#b8bcc4]/10 text-charcoal hover:border-[#9aa0ab]/80",
+    pillSelected: "border-[#9aa0ab] bg-gradient-to-br from-[#e8eaed] to-[#b8bcc4] text-charcoal shadow-[0_2px_14px_rgba(154,160,171,0.35)]",
+    dot: "bg-[#9aa0ab]",
+    accent: "text-[#7a808a]",
+    ring: "ring-[#b8bcc4]/40",
+    border: "border-[#b8bcc4]/55",
+  },
+  premium: {
+    pill: "border-[#d4b84a]/50 bg-[#d4b84a]/8 text-charcoal hover:border-[#c9a227]/70",
+    pillSelected: "border-[#c9a227] bg-gradient-to-br from-[#f0d878] to-[#c9a227] text-charcoal shadow-[0_2px_14px_rgba(201,162,39,0.4)]",
+    dot: "bg-[#c9a227]",
+    accent: "text-[#a8861e]",
+    ring: "ring-[#d4b84a]/35",
+    border: "border-[#d4b84a]/50",
+  },
+};
+
 export interface TierOption {
   price: string;
   description?: string;

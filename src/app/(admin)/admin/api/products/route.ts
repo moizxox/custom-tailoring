@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
 import { revalidateShopPage } from "@/lib/cms/revalidate";
 import { buildStoredPriceLabel, parseTierPricing, tierPricingFromForm, type TierKey } from "@/lib/product-tiers";
+import { DEFAULT_PRODUCT_CATEGORY } from "@/lib/product-categories";
 
 function buildProductPayload(body: Record<string, unknown>) {
   const name = body.name as string | undefined;
@@ -25,7 +26,7 @@ function buildProductPayload(body: Record<string, unknown>) {
     slug,
     description: typeof body.description === "string" ? body.description : null,
     price,
-    category: typeof body.category === "string" ? body.category : "Einzelperson",
+    category: typeof body.category === "string" ? body.category : DEFAULT_PRODUCT_CATEGORY,
     tier: typeof body.tier === "string" ? body.tier : "Standard",
     imageUrl: typeof body.imageUrl === "string" ? body.imageUrl : null,
     galleryUrls: Array.isArray(body.galleryUrls) ? body.galleryUrls : [],
