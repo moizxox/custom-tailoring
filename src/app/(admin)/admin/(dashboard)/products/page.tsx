@@ -2,8 +2,8 @@ import { prisma } from "@/lib/db/prisma";
 import { getAdminT } from "@/lib/i18n/admin";
 import Link from "next/link";
 import type { Metadata } from "next";
-import ProductStockToggle from "@/components/admin/ProductStockToggle";
 import ProductDeleteButton from "@/components/admin/ProductDeleteButton";
+import { getEnabledTiers, normalizeTierPricing, parseTierPricing } from "@/lib/product-tiers";
 
 export const metadata: Metadata = { title: "Products" };
 
@@ -18,12 +18,6 @@ async function getProducts() {
 export default async function ProductsListPage() {
   const products = await getProducts();
   const t = getAdminT("products");
-
-  const tierColors: Record<string, string> = {
-    Einfach: "bg-gray-100 text-gray-600",
-    Standard: "bg-blue-100 text-blue-700",
-    Premium: "bg-amber-100 text-amber-700",
-  };
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -54,55 +48,57 @@ export default async function ProductsListPage() {
               <tr className="border-b border-gray-200 bg-gray-50">
                 <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">{t("columnProduct")}</th>
                 <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">{t("columnCategory")}</th>
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden md:table-cell">{t("columnTier")}</th>
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden md:table-cell">{t("columnTiers")}</th>
                 <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">{t("columnPrice")}</th>
-                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">{t("columnInStock")}</th>
                 <th className="px-5 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
-                      {product.imageUrl ? (
-                        <img src={product.imageUrl} alt={product.name} className="w-9 h-9 rounded-lg object-cover border border-gray-200 shrink-0" />
-                      ) : (
-                        <div className="w-9 h-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
-                          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                          </svg>
+              {products.map((product) => {
+                const tierPricing = normalizeTierPricing(parseTierPricing(product.tierPricing), {
+                  tier: product.tier,
+                  price: product.price,
+                });
+                const tierCount = getEnabledTiers(tierPricing).length;
+                return (
+                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-3">
+                        {product.imageUrl ? (
+                          <img src={product.imageUrl} alt={product.name} className="w-9 h-9 rounded-lg object-cover border border-gray-200 shrink-0" />
+                        ) : (
+                          <div className="w-9 h-9 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
+                            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                            </svg>
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-medium text-gray-900">{product.name}</p>
+                          <p className="text-xs text-gray-400 font-mono">{product.slug}</p>
                         </div>
-                      )}
-                      <div>
-                        <p className="font-medium text-gray-900">{product.name}</p>
-                        <p className="text-xs text-gray-400 font-mono">{product.slug}</p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3.5 text-gray-600 hidden sm:table-cell">{product.category}</td>
-                  <td className="px-5 py-3.5 hidden md:table-cell">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${tierColors[product.tier] ?? "bg-gray-100 text-gray-600"}`}>
-                      {product.tier}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3.5 text-gray-600 hidden sm:table-cell">{product.price}</td>
-                  <td className="px-5 py-3.5">
-                    <ProductStockToggle productId={product.id} inStock={product.inStock} />
-                  </td>
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-2 justify-end">
-                      <Link
-                        href={`/admin/products/${product.id}`}
-                        className="text-xs font-medium text-periwinkle-600 hover:text-periwinkle-700"
-                      >
-                        {t("edit")}
-                      </Link>
-                      <ProductDeleteButton productId={product.id} productName={product.name} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-5 py-3.5 text-gray-600 hidden sm:table-cell">{product.category}</td>
+                    <td className="px-5 py-3.5 hidden md:table-cell text-gray-600">{tierCount} / 3</td>
+                    <td className="px-5 py-3.5 text-gray-600 hidden sm:table-cell">{product.price}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-2 justify-end">
+                        <Link href={`/shop/${product.slug}`} target="_blank" className="text-xs font-medium text-gray-500 hover:text-gray-700">
+                          {t("viewOnSite")}
+                        </Link>
+                        <Link
+                          href={`/admin/products/${product.id}`}
+                          className="text-xs font-medium text-periwinkle-600 hover:text-periwinkle-700"
+                        >
+                          {t("edit")}
+                        </Link>
+                        <ProductDeleteButton productId={product.id} productName={product.name} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

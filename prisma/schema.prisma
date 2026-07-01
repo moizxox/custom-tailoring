@@ -53,6 +53,8 @@ model Product {
   category    String
   tier        String
   imageUrl    String?
+  galleryUrls Json?
+  tierPricing Json?
   inStock     Boolean  @default(true)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())

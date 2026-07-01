@@ -4,19 +4,31 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Plus, Trash2 } from "lucide-react";
 import type { Product } from "@prisma/client";
 import MediaPickerModal from "@/components/admin/MediaPickerModal";
+import {
+  buildStoredPriceLabel,
+  normalizeTierPricing,
+  parseGalleryUrls,
+  parseTierPricing,
+  TIER_KEYS,
+  TIER_LABELS,
+  tierPricingFromForm,
+  tierPricingToForm,
+  type TierKey,
+} from "@/lib/product-tiers";
+
+type TierFormRow = { price: string; description: string; enabled: boolean };
 
 type FormData = {
   name: string;
   slug: string;
   description: string;
-  price: string;
   category: string;
-  tier: string;
   imageUrl: string;
-  inStock: boolean;
+  galleryUrls: string[];
+  tiers: Record<TierKey, TierFormRow>;
   sortOrder: string;
 };
 
@@ -25,37 +37,52 @@ interface ProductFormProps {
   mode: "new" | "edit";
 }
 
-const TIERS = ["Einfach", "Standard", "Premium"];
 const CATEGORIES = ["Einzelperson", "Gruppe", "Veredelung", "Sonstiges"];
 
 function slugify(str: string): string {
   return str
     .toLowerCase()
-    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function initialForm(product?: Product): FormData {
+  const tierPricing = normalizeTierPricing(parseTierPricing(product?.tierPricing), {
+    tier: product?.tier,
+    price: product?.price,
+  });
+  const gallery = parseGalleryUrls(product?.galleryUrls, product?.imageUrl);
+  const cover = gallery[0] ?? product?.imageUrl ?? "";
+  const extraGallery = gallery.slice(1);
+
+  return {
+    name: product?.name ?? "",
+    slug: product?.slug ?? "",
+    description: product?.description ?? "",
+    category: product?.category ?? "Einzelperson",
+    imageUrl: cover,
+    galleryUrls: extraGallery,
+    tiers: tierPricingToForm(tierPricing),
+    sortOrder: String(product?.sortOrder ?? 0),
+  };
 }
 
 export default function ProductForm({ product, mode }: ProductFormProps) {
   const router = useRouter();
   const t = useTranslations("products");
   const tc = useTranslations("common");
-  const [form, setForm] = useState<FormData>({
-    name: product?.name ?? "",
-    slug: product?.slug ?? "",
-    description: product?.description ?? "",
-    price: product?.price ?? "",
-    category: product?.category ?? "Einzelperson",
-    tier: product?.tier ?? "Standard",
-    imageUrl: product?.imageUrl ?? "",
-    inStock: product?.inStock ?? true,
-    sortOrder: String(product?.sortOrder ?? 0),
-  });
+  const [form, setForm] = useState<FormData>(() => initialForm(product));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [mediaPicker, setMediaPicker] = useState<"cover" | "gallery" | null>(null);
 
-  function handleChange(key: keyof FormData, value: string | boolean) {
+  const previewPrice = buildStoredPriceLabel(tierPricingFromForm(form.tiers));
+
+  function handleChange<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((prev) => {
       const next = { ...prev, [key]: value };
       if (key === "name" && mode === "new") {
@@ -65,14 +92,50 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     });
   }
 
+  function updateTier(key: TierKey, patch: Partial<TierFormRow>) {
+    setForm((prev) => ({
+      ...prev,
+      tiers: {
+        ...prev.tiers,
+        [key]: { ...prev.tiers[key], ...patch },
+      },
+    }));
+  }
+
+  function removeGalleryImage(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      galleryUrls: prev.galleryUrls.filter((_, i) => i !== index),
+    }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    const tierPricing = tierPricingFromForm(form.tiers);
+    const enabledCount = TIER_KEYS.filter((key) => tierPricing[key]?.price).length;
+    if (enabledCount === 0) {
+      setError("Bitte mindestens eine Qualitätsstufe mit Preis angeben.");
+      return;
+    }
+
     setLoading(true);
+    const price = buildStoredPriceLabel(tierPricing);
+    const firstTierKey = TIER_KEYS.find((key) => tierPricing[key]?.price) ?? "standard";
 
     const payload = {
-      ...form,
-      sortOrder: parseInt(form.sortOrder) || 0,
+      name: form.name,
+      slug: form.slug,
+      description: form.description,
+      price,
+      category: form.category,
+      tier: TIER_LABELS[firstTierKey],
+      imageUrl: form.imageUrl || null,
+      galleryUrls: form.galleryUrls.filter(Boolean),
+      tierPricing,
+      inStock: true,
+      sortOrder: parseInt(form.sortOrder, 10) || 0,
     };
 
     const url = mode === "new" ? "/admin/api/products" : `/admin/api/products/${product!.id}`;
@@ -123,7 +186,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               value={form.slug}
               onChange={(e) => handleChange("slug", e.target.value)}
               className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-              placeholder="einzelkostum-premium"
+              placeholder="3-teiliges-waggis-kostuem"
             />
           </div>
         </div>
@@ -131,57 +194,37 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("descriptionLabel")}</label>
           <textarea
-            rows={3}
+            rows={5}
             value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
             className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition resize-y"
-            placeholder={t("descriptionPlaceholder")}
+            placeholder="Produktbeschreibung für die Detailseite…"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("priceLabel")} *</label>
-            <input
-              required
-              type="text"
-              value={form.price}
-              onChange={(e) => handleChange("price", e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-              placeholder={t("pricePlaceholder")}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("categoryLabel")}</label>
-            <select
-              value={form.category}
-              onChange={(e) => handleChange("category", e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition bg-white"
-            >
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("tierLabel")}</label>
-            <select
-              value={form.tier}
-              onChange={(e) => handleChange("tier", e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition bg-white"
-            >
-              {TIERS.map((t) => <option key={t}>{t}</option>)}
-            </select>
-          </div>
+        <div className="w-full sm:w-64">
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("categoryLabel")}</label>
+          <select
+            value={form.category}
+            onChange={(e) => handleChange("category", e.target.value)}
+            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition bg-white"
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
         </div>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("imageAndStatus")}</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("imagesSection")}</h2>
+        <p className="text-xs text-gray-500">{t("imagesHint")}</p>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("imageUrlLabel")}</label>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("coverImageLabel")}</label>
           {form.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={form.imageUrl} alt="" className="w-32 h-20 rounded-lg object-cover border border-gray-200 mb-2" />
+            <img src={form.imageUrl} alt="" className="w-40 h-28 rounded-lg object-cover border border-gray-200 mb-2" />
           )}
           <div className="flex gap-2">
             <input
@@ -193,7 +236,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             />
             <button
               type="button"
-              onClick={() => setMediaPickerOpen(true)}
+              onClick={() => setMediaPicker("cover")}
               className="flex items-center gap-1.5 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors bg-white whitespace-nowrap"
             >
               <ImageIcon className="w-4 h-4" /> Pick
@@ -201,42 +244,106 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => handleChange("inStock", !form.inStock)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:ring-offset-2 ${form.inStock ? "bg-periwinkle-600" : "bg-gray-200"}`}
-          >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${form.inStock ? "translate-x-6" : "translate-x-1"}`} />
-          </button>
-          <span className="text-sm text-gray-700">{t("inStockLabel")}</span>
-        </div>
-
-        <div className="w-32">
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("sortOrderLabel")}</label>
-          <input
-            type="number"
-            min={0}
-            value={form.sortOrder}
-            onChange={(e) => handleChange("sortOrder", e.target.value)}
-            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
-          />
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("galleryImagesLabel")}</label>
+          <div className="space-y-2">
+            {form.galleryUrls.map((url, index) => (
+              <div key={`${url}-${index}`} className="flex items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="w-16 h-12 rounded object-cover border border-gray-200 shrink-0" />
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => {
+                    const next = [...form.galleryUrls];
+                    next[index] = e.target.value;
+                    handleChange("galleryUrls", next);
+                  }}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                />
+                <button type="button" onClick={() => removeGalleryImage(index)} className="p-2 text-gray-400 hover:text-red-500">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => setMediaPicker("gallery")}
+              className="flex items-center gap-2 text-sm text-periwinkle-600 hover:text-periwinkle-700"
+            >
+              <Plus className="w-4 h-4" /> {t("addGalleryImage")}
+            </button>
+          </div>
         </div>
       </div>
 
-      {mediaPickerOpen && (
+      <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("tierPricingSection")}</h2>
+            <p className="text-xs text-gray-500 mt-1">{t("tierPricingHint")}</p>
+          </div>
+          {previewPrice && <span className="text-sm font-medium text-periwinkle-700">{previewPrice}</span>}
+        </div>
+
+        <div className="space-y-4">
+          {TIER_KEYS.map((key) => (
+            <div key={key} className="rounded-xl border border-gray-200 p-4 space-y-3">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={form.tiers[key].enabled}
+                  onChange={(e) => updateTier(key, { enabled: e.target.checked })}
+                  className="rounded border-gray-300 text-periwinkle-600 focus:ring-periwinkle-500"
+                />
+                <span className="text-sm font-medium text-gray-800">{TIER_LABELS[key]}</span>
+              </label>
+              {form.tiers[key].enabled && (
+                <>
+                  <input
+                    type="text"
+                    value={form.tiers[key].price}
+                    onChange={(e) => updateTier(key, { price: e.target.value })}
+                    placeholder={t("tierPricePlaceholder")}
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm"
+                  />
+                  <textarea
+                    rows={2}
+                    value={form.tiers[key].description}
+                    onChange={(e) => updateTier(key, { description: e.target.value })}
+                    placeholder={t("tierDescriptionPlaceholder")}
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm resize-y"
+                  />
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">{t("sortOrderLabel")}</label>
+        <input
+          type="number"
+          min={0}
+          value={form.sortOrder}
+          onChange={(e) => handleChange("sortOrder", e.target.value)}
+          className="w-32 px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-periwinkle-500 focus:border-transparent transition"
+        />
+      </div>
+
+      {mediaPicker && (
         <MediaPickerModal
           onSelect={(url) => {
-            handleChange("imageUrl", url);
-            setMediaPickerOpen(false);
+            if (mediaPicker === "cover") handleChange("imageUrl", url);
+            else handleChange("galleryUrls", [...form.galleryUrls, url]);
+            setMediaPicker(null);
           }}
-          onClose={() => setMediaPickerOpen(false)}
+          onClose={() => setMediaPicker(null)}
         />
       )}
 
-      {error && (
-        <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">{error}</p>}
 
       <div className="flex items-center gap-3">
         <button
@@ -244,11 +351,16 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
           disabled={loading}
           className="px-5 py-2.5 bg-periwinkle-600 hover:bg-periwinkle-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition"
         >
-          {loading ? t("saveChanges") + "…" : mode === "new" ? t("createProduct") : t("saveChanges")}
+          {loading ? `${t("saveChanges")}…` : mode === "new" ? t("createProduct") : t("saveChanges")}
         </button>
         <Link href="/admin/products" className="px-5 py-2.5 border border-gray-300 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition">
           {t("cancel")}
         </Link>
+        {mode === "edit" && product?.slug && (
+          <Link href={`/shop/${product.slug}`} target="_blank" className="text-sm text-periwinkle-600 hover:underline ml-auto">
+            {t("viewOnSite")} →
+          </Link>
+        )}
       </div>
     </form>
   );

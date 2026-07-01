@@ -23,7 +23,13 @@ const STATIC_PAGES: SearchResult[] = [
   { title: "Atelier", description: "Werkstatt, Stoffe und Standort", href: "/atelier", type: "page", keywords: "werkstatt nähen" },
   { title: "Stoffe & Materialien", description: "Stoffauswahl und Materialberatung", href: "/stoffe", type: "page", keywords: "stoff fabric material" },
   { title: "Kontakt", description: "Atelier Pratteln und Therwil — Telefon, E-Mail", href: "/kontakt", type: "page", keywords: "kontakt adresse telefon email whatsapp" },
-  { title: "Termin buchen", description: "Beratung und Terminvereinbarung mit Standortwahl", href: "/termin", type: "page", keywords: "termin terminbuchung beratung buchen appointment" },
+  {
+    title: "Termin buchen",
+    description: "Beratung und Terminvereinbarung mit Standortwahl",
+    href: "/termin",
+    type: "page",
+    keywords: "termin terminbuchung beratung buchen appointment",
+  },
   { title: "FAQs", description: "Häufig gestellte Fragen", href: "/faqs", type: "page", keywords: "fragen antworten hilfe" },
   { title: "Journal", description: "Neuigkeiten aus dem Atelier", href: "/journal", type: "page", keywords: "blog news" },
   ...NAV_LINKS.map((link) => ({
@@ -81,9 +87,9 @@ export async function buildSearchIndex(): Promise<SearchResult[]> {
   const productResults: SearchResult[] = products.map((product) => ({
     title: product.name,
     description: product.description,
-    href: `/shop#${product.slug}`,
+    href: `/shop/${product.slug}`,
     type: "product",
-    keywords: `${product.price} ${product.tier ?? ""} ${product.category}`,
+    keywords: `${product.priceLabel} ${product.category}`,
   }));
   return [...STATIC_PAGES, ...productResults];
 }
@@ -92,17 +98,18 @@ export function searchSiteWithIndex(index: SearchResult[], query: string, limit 
   const q = normalize(query.trim());
   if (!q || q.length < 2) return [];
 
-  const scored = index.map((item) => {
-    const haystack = normalize([item.title, item.description, item.keywords].filter(Boolean).join(" "));
-    let score = 0;
-    if (normalize(item.title) === q) score += 100;
-    if (normalize(item.title).startsWith(q)) score += 50;
-    if (haystack.includes(q)) score += 30;
-    q.split(/\s+/).forEach((word) => {
-      if (word.length >= 2 && haystack.includes(word)) score += 10;
-    });
-    return { item, score };
-  })
+  const scored = index
+    .map((item) => {
+      const haystack = normalize([item.title, item.description, item.keywords].filter(Boolean).join(" "));
+      let score = 0;
+      if (normalize(item.title) === q) score += 100;
+      if (normalize(item.title).startsWith(q)) score += 50;
+      if (haystack.includes(q)) score += 30;
+      q.split(/\s+/).forEach((word) => {
+        if (word.length >= 2 && haystack.includes(word)) score += 10;
+      });
+      return { item, score };
+    })
     .filter(({ score }) => score > 0)
     .sort((a, b) => b.score - a.score);
 

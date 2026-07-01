@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { ShopProductGrid } from "@/components/shop/ShopProductGrid";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
@@ -108,40 +108,11 @@ export default async function ShopPage() {
             <h3 className="font-serif text-2xl text-charcoal">{source === "database" ? "Unsere Produkte" : "Beispielprodukte"}</h3>
             <p className="font-sans text-sm text-charcoal-lighter mt-2 max-w-lg mx-auto">
               {source === "database"
-                ? "Produkte werden im Admin unter Produkte gepflegt. Preise sind Richtwerte — verbindlich wird die Bestellung erst nach Bestätigung."
+                ? "Klicken Sie auf ein Produkt für Fotos, Qualitätsstufen und Preise. Alle Kostüme werden massgeschneidert — Anfragen sind unverbindlich."
                 : "Legen Sie Produkte im Admin unter Produkte an, um sie hier anzuzeigen."}
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {products.map((product) => (
-              <article key={product.id} className="rounded-2xl border border-stone-light overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 bg-white">
-                <div className="relative h-44 bg-sand-light/30">
-                  {product.imageUrl && (
-                    <Image src={product.imageUrl} alt={product.name} fill className="object-cover" sizes="(max-width:768px) 100vw, 25vw" />
-                  )}
-                  {product.tier && (
-                    <span className="absolute top-3 left-3 text-[10px] font-sans font-semibold tracking-wide uppercase bg-white/90 text-periwinkle-dark px-2.5 py-1 rounded-full">
-                      {product.tier}
-                    </span>
-                  )}
-                  {!product.inStock && (
-                    <span className="absolute top-3 right-3 text-[10px] font-sans font-semibold tracking-wide uppercase bg-charcoal/80 text-white px-2.5 py-1 rounded-full">
-                      Ausverkauft
-                    </span>
-                  )}
-                </div>
-                <div className="p-5">
-                  <p className="font-sans text-[10px] font-semibold tracking-[0.14em] uppercase text-warmgrey mb-1">{product.category}</p>
-                  <h4 className="font-serif text-lg text-charcoal mb-1">{product.name}</h4>
-                  <p className="font-sans text-xs text-charcoal-lighter mb-3 leading-relaxed line-clamp-3">{product.description}</p>
-                  <p className="font-sans text-sm font-semibold text-periwinkle-dark mb-4">{product.price}</p>
-                  <Link href={`/kontakt?produkt=${encodeURIComponent(product.name)}`} className="btn-outline-dark w-full justify-center text-xs">
-                    Anfrage senden
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+          <ShopProductGrid products={products} />
         </div>
       </section>
 
@@ -149,8 +120,8 @@ export default async function ShopPage() {
         <div className="container-site max-w-3xl text-center">
           <h2 className="font-serif text-2xl text-charcoal mb-4">Massanfertigung & verbindliche Bestellung</h2>
           <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-4">
-            Viele unserer Kostüme werden individuell nach Mass gefertigt. Eine verbindliche Bestellung entsteht erst nach schriftlicher Bestätigung
-            (Angebot, Auftragsbestätigung oder Rechnung). Lieferzeiten, Preise und Lieferkosten werden transparent kommuniziert.
+            Viele unserer Kostüme werden individuell nach Mass gefertigt. Eine verbindliche Bestellung entsteht erst nach schriftlicher Bestätigung (Angebot, Auftragsbestätigung
+            oder Rechnung). Lieferzeiten, Preise und Lieferkosten werden transparent kommuniziert.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link href="/shop-bedingungen" className="btn-secondary">
