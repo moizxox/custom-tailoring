@@ -35,8 +35,14 @@ const DEFAULT_DATA: AcfHero = {
   cta_secondary_url: "/leistungen",
   show_contact_form: true,
   badges: [
-    { icon_slug: "tailor-dummy-fashion-sewing-tailoring.svg", label: "Massanfertigung" },
-    { icon_slug: "tape-measure-sewing-tailoring-size.svg", label: "Massnehmen" },
+    {
+      icon_slug: "tailor-dummy-fashion-sewing-tailoring.svg",
+      label: "Massanfertigung",
+    },
+    {
+      icon_slug: "tape-measure-sewing-tailoring-size.svg",
+      label: "Massnehmen",
+    },
     { icon_slug: "scissor-cut-fabric-sewing.svg", label: "Handarbeit" },
   ],
 };
@@ -56,13 +62,16 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
   const data = {
     ...DEFAULT_DATA,
     ...acf,
-    badges: Array.isArray(acf?.badges) && acf.badges.length > 0
-      ? acf.badges as typeof DEFAULT_DATA.badges
-      : DEFAULT_DATA.badges,
+    badges:
+      Array.isArray(acf?.badges) && acf.badges.length > 0
+        ? (acf.badges as typeof DEFAULT_DATA.badges)
+        : DEFAULT_DATA.badges,
   };
-  const introPoints: string[] = Array.isArray(acf?.intro_points) && (acf.intro_points as unknown[]).length > 0
-    ? (acf.intro_points as { text: string }[]).map((p) => p.text)
-    : DEFAULT_INTRO_POINTS;
+  const introPoints: string[] =
+    Array.isArray(acf?.intro_points) &&
+    (acf.intro_points as unknown[]).length > 0
+      ? (acf.intro_points as { text: string }[]).map((p) => p.text)
+      : DEFAULT_INTRO_POINTS;
 
   const renderHeading = () => {
     const normalizedHeading = data.heading
@@ -93,19 +102,19 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
         <div className="w-full container-site text-center">
           <div className="inline-flex items-center gap-2.5 bg-white/90 border border-periwinkle-light/50 ring-1 ring-gold-muted/30 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
             <span className="w-1.5 h-1.5 rounded-full bg-gold-muted shrink-0" />
-            <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-gold-deeper">{data.eyebrow_text}</span>
+            <span className="font-sans text-xs font-semibold tracking-[0.18em] uppercase text-gold-deeper">
+              {data.eyebrow_text}
+            </span>
           </div>
 
           {createElement(
             headingTag,
             {
               className:
-                "font-serif text-[2.75rem] sm:text-[3.6rem] lg:text-[4.25rem] xl:text-[5rem] text-charcoal leading-[1.04] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
+                "font-serif text-3xl sm:text-4xl lg:text-[2.65rem] xl:text-[2.85rem] text-charcoal leading-[1.08] mb-6 animate-fade-up [animation-delay:60ms] opacity-0",
             },
-            renderHeading()
+            renderHeading(),
           )}
-
-         
 
           <p className="font-sans text-base sm:text-[17px] lg:text-lg text-charcoal-light leading-[1.75] max-w-4xl mx-auto mb-6 animate-fade-up [animation-delay:140ms] opacity-0">
             {data.subtext}
@@ -113,7 +122,10 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
 
           <ul className="inline-flex flex-col items-start gap-2.5 mb-8 max-w-2xl text-left animate-fade-up [animation-delay:160ms] opacity-0">
             {introPoints.map((point) => (
-              <li key={point} className="flex items-start gap-2.5 font-sans text-sm sm:text-[15px] text-charcoal-light">
+              <li
+                key={point}
+                className="flex items-start gap-2.5 font-sans text-sm sm:text-[15px] text-charcoal-light"
+              >
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-periwinkle shrink-0" />
                 {point}
               </li>
@@ -126,12 +138,25 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
               className="inline-flex items-center gap-2 bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white font-sans font-medium text-sm px-6 py-3 rounded-full transition-all duration-200 shadow-soft hover:shadow-periwinkle"
             >
               {data.cta_primary_label}
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
               </svg>
             </Link>
             {data.cta_secondary_label && (
-              <Link href={data.cta_secondary_url ?? "#"} className="btn-secondary px-6 py-3">
+              <Link
+                href={data.cta_secondary_url ?? "#"}
+                className="btn-secondary px-6 py-3"
+              >
                 {data.cta_secondary_label}
               </Link>
             )}
@@ -140,11 +165,22 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
           {data.badges.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2.5 animate-fade-up [animation-delay:220ms] opacity-0">
               {data.badges.map((badge) => (
-                <div key={badge.label} className="flex items-center gap-2 bg-white/85 border border-periwinkle-light/40 ring-1 ring-gold-muted/15 rounded-full pl-2 pr-4 py-1.5">
+                <div
+                  key={badge.label}
+                  className="flex items-center gap-2 bg-white/85 border border-periwinkle-light/40 ring-1 ring-gold-muted/15 rounded-full pl-2 pr-4 py-1.5"
+                >
                   <div className="w-9 h-9 rounded-full bg-gold-lighter/60 flex items-center justify-center">
-                    <Image src={`/icons/sewing/${badge.icon_slug}`} alt="" width={18} height={18} className="icon-gold" />
+                    <Image
+                      src={`/icons/sewing/${badge.icon_slug}`}
+                      alt=""
+                      width={18}
+                      height={18}
+                      className="icon-gold"
+                    />
                   </div>
-                  <span className="font-sans text-[11px] font-medium text-charcoal-light">{badge.label}</span>
+                  <span className="font-sans text-[11px] font-medium text-charcoal-light">
+                    {badge.label}
+                  </span>
                 </div>
               ))}
             </div>

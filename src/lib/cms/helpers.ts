@@ -9,6 +9,8 @@ export interface HomeHeroCms {
   cta_primary_url?: string;
   cta_secondary_label?: string;
   cta_secondary_url?: string;
+  intro_points?: { text: string }[];
+  badges?: { icon_slug: string; label: string }[];
 }
 
 export function parseHeadingTag(value: unknown, fallback: HeadingTag = "h1"): HeadingTag {
@@ -57,6 +59,12 @@ export function mapHomeHeroContent(content: Record<string, unknown>): Partial<Ho
     cta_primary_url: pickString(content, "ctaPrimaryUrl", "/termin"),
     cta_secondary_label: pickString(content, "ctaSecondaryLabel", "Leistungen entdecken"),
     cta_secondary_url: pickString(content, "ctaSecondaryUrl", "/leistungen"),
+    intro_points: Array.isArray(content.intro_points)
+      ? (content.intro_points as { text: string }[])
+      : undefined,
+    badges: Array.isArray(content.badges)
+      ? (content.badges as { icon_slug: string; label: string }[])
+      : undefined,
   };
 }
 
