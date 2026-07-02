@@ -105,11 +105,7 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
             renderHeading()
           )}
 
-          <div className="flex items-center justify-center gap-3 mb-6 animate-fade-up [animation-delay:100ms] opacity-0">
-            <div className="line-gold-dashed w-12 shrink-0 opacity-90" />
-            <Image src="/icons/sewing/needle-threader-fashion-design-sewing-tailoring.svg" alt="" width={22} height={22} className="icon-gold" />
-            <div className="line-gold-dashed flex-1 max-w-[120px] opacity-75" />
-          </div>
+         
 
           <p className="font-sans text-base sm:text-[17px] lg:text-lg text-charcoal-light leading-[1.75] max-w-4xl mx-auto mb-6 animate-fade-up [animation-delay:140ms] opacity-0">
             {data.subtext}
