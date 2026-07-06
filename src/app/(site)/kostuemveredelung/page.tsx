@@ -42,6 +42,10 @@ export default async function KostuemveredelungPage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        labelColor={hero.labelColor}
+        headingColor={hero.headingColor}
+        accentColor={hero.accentColor}
+        subtextColor={hero.subtextColor}
         breadcrumbs={[{ label: "Kostümveredelung", href: "/kostuemveredelung" }]}
       />
 

@@ -42,6 +42,10 @@ export default async function GaleriePage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        labelColor={hero.labelColor}
+        headingColor={hero.headingColor}
+        accentColor={hero.accentColor}
+        subtextColor={hero.subtextColor}
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
 

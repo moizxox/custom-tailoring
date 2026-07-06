@@ -18,6 +18,11 @@ interface PageHeroProps {
   subtitle?: string;
   breadcrumbs?: Breadcrumb[];
   headingTag?: HeadingTag;
+  // CMS color overrides
+  labelColor?: string;
+  headingColor?: string;
+  accentColor?: string;
+  subtextColor?: string;
 }
 
 export function PageHero({
@@ -27,9 +32,13 @@ export function PageHero({
   subtitle,
   breadcrumbs,
   headingTag = "h1",
+  labelColor,
+  headingColor,
+  accentColor,
+  subtextColor,
 }: PageHeroProps) {
   const renderTitle = () => (
-    <AccentHeadingText heading={title} accent={titleAccent} />
+    <AccentHeadingText heading={title} accent={titleAccent} accentColor={accentColor} />
   );
 
   return (
@@ -66,20 +75,29 @@ export function PageHero({
 
           {label && (
             <div className="flex justify-center mb-4">
-              <p className="section-label">{label}</p>
+              <p className="section-label" style={labelColor ? { color: labelColor } : undefined}>{label}</p>
             </div>
           )}
 
           {createElement(
             headingTag,
             {
-              className:
-                "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
+              className: "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.02] text-balance",
+              style: headingColor ? { color: headingColor } : { color: "var(--color-charcoal)" },
+              // pass accent color down via CSS variable so AccentHeadingText can pick it up
+              ...(accentColor ? { ["data-accent-color" as string]: accentColor } : {}),
             },
             renderTitle()
           )}
 
-          {subtitle && <p className="font-sans text-[15px] text-charcoal-light leading-relaxed mt-5 max-w-2xl mx-auto">{subtitle}</p>}
+          {subtitle && (
+            <p
+              className="font-sans text-[15px] leading-relaxed mt-5 max-w-2xl mx-auto"
+              style={subtextColor ? { color: subtextColor } : { color: "var(--color-charcoal-light)" }}
+            >
+              {subtitle}
+            </p>
+          )}
         </div>
       </div>
 

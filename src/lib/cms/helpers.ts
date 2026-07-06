@@ -30,6 +30,17 @@ export interface PageHeroCms {
   titleAccent?: string;
   subtitle?: string;
   headingTag?: HeadingTag;
+  // CMS color overrides
+  labelColor?: string;
+  headingColor?: string;
+  accentColor?: string;
+  subtextColor?: string;
+}
+
+function pickColor(content: Record<string, unknown>, key: string): string | undefined {
+  const v = content[key];
+  if (typeof v === "string" && v.trim()) return v.trim();
+  return undefined;
 }
 
 export function mapPageHeroContent(
@@ -42,6 +53,10 @@ export function mapPageHeroContent(
     titleAccent: pickString(content, "headingAccent", defaults.titleAccent ?? ""),
     subtitle: pickString(content, "subtext", defaults.subtitle ?? ""),
     headingTag: parseHeadingTag(content.headingTag, defaults.headingTag ?? "h1"),
+    labelColor: pickColor(content, "labelColor"),
+    headingColor: pickColor(content, "headingColor"),
+    accentColor: pickColor(content, "accentColor"),
+    subtextColor: pickColor(content, "subtextColor"),
   };
 }
 

@@ -45,26 +45,6 @@ const LEGAL_SECTION_ITEM_FIELDS: CmsItemField[] = [
   { key: "body", label: "Content", type: "textarea", hint: "Separate paragraphs with a blank line" },
 ];
 
-const CONTENT_BLOCK_FIELDS: CmsField[] = [
-  { key: "label", label: "Section label", type: "text" },
-  { key: "heading", label: "Heading", type: "text" },
-  { key: "headingAccent", label: "Accent word(s)", type: "text" },
-  { key: "paragraphs", label: "Body text", type: "textarea", hint: "Separate paragraphs with a blank line" },
-  { key: "imageSrc", label: "Image", type: "image" },
-  { key: "imageAlt", label: "Image alt text", type: "text" },
-  {
-    key: "imagePosition",
-    label: "Image position",
-    type: "select",
-    options: [
-      { value: "left", label: "Left" },
-      { value: "right", label: "Right" },
-    ],
-  },
-  { key: "ctaLabel", label: "CTA label", type: "text" },
-  { key: "ctaUrl", label: "CTA link", type: "url" },
-];
-
 export interface CmsField {
   key: string;
   label: string;
@@ -88,6 +68,43 @@ const HEADING_TAG_FIELD: CmsField = {
   hint: "HTML heading level for SEO",
 };
 
+/** Color fields appended to hero / content sections */
+const HERO_COLOR_FIELDS: CmsField[] = [
+  { key: "labelColor", label: "Label color", type: "color", hint: "Override section label color" },
+  { key: "headingColor", label: "Heading color", type: "color", hint: "Override heading text color" },
+  { key: "accentColor", label: "Accent color", type: "color", hint: "Override accent/highlighted word color" },
+  { key: "subtextColor", label: "Subtext color", type: "color", hint: "Override subtext/subtitle color" },
+];
+
+const CONTENT_COLOR_FIELDS: CmsField[] = [
+  { key: "labelColor", label: "Label color", type: "color" },
+  { key: "headingColor", label: "Heading color", type: "color" },
+  { key: "accentColor", label: "Accent color", type: "color" },
+  { key: "bodyTextColor", label: "Body text color", type: "color" },
+  { key: "ctaBgColor", label: "CTA button color", type: "color" },
+];
+
+const CONTENT_BLOCK_FIELDS: CmsField[] = [
+  { key: "label", label: "Section label", type: "text" },
+  { key: "heading", label: "Heading", type: "text" },
+  { key: "headingAccent", label: "Accent word(s)", type: "text" },
+  { key: "paragraphs", label: "Body text", type: "textarea", hint: "Separate paragraphs with a blank line" },
+  { key: "imageSrc", label: "Image", type: "image" },
+  { key: "imageAlt", label: "Image alt text", type: "text" },
+  {
+    key: "imagePosition",
+    label: "Image position",
+    type: "select",
+    options: [
+      { value: "left", label: "Left" },
+      { value: "right", label: "Right" },
+    ],
+  },
+  { key: "ctaLabel", label: "CTA label", type: "text" },
+  { key: "ctaUrl", label: "CTA link", type: "url" },
+  ...CONTENT_COLOR_FIELDS,
+];
+
 function pageHeroFields(): CmsField[] {
   return [
     { key: "label", label: "Section label", type: "text" },
@@ -95,6 +112,7 @@ function pageHeroFields(): CmsField[] {
     { key: "headingAccent", label: "Accent word(s)", type: "text", hint: "Word(s) highlighted in color" },
     { key: "subtext", label: "Subtext", type: "textarea" },
     HEADING_TAG_FIELD,
+    ...HERO_COLOR_FIELDS,
   ];
 }
 
@@ -134,6 +152,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "ctaSecondaryLabel", label: "Button 2 — label", type: "text" },
           { key: "ctaSecondaryUrl", label: "Button 2 — link", type: "url" },
           HEADING_TAG_FIELD,
+          ...HERO_COLOR_FIELDS,
           {
             key: "intro_points",
             label: "Bullet points",
@@ -166,6 +185,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "subtext", label: "Subtext", type: "textarea" },
           { key: "cta_label", label: "CTA label", type: "text" },
           { key: "cta_url", label: "CTA link", type: "url" },
+          ...CONTENT_COLOR_FIELDS,
           {
             key: "services",
             label: "Service cards",
@@ -188,6 +208,9 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "section_label", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
           { key: "heading_accent", label: "Accent word(s)", type: "text" },
+          { key: "labelColor", label: "Label color", type: "color" },
+          { key: "headingColor", label: "Heading color", type: "color" },
+          { key: "accentColor", label: "Accent color", type: "color" },
           {
             key: "steps",
             label: "Process steps",
@@ -238,6 +261,7 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
           { key: "cta_url", label: "Primary CTA link", type: "url" },
           { key: "cta_secondary_label", label: "Secondary CTA label", type: "text" },
           { key: "cta_secondary_url", label: "Secondary CTA link", type: "url" },
+          ...CONTENT_COLOR_FIELDS,
           {
             key: "usps",
             label: "Feature USPs",

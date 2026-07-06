@@ -45,6 +45,10 @@ export function KontaktPageContent({ hero, form, contact, locations, timetables 
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        labelColor={hero.labelColor}
+        headingColor={hero.headingColor}
+        accentColor={hero.accentColor}
+        subtextColor={hero.subtextColor}
         breadcrumbs={[{ label: "Kontakt", href: "/kontakt" }]}
       />
 

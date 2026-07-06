@@ -1,9 +1,11 @@
 interface AccentHeadingTextProps {
   heading: string;
   accent?: string;
+  /** Override accent text color (CSS color string). Defaults to periwinkle-dark. */
+  accentColor?: string;
 }
 
-export function AccentHeadingText({ heading, accent }: AccentHeadingTextProps) {
+export function AccentHeadingText({ heading, accent, accentColor }: AccentHeadingTextProps) {
   if (!accent || !heading.includes(accent)) {
     return <>{heading}</>;
   }
@@ -12,7 +14,12 @@ export function AccentHeadingText({ heading, accent }: AccentHeadingTextProps) {
   return (
     <>
       {parts[0]}
-      <span className="text-periwinkle-dark">{accent}</span>
+      <span
+        className={accentColor ? undefined : "text-periwinkle-dark"}
+        style={accentColor ? { color: accentColor } : undefined}
+      >
+        {accent}
+      </span>
       {parts[1]}
     </>
   );

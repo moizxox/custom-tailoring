@@ -22,7 +22,11 @@ export default async function DatenschutzPage() {
 
   return (
     <>
-      <PageHero title={hero.title} headingTag={hero.headingTag} breadcrumbs={[{ label: "Datenschutz", href: "/datenschutz" }]} />
+      <PageHero title={hero.title} headingTag={hero.headingTag}
+        labelColor={hero.labelColor}
+        headingColor={hero.headingColor}
+        accentColor={hero.accentColor}
+        subtextColor={hero.subtextColor} breadcrumbs={[{ label: "Datenschutz", href: "/datenschutz" }]} />
       <section className="py-20 section-bg-white">
         <div className="container-site max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl border border-stone-light p-8 flex flex-col gap-8 font-sans text-sm text-charcoal-light leading-relaxed">
