@@ -22,11 +22,13 @@ export default async function WiderrufPage() {
 
   return (
     <>
-      <PageHero label={hero.label} title={hero.title} headingTag={hero.headingTag}
-        labelColor={hero.labelColor}
-        headingColor={hero.headingColor}
+      <PageHero
+        label={hero.label}
+        title={hero.title}
+        headingTag={hero.headingTag}
+        textColor={hero.textColor}
         accentColor={hero.accentColor}
-        subtextColor={hero.subtextColor} breadcrumbs={[{ label: "Widerruf", href: "/widerruf" }]} />
+      />
       <section className="py-20 section-bg-white">
         <div className="container-site max-w-3xl space-y-6">
           {doc.intro && <p className="font-sans text-sm text-charcoal-lighter leading-relaxed">{doc.intro}</p>}

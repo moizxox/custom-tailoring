@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { BRAND_COLOR_SWATCHES } from "@/lib/cms/color-config";
 
 export interface ColorSwatch {
   label: string;
@@ -16,34 +17,7 @@ interface Props {
   showHex?: boolean;
 }
 
-/** Default brand palette swatches */
-export const BRAND_SWATCHES: ColorSwatch[] = [
-  // Periwinkle
-  { label: "Periwinkle lighter", value: "#e8eaf7", cssVar: "--color-periwinkle-lighter" },
-  { label: "Periwinkle light", value: "#bcc2e4", cssVar: "--color-periwinkle-light" },
-  { label: "Periwinkle", value: "#9da5d0", cssVar: "--color-periwinkle" },
-  { label: "Periwinkle dark", value: "#7880b8", cssVar: "--color-periwinkle-dark" },
-  { label: "Periwinkle deep", value: "#565ea0", cssVar: "--color-periwinkle-deep" },
-  // Gold
-  { label: "Gold lighter", value: "#f3ede4", cssVar: "--color-gold-lighter" },
-  { label: "Gold light", value: "#e5ddd0", cssVar: "--color-gold-light" },
-  { label: "Gold", value: "#d4c9b8", cssVar: "--color-gold" },
-  { label: "Gold dark", value: "#c4b8a6", cssVar: "--color-gold-dark" },
-  { label: "Gold deeper", value: "#b5a896", cssVar: "--color-gold-deeper" },
-  // Neutrals
-  { label: "Off-white", value: "#f8f6f3", cssVar: "--color-offwhite" },
-  { label: "Sand", value: "#e4d9cc", cssVar: "--color-sand" },
-  { label: "Stone", value: "#d0cbc4", cssVar: "--color-stone" },
-  { label: "Warm grey", value: "#b5afa8", cssVar: "--color-warmgrey" },
-  // Text
-  { label: "Charcoal lighter", value: "#8a8784", cssVar: "--color-charcoal-lighter" },
-  { label: "Charcoal light", value: "#5a5754", cssVar: "--color-charcoal-light" },
-  { label: "Charcoal", value: "#2c2a28", cssVar: "--color-charcoal" },
-  // Common
-  { label: "White", value: "#ffffff" },
-  { label: "Black", value: "#000000" },
-  { label: "Transparent", value: "transparent" },
-];
+export const BRAND_SWATCHES: ColorSwatch[] = BRAND_COLOR_SWATCHES;
 
 export default function ColorPicker({ value, onChange, label, swatches = BRAND_SWATCHES, showHex = true }: Props) {
   const [open, setOpen] = useState(false);
@@ -122,8 +96,8 @@ export default function ColorPicker({ value, onChange, label, swatches = BRAND_S
       </div>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-64">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Brand palette</p>
+        <div className="absolute top-full left-0 mt-2 z-50 bg-white border border-gray-200 rounded-xl shadow-xl p-3 w-56">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Brand colors</p>
           <div className="grid grid-cols-5 gap-1.5 mb-3">
             {swatches.map((swatch) => (
               <button

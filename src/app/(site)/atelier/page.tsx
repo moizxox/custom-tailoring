@@ -42,10 +42,8 @@ export default async function AtelierPage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
-        labelColor={hero.labelColor}
-        headingColor={hero.headingColor}
+        textColor={hero.textColor}
         accentColor={hero.accentColor}
-        subtextColor={hero.subtextColor}
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 

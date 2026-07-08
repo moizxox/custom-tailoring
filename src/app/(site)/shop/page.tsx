@@ -60,10 +60,8 @@ export default async function ShopPage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
-        labelColor={hero.labelColor}
-        headingColor={hero.headingColor}
+        textColor={hero.textColor}
         accentColor={hero.accentColor}
-        subtextColor={hero.subtextColor}
         breadcrumbs={[{ label: "Shop", href: "/shop" }]}
       />
 

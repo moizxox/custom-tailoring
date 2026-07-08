@@ -62,10 +62,8 @@ export default async function UeberUnsPage() {
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
-        labelColor={hero.labelColor}
-        headingColor={hero.headingColor}
+        textColor={hero.textColor}
         accentColor={hero.accentColor}
-        subtextColor={hero.subtextColor}
       />
 
       <section className="py-20 section-bg-white">

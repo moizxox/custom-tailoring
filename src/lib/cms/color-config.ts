@@ -1,6 +1,6 @@
 /**
- * Global color palette configuration — shared between server-side global-colors.ts
- * and client-side GlobalColorsEditor component.
+ * Simplified global palette — 2 editable colors per family (light + main).
+ * Other CSS variables are auto-derived in global-colors.ts.
  */
 
 export interface GlobalColorConfig {
@@ -10,46 +10,48 @@ export interface GlobalColorConfig {
   defaultValue: string;
 }
 
+/** Only these are shown in Settings → Colors */
 export const GLOBAL_COLOR_GROUPS: { group: string; colors: GlobalColorConfig[] }[] = [
   {
-    group: "Primary — Periwinkle",
+    group: "Periwinkle",
     colors: [
-      { cssVar: "--color-periwinkle-lighter", label: "Periwinkle lighter", defaultValue: "#e8eaf7", description: "Section backgrounds" },
-      { cssVar: "--color-periwinkle-light", label: "Periwinkle light", defaultValue: "#bcc2e4", description: "Borders, dividers" },
-      { cssVar: "--color-periwinkle", label: "Periwinkle", defaultValue: "#9da5d0", description: "Primary buttons, highlights" },
-      { cssVar: "--color-periwinkle-dark", label: "Periwinkle dark", defaultValue: "#7880b8", description: "Button hover" },
-      { cssVar: "--color-periwinkle-deep", label: "Periwinkle deep", defaultValue: "#565ea0", description: "Accent headings, gradients" },
+      { cssVar: "--color-periwinkle-light", label: "Periwinkle light", defaultValue: "#e8eaf7", description: "Soft backgrounds & tints" },
+      { cssVar: "--color-periwinkle", label: "Periwinkle", defaultValue: "#9da5d0", description: "Buttons, accents, highlights" },
     ],
   },
   {
-    group: "Accent — Gold",
+    group: "Gold",
     colors: [
-      { cssVar: "--color-gold-lighter", label: "Gold lighter", defaultValue: "#f3ede4", description: "Secondary button bg" },
-      { cssVar: "--color-gold-light", label: "Gold light", defaultValue: "#e5ddd0", description: "Hover states" },
-      { cssVar: "--color-gold", label: "Gold", defaultValue: "#d4c9b8", description: "Accent elements" },
-      { cssVar: "--color-gold-dark", label: "Gold dark", defaultValue: "#c4b8a6", description: "Section labels" },
-      { cssVar: "--color-gold-deeper", label: "Gold deeper", defaultValue: "#b5a896", description: "Icon tints" },
-      { cssVar: "--color-gold-muted", label: "Gold muted", defaultValue: "#ddd4c6", description: "Dashed lines, dividers" },
+      { cssVar: "--color-gold-light", label: "Gold light", defaultValue: "#f3ede4", description: "Secondary surfaces" },
+      { cssVar: "--color-gold", label: "Gold", defaultValue: "#d4c9b8", description: "Labels, dividers, accents" },
     ],
   },
   {
     group: "Neutrals",
     colors: [
       { cssVar: "--color-offwhite", label: "Off-white", defaultValue: "#f8f6f3", description: "Page background" },
-      { cssVar: "--color-offwhite-warm", label: "Off-white warm", defaultValue: "#f2efe9", description: "Section tints" },
-      { cssVar: "--color-sand", label: "Sand", defaultValue: "#e4d9cc", description: "Card backgrounds" },
-      { cssVar: "--color-sand-light", label: "Sand light", defaultValue: "#f0e8df", description: "Hover backgrounds" },
-      { cssVar: "--color-stone", label: "Stone", defaultValue: "#d0cbc4", description: "Border accents" },
-      { cssVar: "--color-stone-light", label: "Stone light", defaultValue: "#e2dfdc", description: "Input borders" },
-      { cssVar: "--color-warmgrey", label: "Warm grey", defaultValue: "#b5afa8", description: "Divider text" },
+      { cssVar: "--color-stone", label: "Stone", defaultValue: "#d0cbc4", description: "Borders & subtle fills" },
     ],
   },
   {
     group: "Text",
     colors: [
-      { cssVar: "--color-charcoal", label: "Charcoal", defaultValue: "#2c2a28", description: "Main body text" },
-      { cssVar: "--color-charcoal-light", label: "Charcoal light", defaultValue: "#5a5754", description: "Secondary text" },
-      { cssVar: "--color-charcoal-lighter", label: "Charcoal lighter", defaultValue: "#8a8784", description: "Muted / placeholder text" },
+      { cssVar: "--color-charcoal", label: "Text", defaultValue: "#2c2a28", description: "Headings & body" },
+      { cssVar: "--color-charcoal-light", label: "Text muted", defaultValue: "#5a5754", description: "Subtext & secondary copy" },
     ],
   },
+];
+
+/** Compact swatches for section-level color pickers */
+export const BRAND_COLOR_SWATCHES = [
+  { label: "Periwinkle light", value: "#e8eaf7" },
+  { label: "Periwinkle", value: "#9da5d0" },
+  { label: "Gold light", value: "#f3ede4" },
+  { label: "Gold", value: "#d4c9b8" },
+  { label: "Off-white", value: "#f8f6f3" },
+  { label: "Stone", value: "#d0cbc4" },
+  { label: "Text", value: "#2c2a28" },
+  { label: "Text muted", value: "#5a5754" },
+  { label: "White", value: "#ffffff" },
+  { label: "Transparent", value: "transparent" },
 ];

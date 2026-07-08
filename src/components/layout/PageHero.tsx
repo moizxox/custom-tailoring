@@ -19,10 +19,8 @@ interface PageHeroProps {
   breadcrumbs?: Breadcrumb[];
   headingTag?: HeadingTag;
   // CMS color overrides
-  labelColor?: string;
-  headingColor?: string;
+  textColor?: string;
   accentColor?: string;
-  subtextColor?: string;
 }
 
 export function PageHero({
@@ -32,10 +30,8 @@ export function PageHero({
   subtitle,
   breadcrumbs,
   headingTag = "h1",
-  labelColor,
-  headingColor,
+  textColor,
   accentColor,
-  subtextColor,
 }: PageHeroProps) {
   const renderTitle = () => (
     <AccentHeadingText heading={title} accent={titleAccent} accentColor={accentColor} />
@@ -43,10 +39,7 @@ export function PageHero({
 
   return (
     <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24 min-h-[60vh]">
-      {/* Same confetti stack as homepage — offwhite base, gradient, then overlay (nothing on top washing it out) */}
       <HeroConfettiBackground sketchOpacity="opacity-[0.5]" />
-
-      {/* Stitch dashes only — mesh disabled so it doesn't cover the confetti circles */}
       <BackgroundDecor variant="page" showConfetti={false} showMesh={false} showStitchDashes showFigures={false} />
 
       <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12">
@@ -75,7 +68,7 @@ export function PageHero({
 
           {label && (
             <div className="flex justify-center mb-4">
-              <p className="section-label" style={labelColor ? { color: labelColor } : undefined}>{label}</p>
+              <p className="section-label" style={textColor ? { color: textColor } : undefined}>{label}</p>
             </div>
           )}
 
@@ -83,9 +76,7 @@ export function PageHero({
             headingTag,
             {
               className: "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.02] text-balance",
-              style: headingColor ? { color: headingColor } : { color: "var(--color-charcoal)" },
-              // pass accent color down via CSS variable so AccentHeadingText can pick it up
-              ...(accentColor ? { ["data-accent-color" as string]: accentColor } : {}),
+              style: textColor ? { color: textColor } : { color: "var(--color-charcoal)" },
             },
             renderTitle()
           )}
@@ -93,7 +84,7 @@ export function PageHero({
           {subtitle && (
             <p
               className="font-sans text-[15px] leading-relaxed mt-5 max-w-2xl mx-auto"
-              style={subtextColor ? { color: subtextColor } : { color: "var(--color-charcoal-light)" }}
+              style={textColor ? { color: textColor, opacity: 0.85 } : { color: "var(--color-charcoal-light)" }}
             >
               {subtitle}
             </p>
