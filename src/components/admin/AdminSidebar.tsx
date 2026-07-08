@@ -6,8 +6,15 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FileText, ShoppingBag, ImageIcon, Menu, Settings,
-  UserPlus, ExternalLink, Scissors, Palette,
+  UserPlus, ExternalLink, Scissors, Palette, Users, FolderKanban, UsersRound,
 } from "lucide-react";
+
+const CRM_NAV_ITEMS = [
+  { href: "/admin/crm", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/crm/customers", label: "Kunden", icon: Users, exact: false },
+  { href: "/admin/crm/groups", label: "Gruppen", icon: UsersRound, exact: false },
+  { href: "/admin/crm/projects", label: "Projekte", icon: FolderKanban, exact: false },
+];
 
 const NAV_ITEMS = [
   { href: "/admin", key: "dashboard" as const, icon: LayoutDashboard, exact: true },
@@ -70,6 +77,32 @@ export default function AdminSidebar() {
             </Link>
           );
         })}
+
+        {/* CRM section */}
+        <div className="pt-3 pb-1">
+          <p className="px-3 pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">CRM</p>
+          {CRM_NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all",
+                  isActive
+                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/20"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                )}
+              >
+                <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300")} />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
 
         {/* Design section hint */}
         <div className="pt-3 pb-1">
