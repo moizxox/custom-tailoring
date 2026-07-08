@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { findCustomerByCredentials } from "@/lib/portal/customers";
+import { findCustomerByCredentials } from "@/lib/crm/customers";
 import { createPortalSession } from "@/lib/portal/session";
 
 export async function POST(request: Request) {
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const customer = findCustomerByCredentials(body.email, body.accessCode);
+  const customer = await findCustomerByCredentials(body.email, body.accessCode);
 
   if (!customer) {
     return NextResponse.json(
