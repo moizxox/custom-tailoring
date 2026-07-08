@@ -8,6 +8,7 @@ import {
   LayoutDashboard, FileText, ShoppingBag, ImageIcon, Menu, Settings,
   UserPlus, ExternalLink, Scissors, Palette, Users, FolderKanban, UsersRound,
 } from "lucide-react";
+import { CrmSearchBar } from "@/components/crm/CrmSearchBar";
 
 const CRM_NAV_ITEMS = [
   { href: "/admin/crm", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -81,6 +82,9 @@ export default function AdminSidebar() {
         {/* CRM section */}
         <div className="pt-3 pb-1">
           <p className="px-3 pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">CRM</p>
+          <div className="px-1 mb-2">
+            <CrmSearchBar />
+          </div>
           {CRM_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = item.exact

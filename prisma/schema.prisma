@@ -100,6 +100,21 @@ model PasswordResetToken {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Contact form submissions
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  location  String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // CRM — Customers
 // ─────────────────────────────────────────────────────────────────────────────
 

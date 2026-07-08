@@ -16,7 +16,7 @@ interface TokenPageProps {
 
 export default async function MassblattTokenPage({ params }: TokenPageProps) {
   const { token } = await params;
-  const customer = resolveAccessToken(token);
+  const customer = await resolveAccessToken(token);
 
   if (!customer) {
     redirect("/kundenbereich/login?error=invalid-link");

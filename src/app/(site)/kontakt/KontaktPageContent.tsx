@@ -29,12 +29,29 @@ export function KontaktPageContent({ hero, form, contact, locations, timetables 
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
 
+  const [submitError, setSubmitError] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setSending(false);
-    setSent(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/kontakt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(contactForm),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error ?? "Fehler beim Senden.");
+        return;
+      }
+      setSent(true);
+    } catch {
+      setSubmitError("Verbindungsfehler. Bitte versuchen Sie es erneut.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -154,6 +171,11 @@ export function KontaktPageContent({ hero, form, contact, locations, timetables 
                       value={contactForm.message}
                       onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
                     />
+                    {submitError && (
+                      <p className="text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                        {submitError}
+                      </p>
+                    )}
                     <button type="submit" disabled={sending} className="btn-primary justify-center">
                       {sending ? "Wird gesendet…" : form.submitLabel}
                     </button>

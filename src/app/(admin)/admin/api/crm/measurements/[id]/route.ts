@@ -13,8 +13,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
   if (!existing) return NextResponse.json({ error: "Nicht gefunden." }, { status: 404 });
 
   // Append to history
-  const history = (existing.history as Array<unknown>) ?? [];
-  history.push({ changedAt: new Date().toISOString(), snapshot: existing.fields });
+  // Build updated history — cast to satisfy Prisma's Json type
+  const prevHistory = Array.isArray(existing.history) ? [...(existing.history as object[])] : [];
+  prevHistory.push({ changedAt: new Date().toISOString(), snapshot: existing.fields } as object);
 
   const measurement = await prisma.measurement.update({
     where: { id },
@@ -22,7 +23,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       fields: body.fields ?? existing.fields,
       status: body.status ?? existing.status,
       notes: body.notes ?? existing.notes,
-      history,
+      history: prevHistory as object[],
     },
   });
   return NextResponse.json({ measurement });

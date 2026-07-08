@@ -107,20 +107,57 @@ export function initSocketIO(io: AppSocketServer) {
         } else {
           io.to(projectRoom(projectId)).emit("new_message", payload);
 
-          // Also notify admin global room if sender was customer
           if (role === "customer") {
+            // Also send to admin global room
             io.to(ADMIN_GLOBAL_ROOM).emit("new_message", payload);
 
-            // Create a notification for admins
-            await prisma.notification.create({
+            // Create + push admin notification
+            const adminNotif = await prisma.notification.create({
               data: {
                 type: "new_message",
-                title: "New customer message",
+                title: "Neue Kundennachricht",
                 body: body.slice(0, 120),
                 refId: projectId,
                 refType: "project",
               },
             });
+            io.to(ADMIN_GLOBAL_ROOM).emit("notification", {
+              id: adminNotif.id,
+              type: adminNotif.type,
+              title: adminNotif.title,
+              body: adminNotif.body,
+              refId: adminNotif.refId,
+              refType: adminNotif.refType,
+              createdAt: adminNotif.createdAt.toISOString(),
+            });
+          } else {
+            // Admin sent message → notify the customer
+            const project = await prisma.project.findUnique({
+              where: { id: projectId },
+              select: { customerId: true },
+            });
+            if (project?.customerId) {
+              const custNotif = await prisma.notification.create({
+                data: {
+                  customerId: project.customerId,
+                  type: "new_message",
+                  title: "Neue Nachricht vom Atelier",
+                  body: body.slice(0, 120),
+                  refId: projectId,
+                  refType: "project",
+                },
+              });
+              io.to(customerRoom(project.customerId)).emit("notification", {
+                id: custNotif.id,
+                customerId: custNotif.customerId,
+                type: custNotif.type,
+                title: custNotif.title,
+                body: custNotif.body,
+                refId: custNotif.refId,
+                refType: custNotif.refType,
+                createdAt: custNotif.createdAt.toISOString(),
+              });
+            }
           }
         }
       } catch (err) {
@@ -191,4 +228,49 @@ export function initSocketIO(io: AppSocketServer) {
   });
 
   console.log("[socket] Socket.io server initialised");
+}
+
+/**
+ * Push a project status change notification to the customer's room.
+ * Call from API routes after updating project status.
+ */
+export async function pushStatusChange(
+  projectId: string,
+  customerId: string | null,
+  customerStatus: string
+) {
+  if (!_io) return;
+  const payload = { projectId, customerStatus };
+
+  _io.to(projectRoom(projectId)).emit("project_status_changed", payload);
+
+  if (customerId) {
+    _io.to(customerRoom(customerId)).emit("project_status_changed", payload);
+
+    // Persist notification
+    try {
+      const notif = await prisma.notification.create({
+        data: {
+          customerId,
+          type: "status_change",
+          title: "Projektstatus aktualisiert",
+          body: `Neuer Status: ${customerStatus}`,
+          refId: projectId,
+          refType: "project",
+        },
+      });
+      _io.to(customerRoom(customerId)).emit("notification", {
+        id: notif.id,
+        customerId: notif.customerId,
+        type: notif.type,
+        title: notif.title,
+        body: notif.body,
+        refId: notif.refId,
+        refType: notif.refType,
+        createdAt: notif.createdAt.toISOString(),
+      });
+    } catch (err) {
+      console.error("[socket] pushStatusChange notification error", err);
+    }
+  }
 }

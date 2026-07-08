@@ -46,7 +46,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const message = await sendMessage({
     projectId,
     senderRole: "customer",
-    senderName: project.customer?.name ?? null,
+    senderName: project.customer?.name ?? undefined,
     body: body.body.trim(),
   });
 
