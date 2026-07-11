@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CustomerForm } from "@/components/crm/CustomerForm";
+import { CustomerDetailActions } from "@/components/crm/CustomerDetailActions";
 import { formatCustomerStatus } from "@/lib/crm/projects";
-import { Copy } from "lucide-react";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -40,33 +40,23 @@ export default async function CustomerDetailPage({ params }: Props) {
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/admin/crm/customers" className="text-xs text-gray-500 hover:text-white transition-colors">
+            <Link href="/admin/crm/customers" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">
               Kunden
             </Link>
             <span className="text-gray-700">/</span>
             <span className="text-xs text-gray-400">{customer.name}</span>
           </div>
-          <h1 className="text-2xl font-semibold text-white">{customer.name}</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">{customer.name}</h1>
           <p className="text-sm text-gray-400 mt-1">{customer.email}</p>
         </div>
-        <div className="flex items-center gap-2 bg-gray-900 border border-white/5 rounded-xl px-3 py-2">
-          <span className="text-xs text-gray-500">Zugangscode:</span>
-          <code className="text-sm font-mono text-emerald-400">{customer.accessCode}</code>
-          <button
-            id="copy-code-btn"
-            className="text-gray-600 hover:text-white transition-colors text-xs"
-            title="Code kopieren"
-          >
-            <Copy className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        <CustomerDetailActions customerId={customer.id} accessCode={customer.accessCode} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Edit form */}
         <div className="lg:col-span-2">
-          <div className="bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <h2 className="text-sm font-semibold text-white mb-4">Kundendaten</h2>
+          <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
+            <h2 className="text-sm font-semibold text-gray-900 mb-4">Kundendaten</h2>
             <CustomerForm
               customerId={customer.id}
               initialData={{
@@ -83,33 +73,33 @@ export default async function CustomerDetailPage({ params }: Props) {
 
         {/* Stats & links */}
         <div className="space-y-4">
-          <div className="bg-gray-900 border border-white/5 rounded-2xl p-4">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4">
             <p className="text-xs text-gray-500 mb-3 uppercase tracking-wider">Statistik</p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Projekte</span>
-                <span className="text-white font-medium">{customer._count.projects}</span>
+                <span className="text-gray-900 font-medium">{customer._count.projects}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Masse</span>
-                <span className="text-white font-medium">{customer._count.measurements}</span>
+                <span className="text-gray-900 font-medium">{customer._count.measurements}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Gruppen</span>
-                <span className="text-white font-medium">{customer.groupMemberships.length}</span>
+                <span className="text-gray-900 font-medium">{customer.groupMemberships.length}</span>
               </div>
             </div>
           </div>
 
           {customer.groupMemberships.length > 0 && (
-            <div className="bg-gray-900 border border-white/5 rounded-2xl p-4">
+            <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4">
               <p className="text-xs text-gray-500 mb-3 uppercase tracking-wider">Gruppen</p>
               <div className="space-y-2">
                 {customer.groupMemberships.map((gm) => (
                   <Link
                     key={gm.group.id}
                     href={`/admin/crm/groups/${gm.group.id}`}
-                    className="flex items-center justify-between text-sm hover:text-violet-300 transition-colors"
+                    className="flex items-center justify-between text-sm hover:text-violet-600 transition-colors"
                   >
                     <span className="text-gray-300">{gm.group.name}</span>
                     <span className="text-[10px] text-gray-600">{gm.group.type}</span>
@@ -123,9 +113,9 @@ export default async function CustomerDetailPage({ params }: Props) {
 
       {/* Projects */}
       {customer.projects.length > 0 && (
-        <div className="mt-6 bg-gray-900 border border-white/5 rounded-2xl p-5">
+        <div className="mt-6 bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white">Projekte</h2>
+            <h2 className="text-sm font-semibold text-gray-900">Projekte</h2>
             <Link
               href={`/admin/crm/projects/new?customerId=${customer.id}`}
               className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
@@ -141,7 +131,7 @@ export default async function CustomerDetailPage({ params }: Props) {
                 className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 transition-all group"
               >
                 <div>
-                  <p className="text-sm text-white group-hover:text-violet-300 transition-colors">
+                  <p className="text-sm text-gray-900 group-hover:text-violet-600 transition-colors">
                     {project.title}
                   </p>
                   {project.group && (
