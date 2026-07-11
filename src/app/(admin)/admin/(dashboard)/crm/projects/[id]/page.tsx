@@ -36,7 +36,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     <div className="p-6 md:p-8 max-w-7xl">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 mb-6">
-        <Link href="/admin/crm/projects" className="text-xs text-gray-500 hover:text-white transition-colors">Projekte</Link>
+        <Link href="/admin/crm/projects" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">Projekte</Link>
         <span className="text-gray-700">/</span>
         <span className="text-xs text-gray-400">{project.title}</span>
       </div>

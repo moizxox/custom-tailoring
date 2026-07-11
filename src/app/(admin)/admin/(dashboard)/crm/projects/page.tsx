@@ -35,7 +35,7 @@ export default async function CrmProjectsPage({ searchParams }: Props) {
     <div className="p-6 md:p-8 max-w-7xl">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Projekte</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Projekte</h1>
           <p className="text-sm text-gray-400 mt-1">{total} Projekte insgesamt</p>
         </div>
         <Link
