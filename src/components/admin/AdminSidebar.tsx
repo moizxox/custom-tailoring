@@ -6,12 +6,13 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FileText, ShoppingBag, ImageIcon, Menu, Settings,
-  UserPlus, ExternalLink, Scissors, Palette, Users, FolderKanban, UsersRound,
+  UserPlus, ExternalLink, Scissors, Palette, Users, FolderKanban, UsersRound, Inbox,
 } from "lucide-react";
 import { CrmSearchBar } from "@/components/crm/CrmSearchBar";
 
 const CRM_NAV_ITEMS = [
   { href: "/admin/crm", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/crm/submissions", label: "Anfragen", icon: Inbox, exact: false, badgeKey: "submissions" as const },
   { href: "/admin/crm/customers", label: "Kunden", icon: Users, exact: false },
   { href: "/admin/crm/groups", label: "Gruppen", icon: UsersRound, exact: false },
   { href: "/admin/crm/projects", label: "Projekte", icon: FolderKanban, exact: false },
@@ -26,7 +27,7 @@ const NAV_ITEMS = [
   { href: "/admin/settings", key: "settings" as const, icon: Settings, exact: false },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ unreadSubmissions = 0 }: { unreadSubmissions?: number }) {
   const pathname = usePathname();
   const t = useTranslations("nav");
 
@@ -103,6 +104,11 @@ export default function AdminSidebar() {
               >
                 <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300")} />
                 {item.label}
+                {"badgeKey" in item && item.badgeKey === "submissions" && unreadSubmissions > 0 && (
+                  <span className="ml-auto text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full font-semibold">
+                    {unreadSubmissions > 9 ? "9+" : unreadSubmissions}
+                  </span>
+                )}
               </Link>
             );
           })}
