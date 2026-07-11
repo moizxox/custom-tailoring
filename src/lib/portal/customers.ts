@@ -5,6 +5,7 @@
  * components that haven't yet been fully migrated.
  */
 import { prisma } from "@/lib/prisma";
+import { getAccessibleProjectWhere } from "@/lib/portal/projects";
 
 export type CostumeCategory = "Herren" | "Damen" | "Kinder";
 
@@ -30,16 +31,17 @@ export async function findCustomerByCredentials(
         mode: "insensitive",
       },
     },
-    include: {
-      projects: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-      },
-    },
   });
 
   if (!customer) return null;
-  return toPortalCustomer(customer, customer.projects[0] ?? null);
+
+  const projectWhere = await getAccessibleProjectWhere(customer.id);
+  const project = await prisma.project.findFirst({
+    where: projectWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return toPortalCustomer(customer, project ?? null);
 }
 
 /** Fetch a customer by id and return a PortalCustomer view */
@@ -48,16 +50,17 @@ export async function findCustomerById(
 ): Promise<PortalCustomer | null> {
   const customer = await prisma.customer.findUnique({
     where: { id },
-    include: {
-      projects: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-      },
-    },
   });
 
   if (!customer) return null;
-  return toPortalCustomer(customer, customer.projects[0] ?? null);
+
+  const projectWhere = await getAccessibleProjectWhere(customer.id);
+  const project = await prisma.project.findFirst({
+    where: projectWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return toPortalCustomer(customer, project ?? null);
 }
 
 /** Resolve a one-time portal access token → PortalCustomer */
@@ -66,16 +69,7 @@ export async function resolveAccessToken(
 ): Promise<PortalCustomer | null> {
   const entry = await prisma.portalAccessToken.findUnique({
     where: { token },
-    include: {
-      customer: {
-        include: {
-          projects: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-          },
-        },
-      },
-    },
+    include: { customer: true },
   });
   if (!entry || entry.used || entry.expiresAt < new Date()) return null;
 
@@ -84,19 +78,26 @@ export async function resolveAccessToken(
     data: { used: true },
   });
 
-  return toPortalCustomer(entry.customer, entry.customer.projects[0] ?? null);
+  const projectWhere = await getAccessibleProjectWhere(entry.customer.id);
+  const project = await prisma.project.findFirst({
+    where: projectWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return toPortalCustomer(entry.customer, project ?? null);
 }
 
 // ─── Internal ─────────────────────────────────────────────────────────────────
 
-type CustomerWithProject = Awaited<
-  ReturnType<typeof prisma.customer.findUniqueOrThrow>
-> & {
-  projects: Array<{ title: string; costumeCategory: string | null }>;
+type CustomerRecord = {
+  id: string;
+  name: string;
+  email: string;
+  accessCode: string;
 };
 
 function toPortalCustomer(
-  customer: CustomerWithProject,
+  customer: CustomerRecord,
   project: { title: string; costumeCategory: string | null } | null
 ): PortalCustomer {
   const cat = (project?.costumeCategory ?? "Herren") as CostumeCategory;

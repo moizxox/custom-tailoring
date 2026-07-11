@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getPortalCustomerId } from "@/lib/portal/session";
 import { prisma } from "@/lib/prisma";
+import { getAccessibleProjectWhere } from "@/lib/portal/projects";
 import { PortalHeader } from "@/components/portal/PortalHeader";
 import type { Metadata } from "next";
 
@@ -14,11 +15,13 @@ export default async function PortalNachrichtenPage() {
   const customerId = await getPortalCustomerId();
   if (!customerId) redirect("/kundenbereich/login");
 
-  // Get all projects with their latest message + unread counts
+  const projectWhere = await getAccessibleProjectWhere(customerId);
+
   const projects = await prisma.project.findMany({
-    where: { customerId },
+    where: projectWhere,
     orderBy: { updatedAt: "desc" },
     include: {
+      group: { select: { name: true } },
       conversations: {
         include: {
           messages: {
@@ -31,6 +34,37 @@ export default async function PortalNachrichtenPage() {
       },
     },
   });
+
+  const projectIds = projects.map((p) => p.id);
+  const unreadByProject = projectIds.length > 0
+    ? await prisma.message.groupBy({
+        by: ["conversationId"],
+        where: {
+          senderRole: "admin",
+          isInternal: false,
+          readAt: null,
+          conversation: { projectId: { in: projectIds } },
+        },
+        _count: { id: true },
+      })
+    : [];
+
+  const convToProject = new Map(
+    projects.flatMap((p) =>
+      p.conversations.map((c) => [c.id, p.id] as const)
+    )
+  );
+
+  const unreadCountByProject = new Map<string, number>();
+  for (const row of unreadByProject) {
+    const projectId = convToProject.get(row.conversationId);
+    if (projectId) {
+      unreadCountByProject.set(
+        projectId,
+        (unreadCountByProject.get(projectId) ?? 0) + row._count.id
+      );
+    }
+  }
 
   const unreadCount = await prisma.notification.count({
     where: { customerId, read: false },
@@ -59,7 +93,7 @@ export default async function PortalNachrichtenPage() {
             {projects.map((project) => {
               const conv = project.conversations[0];
               const lastMsg = conv?.messages[0] ?? null;
-              const unreadMessages = 0; // would need a proper count query per project
+              const unreadMessages = unreadCountByProject.get(project.id) ?? 0;
 
               return (
                 <Link
@@ -72,6 +106,11 @@ export default async function PortalNachrichtenPage() {
                       <p className="font-serif text-base text-charcoal group-hover:text-periwinkle-dark transition-colors">
                         {project.title}
                       </p>
+                      {project.group && (
+                        <p className="font-sans text-[10px] text-charcoal-lighter mt-0.5">
+                          Gruppe: {project.group.name}
+                        </p>
+                      )}
                       {lastMsg ? (
                         <p className="font-sans text-xs text-charcoal-lighter mt-1 truncate">
                           <span className={lastMsg.senderRole === "admin" ? "text-periwinkle-dark" : ""}>

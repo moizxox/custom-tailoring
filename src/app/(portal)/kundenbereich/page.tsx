@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { findCustomerById } from "@/lib/portal/customers";
 import { getPortalCustomerId } from "@/lib/portal/session";
+import { getAccessibleProjectWhere } from "@/lib/portal/projects";
 import { PortalHeader } from "@/components/portal/PortalHeader";
 import { prisma } from "@/lib/prisma";
 
@@ -13,9 +14,10 @@ export default async function KundenbereichDashboard() {
   if (!customer) redirect("/kundenbereich/login");
 
   // Fetch customer's projects and unread notification count
+  const projectWhere = await getAccessibleProjectWhere(customerId);
   const [projects, unreadCount] = await Promise.all([
     prisma.project.findMany({
-      where: { customerId },
+      where: projectWhere,
       orderBy: { updatedAt: "desc" },
       take: 5,
       select: {

@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { getPortalCustomerId } from "@/lib/portal/session";
 import { prisma } from "@/lib/prisma";
+import { canAccessProject } from "@/lib/portal/projects";
 import { PortalHeader } from "@/components/portal/PortalHeader";
 import { PortalProjectDetail } from "@/components/portal/PortalProjectDetail";
 import { formatCustomerStatus } from "@/lib/crm/projects";
@@ -45,10 +46,11 @@ export default async function PortalProjectPage({ params }: Props) {
         },
         take: 1,
       },
+      group: { select: { name: true } },
     },
   });
 
-  if (!project || project.customerId !== customerId) notFound();
+  if (!project || !(await canAccessProject(customerId, project))) notFound();
 
   const unreadCount = await prisma.notification.count({
     where: { customerId, read: false },

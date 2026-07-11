@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPortalCustomerId } from "@/lib/portal/session";
 import { prisma } from "@/lib/prisma";
+import { canAccessProject } from "@/lib/portal/projects";
 import { sendMessage, getMessages, markMessagesRead } from "@/lib/crm/messages";
 
 interface RouteParams {
@@ -13,8 +14,11 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
   const customerId = await getPortalCustomerId();
   if (!customerId) return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
 
-  const project = await prisma.project.findUnique({ where: { id: projectId }, select: { customerId: true } });
-  if (!project || project.customerId !== customerId) {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: { customerId: true, groupId: true },
+  });
+  if (!project || !(await canAccessProject(customerId, project))) {
     return NextResponse.json({ error: "Nicht gefunden." }, { status: 404 });
   }
 
@@ -34,9 +38,14 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
     where: { id: projectId },
     include: { customer: { select: { name: true } } },
   });
-  if (!project || project.customerId !== customerId) {
+  if (!project || !(await canAccessProject(customerId, project))) {
     return NextResponse.json({ error: "Nicht gefunden." }, { status: 404 });
   }
+
+  const customer = await prisma.customer.findUnique({
+    where: { id: customerId },
+    select: { name: true },
+  });
 
   const body = await req.json() as { body?: string };
   if (!body.body?.trim()) {
@@ -46,7 +55,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
   const message = await sendMessage({
     projectId,
     senderRole: "customer",
-    senderName: project.customer?.name ?? undefined,
+    senderName: customer?.name ?? project.customer?.name ?? undefined,
     body: body.body.trim(),
   });
 
