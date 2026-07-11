@@ -23,6 +23,20 @@ async function main() {
 
   console.log(`Created admin: ${admin.email} (@${admin.username})`);
 
+  // Dedicated test admin (easy credentials for QA)
+  const testAdmin = await prisma.admin.upsert({
+    where: { email: "test.admin@lani.ch" },
+    update: { password: hashedPassword },
+    create: {
+      email: "test.admin@lani.ch",
+      username: "testadmin",
+      password: hashedPassword,
+      name: "Test Admin",
+      role: "admin",
+    },
+  });
+  console.log(`Created test admin: ${testAdmin.email} / Test@123`);
+
   // Seed initial products from static data
   const products = [
     {
@@ -140,6 +154,36 @@ async function main() {
     },
   });
 
+  // ── Test user: brand-new order (Step 1 — just submitted, waiting for admin)
+  const custSarah = await prisma.customer.upsert({
+    where: { email: "sarah.neu@example.com" },
+    update: { accessCode: "NEUKUNDE1" },
+    create: {
+      name: "Sarah Neu",
+      email: "sarah.neu@example.com",
+      phone: "+41 79 111 22 33",
+      accessCode: "NEUKUNDE1",
+      role: "customer",
+      location: "Basel",
+      notes: "TEST: Frischer Auftrag — Status: Anfrage eingegangen",
+    },
+  });
+
+  // ── Test user: ready to upload measurements (Step 4)
+  const custPeter = await prisma.customer.upsert({
+    where: { email: "peter.waggis@example.com" },
+    update: { accessCode: "PETER001" },
+    create: {
+      name: "Peter Waggis",
+      email: "peter.waggis@example.com",
+      phone: "+41 79 444 55 66",
+      accessCode: "PETER001",
+      role: "customer",
+      location: "Pratteln",
+      notes: "TEST: Muss noch Massblatt ausfüllen",
+    },
+  });
+
   console.log("Created demo customers");
 
   // Demo group
@@ -218,6 +262,44 @@ async function main() {
     },
   });
 
+  // TEST: Sarah — brand-new order (Step 1)
+  const proj3 = await prisma.project.upsert({
+    where: { id: "demo-project-003" },
+    update: {},
+    create: {
+      id: "demo-project-003",
+      title: "Waggis Kostüm — Sarah Neu",
+      description: "Neuer Einzelauftrag, Beratung noch ausstehend",
+      customerId: custSarah.id,
+      costumeCategory: "Damen",
+      quantity: 1,
+      customerStatus: "request_received",
+      internalStatus: "new",
+      priority: "normal",
+      deadline: new Date("2026-03-01"),
+    },
+  });
+
+  // TEST: Peter — waiting for measurements (Step 4)
+  const proj4 = await prisma.project.upsert({
+    where: { id: "demo-project-004" },
+    update: {},
+    create: {
+      id: "demo-project-004",
+      title: "Edelwaggis Kostüm 2026",
+      description: "Design bestätigt — Kunde soll Massblatt ausfüllen",
+      customerId: custPeter.id,
+      costumeCategory: "Herren",
+      quantity: 1,
+      customerStatus: "measurement_pending",
+      internalStatus: "design",
+      priority: "high",
+      deadline: new Date("2026-02-15"),
+      totalAmount: 920,
+      paymentStatus: "unpaid",
+    },
+  });
+
   // Create conversations
   await prisma.conversation.upsert({
     where: { id: "demo-conv-001" },
@@ -229,6 +311,40 @@ async function main() {
     update: {},
     create: { id: "demo-conv-002", projectId: proj2.id },
   });
+  await prisma.conversation.upsert({
+    where: { id: "demo-conv-003" },
+    update: {},
+    create: { id: "demo-conv-003", projectId: proj3.id },
+  });
+  await prisma.conversation.upsert({
+    where: { id: "demo-conv-004" },
+    update: {},
+    create: { id: "demo-conv-004", projectId: proj4.id },
+  });
+
+  // Welcome message on Peter's project (admin asked for measurements)
+  const peterMsgCount = await prisma.message.count({ where: { conversationId: "demo-conv-004" } });
+  if (peterMsgCount === 0) {
+    await prisma.message.create({
+      data: {
+        conversationId: "demo-conv-004",
+        senderRole: "admin",
+        senderName: "Lani Atelier",
+        body: "Hallo Peter! Ihr Design ist bestätigt. Bitte füllen Sie das Massblatt im Kundenbereich aus — unter 'Massblatt ausfüllen'. Bei Fragen einfach hier antworten.",
+        readAt: null,
+      },
+    });
+    await prisma.notification.create({
+      data: {
+        customerId: custPeter.id,
+        type: "status_change",
+        title: "Bitte Massblatt ausfüllen",
+        body: "Ihr Projekt 'Edelwaggis Kostüm 2026' wartet auf Ihre Masse.",
+        refId: proj4.id,
+        refType: "project",
+      },
+    });
+  }
 
   // Demo messages
   const existingMessages = await prisma.message.count({ where: { conversationId: "demo-conv-001" } });
@@ -293,7 +409,42 @@ async function main() {
     },
   });
 
-  console.log("Created demo CRM data (2 projects, 3 customers, 1 group)");
+  console.log("Created demo CRM data (4 projects, 5 customers, 1 group)");
+
+  console.log(`
+╔══════════════════════════════════════════════════════════════════════════╗
+║                        TEST ACCOUNTS — QUICK REFERENCE                   ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  ADMIN LOGIN:  /admin/login                                              ║
+║    test.admin@lani.ch  /  Test@123   (recommended for testing)           ║
+║    mainmoiz899@gmail.com  /  Admin@123  (owner account)                  ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  CUSTOMER PORTAL:  /kundenbereich/login                                  ║
+║                                                                          ║
+║  Step 1 — New order (nothing done yet):                                  ║
+║    sarah.neu@example.com  /  NEUKUNDE1                                   ║
+║    → Project: demo-project-003 (Anfrage eingegangen)                     ║
+║                                                                          ║
+║  Step 4 — Upload sizes NOW:                                              ║
+║    peter.waggis@example.com  /  PETER001                                 ║
+║    → Project: demo-project-004 (Massnahme ausstehend)                    ║
+║    → Go to: /kundenbereich/massblatt                                     ║
+║                                                                          ║
+║  Step 5 — In production + chat history:                                  ║
+║    max.muster@example.com  /  DEMO2026                                   ║
+║    → Project: demo-project-001 (In Produktion)                           ║
+║                                                                          ║
+║  Group leader:                                                           ║
+║    anna.beispiel@example.com  /  ANNA2026                                ║
+║    → Manages group: demo-group-001                                       ║
+║                                                                          ║
+║  Group member (measurements pending):                                    ║
+║    hans.mueller@example.com  /  HANS8765                                ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║  START APP:  pnpm dev   (Socket.io required for live chat)               ║
+║  RE-SEED:    pnpm db:seed                                               ║
+╚══════════════════════════════════════════════════════════════════════════╝
+`);
   console.log("Seeding complete.");
 }
 
