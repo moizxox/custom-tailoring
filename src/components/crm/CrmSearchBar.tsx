@@ -59,7 +59,7 @@ export function CrmSearchBar() {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-800 border border-white/10 focus-within:border-violet-500 transition-colors">
+      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-800 border border-gray-200 focus-within:border-violet-500 transition-colors">
         <Search className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
         <input
           type="search"
@@ -75,7 +75,7 @@ export function CrmSearchBar() {
       </div>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-1.5 bg-gray-900 border border-white/10 rounded-2xl shadow-xl z-50 overflow-hidden">
+        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden">
           {!hasResults ? (
             <p className="text-xs text-gray-600 text-center py-4">Keine Treffer für &ldquo;{query}&rdquo;</p>
           ) : (

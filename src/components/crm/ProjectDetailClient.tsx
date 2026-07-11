@@ -109,15 +109,15 @@ export function ProjectDetailClient({
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-white">{project.title}</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">{project.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             {project.customer && (
-              <a href={`/admin/crm/customers/${project.customer.id}`} className="text-xs text-gray-400 hover:text-white transition-colors">
+              <a href={`/admin/crm/customers/${project.customer.id}`} className="text-xs text-gray-400 hover:text-gray-900 transition-colors">
                 {project.customer.name}
               </a>
             )}
             {project.group && (
-              <a href={`/admin/crm/groups/${project.group.id}`} className="text-xs text-gray-400 hover:text-white transition-colors">
+              <a href={`/admin/crm/groups/${project.group.id}`} className="text-xs text-gray-400 hover:text-gray-900 transition-colors">
                 {project.group.name}
               </a>
             )}
@@ -134,7 +134,7 @@ export function ProjectDetailClient({
               href={`/kundenbereich/projekt/${project.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-gray-500 hover:text-white border border-white/10 rounded-xl px-3 py-1.5 transition-colors"
+              className="text-xs text-gray-500 hover:text-gray-900 border border-gray-200 rounded-xl px-3 py-1.5 transition-colors"
             >
               Kundenansicht ↗
             </a>
@@ -143,15 +143,15 @@ export function ProjectDetailClient({
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-white/10 mb-6 overflow-x-auto">
+      <div className="flex gap-1 border-b border-gray-200 mb-6 overflow-x-auto">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === tab.id
-                ? "border-violet-500 text-violet-300"
-                : "border-transparent text-gray-500 hover:text-gray-300"
+                ? "border-violet-500 text-violet-600"
+                : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
             {tab.label}
@@ -171,8 +171,8 @@ export function ProjectDetailClient({
       {/* Tab content */}
       {activeTab === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <h2 className="text-sm font-semibold text-white mb-4">Projektdetails bearbeiten</h2>
+          <div className="lg:col-span-2 bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
+            <h2 className="text-sm font-semibold text-gray-900 mb-4">Projektdetails bearbeiten</h2>
             <ProjectForm
               projectId={project.id}
               customers={customers}
@@ -196,12 +196,12 @@ export function ProjectDetailClient({
             />
           </div>
           <div className="space-y-4">
-            <div className="bg-gray-900 border border-white/5 rounded-2xl p-4">
+            <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Finanzen</p>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Gesamt</span>
-                  <span className="text-white font-medium">
+                  <span className="text-gray-900 font-medium">
                     {project.totalAmount != null ? `CHF ${project.totalAmount.toFixed(2)}` : "—"}
                   </span>
                 </div>
@@ -223,7 +223,7 @@ export function ProjectDetailClient({
                 </div>
               </div>
             </div>
-            <div className="bg-gray-900 border border-white/5 rounded-2xl p-4">
+            <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Quick-Status</p>
               <p className="text-xs text-gray-400">Tasks: {tasks.filter((t) => t.status === "done").length}/{tasks.length} erledigt</p>
               <p className="text-xs text-gray-400 mt-1">Dateien: {files.length}</p>
