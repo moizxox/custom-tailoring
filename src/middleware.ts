@@ -6,7 +6,10 @@ import type { NextRequest } from "next/server";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PORTAL_COOKIE = "portal_session";
-const PORTAL_PUBLIC = ["/kundenbereich/login"];
+const PORTAL_PUBLIC = [
+  "/kundenbereich/login",
+  "/kundenbereich/register",
+];
 
 function handlePortal(request: NextRequest): NextResponse | null {
   const { pathname } = request.nextUrl;
@@ -15,6 +18,8 @@ function handlePortal(request: NextRequest): NextResponse | null {
   if (
     pathname.startsWith("/kundenbereich/api") ||
     pathname.startsWith("/kundenbereich/massblatt/") ||
+    pathname.startsWith("/kundenbereich/zugang/") ||
+    pathname.startsWith("/kundenbereich/verify/") ||
     PORTAL_PUBLIC.some((p) => pathname === p)
   ) {
     return NextResponse.next();
