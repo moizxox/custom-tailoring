@@ -22,7 +22,7 @@ export default async function CrmCustomersPage({ searchParams }: Props) {
     <div className="p-6 md:p-8 max-w-6xl">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Kunden</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Kunden</h1>
           <p className="text-sm text-gray-400 mt-1">{total} Kunden insgesamt</p>
         </div>
         <Link
