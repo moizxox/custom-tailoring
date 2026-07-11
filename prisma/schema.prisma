@@ -104,14 +104,16 @@ model PasswordResetToken {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model ContactSubmission {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  location  String?
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id                  String    @id @default(cuid())
+  name                String
+  email               String
+  phone               String?
+  location            String?
+  message             String
+  read                Boolean   @default(false)
+  convertedCustomerId String?
+  convertedAt         DateTime?
+  createdAt           DateTime  @default(now())
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -241,6 +243,24 @@ model PortalAccessToken {
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@index([customerId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CRM — Customer self-registration (email verification)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model CustomerVerificationToken {
+  id           String   @id @default(cuid())
+  email        String
+  name         String
+  phone        String?
+  passwordHash String?
+  token        String   @unique
+  expiresAt    DateTime
+  used         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([email])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

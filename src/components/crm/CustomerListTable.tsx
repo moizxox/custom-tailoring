@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Users, Copy, Check, Trash2, Pencil } from "lucide-react";
+import { Users, Copy, Check, Trash2, Pencil, Mail } from "lucide-react";
 
 interface CustomerRow {
   id: string;
@@ -39,6 +39,7 @@ export function CustomerListTable({
   const [role, setRole] = useState(initialRole);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [sendingId, setSendingId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   function applyFilters(newSearch: string, newRole: string) {
@@ -52,6 +53,20 @@ export function CustomerListTable({
     await navigator.clipboard.writeText(code);
     setCopiedId(customerId);
     setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  async function sendAccessCode(id: string) {
+    setSendingId(id);
+    try {
+      const res = await fetch(`/admin/api/crm/customers/${id}/send-access-code`, { method: "POST" });
+      if (res.ok) alert("Zugangscode per E-Mail gesendet.");
+      else {
+        const data = await res.json();
+        alert(data.error ?? "Fehler beim Senden.");
+      }
+    } finally {
+      setSendingId(null);
+    }
   }
 
   async function deleteCustomer(id: string) {
@@ -77,7 +92,7 @@ export function CustomerListTable({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && applyFilters(search, role)}
-          className="flex-1 px-4 py-2.5 rounded-xl bg-gray-900 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors"
+          className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 transition-colors"
         />
         <select
           value={role}
@@ -85,7 +100,7 @@ export function CustomerListTable({
             setRole(e.target.value);
             applyFilters(search, e.target.value);
           }}
-          className="px-4 py-2.5 rounded-xl bg-gray-900 border border-white/10 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+          className="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-violet-500 transition-colors"
         >
           <option value="">Alle Rollen</option>
           <option value="customer">Kunden</option>
@@ -101,7 +116,7 @@ export function CustomerListTable({
 
       {/* Table */}
       {customers.length === 0 ? (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl p-12 text-center">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12 text-center">
           <Users className="w-8 h-8 text-gray-700 mx-auto mb-3" />
           <p className="text-sm text-gray-500">Keine Kunden gefunden</p>
           <Link
@@ -112,10 +127,10 @@ export function CustomerListTable({
           </Link>
         </div>
       ) : (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-gray-200">
                 <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Name</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium hidden md:table-cell">E-Mail</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium hidden lg:table-cell">Zugangscode</th>
@@ -128,12 +143,12 @@ export function CustomerListTable({
               {customers.map((customer) => (
                 <tr
                   key={customer.id}
-                  className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors"
+                  className="border-b border-gray-200 last:border-0 hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/crm/customers/${customer.id}`}
-                      className="font-medium text-white hover:text-violet-300 transition-colors"
+                      className="font-medium text-gray-900 hover:text-violet-600 transition-colors"
                     >
                       {customer.name}
                     </Link>
@@ -149,7 +164,7 @@ export function CustomerListTable({
                       </code>
                       <button
                         onClick={() => copyCode(customer.id, customer.accessCode)}
-                        className="text-gray-600 hover:text-white transition-colors"
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
                         title="Code kopieren"
                       >
                         {copiedId === customer.id ? (
@@ -176,9 +191,17 @@ export function CustomerListTable({
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2 justify-end">
+                      <button
+                        onClick={() => sendAccessCode(customer.id)}
+                        disabled={sendingId === customer.id}
+                        className="text-gray-600 hover:text-blue-600 transition-colors disabled:opacity-40"
+                        title="Zugangscode senden"
+                      >
+                        <Mail className="w-4 h-4" />
+                      </button>
                       <Link
                         href={`/admin/crm/customers/${customer.id}`}
-                        className="text-gray-600 hover:text-white transition-colors"
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
                         title="Bearbeiten"
                       >
                         <Pencil className="w-4 h-4" />
@@ -212,7 +235,7 @@ export function CustomerListTable({
                 className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-colors ${
                   p === currentPage
                     ? "bg-violet-600 text-white"
-                    : "bg-gray-900 text-gray-400 hover:bg-gray-800"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
                 {p}

@@ -82,12 +82,12 @@ export function ProjectsTable({
           value={f.q}
           onChange={(e) => handleChange("q", e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && applyFilters(f)}
-          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-xl bg-gray-900 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors"
+          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 transition-colors"
         />
         <select
           value={f.customerStatus}
           onChange={(e) => handleChange("customerStatus", e.target.value)}
-          className="px-3 py-2.5 rounded-xl bg-gray-900 border border-white/10 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+          className="px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-violet-500 transition-colors"
         >
           <option value="">Alle Kundenstatus</option>
           {customerStatuses.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
@@ -95,7 +95,7 @@ export function ProjectsTable({
         <select
           value={f.internalStatus}
           onChange={(e) => handleChange("internalStatus", e.target.value)}
-          className="px-3 py-2.5 rounded-xl bg-gray-900 border border-white/10 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+          className="px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-violet-500 transition-colors"
         >
           <option value="">Alle Intern-Status</option>
           {internalStatuses.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
@@ -103,7 +103,7 @@ export function ProjectsTable({
         <select
           value={f.priority}
           onChange={(e) => handleChange("priority", e.target.value)}
-          className="px-3 py-2.5 rounded-xl bg-gray-900 border border-white/10 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
+          className="px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-violet-500 transition-colors"
         >
           <option value="">Alle Prioritäten</option>
           {priorities.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
@@ -117,15 +117,15 @@ export function ProjectsTable({
       </div>
 
       {projects.length === 0 ? (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl p-12 text-center">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12 text-center">
           <FolderKanban className="w-8 h-8 text-gray-700 mx-auto mb-3" />
           <p className="text-sm text-gray-500">Keine Projekte gefunden</p>
         </div>
       ) : (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-gray-200">
                 <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Projekt</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium hidden lg:table-cell">Kundenstatus</th>
                 <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium hidden xl:table-cell">Intern</th>
@@ -136,9 +136,9 @@ export function ProjectsTable({
             </thead>
             <tbody>
               {projects.map((p) => (
-                <tr key={p.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
+                <tr key={p.id} className="border-b border-gray-200 last:border-0 hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3">
-                    <Link href={`/admin/crm/projects/${p.id}`} className="font-medium text-white hover:text-violet-300 transition-colors block">
+                    <Link href={`/admin/crm/projects/${p.id}`} className="font-medium text-gray-900 hover:text-violet-600 transition-colors block">
                       {p.title}
                     </Link>
                     <p className="text-xs text-gray-500">
@@ -185,7 +185,7 @@ export function ProjectsTable({
                 key={p}
                 href={`/admin/crm/projects?page=${p}`}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-colors ${
-                  p === currentPage ? "bg-violet-600 text-white" : "bg-gray-900 text-gray-400 hover:bg-gray-800"
+                  p === currentPage ? "bg-violet-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
                 {p}

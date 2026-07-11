@@ -113,11 +113,11 @@ export function ConversationPanel({
   };
 
   return (
-    <div className="flex flex-col h-[600px] bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+    <div className="flex flex-col h-[600px] bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/5">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-200">
         <div>
-          <h3 className="text-sm font-semibold text-white">Gespräch</h3>
+          <h3 className="text-sm font-semibold text-gray-900">Gespräch</h3>
           <p className="text-[11px] text-gray-500">
             {messages.filter((m) => !m.isInternal).length} Nachrichten · {messages.filter((m) => m.isInternal).length} interne Notizen
           </p>
@@ -128,7 +128,7 @@ export function ConversationPanel({
               type="checkbox"
               checked={isInternal}
               onChange={(e) => setIsInternal(e.target.checked)}
-              className="rounded border-gray-600 bg-gray-800 text-violet-500"
+              className="rounded border-gray-300 bg-white text-violet-600"
             />
             <Lock className="w-3.5 h-3.5 text-gray-500" />
             <span className="text-xs text-gray-400">Interne Notiz</span>
@@ -153,7 +153,7 @@ export function ConversationPanel({
                     ? "bg-amber-500/10 border border-amber-500/20 rounded-tr-sm"
                     : isAdmin
                     ? "bg-violet-600 text-white rounded-br-sm"
-                    : "bg-gray-800 text-white rounded-bl-sm"
+                    : "bg-gray-100 text-gray-900 border border-gray-200 rounded-bl-sm"
                 }`}
               >
                 {isInternalNote && (
@@ -163,9 +163,9 @@ export function ConversationPanel({
                   </div>
                 )}
                 {!isAdmin && msg.senderName && (
-                  <p className="text-[10px] font-medium text-violet-300 mb-0.5">{msg.senderName}</p>
+                  <p className="text-[10px] font-medium text-violet-600 mb-0.5">{msg.senderName}</p>
                 )}
-                <p className="text-sm leading-relaxed whitespace-pre-wrap text-white">
+                <p className={`text-sm leading-relaxed whitespace-pre-wrap ${isInternalNote ? "text-amber-900" : isAdmin ? "text-white" : "text-gray-900"}`}>
                   {msg.body}
                 </p>
                 <p className="text-[10px] mt-1 text-gray-400 text-right">
@@ -180,7 +180,7 @@ export function ConversationPanel({
         })}
         {typingCustomers.length > 0 && (
           <div className="flex justify-start">
-            <div className="bg-gray-800 rounded-2xl rounded-bl-sm px-4 py-2.5">
+            <div className="bg-gray-100 border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-2.5">
               <div className="flex gap-1 items-center h-4">
                 {[0, 1, 2].map((i) => (
                   <span key={i} className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
@@ -193,7 +193,7 @@ export function ConversationPanel({
       </div>
 
       {/* Input */}
-      <div className={`px-5 py-3.5 border-t ${isInternal ? "border-amber-500/20 bg-amber-500/[0.03]" : "border-white/5"}`}>
+      <div className={`px-5 py-3.5 border-t ${isInternal ? "border-amber-500/20 bg-amber-500/[0.03]" : "border-gray-200"}`}>
         {isInternal && (
           <p className="text-[10px] text-amber-400 mb-2 flex items-center gap-1">
             <Lock className="w-3 h-3" /> Diese Nachricht ist nur für Admins sichtbar
@@ -206,7 +206,7 @@ export function ConversationPanel({
             onChange={(e) => { setInput(e.target.value); handleTyping(); }}
             onKeyDown={handleKeyDown}
             placeholder={isInternal ? "Interne Notiz schreiben…" : "Nachricht an Kunden…"}
-            className="flex-1 resize-none rounded-xl border border-white/10 bg-gray-800 px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors"
+            className="flex-1 resize-none rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20 transition-colors"
             disabled={sending}
           />
           <button

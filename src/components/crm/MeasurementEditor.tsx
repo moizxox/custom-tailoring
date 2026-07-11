@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { CRM_INPUT, CRM_TEXTAREA } from "@/components/crm/crm-styles";
 
 interface Measurement {
   id: string;
@@ -88,7 +89,7 @@ export function MeasurementEditor({ projectId, initialMeasurements }: Props) {
     if (res.ok) startTransition(() => router.refresh());
   }
 
-  const inputClass = "w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors text-right";
+  const inputClass = `${CRM_INPUT} text-right`;
 
   return (
     <div className="space-y-4">
@@ -100,13 +101,13 @@ export function MeasurementEditor({ projectId, initialMeasurements }: Props) {
               key={m.id}
               onClick={() => selectMeasurement(m)}
               className={`text-xs px-3 py-1.5 rounded-xl transition-colors ${
-                selected?.id === m.id ? "bg-violet-600 text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                selected?.id === m.id ? "bg-violet-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
               Masse #{i + 1} · {new Date(m.updatedAt).toLocaleDateString("de-CH")}
             </button>
           ))}
-          <button onClick={handleNew} className="text-xs px-3 py-1.5 rounded-xl bg-gray-800 text-gray-500 hover:text-white transition-colors">
+          <button onClick={handleNew} className="text-xs px-3 py-1.5 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
             + Neue Massnahme
           </button>
         </div>
@@ -120,13 +121,13 @@ export function MeasurementEditor({ projectId, initialMeasurements }: Props) {
           </button>
         </div>
       ) : (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl p-5">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-semibold text-white">Masse bearbeiten</h3>
+            <h3 className="text-sm font-semibold text-gray-900">Masse bearbeiten</h3>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="text-xs rounded-xl bg-gray-800 border border-white/10 px-3 py-1.5 text-white focus:outline-none"
+              className="text-xs rounded-xl bg-white border border-gray-200 px-3 py-1.5 text-gray-900 focus:outline-none focus:border-violet-500"
             >
               {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
@@ -156,7 +157,7 @@ export function MeasurementEditor({ projectId, initialMeasurements }: Props) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors resize-y"
+              className={CRM_TEXTAREA}
               placeholder="Besonderheiten, Kommentare…"
             />
           </div>

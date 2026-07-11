@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { UserPlus, Trash2 } from "lucide-react";
+import { CRM_INPUT_SM } from "@/components/crm/crm-styles";
 
 interface Member {
   customerId: string;
@@ -73,20 +74,20 @@ export function GroupMemberTable({ groupId, members: initialMembers }: Props) {
   }
 
   return (
-    <div className="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-white">Mitglieder ({initialMembers.length})</h2>
+    <div className="bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-gray-900">Mitglieder ({initialMembers.length})</h2>
       </div>
 
       {/* Add member */}
-      <div className="px-5 py-4 border-b border-white/5 bg-white/[0.01]">
+      <div className="px-5 py-4 border-b border-gray-200 bg-white/[0.01]">
         <div className="flex gap-2">
           <input
             type="email"
             placeholder="E-Mail des Kunden…"
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
-            className="flex-1 px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors"
+            className={`flex-1 ${CRM_INPUT_SM}`}
             onKeyDown={(e) => e.key === "Enter" && handleAddMember()}
           />
           <input
@@ -94,7 +95,7 @@ export function GroupMemberTable({ groupId, members: initialMembers }: Props) {
             placeholder="Kostümvariante (opt.)"
             value={newVariant}
             onChange={(e) => setNewVariant(e.target.value)}
-            className="w-36 px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors"
+            className={`w-36 ${CRM_INPUT_SM}`}
           />
           <button
             onClick={handleAddMember}
@@ -115,7 +116,7 @@ export function GroupMemberTable({ groupId, members: initialMembers }: Props) {
       ) : (
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/5">
+            <tr className="border-b border-gray-200">
               <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Name</th>
               <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium hidden md:table-cell">Kostümvariante</th>
               <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Massnahme</th>
@@ -124,9 +125,9 @@ export function GroupMemberTable({ groupId, members: initialMembers }: Props) {
           </thead>
           <tbody>
             {initialMembers.map((member) => (
-              <tr key={member.customerId} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
+              <tr key={member.customerId} className="border-b border-gray-200 last:border-0 hover:bg-gray-50">
                 <td className="px-4 py-3">
-                  <p className="text-white text-sm">{member.customerName}</p>
+                  <p className="text-gray-900 text-sm">{member.customerName}</p>
                   <p className="text-xs text-gray-500">{member.customerEmail}</p>
                 </td>
                 <td className="px-4 py-3 text-gray-400 text-sm hidden md:table-cell">
@@ -136,7 +137,7 @@ export function GroupMemberTable({ groupId, members: initialMembers }: Props) {
                   <select
                     value={member.measurementStatus}
                     onChange={(e) => handleStatusChange(member.customerId, e.target.value)}
-                    className="text-xs rounded-lg bg-gray-800 border border-white/10 px-2 py-1 text-white focus:outline-none"
+                    className="text-xs rounded-lg bg-white border border-gray-200 px-2 py-1 text-gray-900 focus:outline-none focus:border-violet-500"
                   >
                     {MEASUREMENT_STATUS_OPTIONS.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>

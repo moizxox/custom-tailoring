@@ -7,6 +7,7 @@ import {
   INTERNAL_STATUSES,
   PROJECT_PRIORITIES,
 } from "@/lib/crm/projects";
+import { CRM_INPUT, CRM_TEXTAREA, CRM_SELECT } from "@/components/crm/crm-styles";
 
 interface Props {
   projectId?: string;
@@ -102,7 +103,7 @@ export function ProjectForm({
     finally { setSaving(false); }
   }
 
-  const inputClass = "w-full px-3 py-2.5 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors";
+  const inputClass = CRM_INPUT;
   const labelClass = "block text-xs text-gray-500 mb-1.5";
 
   return (
@@ -114,7 +115,7 @@ export function ProjectForm({
 
       <div>
         <label className={labelClass}>Beschreibung</label>
-        <textarea name="description" value={form.description} onChange={handleChange} rows={2} className={`${inputClass} resize-y`} />
+        <textarea name="description" value={form.description} onChange={handleChange} rows={2} className={CRM_TEXTAREA} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -164,7 +165,7 @@ export function ProjectForm({
 
       {isEditing && (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-white/5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-gray-200">
             <div>
               <label className={labelClass}>Kundenstatus</label>
               <select name="customerStatus" value={form.customerStatus} onChange={handleChange} className={inputClass}>
@@ -179,7 +180,7 @@ export function ProjectForm({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-white/5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-gray-200">
             <div>
               <label className={labelClass}>Gesamtbetrag (CHF)</label>
               <input type="number" name="totalAmount" value={form.totalAmount} onChange={handleChange} step="0.01" className={inputClass} placeholder="0.00" />
@@ -212,7 +213,7 @@ export function ProjectForm({
         <button type="submit" disabled={saving} className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors disabled:opacity-50">
           {saving ? "…" : isEditing ? "Speichern" : "Projekt erstellen"}
         </button>
-        <button type="button" onClick={() => router.back()} className="px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium transition-colors">
+        <button type="button" onClick={() => router.back()} className="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors">
           Abbrechen
         </button>
       </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CRM_INPUT, CRM_TEXTAREA, CRM_SELECT } from "@/components/crm/crm-styles";
 
 interface CustomerFormProps {
   customerId?: string;
@@ -75,8 +76,7 @@ export function CustomerForm({ customerId, initialData }: CustomerFormProps) {
     }
   }
 
-  const inputClass =
-    "w-full px-3 py-2.5 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors";
+  const inputClass = CRM_INPUT;
   const labelClass = "block text-xs text-gray-500 mb-1.5";
 
   return (
@@ -142,7 +142,7 @@ export function CustomerForm({ customerId, initialData }: CustomerFormProps) {
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium transition-colors"
+          className="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium transition-colors"
         >
           Abbrechen
         </button>

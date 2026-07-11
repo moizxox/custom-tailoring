@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Check, Trash2 } from "lucide-react";
+import { CRM_INPUT_SM } from "@/components/crm/crm-styles";
 
 interface Task {
   id: string;
@@ -80,12 +81,12 @@ export function TaskList({ projectId, initialTasks }: Props) {
   const pending = initialTasks.filter((t) => t.status !== "done" && t.status !== "cancelled");
   const done = initialTasks.filter((t) => t.status === "done" || t.status === "cancelled");
 
-  const inputClass = "px-3 py-2 rounded-xl bg-gray-800 border border-white/10 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-violet-500 transition-colors";
+  const inputClass = CRM_INPUT_SM;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-white">Tasks ({initialTasks.length})</h2>
+        <h2 className="text-sm font-semibold text-gray-900">Tasks ({initialTasks.length})</h2>
         <button
           onClick={() => setShowForm((v) => !v)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium transition-colors"
@@ -96,7 +97,7 @@ export function TaskList({ projectId, initialTasks }: Props) {
       </div>
 
       {showForm && (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl p-4 space-y-3">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4 space-y-3">
           <input className={`${inputClass} w-full`} placeholder="Task-Titel…" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleAddTask()} />
           <div className="flex flex-wrap gap-2">
             <input type="date" className={inputClass} value={newDueAt} onChange={(e) => setNewDueAt(e.target.value)} />
@@ -115,9 +116,9 @@ export function TaskList({ projectId, initialTasks }: Props) {
       )}
 
       {pending.length > 0 && (
-        <div className="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden">
           {pending.map((task) => (
-            <div key={task.id} className="flex items-start gap-3 px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
+            <div key={task.id} className="flex items-start gap-3 px-4 py-3 border-b border-gray-200 last:border-0 hover:bg-gray-50">
               <button
                 onClick={() => handleStatusChange(task.id, task.status === "todo" ? "in_progress" : "done")}
                 className={`mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
@@ -127,7 +128,7 @@ export function TaskList({ projectId, initialTasks }: Props) {
                 {task.status === "in_progress" && <div className="w-2 h-2 bg-violet-500 rounded-full" />}
               </button>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-white">{task.title}</p>
+                <p className="text-sm text-gray-900">{task.title}</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   <span className={`text-[10px] px-2 py-0.5 rounded-full ${PRIORITY_COLORS[task.priority] ?? PRIORITY_COLORS.normal}`}>
                     {task.priority}
@@ -163,12 +164,12 @@ export function TaskList({ projectId, initialTasks }: Props) {
 
       {done.length > 0 && (
         <details className="group">
-          <summary className="text-xs text-gray-500 cursor-pointer hover:text-white transition-colors">
+          <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-900 transition-colors">
             {done.length} erledigte Task{done.length !== 1 ? "s" : ""}
           </summary>
-          <div className="mt-2 bg-gray-900 border border-white/5 rounded-2xl overflow-hidden opacity-60">
+          <div className="mt-2 bg-white border border-gray-200 shadow-sm rounded-2xl overflow-hidden opacity-60">
             {done.map((task) => (
-              <div key={task.id} className="flex items-start gap-3 px-4 py-3 border-b border-white/5 last:border-0">
+              <div key={task.id} className="flex items-start gap-3 px-4 py-3 border-b border-gray-200 last:border-0">
                 <Check className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" />
                 <p className="text-sm text-gray-400 line-through">{task.title}</p>
               </div>
