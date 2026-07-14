@@ -1,3 +1,9 @@
+import {
+  parseBool,
+  parseSectionAppearance,
+  type SectionAppearance,
+} from "@/lib/cms/section-appearance";
+
 export type HeadingTag = "h1" | "h2" | "h3" | "h4";
 
 export interface HomeHeroCms {
@@ -30,18 +36,42 @@ export interface PageHeroCms {
   titleAccent?: string;
   subtitle?: string;
   headingTag?: HeadingTag;
+  textColor?: string;
+  accentColor?: string;
+  /** Resolved appearance; showKonfetti defaults to true for heroes until CMS sets it. */
+  appearance?: SectionAppearance;
+}
+
+function pickColor(content: Record<string, unknown>, key: string, fallbacks: string[] = []): string | undefined {
+  const keys = [key, ...fallbacks];
+  for (const k of keys) {
+    const v = content[k];
+    if (typeof v === "string" && v.trim()) return v.trim();
+  }
+  return undefined;
 }
 
 export function mapPageHeroContent(
   content: Record<string, unknown>,
   defaults: PageHeroCms
 ): PageHeroCms {
+  const appearance = parseSectionAppearance(content);
+  // Keep historic always-on hero confetti until the CMS toggle has been saved.
+  if (!("showKonfetti" in content)) {
+    appearance.showKonfetti = true;
+  } else {
+    appearance.showKonfetti = parseBool(content.showKonfetti);
+  }
+
   return {
     label: pickString(content, "label", defaults.label ?? ""),
     title: pickString(content, "heading", defaults.title),
     titleAccent: pickString(content, "headingAccent", defaults.titleAccent ?? ""),
     subtitle: pickString(content, "subtext", defaults.subtitle ?? ""),
     headingTag: parseHeadingTag(content.headingTag, defaults.headingTag ?? "h1"),
+    textColor: pickColor(content, "textColor", ["headingColor", "labelColor", "subtextColor"]),
+    accentColor: pickColor(content, "accentColor"),
+    appearance,
   };
 }
 

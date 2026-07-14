@@ -1,8 +1,8 @@
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
-import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
-
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import type { SectionAppearance } from "@/lib/cms/section-appearance";
 import type { HeadingTag } from "@/lib/cms/helpers";
 import { createElement } from "react";
 
@@ -18,6 +18,10 @@ interface PageHeroProps {
   subtitle?: string;
   breadcrumbs?: Breadcrumb[];
   headingTag?: HeadingTag;
+  textColor?: string;
+  accentColor?: string;
+  /** When set, CMS “Show konfetti overlay” controls confetti. Defaults to on for page heroes. */
+  appearance?: SectionAppearance;
 }
 
 export function PageHero({
@@ -27,17 +31,28 @@ export function PageHero({
   subtitle,
   breadcrumbs,
   headingTag = "h1",
+  textColor,
+  accentColor,
+  appearance,
 }: PageHeroProps) {
   const renderTitle = () => (
-    <AccentHeadingText heading={title} accent={titleAccent} />
+    <AccentHeadingText heading={title} accent={titleAccent} accentColor={accentColor} />
   );
 
-  return (
-    <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24 min-h-[60vh]">
-      {/* Same confetti stack as homepage — offwhite base, gradient, then overlay (nothing on top washing it out) */}
-      <HeroConfettiBackground sketchOpacity="opacity-[0.5]" />
+  // Preserve historic always-on confetti when CMS has never set the field (undefined → true).
+  const heroAppearance: SectionAppearance = appearance ?? {
+    useCustomBg: false,
+    showKonfetti: true,
+    gradientStyle: "default",
+  };
 
-      {/* Stitch dashes only — mesh disabled so it doesn't cover the confetti circles */}
+  return (
+    <CmsSectionShell
+      appearance={heroAppearance}
+      defaultClassName="bg-offwhite"
+      className="pt-20 lg:pt-24 min-h-[60vh]"
+      heroKonfetti
+    >
       <BackgroundDecor variant="page" showConfetti={false} showMesh={false} showStitchDashes showFigures={false} />
 
       <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12">
@@ -66,20 +81,27 @@ export function PageHero({
 
           {label && (
             <div className="flex justify-center mb-4">
-              <p className="section-label">{label}</p>
+              <p className="section-label" style={textColor ? { color: textColor } : undefined}>{label}</p>
             </div>
           )}
 
           {createElement(
             headingTag,
             {
-              className:
-                "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal leading-[1.02] text-balance",
+              className: "font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.02] text-balance",
+              style: textColor ? { color: textColor } : { color: "var(--color-charcoal)" },
             },
             renderTitle()
           )}
 
-          {subtitle && <p className="font-sans text-[15px] text-charcoal-light leading-relaxed mt-5 max-w-2xl mx-auto">{subtitle}</p>}
+          {subtitle && (
+            <p
+              className="font-sans text-[15px] leading-relaxed mt-5 max-w-2xl mx-auto"
+              style={textColor ? { color: textColor, opacity: 0.85 } : { color: "var(--color-charcoal-light)" }}
+            >
+              {subtitle}
+            </p>
+          )}
         </div>
       </div>
 
@@ -92,6 +114,6 @@ export function PageHero({
           </div>
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

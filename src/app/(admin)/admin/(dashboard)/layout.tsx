@@ -3,6 +3,8 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getUnreadNotificationCount } from "@/lib/crm/notifications";
+import { listContactSubmissions } from "@/lib/crm/contact-submissions";
 
 export default async function AdminDashboardLayout({
   children,
@@ -14,12 +16,17 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login");
   }
 
+  const [unreadNotifications, { unreadCount: unreadSubmissions }] = await Promise.all([
+    getUnreadNotificationCount(undefined),
+    listContactSubmissions({ take: 0 }),
+  ]);
+
   return (
     <SessionProvider session={session}>
       <div className="min-h-screen flex bg-gray-50/70">
-        <AdminSidebar />
+        <AdminSidebar unreadSubmissions={unreadSubmissions} />
         <div className="flex-1 flex flex-col min-w-0">
-          <AdminHeader user={session.user} />
+          <AdminHeader user={session.user} initialUnreadNotifications={unreadNotifications} />
           <main className="flex-1 p-6 lg:p-8 overflow-auto">{children}</main>
         </div>
       </div>

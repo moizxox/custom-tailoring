@@ -27,6 +27,9 @@ export default async function AgbPage() {
         title={hero.title}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "AGB", href: "/agb" }]}
       />
       <section className="py-20 section-bg-white">

@@ -42,6 +42,9 @@ export default async function AtelierPage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 
@@ -99,6 +102,7 @@ export default async function AtelierPage() {
           paragraphs={workshop.paragraphs}
           ctaLabel={workshop.ctaLabel}
           ctaHref={workshop.ctaHref}
+          appearance={workshop.appearance}
         />
       )}
 
@@ -114,6 +118,7 @@ export default async function AtelierPage() {
           paragraphs={materials.paragraphs}
           ctaLabel={materials.ctaLabel}
           ctaHref={materials.ctaHref}
+          appearance={materials.appearance}
         />
       )}
 

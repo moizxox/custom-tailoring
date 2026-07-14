@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 
 interface FormState { name: string; email: string; phone: string; message: string }
 
@@ -52,11 +54,12 @@ const DEFAULT_COPY: Required<HeroContactCopy> = {
   successMessage: "Wir melden uns persönlich und zeitnah bei Ihnen.",
 };
 
-export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
+export function HeroContactSection({ acf }: { acf?: HeroContactCopy & Record<string, unknown> }) {
   const [form, setForm] = useState<FormState>({ name: "", email: "", phone: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const data = { ...DEFAULT_COPY, ...acf };
+  const appearance = parseSectionAppearance(acf);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,8 +70,12 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
   };
 
   return (
-    <section id="kontakt" className="relative py-16 lg:py-20 bg-gradient-to-br from-periwinkle-lighter/40 via-offwhite-warm to-sand-light/30 border-t border-dashed border-gold-muted/40">
-      <div className="container-site">
+    <CmsSectionShell
+      appearance={appearance}
+      defaultClassName="bg-gradient-to-br from-periwinkle-lighter/40 via-offwhite-warm to-sand-light/30"
+      className="py-16 lg:py-20 border-t border-dashed border-gold-muted/40"
+    >
+      <div id="kontakt" className="container-site">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] gap-10 xl:gap-16 items-start">
           <div className="max-w-xl">
             <p className="section-label mb-4">{data.section_label}</p>
@@ -154,6 +161,6 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy }) {
           </div>
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

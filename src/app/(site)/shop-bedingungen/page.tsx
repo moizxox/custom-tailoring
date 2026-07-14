@@ -28,6 +28,9 @@ export default async function ShopBedingungenPage() {
         title={hero.title}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Shop-Bedingungen", href: "/shop-bedingungen" }]}
       />
       <section className="py-20 section-bg-white">

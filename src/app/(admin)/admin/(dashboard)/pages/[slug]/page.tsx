@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getAdminT, getSchemaTranslator } from "@/lib/i18n/admin";
 import { localizePageSchema } from "@/lib/i18n/schema-labels";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
+import { getPageSectionOrder, sortSectionsByOrder } from "@/lib/cms/section-order";
 import { notFound } from "next/navigation";
 import PageEditorClient from "./PageEditorClient";
 import Link from "next/link";
@@ -36,13 +37,15 @@ export default async function PageEditorPage({ params }: Props) {
   if (!schema) notFound();
 
   const savedContent = await loadSectionContent(slug);
+  const sectionOrder = await getPageSectionOrder(slug);
   const t = getAdminT("pages");
   const ts = getSchemaTranslator();
   const localized = localizePageSchema(ts, schema);
+  const orderedSections = sortSectionsByOrder(localized.sections, sectionOrder);
 
   // Merge defaults with saved content for each section
   const initialContents: Record<string, Record<string, unknown>> = {};
-  for (const section of localized.sections) {
+  for (const section of orderedSections) {
     const saved = (savedContent[section.key] as Record<string, unknown>) ?? {};
     const defaults = getDefaultSectionContent(slug, section.key);
     initialContents[section.key] = { ...defaults, ...saved };
@@ -62,9 +65,10 @@ export default async function PageEditorPage({ params }: Props) {
 
       <PageEditorClient
         pageSlug={slug}
-        sections={localized.sections}
+        sections={orderedSections}
         initialContents={initialContents}
         pageLabel={localized.label}
+        initialSectionOrder={sectionOrder}
       />
     </div>
   );

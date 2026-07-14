@@ -44,6 +44,9 @@ export default async function MassfertigungPage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Massfertigung", href: "/massfertigung" }]}
       />
 

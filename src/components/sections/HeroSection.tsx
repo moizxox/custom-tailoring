@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createElement } from "react";
-import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import type { HeadingTag } from "@/lib/cms/helpers";
 
 interface AcfHero {
@@ -54,7 +55,7 @@ const DEFAULT_INTRO_POINTS = [
 ];
 
 interface HeroSectionProps {
-  acf?: Partial<AcfHero>;
+  acf?: Partial<AcfHero> & Record<string, unknown>;
   headingTag?: HeadingTag;
 }
 
@@ -72,6 +73,8 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
     (acf.intro_points as unknown[]).length > 0
       ? (acf.intro_points as { text: string }[]).map((p) => p.text)
       : DEFAULT_INTRO_POINTS;
+
+  const appearance = parseSectionAppearance(acf);
 
   const renderHeading = () => {
     const normalizedHeading = data.heading
@@ -95,9 +98,12 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative min-h-[92vh] flex flex-col overflow-hidden bg-offwhite">
-      <HeroConfettiBackground className="z-0" />
-
+    <CmsSectionShell
+      appearance={appearance}
+      defaultClassName="bg-offwhite"
+      className="min-h-[92vh] flex flex-col"
+      heroKonfetti
+    >
       <div className="relative z-10 flex-1 flex flex-col justify-center w-full px-5 sm:px-8 lg:px-12 xl:px-16 pt-28 pb-16 lg:pt-36 lg:pb-24 ">
         <div className="w-full container-site text-center">
           <div className="inline-flex items-center gap-2.5 bg-white/90 border border-periwinkle-light/50 ring-1 ring-gold-muted/30 px-4 py-1.5 rounded-full mb-8 animate-fade-up">
@@ -187,6 +193,6 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
           )}
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

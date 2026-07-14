@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 interface AcfAboutBand {
   acf_fc_layout: "about_band";
   section_label?: string;
@@ -57,20 +59,22 @@ export function AboutBand({ acf }: AboutBandProps) {
       : DEFAULT_DATA.usps,
   };
 
+  const appearance = parseSectionAppearance(acf as Record<string, unknown>);
+
   return (
-    <section className="py-20 section-bg-clean">
+    <CmsSectionShell appearance={appearance} defaultClassName="section-bg-clean" className="py-20">
       <div className="container-site">
         <div className="rounded-3xl card-gradient overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Left copy */}
             <div className="p-10 lg:p-14 flex flex-col justify-center">
               {data.section_label && (
-                <p className="section-label mb-4">{data.section_label}</p>
+                <p className="section-label mb-4" style={appearance.textColor ? { color: appearance.textColor } : undefined}>{data.section_label}</p>
               )}
-              <h2 className="font-serif text-3xl xl:text-4xl text-charcoal leading-snug mb-5">
-                <AccentHeadingText heading={data.heading} accent={data.heading_accent} />
+              <h2 className="font-serif text-3xl xl:text-4xl leading-snug mb-5" style={appearance.textColor ? { color: appearance.textColor } : undefined}>
+                <AccentHeadingText heading={data.heading} accent={data.heading_accent} accentColor={appearance.accentColor} />
               </h2>
-              <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8 max-w-sm">
+              <p className="font-sans text-sm leading-relaxed mb-8 max-w-sm" style={appearance.textColor ? { color: appearance.textColor, opacity: 0.85 } : undefined}>
                 {data.body_text}
               </p>
               <div className="flex flex-wrap items-center gap-3">
@@ -117,6 +121,6 @@ export function AboutBand({ acf }: AboutBandProps) {
           </div>
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

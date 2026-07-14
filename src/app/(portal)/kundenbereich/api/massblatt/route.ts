@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { findCustomerById, saveMeasurementSubmission } from "@/lib/portal/customers";
+import { findCustomerById } from "@/lib/portal/customers";
 import { getRequiredFieldKeys } from "@/lib/portal/measurement-fields";
 import { getPortalCustomerId } from "@/lib/portal/session";
+import { prisma } from "@/lib/prisma";
 import type { MeasurementData } from "@/types";
 
 export async function POST(request: Request) {
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
   }
 
-  const customer = findCustomerById(customerId);
+  const customer = await findCustomerById(customerId);
   if (!customer) {
     return NextResponse.json({ error: "Kunde nicht gefunden." }, { status: 404 });
   }
@@ -50,13 +51,21 @@ export async function POST(request: Request) {
     );
   }
 
-  saveMeasurementSubmission({
-    customerId: customer.id,
-    projectTitle: customer.projectTitle,
-    costumeCategory: customer.costumeCategory,
-    measurements: data,
-    photoNames,
-    submittedAt: new Date().toISOString(),
+  // Find the customer's latest project to link the measurement
+  const project = await prisma.project.findFirst({
+    where: { customerId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // Save measurement to DB
+  await prisma.measurement.create({
+    data: {
+      customerId,
+      projectId: project?.id ?? null,
+      fields: data.values as object,
+      notes: data.notes ?? null,
+      status: "complete",
+    },
   });
 
   return NextResponse.json({ ok: true });

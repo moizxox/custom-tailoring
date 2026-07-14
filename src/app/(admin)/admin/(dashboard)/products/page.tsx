@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getAdminT } from "@/lib/i18n/admin";
 import Link from "next/link";
 import type { Metadata } from "next";
-import ProductDeleteButton from "@/components/admin/ProductDeleteButton";
+import ProductListRowActions from "@/components/admin/ProductListRowActions";
 import { getEnabledTiers, normalizeTierPricing, parseTierPricing } from "@/lib/product-tiers";
 
 export const metadata: Metadata = { title: "Products" };
@@ -18,6 +18,7 @@ async function getProducts() {
 export default async function ProductsListPage() {
   const products = await getProducts();
   const t = getAdminT("products");
+  const orderedIds = products.map((p) => p.id);
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -25,6 +26,9 @@ export default async function ProductsListPage() {
         <div>
           <h1 className="text-xl font-bold text-gray-900">{t("title")}</h1>
           <p className="text-sm text-gray-500 mt-0.5">{t("count", { count: products.length })}</p>
+          {products.length > 0 && (
+            <p className="text-xs text-gray-400 mt-1">{t("reorderHint")}</p>
+          )}
         </div>
         <Link
           href="/admin/products/new"
@@ -46,6 +50,7 @@ export default async function ProductsListPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 w-12">#</th>
                 <th className="text-left text-xs font-medium text-gray-500 px-5 py-3">{t("columnProduct")}</th>
                 <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden sm:table-cell">{t("columnCategory")}</th>
                 <th className="text-left text-xs font-medium text-gray-500 px-5 py-3 hidden md:table-cell">{t("columnTiers")}</th>
@@ -54,7 +59,7 @@ export default async function ProductsListPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {products.map((product) => {
+              {products.map((product, index) => {
                 const tierPricing = normalizeTierPricing(parseTierPricing(product.tierPricing), {
                   tier: product.tier,
                   price: product.price,
@@ -62,6 +67,7 @@ export default async function ProductsListPage() {
                 const tierCount = getEnabledTiers(tierPricing).length;
                 return (
                   <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-3.5 text-xs text-gray-400 font-mono">{index + 1}</td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         {product.imageUrl ? (
@@ -83,18 +89,13 @@ export default async function ProductsListPage() {
                     <td className="px-5 py-3.5 hidden md:table-cell text-gray-600">{tierCount} / 3</td>
                     <td className="px-5 py-3.5 text-gray-600 hidden sm:table-cell">{product.price}</td>
                     <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-2 justify-end">
-                        <Link href={`/shop/${product.slug}`} target="_blank" className="text-xs font-medium text-gray-500 hover:text-gray-700">
-                          {t("viewOnSite")}
-                        </Link>
-                        <Link
-                          href={`/admin/products/${product.id}`}
-                          className="text-xs font-medium text-periwinkle-600 hover:text-periwinkle-700"
-                        >
-                          {t("edit")}
-                        </Link>
-                        <ProductDeleteButton productId={product.id} productName={product.name} />
-                      </div>
+                      <ProductListRowActions
+                        productId={product.id}
+                        productName={product.name}
+                        productSlug={product.slug}
+                        orderedIds={orderedIds}
+                        index={index}
+                      />
                     </td>
                   </tr>
                 );

@@ -1,3 +1,7 @@
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
+
 interface AcfProcess {
   acf_fc_layout: "process";
   section_label?: string;
@@ -47,36 +51,29 @@ export function ProcessSection({ acf }: ProcessSectionProps) {
       ? acf.steps as typeof DEFAULT_DATA.steps
       : DEFAULT_DATA.steps,
   };
+  const appearance = parseSectionAppearance(acf as Record<string, unknown>);
 
   return (
-    <section className="py-24 card-gradient-glass">
+    <CmsSectionShell appearance={appearance} defaultClassName="card-gradient-glass" className="py-24">
       <div className="container-site">
-        {/* Header */}
         <div className="text-center mb-16">
           {data.section_label && (
             <div className="divider-ornament justify-center mb-5">
               <span>{data.section_label}</span>
             </div>
           )}
-          <h2 className="section-heading">
-            {data.heading}{" "}
-            {data.heading_accent && (
-              <span className="text-periwinkle-dark">{data.heading_accent}</span>
-            )}
+          <h2 className="section-heading" style={appearance.textColor ? { color: appearance.textColor } : undefined}>
+            <AccentHeadingText heading={data.heading} accent={data.heading_accent} accentColor={appearance.accentColor} />
           </h2>
         </div>
 
-        {/* Steps grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-          {/* Connecting line (desktop) */}
           <div className="absolute top-8 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-stone to-transparent hidden lg:block" aria-hidden />
 
           {data.steps.map((step, index) => (
             <div key={step.number} className="flex flex-col items-center text-center relative">
-              {/* Circle */}
               <div className="relative z-10 w-16 h-16 rounded-full bg-white border-2 border-periwinkle-light flex items-center justify-center mb-5 shadow-soft">
                 <span className="font-serif text-xl text-periwinkle-dark font-semibold">{step.number}</span>
-                {/* Arrow connector */}
                 {index < data.steps.length - 1 && (
                   <div className="absolute -right-8 top-1/2 -translate-y-1/2 hidden lg:block">
                     <svg className="w-3 h-3 text-stone" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,6 +88,6 @@ export function ProcessSection({ acf }: ProcessSectionProps) {
           ))}
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }
