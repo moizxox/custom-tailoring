@@ -52,6 +52,9 @@ export default async function StoffePage() {
         titleAccent={hero.titleAccent}
         subtitle={hero.subtitle}
         headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Stoffe & Materialien", href: "/stoffe" }]}
       />
 
@@ -89,6 +92,7 @@ export default async function StoffePage() {
           imagePosition={advisory.imagePosition}
           className="section-bg-white"
           paragraphs={advisory.paragraphs}
+          appearance={advisory.appearance}
           ctaLabel={advisory.ctaLabel}
           ctaHref={advisory.ctaHref}
         />

@@ -26,7 +26,13 @@ export default async function ImpressumPage() {
 
   return (
     <>
-      <PageHero title={hero.title} headingTag={hero.headingTag} breadcrumbs={[{ label: "Impressum", href: "/impressum" }]} />
+      <PageHero
+        title={hero.title}
+        headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
+      />
       <section className="py-20 section-bg-white">
         <div className="container-site max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl border border-stone-light p-8 flex flex-col gap-6 font-sans text-sm text-charcoal-light leading-relaxed">

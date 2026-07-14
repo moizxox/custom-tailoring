@@ -37,16 +37,24 @@ export function Navbar({
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300 site-nav-enter",
         "bg-offwhite-pure/40 backdrop-blur-md border-b",
-        scrolled ? "bg-offwhite-pure/40 backdrop-blur-sm shadow-soft border-gold-muted/40" : "border-gold-muted/20",
+        scrolled
+          ? "bg-offwhite-pure/40 backdrop-blur-sm shadow-soft border-gold-muted/40"
+          : "border-gold-muted/20",
       )}
     >
       <div className="container-site">
-        <nav className="flex items-center justify-between h-16 lg:h-20">
+        <nav className="flex items-center gap-4 justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex flex-col leading-[1.1] group shrink-0">
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">{brandName}</span>
-            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-periwinkle-dark">{brandAccent}</span>
-            <span className="font-sans text-[7px] tracking-[0.22em] uppercase text-warmgrey mt-0.5">{brandSubline}</span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-charcoal">
+              {brandName}
+            </span>
+            <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-periwinkle-dark">
+              {brandAccent}
+            </span>
+            <span className="font-sans text-[7px] tracking-[0.22em] uppercase text-warmgrey mt-0.5">
+              {brandSubline}
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -68,7 +76,11 @@ export function Navbar({
           {/* Desktop CTA + Search + Hamburger */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <SiteSearch className="hidden md:block" variant="bar" />
-            <SiteSearch className="md:hidden" variant="compact" onNavigate={() => setMobileOpen(false)} />
+            <SiteSearch
+              className="md:hidden"
+              variant="compact"
+              onNavigate={() => setMobileOpen(false)}
+            />
 
             <Link
               href={ctaUrl}
@@ -91,9 +103,24 @@ export function Navbar({
             >
               <span className="sr-only">Menü</span>
               <div className="w-[22px] flex flex-col gap-[5px]">
-                <span className={cn("block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center", mobileOpen ? "rotate-45 translate-y-[6.5px]" : "")} />
-                <span className={cn("block h-[1.5px] bg-charcoal rounded transition-all duration-300", mobileOpen ? "opacity-0 scale-x-0" : "")} />
-                <span className={cn("block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center", mobileOpen ? "-rotate-45 -translate-y-[6.5px]" : "")} />
+                <span
+                  className={cn(
+                    "block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center",
+                    mobileOpen ? "rotate-45 translate-y-[6.5px]" : "",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "block h-[1.5px] bg-charcoal rounded transition-all duration-300",
+                    mobileOpen ? "opacity-0 scale-x-0" : "",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "block h-[1.5px] bg-charcoal rounded transition-all duration-300 origin-center",
+                    mobileOpen ? "-rotate-45 -translate-y-[6.5px]" : "",
+                  )}
+                />
               </div>
             </button>
           </div>
@@ -121,7 +148,11 @@ export function Navbar({
               {link.label}
             </Link>
           ))}
-          <Link href={ctaUrl} onClick={() => setMobileOpen(false)} className="mt-4 btn-primary justify-center">
+          <Link
+            href={ctaUrl}
+            onClick={() => setMobileOpen(false)}
+            className="mt-4 btn-primary justify-center"
+          >
             {ctaLabel}
           </Link>
         </div>

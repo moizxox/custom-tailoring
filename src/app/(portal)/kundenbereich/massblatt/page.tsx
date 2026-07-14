@@ -14,7 +14,7 @@ export default async function MassblattPage() {
   const customerId = await getPortalCustomerId();
   if (!customerId) redirect("/kundenbereich/login?next=/kundenbereich/massblatt");
 
-  const customer = findCustomerById(customerId);
+  const customer = await findCustomerById(customerId);
   if (!customer) redirect("/kundenbereich/login");
 
   return (

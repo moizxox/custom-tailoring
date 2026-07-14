@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { SiteReveal } from "@/components/motion/SiteReveal";
+import { getGlobalColors, buildColorStyleTag } from "@/lib/cms/global-colors";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -40,13 +41,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const globalColors = await getGlobalColors();
+  const colorCSS = buildColorStyleTag(globalColors);
+
   return (
     <html lang="de" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        {/* Dynamic global color palette override — set in CMS Settings → Colors */}
+        <style dangerouslySetInnerHTML={{ __html: colorCSS }} />
+      </head>
       <body className="min-h-screen flex flex-col bg-offwhite text-charcoal antialiased">
         <SiteReveal />
         {children}

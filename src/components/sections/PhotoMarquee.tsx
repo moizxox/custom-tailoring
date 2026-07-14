@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 
 const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei";
 const MARQUEE_PHOTOS = [
@@ -21,7 +23,7 @@ interface PhotoMarqueeProps {
     heading_accent?: string;
     subtext?: string;
     photos?: { src: string; alt: string }[];
-  };
+  } & Record<string, unknown>;
 }
 
 const DEFAULT_COPY = {
@@ -38,13 +40,15 @@ export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
     : MARQUEE_PHOTOS;
   const track = [...photos, ...photos];
   const data = { ...DEFAULT_COPY, ...acf };
+  const appearance = parseSectionAppearance(acf);
 
   return (
-    <section
-      className={cn("relative py-16 lg:py-20 section-bg-white border-t border-stone-light/50", className)}
-      aria-label="Impressionen aus dem Atelier"
+    <CmsSectionShell
+      appearance={appearance}
+      defaultClassName="section-bg-white"
+      className={cn("py-16 lg:py-20 border-t border-stone-light/50", className)}
     >
-      <div className="container-site text-center mb-10 lg:mb-12">
+      <div className="container-site text-center mb-10 lg:mb-12" aria-label="Impressionen aus dem Atelier">
         <div className="divider-ornament justify-center mb-5">
           <span>{data.section_label}</span>
         </div>
@@ -71,6 +75,6 @@ export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
           ))}
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

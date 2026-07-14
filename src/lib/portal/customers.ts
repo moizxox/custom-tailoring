@@ -1,4 +1,11 @@
-import type { MeasurementData } from "@/types";
+/**
+ * Portal customer helpers — now DB-backed via Prisma.
+ *
+ * The PortalCustomer view type is kept for backward-compat with portal UI
+ * components that haven't yet been fully migrated.
+ */
+import { prisma } from "@/lib/prisma";
+import { getAccessibleProjectWhere } from "@/lib/portal/projects";
 
 export type CostumeCategory = "Herren" | "Damen" | "Kinder";
 
@@ -8,81 +15,98 @@ export interface PortalCustomer {
   email: string;
   projectTitle: string;
   costumeCategory: CostumeCategory;
-  /** Personal access code (sent after order confirmation) */
   accessCode: string;
 }
 
-/** Demo customers — replace with CRM / database in production */
-export const PORTAL_CUSTOMERS: PortalCustomer[] = [
-  {
-    id: "cust-001",
-    name: "Max Muster",
-    email: "max@example.com",
-    projectTitle: "Waggis Kostüm 2026",
-    costumeCategory: "Herren",
-    accessCode: "LANI2026",
-  },
-  {
-    id: "cust-002",
-    name: "Anna Beispiel",
-    email: "anna@example.com",
-    projectTitle: "Clique Kostüm Damen",
-    costumeCategory: "Damen",
-    accessCode: "BASel482",
-  },
-];
-
-/** One-time private links — e.g. emailed after order */
-export const PORTAL_ACCESS_TOKENS: Record<
-  string,
-  { customerId: string; expiresAt?: string }
-> = {
-  "demo-max-2026": { customerId: "cust-001" },
-  "demo-anna-2026": { customerId: "cust-002" },
-};
-
-export function findCustomerByCredentials(
+/** Look up a customer by email + access code and return a PortalCustomer view */
+export async function findCustomerByCredentials(
   email: string,
   accessCode: string
-): PortalCustomer | null {
-  const normalized = email.trim().toLowerCase();
-  return (
-    PORTAL_CUSTOMERS.find(
-      (c) =>
-        c.email.toLowerCase() === normalized &&
-        c.accessCode.toUpperCase() === accessCode.trim().toUpperCase()
-    ) ?? null
-  );
+): Promise<PortalCustomer | null> {
+  const customer = await prisma.customer.findFirst({
+    where: {
+      email: { equals: email.trim().toLowerCase(), mode: "insensitive" },
+      accessCode: {
+        equals: accessCode.trim().toUpperCase(),
+        mode: "insensitive",
+      },
+    },
+  });
+
+  if (!customer) return null;
+
+  const projectWhere = await getAccessibleProjectWhere(customer.id);
+  const project = await prisma.project.findFirst({
+    where: projectWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return toPortalCustomer(customer, project ?? null);
 }
 
-export function findCustomerById(id: string): PortalCustomer | null {
-  return PORTAL_CUSTOMERS.find((c) => c.id === id) ?? null;
+/** Fetch a customer by id and return a PortalCustomer view */
+export async function findCustomerById(
+  id: string
+): Promise<PortalCustomer | null> {
+  const customer = await prisma.customer.findUnique({
+    where: { id },
+  });
+
+  if (!customer) return null;
+
+  const projectWhere = await getAccessibleProjectWhere(customer.id);
+  const project = await prisma.project.findFirst({
+    where: projectWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return toPortalCustomer(customer, project ?? null);
 }
 
-export function resolveAccessToken(token: string): PortalCustomer | null {
-  const entry = PORTAL_ACCESS_TOKENS[token];
-  if (!entry) return null;
-  if (entry.expiresAt && new Date(entry.expiresAt) < new Date()) return null;
-  return findCustomerById(entry.customerId);
+/** Resolve a one-time portal access token → PortalCustomer */
+export async function resolveAccessToken(
+  token: string
+): Promise<PortalCustomer | null> {
+  const entry = await prisma.portalAccessToken.findUnique({
+    where: { token },
+    include: { customer: true },
+  });
+  if (!entry || entry.used || entry.expiresAt < new Date()) return null;
+
+  await prisma.portalAccessToken.update({
+    where: { id: entry.id },
+    data: { used: true },
+  });
+
+  const projectWhere = await getAccessibleProjectWhere(entry.customer.id);
+  const project = await prisma.project.findFirst({
+    where: projectWhere,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return toPortalCustomer(entry.customer, project ?? null);
 }
 
-export interface MeasurementSubmission {
-  customerId: string;
-  projectTitle: string;
-  costumeCategory: CostumeCategory;
-  measurements: MeasurementData;
-  photoNames: string[];
-  submittedAt: string;
-}
+// ─── Internal ─────────────────────────────────────────────────────────────────
 
-/** In-memory store for demo — use database in production */
-const submissions: MeasurementSubmission[] = [];
+type CustomerRecord = {
+  id: string;
+  name: string;
+  email: string;
+  accessCode: string;
+};
 
-export function saveMeasurementSubmission(submission: MeasurementSubmission) {
-  submissions.push(submission);
-  return submission;
-}
-
-export function getSubmissionsForCustomer(customerId: string) {
-  return submissions.filter((s) => s.customerId === customerId);
+function toPortalCustomer(
+  customer: CustomerRecord,
+  project: { title: string; costumeCategory: string | null } | null
+): PortalCustomer {
+  const cat = (project?.costumeCategory ?? "Herren") as CostumeCategory;
+  return {
+    id: customer.id,
+    name: customer.name,
+    email: customer.email,
+    projectTitle: project?.title ?? "Aktuelles Projekt",
+    costumeCategory: cat,
+    accessCode: customer.accessCode,
+  };
 }

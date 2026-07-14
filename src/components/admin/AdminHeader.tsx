@@ -4,12 +4,14 @@ import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import type { User } from "next-auth";
 import { LogOut, Scissors } from "lucide-react";
+import { AdminNotificationBell } from "@/components/crm/AdminNotificationBell";
 
 interface AdminHeaderProps {
   user: User;
+  initialUnreadNotifications?: number;
 }
 
-export default function AdminHeader({ user }: AdminHeaderProps) {
+export default function AdminHeader({ user, initialUnreadNotifications = 0 }: AdminHeaderProps) {
   const t = useTranslations("nav");
 
   return (
@@ -23,6 +25,11 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
       </div>
 
       <div className="ml-auto flex items-center gap-3">
+        <AdminNotificationBell
+          adminId={user.id ?? user.email ?? "admin"}
+          adminName={user.name ?? undefined}
+          initialUnreadCount={initialUnreadNotifications}
+        />
         {/* User info */}
         <div className="hidden sm:flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-700 font-semibold text-xs">

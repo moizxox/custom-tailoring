@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db/prisma";
 import { getAdminT } from "@/lib/i18n/admin";
 import Link from "next/link";
-import { FileText, ShoppingBag, ImageIcon, Settings, Plus, Menu, ArrowRight } from "lucide-react";
+import { FileText, ShoppingBag, ImageIcon, Settings, Plus, Menu, ArrowRight, Palette } from "lucide-react";
 
 async function getStats() {
   try {
@@ -38,6 +38,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/products/new", label: t("addProduct"), description: t("addProductDesc"), icon: Plus, accent: "border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50/50" },
     { href: "/admin/media", label: t("manageMedia"), description: t("manageMediaDesc"), icon: ImageIcon, accent: "border-orange-200 hover:border-orange-300 hover:bg-orange-50/50" },
     { href: "/admin/settings", label: tNav("settings"), description: t("settingsDesc"), icon: Settings, accent: "border-gray-200 hover:border-gray-300 hover:bg-gray-50" },
+    { href: "/admin/settings", label: "Global Colors", description: "Change your website-wide color palette", icon: Palette, accent: "border-pink-200 hover:border-pink-300 hover:bg-pink-50/50" },
   ];
 
   return (
@@ -89,15 +90,24 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Tip banner */}
-      <div className="mt-8 p-4 bg-violet-50 border border-violet-200 rounded-2xl flex items-start gap-3">
-        <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center shrink-0 mt-0.5">
-          <FileText className="w-4 h-4 text-violet-600" />
+      {/* Feature highlight banner */}
+      <div className="mt-8 p-4 bg-gradient-to-r from-pink-50 to-violet-50 border border-violet-200 rounded-2xl flex items-start gap-3">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-100 to-violet-100 flex items-center justify-center shrink-0 mt-0.5">
+          <Palette className="w-4 h-4 text-violet-600" />
         </div>
-        <div>
-          <p className="text-sm font-semibold text-violet-900">{t("phaseTitle")}</p>
-          <p className="text-xs text-violet-700 mt-0.5 leading-relaxed">{t("phaseBody")}</p>
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-violet-900">New: Global Color Palette & Per-text Colors</p>
+          <p className="text-xs text-violet-700 mt-0.5 leading-relaxed">
+            Go to <strong>Settings → Global Colors</strong> to change your site-wide color palette.
+            Individual section headings, labels, and subtext can now have custom colors — edit any page section to find color overrides per text element.
+          </p>
         </div>
+        <Link
+          href="/admin/settings"
+          className="flex-shrink-0 px-3 py-1.5 bg-violet-600 text-white text-xs font-medium rounded-lg hover:bg-violet-700 transition-colors"
+        >
+          Open →
+        </Link>
       </div>
     </div>
   );

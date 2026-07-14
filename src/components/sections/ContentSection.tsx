@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import type { SectionAppearance } from "@/lib/cms/section-appearance";
 import { cn } from "@/lib/utils";
 
 interface ContentSectionProps {
@@ -14,6 +16,7 @@ interface ContentSectionProps {
   className?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  appearance?: SectionAppearance;
 }
 
 export function ContentSection({
@@ -27,6 +30,7 @@ export function ContentSection({
   className,
   ctaLabel,
   ctaHref,
+  appearance,
 }: ContentSectionProps) {
   const renderHeading = () => (
     <AccentHeadingText heading={heading} accent={headingAccent} />
@@ -58,7 +62,11 @@ export function ContentSection({
   );
 
   return (
-    <section className={cn("py-20 section-bg-white", className)}>
+    <CmsSectionShell
+      appearance={appearance}
+      defaultClassName="section-bg-white"
+      className={cn("py-20", className)}
+    >
       <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {imagePosition === "left" ? (
           <>
@@ -72,6 +80,6 @@ export function ContentSection({
           </>
         )}
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

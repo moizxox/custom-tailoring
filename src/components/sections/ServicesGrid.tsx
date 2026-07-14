@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { cn } from "@/lib/utils";
 interface AcfServiceItem {
   title: string;
@@ -153,8 +155,10 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
       : DEFAULT_DATA.services,
   };
 
+  const appearance = parseSectionAppearance(acf as Record<string, unknown>);
+
   return (
-    <section className="py-24 section-bg-white">
+    <CmsSectionShell appearance={appearance} defaultClassName="section-bg-white" className="py-24">
       <div className="container-site">
         {/* Header */}
         <div className="text-center mb-14 reveal-header">
@@ -163,10 +167,14 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
               <span>{data.section_label}</span>
             </div>
           )}
-          <h2 className="section-heading mb-4">
-            <AccentHeadingText heading={data.heading} accent={data.heading_accent} />
+          <h2 className="section-heading mb-4" style={appearance.textColor ? { color: appearance.textColor } : undefined}>
+            <AccentHeadingText heading={data.heading} accent={data.heading_accent} accentColor={appearance.accentColor} />
           </h2>
-          {data.subtext && <p className="section-subtext max-w-xl mx-auto">{data.subtext}</p>}
+          {data.subtext && (
+            <p className="section-subtext max-w-xl mx-auto" style={appearance.textColor ? { color: appearance.textColor, opacity: 0.85 } : undefined}>
+              {data.subtext}
+            </p>
+          )}
         </div>
 
         {/* 12-card grid — auto-rows ensures equal heights in every row */}
@@ -188,6 +196,6 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
           </div>
         )}
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

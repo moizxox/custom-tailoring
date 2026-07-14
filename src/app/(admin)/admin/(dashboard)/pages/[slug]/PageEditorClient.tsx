@@ -1,12 +1,43 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import type { CmsSection, CmsField } from "@/lib/cms/page-schemas";
+import type { CmsSection, CmsField, FieldGroup } from "@/lib/cms/page-schemas";
 import MediaPickerModal from "@/components/admin/MediaPickerModal";
 import ItemsEditor from "@/components/admin/ItemsEditor";
+import ColorPicker from "@/components/admin/ColorPicker";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Check, Search, Image as ImageIcon } from "lucide-react";
+import { ChevronDown, Check, Search, Image as ImageIcon, ChevronUp, GripVertical } from "lucide-react";
+import { sortSectionsByOrder } from "@/lib/cms/section-order";
+
+const FIELD_GROUP_META: { key: FieldGroup; label: string }[] = [
+  { key: "content", label: "Content" },
+  { key: "links", label: "Buttons & links" },
+  { key: "appearance", label: "Background & style" },
+  { key: "colors", label: "Text colors" },
+  { key: "items", label: "Lists & cards" },
+  { key: "settings", label: "Settings" },
+];
+
+function inferGroup(field: CmsField): FieldGroup {
+  if (field.group) return field.group;
+  if (field.type === "items") return "items";
+  if (field.type === "color") return "colors";
+  if (field.type === "toggle" || field.key.includes("gradient") || field.key.includes("bg") || field.key.includes("Konfetti")) return "appearance";
+  if (field.type === "url" || /cta|url/i.test(field.key)) return "links";
+  return "content";
+}
+
+function groupFields(fields: CmsField[]): { group: FieldGroup; label: string; fields: CmsField[] }[] {
+  const buckets = new Map<FieldGroup, CmsField[]>();
+  for (const field of fields) {
+    const g = inferGroup(field);
+    buckets.set(g, [...(buckets.get(g) ?? []), field]);
+  }
+  return FIELD_GROUP_META
+    .filter((meta) => (buckets.get(meta.key)?.length ?? 0) > 0)
+    .map((meta) => ({ group: meta.key, label: meta.label, fields: buckets.get(meta.key)! }));
+}
 
 /* ─── State shape ────────────────────────────────────────────────────────── */
 interface SectionState {
@@ -25,6 +56,7 @@ interface Props {
   sections: CmsSection[];
   initialContents: Record<string, Record<string, unknown>>;
   pageLabel: string;
+  initialSectionOrder: string[];
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────────────── */
@@ -47,7 +79,12 @@ function buildInitialState(sections: CmsSection[], initialContents: Record<strin
         const raw = content[f.key];
         arrays[f.key] = Array.isArray(raw) ? (raw as Record<string, string>[]) : [];
       } else {
-        values[f.key] = fieldToString(content[f.key]);
+        const raw = content[f.key];
+        if (f.type === "toggle") {
+          values[f.key] = raw === true || raw === "true" ? "true" : "false";
+        } else {
+          values[f.key] = fieldToString(raw);
+        }
       }
     }
     map[sec.key] = { values, arrays, saving: false, saved: false, error: "", expanded: false };
@@ -67,6 +104,8 @@ function buildSavePayload(state: SectionState, section: CmsSection): Record<stri
       } else if (field.type === "number") {
         const n = parseFloat(v);
         result[field.key] = Number.isFinite(n) ? n : v;
+      } else if (field.type === "toggle") {
+        result[field.key] = v === "true";
       } else {
         result[field.key] = v;
       }
@@ -120,10 +159,11 @@ function FieldInput({
   }
   if (field.type === "color") {
     return (
-      <div className="flex items-center gap-3">
-        <input type="color" value={value || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-10 w-12 rounded-lg border border-gray-200 cursor-pointer p-0.5 bg-white" />
-        <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="#000000" className={cn(base, "flex-1 font-mono")} />
-      </div>
+      <ColorPicker
+        value={value}
+        onChange={onChange}
+        showHex
+      />
     );
   }
   if (field.type === "toggle") {
@@ -158,13 +198,21 @@ function FieldInput({
 }
 
 /* ─── Main component ─────────────────────────────────────────────────────── */
-export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel }: Props) {
+export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel, initialSectionOrder }: Props) {
   const t = useTranslations("editor");
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [imagePickerMeta, setImagePickerMeta] = useState<{ sectionKey: string; fieldKey: string } | null>(null);
   const [search, setSearch] = useState("");
+  const [sectionOrder, setSectionOrder] = useState<string[]>(initialSectionOrder);
+  const [orderSaving, setOrderSaving] = useState(false);
+  const [orderSaved, setOrderSaved] = useState(false);
   const [states, setStates] = useState<Record<string, SectionState>>(() =>
     buildInitialState(sections, initialContents)
+  );
+
+  const orderedSections = useMemo(
+    () => sortSectionsByOrder(sections, sectionOrder),
+    [sections, sectionOrder]
   );
 
   const updateValue = useCallback((sectionKey: string, fieldKey: string, value: string) => {
@@ -184,6 +232,37 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
   const toggleSection = useCallback((key: string) => {
     setStates((prev) => ({ ...prev, [key]: { ...prev[key], expanded: !prev[key].expanded } }));
   }, []);
+
+  const moveSection = useCallback((key: string, direction: -1 | 1) => {
+    setSectionOrder((prev) => {
+      const idx = prev.indexOf(key);
+      if (idx < 0) return prev;
+      const nextIdx = idx + direction;
+      if (nextIdx < 0 || nextIdx >= prev.length) return prev;
+      const next = [...prev];
+      [next[idx], next[nextIdx]] = [next[nextIdx], next[idx]];
+      return next;
+    });
+    setOrderSaved(false);
+  }, []);
+
+  const saveSectionOrder = useCallback(async () => {
+    setOrderSaving(true);
+    try {
+      const res = await fetch(`/admin/api/pages/${pageSlug}/order`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order: sectionOrder }),
+      });
+      if (!res.ok) throw new Error("order save failed");
+      setOrderSaved(true);
+      setTimeout(() => setOrderSaved(false), 3000);
+    } catch {
+      // silent — user can retry
+    } finally {
+      setOrderSaving(false);
+    }
+  }, [pageSlug, sectionOrder]);
 
   const saveSection = useCallback(async (sectionKey: string, section: CmsSection) => {
     setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saving: true, error: "" } }));
@@ -206,7 +285,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
     setTimeout(() => sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
 
-  const filteredSections = sections.filter((s) =>
+  const filteredSections = orderedSections.filter((s) =>
     !search || s.label.toLowerCase().includes(search.toLowerCase()) ||
     s.fields.some((f) => f.label.toLowerCase().includes(search.toLowerCase()))
   );
@@ -225,7 +304,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
               className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400 bg-gray-50 focus:bg-white transition" />
           </div>
           <nav className="space-y-0.5">
-            {sections.map((sec) => {
+            {orderedSections.map((sec, idx) => {
               const isMatch = !search || sec.label.toLowerCase().includes(search.toLowerCase()) ||
                 sec.fields.some((f) => f.label.toLowerCase().includes(search.toLowerCase()));
               const st = states[sec.key];
@@ -234,14 +313,22 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                   className={cn("w-full text-left px-3 py-2 rounded-lg text-xs transition-colors flex items-center justify-between gap-2",
                     isMatch ? "text-gray-700 hover:bg-gray-100" : "text-gray-300 hover:bg-gray-50",
                     st?.expanded && "bg-violet-50 text-violet-700 font-medium")}>
-                  <span className="truncate">{sec.label}</span>
+                  <span className="truncate flex items-center gap-1.5">
+                    <span className="text-[10px] text-gray-400 w-4">{idx + 1}</span>
+                    {sec.label}
+                  </span>
                   {st?.saved && <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />}
                 </button>
               );
             })}
           </nav>
-          <div className="pt-3 border-t border-gray-100">
-            <p className="text-[10px] text-gray-400 px-1">{sections.length} sections</p>
+          <div className="pt-3 border-t border-gray-100 space-y-2">
+            <button type="button" onClick={saveSectionOrder} disabled={orderSaving}
+              className="w-full px-3 py-2 text-xs font-medium rounded-lg bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-60 transition">
+              {orderSaving ? "Saving order…" : "Save section order"}
+            </button>
+            {orderSaved && <p className="text-[10px] text-green-600 px-1">Section order saved</p>}
+            <p className="text-[10px] text-gray-400 px-1">{orderedSections.length} sections — use arrows to reorder</p>
           </div>
         </div>
       </aside>
@@ -259,58 +346,84 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
           <div className="text-center py-16 text-sm text-gray-400">No sections match &ldquo;{search}&rdquo;</div>
         )}
 
-        {filteredSections.map((section) => {
+        {filteredSections.map((section, sectionIndex) => {
           const st = states[section.key];
           if (!st) return null;
+          const fieldGroups = groupFields(section.fields);
+          const orderIndex = sectionOrder.indexOf(section.key);
           return (
             <div key={section.key} ref={(el) => { sectionRefs.current[section.key] = el; }}
               className="bg-white rounded-xl border border-gray-200 overflow-hidden scroll-mt-6">
 
               {/* Section header */}
-              <button type="button" onClick={() => toggleSection(section.key)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3 min-w-0">
-                  <ChevronDown className={cn("w-4 h-4 text-gray-300 shrink-0 transition-transform duration-200", st.expanded ? "rotate-180" : "")} />
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{section.label}</p>
-                    {section.description && <p className="text-xs text-gray-400 mt-0.5 truncate">{section.description}</p>}
+              <div className="flex items-stretch">
+                <div className="flex flex-col border-r border-gray-100 bg-gray-50/80">
+                  <button type="button" disabled={orderIndex <= 0} onClick={() => moveSection(section.key, -1)}
+                    className="px-2.5 py-2 text-gray-400 hover:text-gray-700 disabled:opacity-30" title="Move up">
+                    <ChevronUp className="w-4 h-4" />
+                  </button>
+                  <button type="button" disabled={orderIndex >= sectionOrder.length - 1} onClick={() => moveSection(section.key, 1)}
+                    className="px-2.5 py-2 text-gray-400 hover:text-gray-700 disabled:opacity-30" title="Move down">
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+                <button type="button" onClick={() => toggleSection(section.key)}
+                  className="flex-1 flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <GripVertical className="w-4 h-4 text-gray-300 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">
+                        <span className="text-gray-400 font-normal mr-2">#{sectionIndex + 1}</span>
+                        {section.label}
+                      </p>
+                      {section.description && <p className="text-xs text-gray-400 mt-0.5 truncate">{section.description}</p>}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 ml-3">
-                  {st.saved && (
-                    <span className="text-xs text-green-600 flex items-center gap-1 font-medium">
-                      <Check className="w-3 h-3" /> Saved
-                    </span>
-                  )}
-                  <span className="text-[10px] text-gray-300">{section.fields.length} fields</span>
-                </div>
-              </button>
+                  <div className="flex items-center gap-2 shrink-0 ml-3">
+                    {st.saved && (
+                      <span className="text-xs text-green-600 flex items-center gap-1 font-medium">
+                        <Check className="w-3 h-3" /> Saved
+                      </span>
+                    )}
+                    <ChevronDown className={cn("w-4 h-4 text-gray-300 transition-transform", st.expanded && "rotate-180")} />
+                  </div>
+                </button>
+              </div>
 
-              {/* Expanded body */}
+              {/* Expanded body — grouped fields */}
               {st.expanded && (
-                <div className="border-t border-gray-100 px-5 py-5 space-y-5">
-                  {section.fields.map((field) => (
-                    <div key={field.key}>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                        {field.label}
-                        {field.hint && <span className="ml-2 text-gray-400 font-normal">{field.hint}</span>}
-                      </label>
+                <div className="border-t border-gray-100 px-5 py-5 space-y-6">
+                  {fieldGroups.map((group) => (
+                    <div key={group.group} className="rounded-xl border border-gray-100 overflow-hidden">
+                      <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
+                        <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{group.label}</p>
+                      </div>
+                      <div className="p-4 space-y-4">
+                        {group.fields.map((field) => (
+                          <div key={field.key}>
+                            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                              {field.label}
+                              {field.hint && <span className="ml-2 text-gray-400 font-normal">{field.hint}</span>}
+                            </label>
 
-                      {field.type === "items" ? (
-                        <ItemsEditor
-                          value={st.arrays[field.key] ?? []}
-                          onChange={(items) => updateArray(section.key, field.key, items)}
-                          itemFields={field.itemFields ?? []}
-                        />
-                      ) : (
-                        <FieldInput
-                          field={field}
-                          value={st.values[field.key] ?? ""}
-                          onChange={(v) => updateValue(section.key, field.key, v)}
-                          onImagePick={() => setImagePickerMeta({ sectionKey: section.key, fieldKey: field.key })}
-                          t={t}
-                        />
-                      )}
+                            {field.type === "items" ? (
+                              <ItemsEditor
+                                value={st.arrays[field.key] ?? []}
+                                onChange={(items) => updateArray(section.key, field.key, items)}
+                                itemFields={field.itemFields ?? []}
+                              />
+                            ) : (
+                              <FieldInput
+                                field={field}
+                                value={st.values[field.key] ?? ""}
+                                onChange={(v) => updateValue(section.key, field.key, v)}
+                                onImagePick={() => setImagePickerMeta({ sectionKey: section.key, fieldKey: field.key })}
+                                t={t}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))}
 

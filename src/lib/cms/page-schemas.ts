@@ -3,6 +3,8 @@
  * Labels are in English (admin UI). Content you enter stays in German for the public site.
  */
 
+import { SECTION_GRADIENT_OPTIONS } from "@/lib/cms/section-appearance";
+
 export type FieldType =
   | "text"
   | "textarea"
@@ -15,7 +17,9 @@ export type FieldType =
   | "color"
   | "icon"
   | "toggle"
-  | "items"; // repeating card items with icon picker
+  | "items";
+
+export type FieldGroup = "content" | "links" | "appearance" | "colors" | "items" | "settings";
 
 export interface CmsFieldOption {
   value: string;
@@ -28,6 +32,17 @@ export interface CmsItemField {
   type: "text" | "textarea" | "url" | "icon_slug" | "image" | "select";
   hint?: string;
   options?: CmsFieldOption[];
+}
+
+export interface CmsField {
+  key: string;
+  label: string;
+  type: FieldType;
+  placeholder?: string;
+  hint?: string;
+  options?: CmsFieldOption[];
+  itemFields?: CmsItemField[];
+  group?: FieldGroup;
 }
 
 const LEGAL_SECTION_ITEM_FIELDS: CmsItemField[] = [
@@ -45,40 +60,12 @@ const LEGAL_SECTION_ITEM_FIELDS: CmsItemField[] = [
   { key: "body", label: "Content", type: "textarea", hint: "Separate paragraphs with a blank line" },
 ];
 
-const CONTENT_BLOCK_FIELDS: CmsField[] = [
-  { key: "label", label: "Section label", type: "text" },
-  { key: "heading", label: "Heading", type: "text" },
-  { key: "headingAccent", label: "Accent word(s)", type: "text" },
-  { key: "paragraphs", label: "Body text", type: "textarea", hint: "Separate paragraphs with a blank line" },
-  { key: "imageSrc", label: "Image", type: "image" },
-  { key: "imageAlt", label: "Image alt text", type: "text" },
-  {
-    key: "imagePosition",
-    label: "Image position",
-    type: "select",
-    options: [
-      { value: "left", label: "Left" },
-      { value: "right", label: "Right" },
-    ],
-  },
-  { key: "ctaLabel", label: "CTA label", type: "text" },
-  { key: "ctaUrl", label: "CTA link", type: "url" },
-];
-
-export interface CmsField {
-  key: string;
-  label: string;
-  type: FieldType;
-  placeholder?: string;
-  hint?: string;
-  options?: CmsFieldOption[];
-  itemFields?: CmsItemField[]; // for type "items"
-}
 
 const HEADING_TAG_FIELD: CmsField = {
   key: "headingTag",
   label: "Heading tag",
   type: "select",
+  group: "settings",
   options: [
     { value: "h1", label: "H1" },
     { value: "h2", label: "H2" },
@@ -88,14 +75,55 @@ const HEADING_TAG_FIELD: CmsField = {
   hint: "HTML heading level for SEO",
 };
 
+/** Optional text color overrides — only 2 per section */
+const SECTION_TEXT_COLORS: CmsField[] = [
+  { key: "textColor", label: "Text color", type: "color", group: "colors", hint: "Headings & body (optional)" },
+  { key: "accentColor", label: "Accent color", type: "color", group: "colors", hint: "Highlighted words (optional)" },
+];
+
+/** Background & decoration options */
+const SECTION_APPEARANCE_FIELDS: CmsField[] = [
+  { key: "gradientStyle", label: "Background style", type: "select", group: "appearance",
+    options: SECTION_GRADIENT_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
+    hint: "Site-wide gradient / tint presets" },
+  { key: "useCustomBg", label: "Use custom background color", type: "toggle", group: "appearance" },
+  { key: "bgColor", label: "Custom background color", type: "color", group: "appearance", hint: "Only when toggle is on" },
+  { key: "showKonfetti", label: "Show konfetti overlay", type: "toggle", group: "appearance" },
+];
+
+function withSectionOptions(fields: CmsField[]): CmsField[] {
+  return [...fields, ...SECTION_APPEARANCE_FIELDS, ...SECTION_TEXT_COLORS];
+}
+
+const CONTENT_BLOCK_FIELDS: CmsField[] = withSectionOptions([
+  { key: "label", label: "Section label", type: "text", group: "content" },
+  { key: "heading", label: "Heading", type: "text", group: "content" },
+  { key: "headingAccent", label: "Accent word(s)", type: "text", group: "content" },
+  { key: "paragraphs", label: "Body text", type: "textarea", group: "content", hint: "Separate paragraphs with a blank line" },
+  { key: "imageSrc", label: "Image", type: "image", group: "content" },
+  { key: "imageAlt", label: "Image alt text", type: "text", group: "content" },
+  {
+    key: "imagePosition",
+    label: "Image position",
+    type: "select",
+    group: "content",
+    options: [
+      { value: "left", label: "Left" },
+      { value: "right", label: "Right" },
+    ],
+  },
+  { key: "ctaLabel", label: "CTA label", type: "text", group: "links" },
+  { key: "ctaUrl", label: "CTA link", type: "url", group: "links" },
+]);
+
 function pageHeroFields(): CmsField[] {
-  return [
-    { key: "label", label: "Section label", type: "text" },
-    { key: "heading", label: "Heading", type: "text" },
-    { key: "headingAccent", label: "Accent word(s)", type: "text", hint: "Word(s) highlighted in color" },
-    { key: "subtext", label: "Subtext", type: "textarea" },
-    HEADING_TAG_FIELD,
-  ];
+  return withSectionOptions([
+    { key: "label", label: "Section label", type: "text", group: "content" },
+    { key: "heading", label: "Heading", type: "text", group: "content" },
+    { key: "headingAccent", label: "Accent word(s)", type: "text", group: "content", hint: "Word(s) highlighted in color" },
+    { key: "subtext", label: "Subtext", type: "textarea", group: "content" },
+    { ...HEADING_TAG_FIELD },
+  ]);
 }
 
 export interface CmsSection {
@@ -113,7 +141,7 @@ export interface CmsPageSchema {
   sections: CmsSection[];
 }
 
-export const PAGE_SCHEMAS: CmsPageSchema[] = [
+const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
   {
     slug: "home",
     label: "Home",
@@ -124,52 +152,53 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
         key: "hero",
         label: "Hero section",
         description: "Main headline and intro text on the homepage",
-        fields: [
-          { key: "eyebrow", label: "Eyebrow text", type: "text", placeholder: "Ihre Kostüme. Unser Handwerk." },
-          { key: "heading", label: "Main heading", type: "text" },
-          { key: "headingAccent", label: "Accent word(s)", type: "text", hint: "Word(s) highlighted in color" },
-          { key: "subtext", label: "Intro text", type: "textarea" },
-          { key: "ctaPrimaryLabel", label: "Button 1 — label", type: "text" },
-          { key: "ctaPrimaryUrl", label: "Button 1 — link", type: "url" },
-          { key: "ctaSecondaryLabel", label: "Button 2 — label", type: "text" },
-          { key: "ctaSecondaryUrl", label: "Button 2 — link", type: "url" },
+        fields: withSectionOptions([
+          { key: "eyebrow", label: "Eyebrow text", type: "text", group: "content", placeholder: "Ihre Kostüme. Unser Handwerk." },
+          { key: "heading", label: "Main heading", type: "text", group: "content" },
+          { key: "headingAccent", label: "Accent word(s)", type: "text", group: "content", hint: "Word(s) highlighted in color" },
+          { key: "subtext", label: "Intro text", type: "textarea", group: "content" },
+          { key: "ctaPrimaryLabel", label: "Button 1 — label", type: "text", group: "links" },
+          { key: "ctaPrimaryUrl", label: "Button 1 — link", type: "url", group: "links" },
+          { key: "ctaSecondaryLabel", label: "Button 2 — label", type: "text", group: "links" },
+          { key: "ctaSecondaryUrl", label: "Button 2 — link", type: "url", group: "links" },
           HEADING_TAG_FIELD,
           {
             key: "intro_points",
             label: "Bullet points",
             type: "items",
+            group: "items",
             hint: "Short bullet lines below the intro text",
-            itemFields: [
-              { key: "text", label: "Text", type: "text" },
-            ],
+            itemFields: [{ key: "text", label: "Text", type: "text" }],
           },
           {
             key: "badges",
             label: "Service badge pills",
             type: "items",
+            group: "items",
             hint: "Icon pills shown below the buttons",
             itemFields: [
               { key: "icon_slug", label: "Icon", type: "icon_slug" },
               { key: "label", label: "Label", type: "text" },
             ],
           },
-        ],
+        ]),
       },
       {
         key: "servicesGrid",
         label: "Services section",
         description: "Service cards grid — edit icons, titles, descriptions",
-        fields: [
-          { key: "section_label", label: "Section label", type: "text" },
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "heading_accent", label: "Accent word(s)", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-          { key: "cta_label", label: "CTA label", type: "text" },
-          { key: "cta_url", label: "CTA link", type: "url" },
+        fields: withSectionOptions([
+          { key: "section_label", label: "Section label", type: "text", group: "content" },
+          { key: "heading", label: "Heading", type: "text", group: "content" },
+          { key: "heading_accent", label: "Accent word(s)", type: "text", group: "content" },
+          { key: "subtext", label: "Subtext", type: "textarea", group: "content" },
+          { key: "cta_label", label: "CTA label", type: "text", group: "links" },
+          { key: "cta_url", label: "CTA link", type: "url", group: "links" },
           {
             key: "services",
             label: "Service cards",
             type: "items",
+            group: "items",
             hint: "Each card shown in the grid",
             itemFields: [
               { key: "icon_slug", label: "Icon", type: "icon_slug" },
@@ -178,20 +207,21 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
               { key: "link_url", label: "Link URL", type: "url" },
             ],
           },
-        ],
+        ]),
       },
       {
         key: "process",
         label: "Process section",
         description: "Step-by-step process cards",
-        fields: [
-          { key: "section_label", label: "Section label", type: "text" },
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "heading_accent", label: "Accent word(s)", type: "text" },
+        fields: withSectionOptions([
+          { key: "section_label", label: "Section label", type: "text", group: "content" },
+          { key: "heading", label: "Heading", type: "text", group: "content" },
+          { key: "heading_accent", label: "Accent word(s)", type: "text", group: "content" },
           {
             key: "steps",
             label: "Process steps",
             type: "items",
+            group: "items",
             hint: "Each step in the process",
             itemFields: [
               { key: "number", label: "Number", type: "text" },
@@ -199,23 +229,24 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
               { key: "description", label: "Description", type: "textarea" },
             ],
           },
-        ],
+        ]),
       },
       {
         key: "galleryPreview",
         label: "Gallery preview",
         description: "3-photo preview grid and text",
-        fields: [
-          { key: "section_label", label: "Section label", type: "text" },
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "heading_accent", label: "Accent word(s)", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-          { key: "cta_label", label: "CTA label", type: "text" },
-          { key: "cta_url", label: "CTA link", type: "url" },
+        fields: withSectionOptions([
+          { key: "section_label", label: "Section label", type: "text", group: "content" },
+          { key: "heading", label: "Heading", type: "text", group: "content" },
+          { key: "heading_accent", label: "Accent word(s)", type: "text", group: "content" },
+          { key: "subtext", label: "Subtext", type: "textarea", group: "content" },
+          { key: "cta_label", label: "CTA label", type: "text", group: "links" },
+          { key: "cta_url", label: "CTA link", type: "url", group: "links" },
           {
             key: "preview_items",
             label: "Preview photos",
             type: "items",
+            group: "items",
             hint: "Photos in the 3-card grid",
             itemFields: [
               { key: "src", label: "Image URL", type: "image" },
@@ -223,25 +254,26 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
               { key: "title", label: "Title", type: "text" },
             ],
           },
-        ],
+        ]),
       },
       {
         key: "aboutBand",
         label: "About band",
         description: "Text + USP feature cards with icons",
-        fields: [
-          { key: "section_label", label: "Section label", type: "text" },
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "heading_accent", label: "Accent word(s)", type: "text" },
-          { key: "body_text", label: "Body text", type: "textarea" },
-          { key: "cta_label", label: "Primary CTA label", type: "text" },
-          { key: "cta_url", label: "Primary CTA link", type: "url" },
-          { key: "cta_secondary_label", label: "Secondary CTA label", type: "text" },
-          { key: "cta_secondary_url", label: "Secondary CTA link", type: "url" },
+        fields: withSectionOptions([
+          { key: "section_label", label: "Section label", type: "text", group: "content" },
+          { key: "heading", label: "Heading", type: "text", group: "content" },
+          { key: "heading_accent", label: "Accent word(s)", type: "text", group: "content" },
+          { key: "body_text", label: "Body text", type: "textarea", group: "content" },
+          { key: "cta_label", label: "Primary CTA label", type: "text", group: "links" },
+          { key: "cta_url", label: "Primary CTA link", type: "url", group: "links" },
+          { key: "cta_secondary_label", label: "Secondary CTA label", type: "text", group: "links" },
+          { key: "cta_secondary_url", label: "Secondary CTA link", type: "url", group: "links" },
           {
             key: "usps",
             label: "Feature USPs",
             type: "items",
+            group: "items",
             hint: "Small cards on the right side",
             itemFields: [
               { key: "icon_slug", label: "Icon", type: "icon_slug" },
@@ -249,53 +281,54 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
               { key: "description", label: "Description", type: "textarea" },
             ],
           },
-        ],
+        ]),
       },
       {
         key: "photoMarquee",
         label: "Atelier marquee",
         description: "Scrolling photo strip and text above it",
-        fields: [
-          { key: "section_label", label: "Section label", type: "text" },
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "heading_accent", label: "Accent word(s)", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
+        fields: withSectionOptions([
+          { key: "section_label", label: "Section label", type: "text", group: "content" },
+          { key: "heading", label: "Heading", type: "text", group: "content" },
+          { key: "heading_accent", label: "Accent word(s)", type: "text", group: "content" },
+          { key: "subtext", label: "Subtext", type: "textarea", group: "content" },
           {
             key: "photos",
             label: "Marquee photos",
             type: "items",
+            group: "items",
             hint: "Photos in the scrolling strip",
             itemFields: [
               { key: "src", label: "Image URL", type: "image" },
               { key: "alt", label: "Alt text", type: "text" },
             ],
           },
-        ],
+        ]),
       },
       {
         key: "contactSection",
         label: "Contact section",
-        fields: [
-          { key: "section_label", label: "Section label", type: "text" },
-          { key: "heading", label: "Heading", type: "text" },
-          { key: "headingAccent", label: "Accent word(s)", type: "text" },
-          { key: "subtext", label: "Subtext", type: "textarea" },
-          { key: "ctaLabel", label: "CTA label", type: "text" },
-          { key: "ctaUrl", label: "CTA link", type: "url" },
-          { key: "formTitle", label: "Form title", type: "text" },
-          { key: "formSubtitle", label: "Form subtitle", type: "text" },
-          { key: "nameLabel", label: "Name label", type: "text" },
-          { key: "namePlaceholder", label: "Name placeholder", type: "text" },
-          { key: "phoneLabel", label: "Phone label", type: "text" },
-          { key: "phonePlaceholder", label: "Phone placeholder", type: "text" },
-          { key: "emailLabel", label: "Email label", type: "text" },
-          { key: "emailPlaceholder", label: "Email placeholder", type: "text" },
-          { key: "messageLabel", label: "Message label", type: "text" },
-          { key: "messagePlaceholder", label: "Message placeholder", type: "text" },
-          { key: "submitLabel", label: "Submit label", type: "text" },
-          { key: "successTitle", label: "Success title", type: "text" },
-          { key: "successMessage", label: "Success message", type: "textarea" },
-        ],
+        fields: withSectionOptions([
+          { key: "section_label", label: "Section label", type: "text", group: "content" },
+          { key: "heading", label: "Heading", type: "text", group: "content" },
+          { key: "headingAccent", label: "Accent word(s)", type: "text", group: "content" },
+          { key: "subtext", label: "Subtext", type: "textarea", group: "content" },
+          { key: "ctaLabel", label: "CTA label", type: "text", group: "links" },
+          { key: "ctaUrl", label: "CTA link", type: "url", group: "links" },
+          { key: "formTitle", label: "Form title", type: "text", group: "content" },
+          { key: "formSubtitle", label: "Form subtitle", type: "text", group: "content" },
+          { key: "nameLabel", label: "Name label", type: "text", group: "content" },
+          { key: "namePlaceholder", label: "Name placeholder", type: "text", group: "content" },
+          { key: "phoneLabel", label: "Phone label", type: "text", group: "content" },
+          { key: "phonePlaceholder", label: "Phone placeholder", type: "text", group: "content" },
+          { key: "emailLabel", label: "Email label", type: "text", group: "content" },
+          { key: "emailPlaceholder", label: "Email placeholder", type: "text", group: "content" },
+          { key: "messageLabel", label: "Message label", type: "text", group: "content" },
+          { key: "messagePlaceholder", label: "Message placeholder", type: "text", group: "content" },
+          { key: "submitLabel", label: "Submit label", type: "text", group: "links" },
+          { key: "successTitle", label: "Success title", type: "text", group: "content" },
+          { key: "successMessage", label: "Success message", type: "textarea", group: "content" },
+        ]),
       },
     ],
   },
@@ -934,6 +967,19 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     ],
   },
 ];
+
+/** Ensure every section exposes Background & style (incl. showKonfetti) in the CMS. */
+function withAppearanceOnAllSections(pages: CmsPageSchema[]): CmsPageSchema[] {
+  return pages.map((page) => ({
+    ...page,
+    sections: page.sections.map((section) => {
+      if (section.fields.some((f) => f.key === "showKonfetti")) return section;
+      return { ...section, fields: withSectionOptions(section.fields) };
+    }),
+  }));
+}
+
+export const PAGE_SCHEMAS: CmsPageSchema[] = withAppearanceOnAllSections(PAGE_SCHEMAS_RAW);
 
 export function getPageSchema(slug: string): CmsPageSchema | undefined {
   return PAGE_SCHEMAS.find((p) => p.slug === slug);
