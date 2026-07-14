@@ -46,6 +46,25 @@ const ADMIN_PUBLIC = [
   "/admin/api/auth",
 ];
 
+/** Auth.js may store the JWT as a single cookie or chunked `.0` / `.1` pieces. */
+function hasAdminSessionCookie(request: NextRequest): boolean {
+  for (const { name } of request.cookies.getAll()) {
+    if (
+      name === "authjs.session-token" ||
+      name === "__Secure-authjs.session-token" ||
+      name === "next-auth.session-token" ||
+      name === "__Secure-next-auth.session-token" ||
+      name.startsWith("authjs.session-token.") ||
+      name.startsWith("__Secure-authjs.session-token.") ||
+      name.startsWith("next-auth.session-token.") ||
+      name.startsWith("__Secure-next-auth.session-token.")
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function handleAdmin(request: NextRequest): NextResponse | null {
   const { pathname } = request.nextUrl;
   if (!pathname.startsWith("/admin")) return null;
@@ -55,12 +74,7 @@ function handleAdmin(request: NextRequest): NextResponse | null {
     return NextResponse.next();
   }
 
-  // Check for NextAuth session token (either __Secure- prefix in prod or authjs. in dev)
-  const sessionToken =
-    request.cookies.get("__Secure-authjs.session-token")?.value ||
-    request.cookies.get("authjs.session-token")?.value;
-
-  if (!sessionToken) {
+  if (!hasAdminSessionCookie(request)) {
     const login = new URL("/admin/login", request.url);
     login.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(login);

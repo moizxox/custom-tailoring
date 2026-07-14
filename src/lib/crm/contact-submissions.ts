@@ -3,29 +3,46 @@ import { createCustomer } from "@/lib/crm/customers";
 import { createProject } from "@/lib/crm/projects";
 import { sendAccessCodeEmail } from "@/lib/crm/email";
 
+function safePage(value: unknown, fallback = 1): number {
+  const n = typeof value === "number" ? value : Number.parseInt(String(value ?? ""), 10);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : fallback;
+}
+
 export async function listContactSubmissions(opts?: {
   unreadOnly?: boolean;
   skip?: number;
   take?: number;
 }) {
   const where = opts?.unreadOnly ? { read: false } : {};
+  const take = opts?.take ?? 50;
+  const skip = Number.isFinite(opts?.skip) && (opts?.skip ?? 0) >= 0 ? (opts?.skip as number) : 0;
 
-  const [submissions, total, unreadCount] = await Promise.all([
-    prisma.contactSubmission.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: opts?.skip ?? 0,
-      take: opts?.take ?? 50,
-    }),
-    prisma.contactSubmission.count({ where }),
-    prisma.contactSubmission.count({ where: { read: false } }),
-  ]);
+  try {
+    const [submissions, total, unreadCount] = await Promise.all([
+      prisma.contactSubmission.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+      }),
+      prisma.contactSubmission.count({ where }),
+      prisma.contactSubmission.count({ where: { read: false } }),
+    ]);
 
-  return { submissions, total, unreadCount };
+    return { submissions, total, unreadCount };
+  } catch (error) {
+    console.error("[crm] listContactSubmissions failed:", error);
+    return { submissions: [], total: 0, unreadCount: 0 };
+  }
 }
 
 export async function getContactSubmission(id: string) {
-  return prisma.contactSubmission.findUnique({ where: { id } });
+  try {
+    return await prisma.contactSubmission.findUnique({ where: { id } });
+  } catch (error) {
+    console.error("[crm] getContactSubmission failed:", error);
+    return null;
+  }
 }
 
 export async function markSubmissionRead(id: string) {
@@ -58,7 +75,17 @@ export async function convertSubmissionToCustomer(
   const existingByEmail = await prisma.customer.findUnique({
     where: { email: submission.email },
   });
+
   if (existingByEmail) {
+    let project = null;
+    if (opts?.createProject !== false) {
+      project = await createProject({
+        title: opts?.projectTitle ?? `Anfrage — ${submission.name}`,
+        description: submission.message,
+        customerId: existingByEmail.id,
+      });
+    }
+
     await prisma.contactSubmission.update({
       where: { id: submissionId },
       data: {
@@ -67,7 +94,8 @@ export async function convertSubmissionToCustomer(
         convertedAt: new Date(),
       },
     });
-    return { customer: existingByEmail, alreadyExisted: true };
+
+    return { customer: existingByEmail, project, alreadyExisted: true };
   }
 
   const customer = await createCustomer({
@@ -106,3 +134,5 @@ export async function convertSubmissionToCustomer(
 
   return { customer, project };
 }
+
+export { safePage };

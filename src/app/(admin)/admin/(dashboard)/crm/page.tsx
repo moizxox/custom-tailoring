@@ -6,37 +6,58 @@ import { Users, FolderKanban, UsersRound, MessageSquare, AlertCircle, Inbox } fr
 export const metadata: Metadata = { title: "CRM — Admin" };
 
 export default async function CrmDashboardPage() {
-  const [
-    customerCount,
-    groupCount,
-    projectCount,
-    activeProjectCount,
-    urgentProjects,
-    recentProjects,
-    unreadMessages,
-    unreadSubmissions,
-  ] = await Promise.all([
-    prisma.customer.count(),
-    prisma.group.count(),
-    prisma.project.count(),
-    prisma.project.count({ where: { customerStatus: { not: "completed" } } }),
-    prisma.project.findMany({
-      where: { priority: "urgent", customerStatus: { not: "completed" } },
-      take: 3,
-      orderBy: { updatedAt: "desc" },
-      include: { customer: { select: { name: true } }, group: { select: { name: true } } },
-    }),
-    prisma.project.findMany({
-      where: { customerStatus: { not: "completed" } },
-      orderBy: { updatedAt: "desc" },
-      take: 5,
-      include: { customer: { select: { name: true } }, group: { select: { name: true } } },
-    }),
-    prisma.message.count({
-      where: { senderRole: "customer", isInternal: false, readAt: null },
-    }),
-    prisma.contactSubmission.count({ where: { read: false } }),
-  ]);
+  type ProjectCard = {
+    id: string;
+    title: string;
+    customerStatus: string;
+    customer: { name: string } | null;
+    group: { name: string } | null;
+  };
+
+  let customerCount = 0;
+  let groupCount = 0;
+  let projectCount = 0;
+  let activeProjectCount = 0;
+  let urgentProjects: ProjectCard[] = [];
+  let recentProjects: ProjectCard[] = [];
+  let unreadMessages = 0;
+  let unreadSubmissions = 0;
+
+  try {
+    [
+      customerCount,
+      groupCount,
+      projectCount,
+      activeProjectCount,
+      urgentProjects,
+      recentProjects,
+      unreadMessages,
+      unreadSubmissions,
+    ] = await Promise.all([
+      prisma.customer.count(),
+      prisma.group.count(),
+      prisma.project.count(),
+      prisma.project.count({ where: { customerStatus: { not: "completed" } } }),
+      prisma.project.findMany({
+        where: { priority: "urgent", customerStatus: { not: "completed" } },
+        take: 3,
+        orderBy: { updatedAt: "desc" },
+        include: { customer: { select: { name: true } }, group: { select: { name: true } } },
+      }),
+      prisma.project.findMany({
+        where: { customerStatus: { not: "completed" } },
+        orderBy: { updatedAt: "desc" },
+        take: 5,
+        include: { customer: { select: { name: true } }, group: { select: { name: true } } },
+      }),
+      prisma.message.count({
+        where: { senderRole: "customer", isInternal: false, readAt: null },
+      }),
+      prisma.contactSubmission.count({ where: { read: false } }),
+    ]);
+  } catch (error) {
+    console.error("[crm] dashboard load failed:", error);
+  }
 
   const stats = [
     { label: "Kunden", value: customerCount, icon: Users, href: "/admin/crm/customers", color: "bg-blue-500/10 text-blue-400" },

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { listContactSubmissions } from "@/lib/crm/contact-submissions";
-import { Mail, Inbox } from "lucide-react";
+import { listContactSubmissions, safePage } from "@/lib/crm/contact-submissions";
+import { Inbox } from "lucide-react";
 
 export const metadata: Metadata = { title: "Anfragen — CRM" };
 
@@ -18,7 +18,7 @@ const LOCATION_LABELS: Record<string, string> = {
 export default async function ContactSubmissionsPage({ searchParams }: Props) {
   const { unread, page } = await searchParams;
   const unreadOnly = unread === "true";
-  const currentPage = Math.max(1, parseInt(page ?? "1", 10));
+  const currentPage = safePage(page, 1);
   const take = 25;
   const skip = (currentPage - 1) * take;
 
@@ -27,7 +27,7 @@ export default async function ContactSubmissionsPage({ searchParams }: Props) {
     skip,
     take,
   });
-  const totalPages = Math.ceil(total / take);
+  const totalPages = Math.max(1, Math.ceil(total / take));
 
   return (
     <div className="p-6 md:p-8 max-w-6xl">
@@ -88,7 +88,10 @@ export default async function ContactSubmissionsPage({ searchParams }: Props) {
                     >
                       {s.name}
                     </Link>
-                    <p className="text-xs text-gray-500 truncate max-w-[200px] mt-0.5">{s.message.slice(0, 60)}…</p>
+                    <p className="text-xs text-gray-500 truncate max-w-[200px] mt-0.5">
+                      {s.message.slice(0, 60)}
+                      {s.message.length > 60 ? "…" : ""}
+                    </p>
                   </td>
                   <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{s.email}</td>
                   <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">
