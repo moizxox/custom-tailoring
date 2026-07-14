@@ -150,6 +150,13 @@
     "copyUrl": "URL kopieren",
     "copied": "Kopiert!",
     "delete": "Löschen",
+    "download": "Herunterladen",
+    "downloadSelected": "Auswahl herunterladen ({count})",
+    "downloading": "Wird heruntergeladen…",
+    "downloadFailed": "Download fehlgeschlagen. Bitte erneut versuchen.",
+    "selectAll": "Alle auswählen",
+    "clearSelection": "Auswahl aufheben",
+    "selectImage": "Bild auswählen",
     "pickerTitle": "Bild aus Medienbibliothek wählen",
     "pickerEmpty": "Keine Bilder vorhanden. Laden Sie zuerst Bilder hoch."
   },

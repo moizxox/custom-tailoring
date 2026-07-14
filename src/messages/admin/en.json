@@ -150,6 +150,13 @@
     "copyUrl": "Copy URL",
     "copied": "Copied!",
     "delete": "Delete",
+    "download": "Download",
+    "downloadSelected": "Download selected ({count})",
+    "downloading": "Downloading…",
+    "downloadFailed": "Download failed. Please try again.",
+    "selectAll": "Select all",
+    "clearSelection": "Clear selection",
+    "selectImage": "Select image",
     "pickerTitle": "Choose image from media library",
     "pickerEmpty": "No images available. Upload images first."
   },
