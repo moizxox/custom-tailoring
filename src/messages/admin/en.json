@@ -136,6 +136,10 @@
     "delete": "Delete",
     "deleteConfirm": "Yes, delete",
     "deleteTitle": "Delete {name}",
+    "duplicate": "Duplicate",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "reorderHint": "Use ↑ ↓ to change the shop display order. Duplicate copies a product so you only adjust what’s different.",
     "inStock": "In stock",
     "outOfStock": "Out of stock"
   },
