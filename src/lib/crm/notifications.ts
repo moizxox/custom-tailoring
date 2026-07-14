@@ -20,11 +20,16 @@ export async function getNotificationsForCustomer(customerId: string) {
 }
 
 export async function getAdminNotifications() {
-  return prisma.notification.findMany({
-    where: { customerId: null },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-  });
+  try {
+    return await prisma.notification.findMany({
+      where: { customerId: null },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+  } catch (error) {
+    console.error("[crm] getAdminNotifications failed:", error);
+    return [];
+  }
 }
 
 export async function markNotificationRead(id: string) {

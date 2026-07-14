@@ -64,21 +64,26 @@ export async function listGroups(opts?: {
     ],
   };
 
-  const [groups, total] = await Promise.all([
-    prisma.group.findMany({
-      where,
-      orderBy: { name: "asc" },
-      skip: opts?.skip ?? 0,
-      take: opts?.take ?? 50,
-      include: {
-        leader: { select: { id: true, name: true } },
-        _count: { select: { members: true, projects: true } },
-      },
-    }),
-    prisma.group.count({ where }),
-  ]);
+  try {
+    const [groups, total] = await Promise.all([
+      prisma.group.findMany({
+        where,
+        orderBy: { name: "asc" },
+        skip: opts?.skip ?? 0,
+        take: opts?.take ?? 50,
+        include: {
+          leader: { select: { id: true, name: true } },
+          _count: { select: { members: true, projects: true } },
+        },
+      }),
+      prisma.group.count({ where }),
+    ]);
 
-  return { groups, total };
+    return { groups, total };
+  } catch (error) {
+    console.error("[crm] listGroups failed:", error);
+    return { groups: [], total: 0 };
+  }
 }
 
 export async function updateGroup(id: string, data: Partial<CreateGroupInput>) {

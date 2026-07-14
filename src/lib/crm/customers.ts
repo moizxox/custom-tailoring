@@ -118,20 +118,25 @@ export async function listCustomers(opts?: {
     ],
   };
 
-  const [customers, total] = await Promise.all([
-    prisma.customer.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: opts?.skip ?? 0,
-      take: opts?.take ?? 50,
-      include: {
-        _count: { select: { projects: true, groupMemberships: true } },
-      },
-    }),
-    prisma.customer.count({ where }),
-  ]);
+  try {
+    const [customers, total] = await Promise.all([
+      prisma.customer.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: opts?.skip ?? 0,
+        take: opts?.take ?? 50,
+        include: {
+          _count: { select: { projects: true, groupMemberships: true } },
+        },
+      }),
+      prisma.customer.count({ where }),
+    ]);
 
-  return { customers, total };
+    return { customers, total };
+  } catch (error) {
+    console.error("[crm] listCustomers failed:", error);
+    return { customers: [], total: 0 };
+  }
 }
 
 export async function regenerateAccessCode(customerId: string) {

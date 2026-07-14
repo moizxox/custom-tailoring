@@ -120,22 +120,27 @@ export async function listProjects(filters: ProjectFilters = {}) {
   if (filters.internalStatus) where.internalStatus = filters.internalStatus;
   if (filters.priority) where.priority = filters.priority;
 
-  const [projects, total] = await Promise.all([
-    prisma.project.findMany({
-      where,
-      orderBy: { updatedAt: "desc" },
-      skip: filters.skip ?? 0,
-      take: filters.take ?? 25,
-      include: {
-        customer: { select: { id: true, name: true, email: true } },
-        group: { select: { id: true, name: true } },
-        _count: { select: { tasks: true, files: true, measurements: true } },
-      },
-    }),
-    prisma.project.count({ where }),
-  ]);
+  try {
+    const [projects, total] = await Promise.all([
+      prisma.project.findMany({
+        where,
+        orderBy: { updatedAt: "desc" },
+        skip: filters.skip ?? 0,
+        take: filters.take ?? 25,
+        include: {
+          customer: { select: { id: true, name: true, email: true } },
+          group: { select: { id: true, name: true } },
+          _count: { select: { tasks: true, files: true, measurements: true } },
+        },
+      }),
+      prisma.project.count({ where }),
+    ]);
 
-  return { projects, total };
+    return { projects, total };
+  } catch (error) {
+    console.error("[crm] listProjects failed:", error);
+    return { projects: [], total: 0 };
+  }
 }
 
 export async function updateProjectStatus(
