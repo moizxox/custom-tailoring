@@ -16,9 +16,11 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login");
   }
 
-  const [unreadNotifications, { unreadCount: unreadSubmissions }] = await Promise.all([
-    getUnreadNotificationCount(undefined),
-    listContactSubmissions({ take: 0 }),
+  const [unreadNotifications, unreadSubmissions] = await Promise.all([
+    getUnreadNotificationCount(undefined).catch(() => 0),
+    listContactSubmissions({ take: 0 })
+      .then((r) => r.unreadCount)
+      .catch(() => 0),
   ]);
 
   return (

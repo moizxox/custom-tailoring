@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import PasswordInput from "@/components/admin/PasswordInput";
 
-export default function LoginForm() {
+interface LoginFormProps {
+  errorParam?: string;
+  callbackUrl?: string;
+}
+
+export default function LoginForm({
+  errorParam,
+  callbackUrl = "/admin",
+}: LoginFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const t = useTranslations("auth");
-  const errorParam = searchParams.get("error");
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
