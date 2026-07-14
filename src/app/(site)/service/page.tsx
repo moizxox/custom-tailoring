@@ -57,6 +57,7 @@ export default async function ServicePage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Service", href: "/service" }]}
       />
 

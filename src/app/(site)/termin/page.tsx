@@ -54,6 +54,7 @@ export default async function TerminPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
       />
       <Suspense fallback={<div className="py-20 text-center text-charcoal-lighter">Laden…</div>}>

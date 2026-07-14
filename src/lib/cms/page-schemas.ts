@@ -141,7 +141,7 @@ export interface CmsPageSchema {
   sections: CmsSection[];
 }
 
-export const PAGE_SCHEMAS: CmsPageSchema[] = [
+const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
   {
     slug: "home",
     label: "Home",
@@ -967,6 +967,19 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = [
     ],
   },
 ];
+
+/** Ensure every section exposes Background & style (incl. showKonfetti) in the CMS. */
+function withAppearanceOnAllSections(pages: CmsPageSchema[]): CmsPageSchema[] {
+  return pages.map((page) => ({
+    ...page,
+    sections: page.sections.map((section) => {
+      if (section.fields.some((f) => f.key === "showKonfetti")) return section;
+      return { ...section, fields: withSectionOptions(section.fields) };
+    }),
+  }));
+}
+
+export const PAGE_SCHEMAS: CmsPageSchema[] = withAppearanceOnAllSections(PAGE_SCHEMAS_RAW);
 
 export function getPageSchema(slug: string): CmsPageSchema | undefined {
   return PAGE_SCHEMAS.find((p) => p.slug === slug);

@@ -64,6 +64,7 @@ export default async function UeberUnsPage() {
         breadcrumbs={[{ label: "Über uns", href: "/ueber-uns" }]}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
       />
 
       <section className="py-20 section-bg-white">
@@ -111,6 +112,7 @@ export default async function UeberUnsPage() {
           imagePosition={work.imagePosition}
           className="section-bg-white"
           paragraphs={work.paragraphs}
+          appearance={work.appearance}
           ctaLabel={work.ctaLabel}
           ctaHref={work.ctaHref}
         />

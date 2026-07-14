@@ -41,7 +41,11 @@ export async function renderHomePageSections() {
     getCmsContent("home", "contactSection", HOME_SECTION_DEFAULTS.contactSection),
   ]);
 
-  const heroAcf = mapHomeHeroContent(heroContent);
+  const heroAcf = { ...heroContent, ...mapHomeHeroContent(heroContent) };
+  // Preserve historic home-hero confetti until CMS toggle is saved.
+  if (!("showKonfetti" in heroContent)) {
+    (heroAcf as Record<string, unknown>).showKonfetti = true;
+  }
   const headingTag = parseHeadingTag(heroContent.headingTag, "h1");
 
   const renderers: Record<HomeSectionKey, () => React.ReactNode> = {

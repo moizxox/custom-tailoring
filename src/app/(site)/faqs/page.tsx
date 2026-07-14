@@ -40,6 +40,7 @@ export default async function FaqsPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "FAQs", href: "/faqs" }]}
       />
 

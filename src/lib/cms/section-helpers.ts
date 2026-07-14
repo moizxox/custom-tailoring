@@ -1,6 +1,7 @@
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import type { CmsDocumentSection } from "@/components/sections/CmsDocumentSections";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 
 export function splitParagraphs(text: string): string[] {
   return text.split(/\n\n+/).filter(Boolean);
@@ -58,5 +59,6 @@ export function mapContentBlock(content: Record<string, unknown>) {
     imagePosition: content.imagePosition === "left" ? ("left" as const) : ("right" as const),
     ctaLabel: typeof content.ctaLabel === "string" ? content.ctaLabel : undefined,
     ctaHref: typeof content.ctaUrl === "string" ? content.ctaUrl : typeof content.ctaHref === "string" ? content.ctaHref : undefined,
+    appearance: parseSectionAppearance(content),
   };
 }

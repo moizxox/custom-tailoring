@@ -44,6 +44,7 @@ export default async function KostuemveredelungPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Kostümveredelung", href: "/kostuemveredelung" }]}
       />
 
@@ -57,6 +58,7 @@ export default async function KostuemveredelungPage() {
           imagePosition={main.imagePosition}
           paragraphs={main.paragraphs}
           ctaLabel={main.ctaLabel}
+          appearance={main.appearance}
           ctaHref={main.ctaHref}
         />
       )}

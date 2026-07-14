@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+
 interface AcfGalleryPreview {
   acf_fc_layout: "gallery_preview";
   section_label?: string;
@@ -33,7 +36,7 @@ const DEFAULT_DATA: AcfGalleryPreview = {
 };
 
 interface GalleryPreviewProps {
-  acf?: Partial<AcfGalleryPreview>;
+  acf?: Partial<AcfGalleryPreview> & Record<string, unknown>;
 }
 
 export function GalleryPreview({ acf }: GalleryPreviewProps) {
@@ -41,9 +44,10 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
   const previewItems = Array.isArray(acf?.preview_items) && acf.preview_items.length > 0
     ? acf.preview_items
     : PREVIEW_ITEMS;
+  const appearance = parseSectionAppearance(acf);
 
   return (
-    <section className="py-24 section-bg-white">
+    <CmsSectionShell appearance={appearance} defaultClassName="section-bg-white" className="py-24">
       <div className="container-site">
         <div className="text-center mb-12">
           {data.section_label && (
@@ -102,6 +106,6 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
           </div>
         )}
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

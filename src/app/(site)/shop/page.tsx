@@ -62,6 +62,7 @@ export default async function ShopPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Shop", href: "/shop" }]}
       />
 

@@ -28,6 +28,7 @@ export default async function WiderrufPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
       />
       <section className="py-20 section-bg-white">
         <div className="container-site max-w-3xl space-y-6">

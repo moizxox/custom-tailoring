@@ -46,6 +46,7 @@ export default async function JournalPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
         breadcrumbs={[{ label: "Journal", href: "/journal" }]}
       />
 

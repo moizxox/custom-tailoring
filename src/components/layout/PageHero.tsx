@@ -1,8 +1,8 @@
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
-import { HeroConfettiBackground } from "@/components/decor/HeroConfettiBackground";
-
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import type { SectionAppearance } from "@/lib/cms/section-appearance";
 import type { HeadingTag } from "@/lib/cms/helpers";
 import { createElement } from "react";
 
@@ -18,9 +18,10 @@ interface PageHeroProps {
   subtitle?: string;
   breadcrumbs?: Breadcrumb[];
   headingTag?: HeadingTag;
-  // CMS color overrides
   textColor?: string;
   accentColor?: string;
+  /** When set, CMS “Show konfetti overlay” controls confetti. Defaults to on for page heroes. */
+  appearance?: SectionAppearance;
 }
 
 export function PageHero({
@@ -32,14 +33,26 @@ export function PageHero({
   headingTag = "h1",
   textColor,
   accentColor,
+  appearance,
 }: PageHeroProps) {
   const renderTitle = () => (
     <AccentHeadingText heading={title} accent={titleAccent} accentColor={accentColor} />
   );
 
+  // Preserve historic always-on confetti when CMS has never set the field (undefined → true).
+  const heroAppearance: SectionAppearance = appearance ?? {
+    useCustomBg: false,
+    showKonfetti: true,
+    gradientStyle: "default",
+  };
+
   return (
-    <section className="relative overflow-hidden bg-offwhite pt-20 lg:pt-24 min-h-[60vh]">
-      <HeroConfettiBackground sketchOpacity="opacity-[0.5]" />
+    <CmsSectionShell
+      appearance={heroAppearance}
+      defaultClassName="bg-offwhite"
+      className="pt-20 lg:pt-24 min-h-[60vh]"
+      heroKonfetti
+    >
       <BackgroundDecor variant="page" showConfetti={false} showMesh={false} showStitchDashes showFigures={false} />
 
       <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12">
@@ -101,6 +114,6 @@ export function PageHero({
           </div>
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

@@ -27,6 +27,7 @@ export default async function DatenschutzPage() {
         headingTag={hero.headingTag}
         textColor={hero.textColor}
         accentColor={hero.accentColor}
+        appearance={hero.appearance}
       />
       <section className="py-20 section-bg-white">
         <div className="container-site max-w-2xl mx-auto">
