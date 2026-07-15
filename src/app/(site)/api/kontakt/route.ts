@@ -28,7 +28,10 @@ export async function POST(req: NextRequest) {
     };
 
     if (!body.name?.trim() || !body.email?.trim() || !body.message?.trim()) {
-      return NextResponse.json({ error: "Name, E-Mail und Nachricht sind erforderlich." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Name, E-Mail und Nachricht sind erforderlich." },
+        { status: 400 },
+      );
     }
 
     const name = body.name.trim();
@@ -37,10 +40,23 @@ export async function POST(req: NextRequest) {
     const location = body.location ?? null;
     const message = body.message.trim();
 
-    await prisma.contactSubmission.create({
-      data: { name, email, phone, location, message },
-    });
+    try {
+      await prisma.contactSubmission.create({
+        data: { name, email, phone, location, message },
+      });
+    } catch (dbError) {
+      console.error("[kontakt] database save failed:", dbError);
+      return NextResponse.json(
+        {
+          error:
+            "Ihre Nachricht konnte nicht gespeichert werden. Bitte versuchen Sie es in wenigen Minuten erneut oder schreiben Sie uns direkt per E-Mail.",
+          code: "DB_SAVE_FAILED",
+        },
+        { status: 503 },
+      );
+    }
 
+    // Emails must never fail the user-facing success path.
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safePhone = phone ? escapeHtml(phone) : "";
@@ -51,50 +67,55 @@ export async function POST(req: NextRequest) {
     const recipientEmail =
       process.env.CONTACT_NOTIFICATION_EMAIL ??
       process.env.SMTP_USER ??
+      process.env.NODEMAILER_USER ??
       process.env.RESEND_FROM_EMAIL;
 
-    if (recipientEmail) {
-      await sendEmail({
-        to: recipientEmail,
-        replyTo: email,
-        subject: `Neue Kontaktanfrage von ${name}`,
+    void Promise.allSettled([
+      recipientEmail
+        ? sendEmail({
+            to: recipientEmail,
+            replyTo: email,
+            subject: `Neue Kontaktanfrage von ${name}`,
+            html: `
+              <h2 style="font-family: Georgia, serif; color: #2c2a28;">Neue Kontaktanfrage</h2>
+              <table style="font-family: sans-serif; font-size: 14px; color: #444; border-collapse: collapse;">
+                <tr><td style="padding: 4px 12px 4px 0; color: #888; white-space: nowrap;">Name</td><td><strong>${safeName}</strong></td></tr>
+                <tr><td style="padding: 4px 12px 4px 0; color: #888;">E-Mail</td><td><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
+                ${safePhone ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Telefon</td><td>${safePhone}</td></tr>` : ""}
+                ${safeLocation ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Standort</td><td>${safeLocation}</td></tr>` : ""}
+              </table>
+              <h3 style="font-family: Georgia, serif; color: #2c2a28; margin-top: 20px;">Nachricht</h3>
+              <p style="font-family: sans-serif; font-size: 14px; color: #444; white-space: pre-wrap; background: #f5f4f2; padding: 12px; border-radius: 8px;">${safeMessage}</p>
+              <p style="font-family: sans-serif; font-size: 12px; color: #aaa; margin-top: 20px;">Eingegangen über /kontakt</p>
+            `,
+          })
+        : Promise.resolve(),
+      sendEmail({
+        to: email,
+        subject: "Ihre Anfrage bei Kostümschneiderei Lani — Bestätigung",
         html: `
-          <h2 style="font-family: Georgia, serif; color: #2c2a28;">Neue Kontaktanfrage</h2>
-          <table style="font-family: sans-serif; font-size: 14px; color: #444; border-collapse: collapse;">
-            <tr><td style="padding: 4px 12px 4px 0; color: #888; white-space: nowrap;">Name</td><td><strong>${safeName}</strong></td></tr>
-            <tr><td style="padding: 4px 12px 4px 0; color: #888;">E-Mail</td><td><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
-            ${safePhone ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Telefon</td><td>${safePhone}</td></tr>` : ""}
-            ${safeLocation ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Standort</td><td>${safeLocation}</td></tr>` : ""}
-          </table>
-          <h3 style="font-family: Georgia, serif; color: #2c2a28; margin-top: 20px;">Nachricht</h3>
-          <p style="font-family: sans-serif; font-size: 14px; color: #444; white-space: pre-wrap; background: #f5f4f2; padding: 12px; border-radius: 8px;">${safeMessage}</p>
-          <p style="font-family: sans-serif; font-size: 12px; color: #aaa; margin-top: 20px;">Eingegangen über kostumschneiderei.ch/kontakt</p>
+          <h2 style="font-family: Georgia, serif; color: #2c2a28;">Vielen Dank, ${safeFirstName}!</h2>
+          <p style="font-family: sans-serif; font-size: 14px; color: #444; line-height: 1.6;">
+            Wir haben Ihre Nachricht erhalten und melden uns so bald wie möglich — in der Regel innerhalb von 1–2 Werktagen.
+          </p>
+          <p style="font-family: sans-serif; font-size: 14px; color: #888; margin-top: 24px;">
+            Ihre Anfrage:<br>
+            <em style="color: #555;">${escapeHtml(message.slice(0, 200))}${message.length > 200 ? "…" : ""}</em>
+          </p>
+          <hr style="border: none; border-top: 1px solid #e5e3de; margin: 24px 0;">
+          <p style="font-family: sans-serif; font-size: 12px; color: #aaa;">
+            Kostümschneiderei Lani · Atelier Pratteln & Therwil
+          </p>
         `,
-      });
-    }
-
-    await sendEmail({
-      to: email,
-      subject: "Ihre Anfrage bei Kostümschneiderei Lani — Bestätigung",
-      html: `
-        <h2 style="font-family: Georgia, serif; color: #2c2a28;">Vielen Dank, ${safeFirstName}!</h2>
-        <p style="font-family: sans-serif; font-size: 14px; color: #444; line-height: 1.6;">
-          Wir haben Ihre Nachricht erhalten und melden uns so bald wie möglich — in der Regel innerhalb von 1–2 Werktagen.
-        </p>
-        <p style="font-family: sans-serif; font-size: 14px; color: #888; margin-top: 24px;">
-          Ihre Anfrage:<br>
-          <em style="color: #555;">${escapeHtml(message.slice(0, 200))}${message.length > 200 ? "…" : ""}</em>
-        </p>
-        <hr style="border: none; border-top: 1px solid #e5e3de; margin: 24px 0;">
-        <p style="font-family: sans-serif; font-size: 12px; color: #aaa;">
-          Kostümschneiderei Lani · Atelier Pratteln & Therwil
-        </p>
-      `,
-    });
+      }),
+    ]).catch((err) => console.error("[kontakt] email dispatch error:", err));
 
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("[kontakt] submit failed:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error", code: "UNEXPECTED" },
+      { status: 500 },
+    );
   }
 }

@@ -58,15 +58,38 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy & Record<str
   const [form, setForm] = useState<FormState>({ name: "", email: "", phone: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const data = { ...DEFAULT_COPY, ...acf };
   const appearance = parseSectionAppearance(acf);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setSubmitting(false);
-    setSubmitted(true);
+    setError("");
+    try {
+      const res = await fetch("/api/kontakt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.message,
+          location: "unsicher",
+        }),
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(typeof payload.error === "string" ? payload.error : "Fehler beim Senden.");
+        return;
+      }
+      setSubmitted(true);
+      setForm({ name: "", email: "", phone: "", message: "" });
+    } catch {
+      setError("Verbindungsfehler. Bitte versuchen Sie es erneut.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -110,7 +133,7 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy & Record<str
                     <p className="font-sans text-sm text-charcoal-light max-w-[220px] leading-relaxed">
                       {data.successMessage}
                     </p>
-                    <button onClick={() => setSubmitted(false)} className="text-xs font-sans text-periwinkle-dark hover:underline mt-1">
+                    <button type="button" onClick={() => setSubmitted(false)} className="text-xs font-sans text-periwinkle-dark hover:underline mt-1">
                       Neue Anfrage senden
                     </button>
                   </div>
@@ -143,8 +166,12 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy & Record<str
                       </div>
                       <div>
                         <label className="block font-sans text-[10px] font-semibold tracking-[0.12em] uppercase text-charcoal-lighter mb-1.5">{data.messageLabel}</label>
-                        <textarea rows={3} placeholder={data.messagePlaceholder} className="input-field resize-none text-[13px]" value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
+                        <textarea rows={3} required placeholder={data.messagePlaceholder} className="input-field resize-none text-[13px]" value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
                       </div>
+
+                      {error && (
+                        <p className="text-xs text-red-700 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</p>
+                      )}
 
                       <button
                         type="submit"
