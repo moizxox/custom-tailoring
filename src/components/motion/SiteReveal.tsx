@@ -76,15 +76,21 @@ export function SiteReveal() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Reveal animations are for the public site only; in the admin/CMS they
+    // interfere with interactive lists (React className updates wipe the
+    // imperatively added is-revealed class, hiding elements).
+    if (pathname?.startsWith("/admin")) return;
     if (prefersReducedMotion()) return;
 
     const observed = new WeakSet<Element>();
+    const revealed = new WeakSet<Element>();
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           entry.target.classList.add("is-revealed");
+          revealed.add(entry.target);
           observer.unobserve(entry.target);
         });
       },
@@ -103,6 +109,12 @@ export function SiteReveal() {
         }
 
         applyStagger(el);
+
+        // React re-renders can rewrite className and wipe the imperatively
+        // added is-revealed class; restore it so elements never re-hide.
+        if (revealed.has(el) && !el.classList.contains("is-revealed")) {
+          el.classList.add("is-revealed");
+        }
 
         if (observed.has(el)) return;
         observed.add(el);
