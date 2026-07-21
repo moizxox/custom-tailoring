@@ -19,6 +19,8 @@ interface ProjectInfo {
   deliveryDate: string | null;
   quantity: number;
   costumeCategory: string | null;
+  orderType: string | null;
+  notes: string | null;
   internalNotes: string | null;
   totalAmount: number | null;
   paidAmount: number | null;
@@ -40,30 +42,39 @@ interface Task {
   createdAt: string;
 }
 
-interface ProjectFile {
+interface ProjectFileInfo {
   id: string;
   url: string;
   originalName: string | null;
   category: string;
   description: string | null;
   uploadedBy: string;
+  visibleToCustomer: boolean;
   createdAt: string;
 }
 
 interface Measurement {
   id: string;
   customerId: string;
+  customerName?: string | null;
   fields: Record<string, number>;
   status: string;
   notes: string | null;
   updatedAt: string;
 }
 
+interface MeasurementPerson {
+  id: string;
+  name: string;
+}
+
 interface Props {
   project: ProjectInfo;
   tasks: Task[];
-  files: ProjectFile[];
+  files: ProjectFileInfo[];
   measurements: Measurement[];
+  people: MeasurementPerson[];
+  costumeCategory: string | null;
   conversationId: string | null;
   initialMessages: MessagePayload[];
   customers: Array<{ id: string; name: string }>;
@@ -92,6 +103,8 @@ export function ProjectDetailClient({
   tasks,
   files,
   measurements,
+  people,
+  costumeCategory,
   conversationId,
   initialMessages,
   customers,
@@ -106,7 +119,6 @@ export function ProjectDetailClient({
 
   return (
     <div>
-      {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">{project.title}</h1>
@@ -142,7 +154,6 @@ export function ProjectDetailClient({
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-1 border-b border-gray-200 mb-6 overflow-x-auto">
         {TABS.map((tab) => (
           <button
@@ -156,19 +167,21 @@ export function ProjectDetailClient({
           >
             {tab.label}
             {tab.id === "tasks" && tasks.length > 0 && (
-              <span className="ml-1.5 text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded-full">{tasks.length}</span>
+              <span className="ml-1.5 text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{tasks.length}</span>
             )}
             {tab.id === "files" && files.length > 0 && (
-              <span className="ml-1.5 text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded-full">{files.length}</span>
+              <span className="ml-1.5 text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{files.length}</span>
             )}
             {tab.id === "messages" && (
-              <span className="ml-1.5 text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded-full">{initialMessages.length}</span>
+              <span className="ml-1.5 text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{initialMessages.length}</span>
+            )}
+            {tab.id === "measurements" && measurements.length > 0 && (
+              <span className="ml-1.5 text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{measurements.length}</span>
             )}
           </button>
         ))}
       </div>
 
-      {/* Tab content */}
       {activeTab === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
@@ -183,11 +196,14 @@ export function ProjectDetailClient({
                 customerId: project.customer?.id ?? "",
                 groupId: project.group?.id ?? "",
                 costumeCategory: project.costumeCategory ?? "",
+                orderType: project.orderType ?? "",
                 quantity: project.quantity,
                 deadline: project.deadline ? project.deadline.split("T")[0] : "",
+                deliveryDate: project.deliveryDate ? project.deliveryDate.split("T")[0] : "",
                 priority: project.priority,
                 customerStatus: project.customerStatus,
                 internalStatus: project.internalStatus,
+                notes: project.notes ?? "",
                 internalNotes: project.internalNotes ?? "",
                 totalAmount: project.totalAmount != null ? String(project.totalAmount) : "",
                 paidAmount: project.paidAmount != null ? String(project.paidAmount) : "",
@@ -207,16 +223,16 @@ export function ProjectDetailClient({
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Bezahlt</span>
-                  <span className="text-emerald-400 font-medium">
+                  <span className="text-emerald-600 font-medium">
                     {project.paidAmount != null ? `CHF ${project.paidAmount.toFixed(2)}` : "—"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Status</span>
                   <span className={`text-[10px] ${STATUS_BADGE} ${
-                    project.paymentStatus === "paid" ? "bg-emerald-500/10 text-emerald-400" :
-                    project.paymentStatus === "partial" ? "bg-amber-500/10 text-amber-400" :
-                    "bg-red-500/10 text-red-400"
+                    project.paymentStatus === "paid" ? "bg-emerald-500/10 text-emerald-600" :
+                    project.paymentStatus === "partial" ? "bg-amber-500/10 text-amber-600" :
+                    "bg-red-500/10 text-red-600"
                   }`}>
                     {project.paymentStatus === "paid" ? "Bezahlt" : project.paymentStatus === "partial" ? "Teilweise" : "Unbezahlt"}
                   </span>
@@ -225,10 +241,11 @@ export function ProjectDetailClient({
             </div>
             <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">Quick-Status</p>
-              <p className="text-xs text-gray-400">Tasks: {tasks.filter((t) => t.status === "done").length}/{tasks.length} erledigt</p>
-              <p className="text-xs text-gray-400 mt-1">Dateien: {files.length}</p>
-              <p className="text-xs text-gray-400 mt-1">Masse: {measurements.length}</p>
-              <p className="text-xs text-gray-400 mt-1">Nachrichten: {initialMessages.length}</p>
+              <p className="text-xs text-gray-500">Tasks: {tasks.filter((t) => t.status === "done").length}/{tasks.length} erledigt</p>
+              <p className="text-xs text-gray-500 mt-1">Dateien: {files.length}</p>
+              <p className="text-xs text-gray-500 mt-1">Masse: {measurements.length}</p>
+              <p className="text-xs text-gray-500 mt-1">Personen: {people.length}</p>
+              <p className="text-xs text-gray-500 mt-1">Nachrichten: {initialMessages.length}</p>
             </div>
           </div>
         </div>
@@ -251,7 +268,12 @@ export function ProjectDetailClient({
       )}
 
       {activeTab === "measurements" && (
-        <MeasurementEditor projectId={project.id} initialMeasurements={measurements} />
+        <MeasurementEditor
+          projectId={project.id}
+          initialMeasurements={measurements}
+          people={people}
+          costumeCategory={costumeCategory}
+        />
       )}
     </div>
   );

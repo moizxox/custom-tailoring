@@ -34,21 +34,19 @@ export default function AdminSidebar({ unreadSubmissions = 0 }: { unreadSubmissi
   const isColorsActive = pathname === "/admin/settings";
 
   return (
-    <aside className="w-[220px] shrink-0 hidden lg:flex flex-col bg-gray-950 min-h-screen">
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+    <aside className="w-[220px] shrink-0 hidden lg:flex flex-col bg-white border-r border-gray-200 min-h-screen">
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-gray-200">
+        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shrink-0 shadow-sm">
           <Scissors className="w-4 h-4 text-white" />
         </div>
         <div>
-          <p className="text-[13px] font-semibold text-white leading-tight">Kostümschneiderei</p>
+          <p className="text-[13px] font-semibold text-gray-900 leading-tight">Kostümschneiderei</p>
           <p className="text-[11px] text-gray-500">{t("cmsAdmin")}</p>
         </div>
       </div>
 
-      {/* Main Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
-        <p className="px-3 pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Content</p>
+        <p className="px-3 pb-2 text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Content</p>
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = item.exact
@@ -60,19 +58,18 @@ export default function AdminSidebar({ unreadSubmissions = 0 }: { unreadSubmissi
               key={item.href}
               href={item.href}
               className={cn(
-                "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all",
+                "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400",
                 isActive
-                  ? "bg-violet-600 text-white shadow-sm shadow-violet-500/20"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
+                  ? "bg-violet-600 text-white shadow-sm"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
               )}
             >
-              <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300")} />
+              <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-white" : "text-gray-500 group-hover:text-gray-700")} />
               {t(item.key)}
-              {/* Badge for settings — shows colors indicator */}
               {item.key === "settings" && !isActive && (
                 <span className="ml-auto flex items-center gap-0.5">
                   {["#9da5d0", "#d4c9b8", "#2c2a28"].map((c) => (
-                    <span key={c} className="w-2 h-2 rounded-full border border-gray-700" style={{ backgroundColor: c }} />
+                    <span key={c} className="w-2 h-2 rounded-full border border-gray-200" style={{ backgroundColor: c }} />
                   ))}
                 </span>
               )}
@@ -80,9 +77,8 @@ export default function AdminSidebar({ unreadSubmissions = 0 }: { unreadSubmissi
           );
         })}
 
-        {/* CRM section */}
         <div className="pt-3 pb-1">
-          <p className="px-3 pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">CRM</p>
+          <p className="px-3 pb-2 text-[10px] font-semibold text-gray-500 uppercase tracking-widest">CRM</p>
           <div className="px-1 mb-2">
             <CrmSearchBar />
           </div>
@@ -96,13 +92,13 @@ export default function AdminSidebar({ unreadSubmissions = 0 }: { unreadSubmissi
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all",
+                  "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400",
                   isActive
-                    ? "bg-emerald-600 text-white shadow-sm shadow-emerald-500/20"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                 )}
               >
-                <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300")} />
+                <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-white" : "text-gray-500 group-hover:text-gray-700")} />
                 {item.label}
                 {"badgeKey" in item && item.badgeKey === "submissions" && unreadSubmissions > 0 && (
                   <span className="ml-auto text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full font-semibold">
@@ -114,45 +110,42 @@ export default function AdminSidebar({ unreadSubmissions = 0 }: { unreadSubmissi
           })}
         </div>
 
-        {/* Design section hint */}
         <div className="pt-3 pb-1">
-          <p className="px-3 pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Design</p>
+          <p className="px-3 pb-2 text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Design</p>
           <Link
             href="/admin/settings#colors"
             className={cn(
-              "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all",
+              "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400",
               isColorsActive
-                ? "bg-pink-600/20 text-pink-300 border border-pink-500/20"
-                : "text-gray-400 hover:text-white hover:bg-white/5"
+                ? "bg-pink-50 text-pink-700 border border-pink-200"
+                : "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
             )}
           >
-            <Palette className="w-4 h-4 shrink-0 text-pink-400" />
+            <Palette className="w-4 h-4 shrink-0 text-pink-500" />
             <span>Global Colors</span>
-            <span className="ml-auto text-[10px] bg-pink-500/20 text-pink-400 px-1.5 py-0.5 rounded font-semibold">New</span>
+            <span className="ml-auto text-[10px] bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded font-semibold">New</span>
           </Link>
         </div>
       </nav>
 
-      {/* Bottom */}
-      <div className="px-3 py-4 border-t border-white/10 space-y-0.5">
+      <div className="px-3 py-4 border-t border-gray-200 space-y-0.5">
         <Link
           href="/admin/register"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-gray-500 hover:text-white hover:bg-white/5 transition-all"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all"
         >
-          <UserPlus className="w-4 h-4 shrink-0 text-gray-600" />
+          <UserPlus className="w-4 h-4 shrink-0 text-gray-500" />
           {t("addAdmin")}
         </Link>
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-gray-500 hover:text-white hover:bg-white/5 transition-all"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all"
         >
-          <ExternalLink className="w-4 h-4 shrink-0 text-gray-600" />
+          <ExternalLink className="w-4 h-4 shrink-0 text-gray-500" />
           {t("viewWebsite")}
         </Link>
-        {/* Version badge */}
         <div className="px-3 pt-2">
-          <span className="text-[10px] text-gray-700 font-mono">CMS v2.0</span>
+          <span className="text-[10px] text-gray-400 font-mono">CMS v2.0</span>
         </div>
       </div>
     </aside>

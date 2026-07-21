@@ -6,8 +6,10 @@ import {
   CUSTOMER_STATUSES,
   INTERNAL_STATUSES,
   PROJECT_PRIORITIES,
+  COSTUME_CATEGORIES,
+  ORDER_TYPES,
 } from "@/lib/crm/projects";
-import { CRM_INPUT, CRM_TEXTAREA, CRM_SELECT } from "@/components/crm/crm-styles";
+import { CRM_INPUT, CRM_TEXTAREA } from "@/components/crm/crm-styles";
 
 interface Props {
   projectId?: string;
@@ -21,11 +23,14 @@ interface Props {
     customerId: string;
     groupId: string;
     costumeCategory: string;
+    orderType: string;
     quantity: number;
     deadline: string;
+    deliveryDate: string;
     priority: string;
     customerStatus: string;
     internalStatus: string;
+    notes: string;
     internalNotes: string;
     totalAmount: string;
     paidAmount: string;
@@ -50,11 +55,14 @@ export function ProjectForm({
     customerId: initialData?.customerId ?? initialCustomerId ?? "",
     groupId: initialData?.groupId ?? initialGroupId ?? "",
     costumeCategory: initialData?.costumeCategory ?? "",
+    orderType: initialData?.orderType ?? "",
     quantity: initialData?.quantity ?? 1,
     deadline: initialData?.deadline ?? "",
+    deliveryDate: initialData?.deliveryDate ?? "",
     priority: initialData?.priority ?? "normal",
     customerStatus: initialData?.customerStatus ?? "request_received",
     internalStatus: initialData?.internalStatus ?? "new",
+    notes: initialData?.notes ?? "",
     internalNotes: initialData?.internalNotes ?? "",
     totalAmount: initialData?.totalAmount ?? "",
     paidAmount: initialData?.paidAmount ?? "",
@@ -87,20 +95,35 @@ export function ProjectForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          customerId: form.customerId || undefined,
-          groupId: form.groupId || undefined,
-          deadline: form.deadline || undefined,
+          customerId: form.customerId || null,
+          groupId: form.groupId || null,
+          costumeCategory: form.costumeCategory || null,
+          orderType: form.orderType || null,
+          deadline: form.deadline || null,
+          deliveryDate: form.deliveryDate || null,
           quantity: Number(form.quantity),
-          totalAmount: form.totalAmount ? Number(form.totalAmount) : undefined,
-          paidAmount: form.paidAmount ? Number(form.paidAmount) : undefined,
+          notes: form.notes,
+          internalNotes: form.internalNotes,
+          totalAmount: form.totalAmount ? Number(form.totalAmount) : null,
+          paidAmount: form.paidAmount ? Number(form.paidAmount) : null,
         }),
       });
-      const data = await res.json();
+      let data: { error?: string; project?: { id: string } } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setError(res.ok ? "Unerwartete Serverantwort." : `Fehler (${res.status}).`);
+        return;
+      }
       if (!res.ok) { setError(data.error ?? "Fehler."); return; }
       if (isEditing) { setSuccess("Gespeichert."); router.refresh(); }
-      else { router.push(`/admin/crm/projects/${data.project.id}`); }
-    } catch { setError("Verbindungsfehler."); }
-    finally { setSaving(false); }
+      else if (data.project?.id) { router.push(`/admin/crm/projects/${data.project.id}`); }
+      else { setError("Projekt erstellt, aber keine ID erhalten."); }
+    } catch {
+      setError("Keine Verbindung zum Server. Bitte Netzwerk prüfen und erneut versuchen.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const inputClass = CRM_INPUT;
@@ -138,13 +161,21 @@ export function ProjectForm({
           </div>
         )}
         <div>
-          <label className={labelClass}>Kostümkategorie</label>
+          <label className={labelClass}>Auftragstyp</label>
+          <select name="orderType" value={form.orderType} onChange={handleChange} className={inputClass}>
+            <option value="">— Keiner —</option>
+            {ORDER_TYPES.map((t) => (
+              <option key={t.value} value={t.value}>{t.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Kostümkategorie (Passform)</label>
           <select name="costumeCategory" value={form.costumeCategory} onChange={handleChange} className={inputClass}>
             <option value="">— Keine —</option>
-            <option value="Herren">Herren</option>
-            <option value="Damen">Damen</option>
-            <option value="Kinder">Kinder</option>
-            <option value="Mixed">Mixed</option>
+            {COSTUME_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
+            ))}
           </select>
         </div>
         <div>
@@ -152,14 +183,18 @@ export function ProjectForm({
           <input type="number" name="quantity" value={form.quantity} onChange={handleChange} min={1} className={inputClass} />
         </div>
         <div>
-          <label className={labelClass}>Liefertermin</label>
-          <input type="date" name="deadline" value={form.deadline} onChange={handleChange} className={inputClass} />
-        </div>
-        <div>
           <label className={labelClass}>Priorität</label>
           <select name="priority" value={form.priority} onChange={handleChange} className={inputClass}>
             {PROJECT_PRIORITIES.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
+        </div>
+        <div>
+          <label className={labelClass}>Abholtermin 1</label>
+          <input type="date" name="deadline" value={form.deadline} onChange={handleChange} className={inputClass} />
+        </div>
+        <div>
+          <label className={labelClass}>Abholtermin 2</label>
+          <input type="date" name="deliveryDate" value={form.deliveryDate} onChange={handleChange} className={inputClass} />
         </div>
       </div>
 
@@ -202,12 +237,31 @@ export function ProjectForm({
       )}
 
       <div>
-        <label className={labelClass}>Interne Notizen</label>
-        <textarea name="internalNotes" value={form.internalNotes} onChange={handleChange} rows={3} className={`${inputClass} resize-y`} placeholder="Nur für Adminbereich sichtbar…" />
+        <label className={labelClass}>Notizen für Kunden (sichtbar im Portal)</label>
+        <textarea
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          rows={3}
+          className={`${inputClass} resize-y`}
+          placeholder="Hinweise, die der Kunde im Kundenbereich sehen darf…"
+        />
       </div>
 
-      {error && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">{error}</p>}
-      {success && <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2">{success}</p>}
+      <div>
+        <label className={labelClass}>Interne Notizen (nur Admin)</label>
+        <textarea
+          name="internalNotes"
+          value={form.internalNotes}
+          onChange={handleChange}
+          rows={3}
+          className={`${inputClass} resize-y`}
+          placeholder="Nur für Adminbereich sichtbar…"
+        />
+      </div>
+
+      {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{error}</p>}
+      {success && <p className="text-sm text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">{success}</p>}
 
       <div className="flex gap-3 pt-1">
         <button type="submit" disabled={saving} className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors disabled:opacity-50">

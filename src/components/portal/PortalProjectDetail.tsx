@@ -18,12 +18,14 @@ interface ProjectInfo {
   id: string;
   title: string;
   description: string | null;
+  notes: string | null;
   customerStatus: string;
   customerStatusLabel: string;
   deadline: string | null;
   deliveryDate: string | null;
   quantity: number;
   costumeCategory: string | null;
+  orderType: string | null;
   updatedAt: string;
 }
 
@@ -156,9 +158,17 @@ export function PortalProjectDetail({
         <div className="mt-4 pt-4 border-t border-stone-light/50 flex flex-wrap gap-4 text-xs font-sans text-charcoal-lighter">
           {project.deadline && (
             <span>
-              Termin:{" "}
+              Abholtermin 1:{" "}
               <span className="text-charcoal">
                 {new Date(project.deadline).toLocaleDateString("de-CH")}
+              </span>
+            </span>
+          )}
+          {project.deliveryDate && (
+            <span>
+              Abholtermin 2:{" "}
+              <span className="text-charcoal">
+                {new Date(project.deliveryDate).toLocaleDateString("de-CH")}
               </span>
             </span>
           )}
@@ -169,7 +179,7 @@ export function PortalProjectDetail({
           )}
           {project.costumeCategory && (
             <span>
-              Kategorie: <span className="text-charcoal">{project.costumeCategory}</span>
+              Passform: <span className="text-charcoal">{project.costumeCategory}</span>
             </span>
           )}
         </div>
@@ -212,7 +222,7 @@ export function PortalProjectDetail({
               </div>
               {project.costumeCategory && (
                 <div>
-                  <dt className="text-[10px] font-sans text-charcoal-lighter uppercase tracking-wider">Kategorie</dt>
+                  <dt className="text-[10px] font-sans text-charcoal-lighter uppercase tracking-wider">Passform</dt>
                   <dd className="font-sans text-sm text-charcoal mt-0.5">{project.costumeCategory}</dd>
                 </div>
               )}
@@ -224,13 +234,29 @@ export function PortalProjectDetail({
               )}
               {project.deadline && (
                 <div>
-                  <dt className="text-[10px] font-sans text-charcoal-lighter uppercase tracking-wider">Liefertermin</dt>
+                  <dt className="text-[10px] font-sans text-charcoal-lighter uppercase tracking-wider">Abholtermin 1</dt>
                   <dd className="font-sans text-sm text-charcoal mt-0.5">
                     {new Date(project.deadline).toLocaleDateString("de-CH")}
                   </dd>
                 </div>
               )}
+              {project.deliveryDate && (
+                <div>
+                  <dt className="text-[10px] font-sans text-charcoal-lighter uppercase tracking-wider">Abholtermin 2</dt>
+                  <dd className="font-sans text-sm text-charcoal mt-0.5">
+                    {new Date(project.deliveryDate).toLocaleDateString("de-CH")}
+                  </dd>
+                </div>
+              )}
             </dl>
+            {project.notes && (
+              <div className="mt-4 pt-4 border-t border-stone-light/50">
+                <p className="text-[10px] font-sans text-charcoal-lighter uppercase tracking-wider mb-1">
+                  Hinweise vom Atelier
+                </p>
+                <p className="font-sans text-sm text-charcoal whitespace-pre-wrap">{project.notes}</p>
+              </div>
+            )}
           </div>
 
           <button
@@ -260,12 +286,9 @@ export function PortalProjectDetail({
             </p>
           ) : (
             files.map((file) => (
-              <a
+              <div
                 key={file.id}
-                href={file.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-card p-4 flex items-center gap-4 hover:shadow-card-hover transition-all group"
+                className="glass-card p-4 flex items-center gap-4"
               >
                 <div className="w-10 h-10 rounded-lg bg-periwinkle-lighter flex items-center justify-center flex-shrink-0">
                   <span className="text-periwinkle-dark text-xs font-sans font-bold uppercase">
@@ -273,7 +296,7 @@ export function PortalProjectDetail({
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-sans text-sm text-charcoal group-hover:text-periwinkle-dark transition-colors truncate">
+                  <p className="font-sans text-sm text-charcoal truncate">
                     {file.originalName ?? "Dokument"}
                   </p>
                   <p className="font-sans text-xs text-charcoal-lighter mt-0.5">
@@ -286,8 +309,24 @@ export function PortalProjectDetail({
                     </p>
                   )}
                 </div>
-                <span className="text-charcoal-lighter text-xs flex-shrink-0">↗</span>
-              </a>
+                <div className="flex gap-2 flex-shrink-0">
+                  <a
+                    href={file.url}
+                    download={file.originalName ?? undefined}
+                    className="text-xs font-sans text-periwinkle-dark hover:underline"
+                  >
+                    Download
+                  </a>
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-sans text-charcoal-lighter hover:text-charcoal"
+                  >
+                    Öffnen
+                  </a>
+                </div>
+              </div>
             ))
           )}
         </div>

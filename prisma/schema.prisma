@@ -194,9 +194,14 @@ model Project {
   description     String?
   customerId      String?
   groupId         String?
-  costumeCategory String? // Herren | Damen | Kinder | Mixed
+  /// Body/fit category for Massblatt: Herren | Damen | Kinder | Mixed
+  costumeCategory String?
+  /// Order type: guggenmusik | clique | verein | familie | einzelperson | schnitzelbaengg | other
+  orderType       String?
   quantity        Int       @default(1)
+  /// Abholtermin 1
   deadline        DateTime?
+  /// Abholtermin 2
   deliveryDate    DateTime?
 
   // Public status (visible to customer)
@@ -209,7 +214,9 @@ model Project {
   paidAmount    Decimal? @db.Decimal(10, 2)
   paymentStatus String   @default("unpaid") // unpaid | partial | paid
 
+  /// Customer-visible notes
   notes         String?
+  /// Admin-only notes
   internalNotes String?
 
   createdAt DateTime @default(now())
@@ -370,17 +377,19 @@ model Task {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model ProjectFile {
-  id           String   @id @default(cuid())
-  projectId    String
-  cloudinaryId String
-  url          String
-  originalName String?
-  mimeType     String?
-  sizeBytes    Int?
-  category     String   @default("photo") // offer | invoice | measurement | photo | design | internal | other
-  uploadedBy   String   @default("admin") // admin | customer
-  description  String?
-  createdAt    DateTime @default(now())
+  id                String   @id @default(cuid())
+  projectId         String
+  cloudinaryId      String
+  url               String
+  originalName      String?
+  mimeType          String?
+  sizeBytes         Int?
+  category          String   @default("photo") // offer | invoice | measurement | photo | design | internal | other
+  uploadedBy        String   @default("admin") // admin | customer
+  description       String?
+  /// When false (or category=internal), hidden from customer portal
+  visibleToCustomer Boolean  @default(true)
+  createdAt         DateTime @default(now())
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 

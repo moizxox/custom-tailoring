@@ -25,7 +25,7 @@ export default async function FaqsPage() {
     headingTag: "h1",
   });
   const faqsData = { ...faqDefaults, ...faqContent } as {
-    items: { q: string; a: string }[];
+    items: { q: string; a: string; category?: string }[];
     ctaText?: string;
     ctaButton?: string;
   };

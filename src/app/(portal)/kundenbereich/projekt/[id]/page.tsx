@@ -33,7 +33,12 @@ export default async function PortalProjectPage({ params }: Props) {
     where: { id },
     include: {
       files: {
-        where: { category: { not: "internal" } },
+        where: {
+          AND: [
+            { category: { not: "internal" } },
+            { visibleToCustomer: true },
+          ],
+        },
         orderBy: { createdAt: "desc" },
       },
       conversations: {
@@ -67,12 +72,14 @@ export default async function PortalProjectPage({ params }: Props) {
           id: project.id,
           title: project.title,
           description: project.description ?? null,
+          notes: project.notes ?? null,
           customerStatus: project.customerStatus,
           customerStatusLabel: formatCustomerStatus(project.customerStatus),
           deadline: project.deadline?.toISOString() ?? null,
           deliveryDate: project.deliveryDate?.toISOString() ?? null,
           quantity: project.quantity,
           costumeCategory: project.costumeCategory ?? null,
+          orderType: project.orderType ?? null,
           updatedAt: project.updatedAt.toISOString(),
         }}
         files={project.files.map((f) => ({

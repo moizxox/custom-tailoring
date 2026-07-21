@@ -1,50 +1,65 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { crmCatch, crmError, emptyToNull, readJsonBody } from "@/lib/crm/api";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const body = await req.json();
-  if (!body.projectId) return NextResponse.json({ error: "projectId erforderlich." }, { status: 400 });
+  if (!session) return crmError("Unauthorized", 401);
 
-  const project = await prisma.project.findUnique({
-    where: { id: body.projectId },
-    select: { customerId: true, groupId: true },
-  });
-  if (!project) return NextResponse.json({ error: "Projekt nicht gefunden." }, { status: 404 });
+  const parsed = await readJsonBody(req);
+  if (!parsed.ok) return parsed.response;
+  const body = parsed.body;
+  const projectId = typeof body.projectId === "string" ? body.projectId : "";
+  if (!projectId) return crmError("projectId erforderlich.", 400);
 
-  let targetCustomerId = project.customerId;
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: {
+        customerId: true,
+        groupId: true,
+        group: { select: { members: { select: { customerId: true } } } },
+      },
+    });
+    if (!project) return crmError("Projekt nicht gefunden.", 404);
 
-  if (!targetCustomerId) {
-    if (!body.customerId) {
-      return NextResponse.json(
-        { error: "Für Gruppenprojekte ist customerId erforderlich." },
-        { status: 400 }
+    const targetCustomerId = emptyToNull(body.customerId) ?? project.customerId;
+
+    if (!targetCustomerId) {
+      return crmError(
+        "Bitte eine Person wählen. Für Gruppenprojekte ist customerId erforderlich.",
+        400
       );
     }
 
-    if (!project.groupId) {
-      return NextResponse.json({ error: "Kein Kunde für dieses Projekt." }, { status: 400 });
+    if (project.groupId) {
+      const isMember = project.group?.members.some((m) => m.customerId === targetCustomerId);
+      const isProjectCustomer = project.customerId === targetCustomerId;
+      if (!isMember && !isProjectCustomer) {
+        return crmError("Kunde ist kein Gruppenmitglied dieses Projekts.", 400);
+      }
     }
 
-    const membership = await prisma.groupMember.findFirst({
-      where: { groupId: project.groupId, customerId: body.customerId },
+    const existing = await prisma.measurement.findFirst({
+      where: { projectId, customerId: targetCustomerId },
+      orderBy: { updatedAt: "desc" },
     });
-    if (!membership) {
-      return NextResponse.json({ error: "Kunde ist kein Gruppenmitglied." }, { status: 400 });
+    if (existing) {
+      return NextResponse.json({ measurement: existing, reused: true });
     }
 
-    targetCustomerId = body.customerId;
+    const measurement = await prisma.measurement.create({
+      data: {
+        customerId: targetCustomerId,
+        projectId,
+        fields: {},
+        status: "pending",
+      },
+      include: { customer: { select: { id: true, name: true } } },
+    });
+    return NextResponse.json({ measurement }, { status: 201 });
+  } catch (error) {
+    return crmCatch(error, "Massnahme konnte nicht erstellt werden.");
   }
-
-  const measurement = await prisma.measurement.create({
-    data: {
-      customerId: targetCustomerId!,
-      projectId: body.projectId,
-      fields: {},
-      status: "pending",
-    },
-  });
-  return NextResponse.json({ measurement }, { status: 201 });
 }

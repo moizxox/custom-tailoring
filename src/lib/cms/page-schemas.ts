@@ -88,7 +88,26 @@ const SECTION_APPEARANCE_FIELDS: CmsField[] = [
     hint: "Site-wide gradient / tint presets" },
   { key: "useCustomBg", label: "Use custom background color", type: "toggle", group: "appearance" },
   { key: "bgColor", label: "Custom background color", type: "color", group: "appearance", hint: "Only when toggle is on" },
-  { key: "showKonfetti", label: "Show konfetti overlay", type: "toggle", group: "appearance" },
+  { key: "backgroundImage", label: "Hintergrundbild / Background image", type: "image", group: "appearance", hint: "Optional full-bleed background photo" },
+  {
+    key: "backgroundImagePosition",
+    label: "Background image position",
+    type: "select",
+    group: "appearance",
+    options: [
+      { value: "center", label: "Center" },
+      { value: "top", label: "Top" },
+      { value: "bottom", label: "Bottom" },
+    ],
+  },
+  {
+    key: "backgroundImageOverlay",
+    label: "Background overlay strength (0–0.85)",
+    type: "text",
+    group: "appearance",
+    hint: "e.g. 0.35 — keeps text readable over photos",
+  },
+  { key: "showKonfetti", label: "Konfetti / Show confetti overlay", type: "toggle", group: "appearance" },
 ];
 
 function withSectionOptions(fields: CmsField[]): CmsField[] {
@@ -828,6 +847,23 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
             label: "Questions",
             type: "items",
             itemFields: [
+              {
+                key: "category",
+                label: "Category",
+                type: "select",
+                options: [
+                  { value: "Beratung und Planung", label: "Beratung und Planung" },
+                  { value: "Design und Prototyp", label: "Design und Prototyp" },
+                  { value: "Masse und Passform", label: "Masse und Passform" },
+                  { value: "Gruppenbestellungen und Serienproduktion", label: "Gruppenbestellungen und Serienproduktion" },
+                  { value: "Stoffe und Individualisierung", label: "Stoffe und Individualisierung" },
+                  { value: "Preise und Zahlung", label: "Preise und Zahlung" },
+                  { value: "Produktionszeiten und Fristen", label: "Produktionszeiten und Fristen" },
+                  { value: "Lieferung und Abholung", label: "Lieferung und Abholung" },
+                  { value: "Änderungen und Reklamationen", label: "Änderungen und Reklamationen" },
+                  { value: "Pflege, Nachbestellungen und Kundenportal", label: "Pflege, Nachbestellungen und Kundenportal" },
+                ],
+              },
               { key: "q", label: "Question", type: "text" },
               { key: "a", label: "Answer", type: "textarea" },
             ],

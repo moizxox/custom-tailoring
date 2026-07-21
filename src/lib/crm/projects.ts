@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { emptyToNull } from "@/lib/crm/api";
 
 // ─── Status constants ─────────────────────────────────────────────────────────
 
@@ -32,6 +33,25 @@ export const PROJECT_PRIORITIES = [
   { value: "urgent", label: "Dringend" },
 ] as const;
 
+/** Body/fit for Massblatt */
+export const COSTUME_CATEGORIES = [
+  { value: "Herren", label: "Herren" },
+  { value: "Damen", label: "Damen" },
+  { value: "Kinder", label: "Kinder" },
+  { value: "Mixed", label: "Mixed" },
+] as const;
+
+/** Order / client type */
+export const ORDER_TYPES = [
+  { value: "guggenmusik", label: "Guggenmusik" },
+  { value: "clique", label: "Cliquen" },
+  { value: "verein", label: "Vereine" },
+  { value: "familie", label: "Familie" },
+  { value: "einzelperson", label: "Einzelpersonen" },
+  { value: "schnitzelbaengg", label: "Schnitzelbängg" },
+  { value: "other", label: "Sonstiges" },
+] as const;
+
 export type CustomerStatus = (typeof CUSTOMER_STATUSES)[number]["value"];
 export type InternalStatus = (typeof INTERNAL_STATUSES)[number]["value"];
 export type ProjectPriority = (typeof PROJECT_PRIORITIES)[number]["value"];
@@ -40,32 +60,37 @@ export type ProjectPriority = (typeof PROJECT_PRIORITIES)[number]["value"];
 
 export interface CreateProjectInput {
   title: string;
-  description?: string;
-  customerId?: string;
-  groupId?: string;
-  costumeCategory?: string;
+  description?: string | null;
+  customerId?: string | null;
+  groupId?: string | null;
+  costumeCategory?: string | null;
+  orderType?: string | null;
   quantity?: number;
-  deadline?: Date;
+  deadline?: Date | null;
+  deliveryDate?: Date | null;
   priority?: string;
-  internalNotes?: string;
+  notes?: string | null;
+  internalNotes?: string | null;
 }
 
 export async function createProject(input: CreateProjectInput) {
   const project = await prisma.project.create({
     data: {
       title: input.title.trim(),
-      description: input.description?.trim() ?? null,
-      customerId: input.customerId ?? null,
-      groupId: input.groupId ?? null,
-      costumeCategory: input.costumeCategory ?? null,
+      description: input.description?.trim() || null,
+      customerId: emptyToNull(input.customerId),
+      groupId: emptyToNull(input.groupId),
+      costumeCategory: input.costumeCategory?.trim() || null,
+      orderType: input.orderType?.trim() || null,
       quantity: input.quantity ?? 1,
       deadline: input.deadline ?? null,
+      deliveryDate: input.deliveryDate ?? null,
       priority: input.priority ?? "normal",
-      internalNotes: input.internalNotes?.trim() ?? null,
+      notes: input.notes?.trim() || null,
+      internalNotes: input.internalNotes?.trim() || null,
     },
   });
 
-  // Auto-create a conversation for every new project
   await prisma.conversation.create({ data: { projectId: project.id } });
 
   return project;
@@ -79,7 +104,10 @@ export async function getProject(id: string) {
       group: { include: { members: { include: { customer: true } } } },
       tasks: { orderBy: { createdAt: "asc" } },
       files: { orderBy: { createdAt: "desc" } },
-      measurements: { orderBy: { createdAt: "desc" } },
+      measurements: {
+        orderBy: { createdAt: "desc" },
+        include: { customer: { select: { id: true, name: true, email: true } } },
+      },
       conversations: {
         include: {
           messages: {
@@ -139,7 +167,7 @@ export async function listProjects(filters: ProjectFilters = {}) {
     return { projects, total };
   } catch (error) {
     console.error("[crm] listProjects failed:", error);
-    return { projects: [], total: 0 };
+    throw error;
   }
 }
 
@@ -161,25 +189,38 @@ export async function updateProject(
   data: Partial<CreateProjectInput> & {
     customerStatus?: string;
     internalStatus?: string;
-    totalAmount?: number;
-    paidAmount?: number;
+    totalAmount?: number | null;
+    paidAmount?: number | null;
     paymentStatus?: string;
   }
 ) {
   return prisma.project.update({
     where: { id },
     data: {
-      title: data.title?.trim(),
-      description: data.description?.trim() ?? undefined,
-      costumeCategory: data.costumeCategory ?? undefined,
+      title: data.title !== undefined ? data.title.trim() : undefined,
+      description:
+        data.description !== undefined ? data.description?.trim() || null : undefined,
+      customerId: data.customerId !== undefined ? emptyToNull(data.customerId) : undefined,
+      groupId: data.groupId !== undefined ? emptyToNull(data.groupId) : undefined,
+      costumeCategory:
+        data.costumeCategory !== undefined
+          ? data.costumeCategory?.trim() || null
+          : undefined,
+      orderType:
+        data.orderType !== undefined ? data.orderType?.trim() || null : undefined,
       quantity: data.quantity ?? undefined,
-      deadline: data.deadline ?? undefined,
+      deadline: data.deadline !== undefined ? data.deadline : undefined,
+      deliveryDate: data.deliveryDate !== undefined ? data.deliveryDate : undefined,
       priority: data.priority ?? undefined,
-      internalNotes: data.internalNotes?.trim() ?? undefined,
+      notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
+      internalNotes:
+        data.internalNotes !== undefined
+          ? data.internalNotes?.trim() || null
+          : undefined,
       customerStatus: data.customerStatus ?? undefined,
       internalStatus: data.internalStatus ?? undefined,
-      totalAmount: data.totalAmount != null ? data.totalAmount : undefined,
-      paidAmount: data.paidAmount != null ? data.paidAmount : undefined,
+      totalAmount: data.totalAmount !== undefined ? data.totalAmount : undefined,
+      paidAmount: data.paidAmount !== undefined ? data.paidAmount : undefined,
       paymentStatus: data.paymentStatus ?? undefined,
     },
   });
@@ -195,4 +236,9 @@ export function formatCustomerStatus(status: string): string {
 
 export function formatInternalStatus(status: string): string {
   return INTERNAL_STATUSES.find((s) => s.value === status)?.label ?? status;
+}
+
+export function formatOrderType(value: string | null | undefined): string {
+  if (!value) return "—";
+  return ORDER_TYPES.find((t) => t.value === value)?.label ?? value;
 }

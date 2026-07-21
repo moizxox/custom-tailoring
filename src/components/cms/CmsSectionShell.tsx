@@ -28,11 +28,28 @@ export function CmsSectionShell({
     ? { backgroundColor: appearance.bgColor }
     : undefined;
 
+  const hasBgImage = Boolean(appearance?.backgroundImage);
+
   return (
     <section
-      className={cn("relative overflow-hidden", !customBg && gradientClass, className)}
+      className={cn("relative overflow-hidden", !customBg && !hasBgImage && gradientClass, className)}
       style={customBg}
     >
+      {hasBgImage && (
+        <div
+          className="absolute inset-0 bg-cover bg-no-repeat"
+          style={{
+            backgroundImage: `url(${appearance!.backgroundImage})`,
+            backgroundPosition: appearance?.backgroundImagePosition ?? "center",
+          }}
+          aria-hidden
+        >
+          <div
+            className="absolute inset-0 bg-white"
+            style={{ opacity: appearance?.backgroundImageOverlay ?? 0.35 }}
+          />
+        </div>
+      )}
       {appearance?.showKonfetti && (
         heroKonfetti ? (
           <HeroConfettiBackground sketchOpacity="opacity-[0.5]" />

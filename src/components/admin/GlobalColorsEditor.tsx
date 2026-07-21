@@ -64,7 +64,8 @@ export default function GlobalColorsEditor({ savedColors, onSave }: Props) {
           </svg>
         </div>
         <p className="text-xs text-violet-700 leading-relaxed">
-          These colors define your entire website palette. Changes are applied live across all pages. Use the brand swatches or enter a custom hex value. Publish the site to see the effect.
+          These colors define the live website palette. Click <strong>Save colors</strong> to apply —
+          the public site updates automatically (hard refresh if needed). No separate publish step.
         </p>
       </div>
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GROUP_TYPES } from "@/lib/crm/groups";
-import { CRM_INPUT, CRM_TEXTAREA } from "@/components/crm/crm-styles";
+import { CRM_INPUT } from "@/components/crm/crm-styles";
 
 interface Props {
   groupId?: string;
@@ -52,13 +52,25 @@ export function GroupForm({ groupId, initialData }: Props) {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          leaderId: form.leaderId || null,
+        }),
       });
-      const data = await res.json();
+      let data: { error?: string; group?: { id: string } } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setError(res.ok ? "Unerwartete Serverantwort." : `Fehler (${res.status}). Bitte erneut versuchen.`);
+        return;
+      }
       if (!res.ok) { setError(data.error ?? "Fehler."); return; }
       if (isEditing) { setSuccess("Gespeichert."); router.refresh(); }
-      else { router.push(`/admin/crm/groups/${data.group.id}`); }
-    } catch { setError("Verbindungsfehler."); }
+      else if (data.group?.id) { router.push(`/admin/crm/groups/${data.group.id}`); }
+      else { setError("Gruppe erstellt, aber keine ID erhalten."); }
+    } catch {
+      setError("Keine Verbindung zum Server. Bitte Netzwerk prüfen und erneut versuchen.");
+    }
     finally { setSaving(false); }
   }
 

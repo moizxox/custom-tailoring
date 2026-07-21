@@ -1,33 +1,37 @@
 import { prisma } from "@/lib/prisma";
+import { emptyToNull } from "@/lib/crm/api";
 
 export const GROUP_TYPES = [
-  { value: "group", label: "Gruppe" },
   { value: "guggenmusik", label: "Guggenmusik" },
-  { value: "clique", label: "Clique" },
-  { value: "verein", label: "Verein" },
+  { value: "clique", label: "Cliquen" },
+  { value: "verein", label: "Vereine" },
+  { value: "familie", label: "Familie" },
+  { value: "einzelperson", label: "Einzelpersonen" },
+  { value: "schnitzelbaengg", label: "Schnitzelbängg" },
+  { value: "group", label: "Gruppe" },
   { value: "company", label: "Unternehmen" },
 ] as const;
 
 export interface CreateGroupInput {
   name: string;
-  description?: string;
+  description?: string | null;
   type?: string;
-  season?: string;
-  leaderId?: string;
-  location?: string;
-  notes?: string;
+  season?: string | null;
+  leaderId?: string | null;
+  location?: string | null;
+  notes?: string | null;
 }
 
 export async function createGroup(input: CreateGroupInput) {
   return prisma.group.create({
     data: {
       name: input.name.trim(),
-      description: input.description?.trim() ?? null,
-      type: input.type ?? "group",
-      season: input.season?.trim() ?? null,
-      leaderId: input.leaderId ?? null,
-      location: input.location?.trim() ?? null,
-      notes: input.notes?.trim() ?? null,
+      description: input.description?.trim() || null,
+      type: input.type?.trim() || "group",
+      season: input.season?.trim() || null,
+      leaderId: emptyToNull(input.leaderId),
+      location: input.location?.trim() || null,
+      notes: input.notes?.trim() || null,
     },
   });
 }
@@ -64,39 +68,35 @@ export async function listGroups(opts?: {
     ],
   };
 
-  try {
-    const [groups, total] = await Promise.all([
-      prisma.group.findMany({
-        where,
-        orderBy: { name: "asc" },
-        skip: opts?.skip ?? 0,
-        take: opts?.take ?? 50,
-        include: {
-          leader: { select: { id: true, name: true } },
-          _count: { select: { members: true, projects: true } },
-        },
-      }),
-      prisma.group.count({ where }),
-    ]);
+  const [groups, total] = await Promise.all([
+    prisma.group.findMany({
+      where,
+      orderBy: { name: "asc" },
+      skip: opts?.skip ?? 0,
+      take: opts?.take ?? 50,
+      include: {
+        leader: { select: { id: true, name: true } },
+        _count: { select: { members: true, projects: true } },
+      },
+    }),
+    prisma.group.count({ where }),
+  ]);
 
-    return { groups, total };
-  } catch (error) {
-    console.error("[crm] listGroups failed:", error);
-    return { groups: [], total: 0 };
-  }
+  return { groups, total };
 }
 
 export async function updateGroup(id: string, data: Partial<CreateGroupInput>) {
   return prisma.group.update({
     where: { id },
     data: {
-      name: data.name?.trim(),
-      description: data.description?.trim() ?? undefined,
-      type: data.type ?? undefined,
-      season: data.season?.trim() ?? undefined,
-      leaderId: data.leaderId ?? undefined,
-      location: data.location?.trim() ?? undefined,
-      notes: data.notes?.trim() ?? undefined,
+      name: data.name !== undefined ? data.name.trim() : undefined,
+      description:
+        data.description !== undefined ? data.description?.trim() || null : undefined,
+      type: data.type !== undefined ? data.type.trim() || "group" : undefined,
+      season: data.season !== undefined ? data.season?.trim() || null : undefined,
+      leaderId: data.leaderId !== undefined ? emptyToNull(data.leaderId) : undefined,
+      location: data.location !== undefined ? data.location?.trim() || null : undefined,
+      notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
     },
   });
 }

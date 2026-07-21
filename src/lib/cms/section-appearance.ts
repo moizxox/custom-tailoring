@@ -32,6 +32,9 @@ export interface SectionAppearance {
   gradientStyle: SectionGradientStyle;
   textColor?: string;
   accentColor?: string;
+  backgroundImage?: string;
+  backgroundImageOverlay?: number;
+  backgroundImagePosition?: string;
 }
 
 export function parseBool(value: unknown): boolean {
@@ -42,6 +45,8 @@ export function parseSectionAppearance(content?: Record<string, unknown> | null)
   const raw = content ?? {};
   const gradient = String(raw.gradientStyle ?? "default") as SectionGradientStyle;
   const validGradient = gradient in GRADIENT_CLASS_MAP ? gradient : "default";
+  const overlayRaw = Number(raw.backgroundImageOverlay ?? 0.35);
+  const overlay = Number.isFinite(overlayRaw) ? Math.min(0.85, Math.max(0, overlayRaw)) : 0.35;
 
   return {
     useCustomBg: parseBool(raw.useCustomBg),
@@ -50,5 +55,14 @@ export function parseSectionAppearance(content?: Record<string, unknown> | null)
     gradientStyle: validGradient,
     textColor: typeof raw.textColor === "string" && raw.textColor.trim() ? raw.textColor : undefined,
     accentColor: typeof raw.accentColor === "string" && raw.accentColor.trim() ? raw.accentColor : undefined,
+    backgroundImage:
+      typeof raw.backgroundImage === "string" && raw.backgroundImage.trim()
+        ? raw.backgroundImage.trim()
+        : undefined,
+    backgroundImageOverlay: overlay,
+    backgroundImagePosition:
+      typeof raw.backgroundImagePosition === "string" && raw.backgroundImagePosition.trim()
+        ? raw.backgroundImagePosition.trim()
+        : "center",
   };
 }

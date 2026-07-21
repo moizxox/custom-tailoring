@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import type { AtelierLocation } from "@/lib/site-content";
 import GlobalColorsEditor from "@/components/admin/GlobalColorsEditor";
 import { Phone, Mail, MessageCircle, AtSign, Globe, MapPin, Palette } from "lucide-react";
 
 type Tab = "contact" | "social" | "locations" | "colors";
+
+function tabFromHash(): Tab {
+  if (typeof window === "undefined") return "contact";
+  const hash = window.location.hash.replace("#", "");
+  if (hash === "colors" || hash === "social" || hash === "locations" || hash === "contact") {
+    return hash;
+  }
+  return "contact";
+}
 
 interface Props {
   saved: Record<string, unknown>;
@@ -25,6 +34,22 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
   const te = useTranslations("editor");
 
   const [activeTab, setActiveTab] = useState<Tab>("contact");
+
+  useEffect(() => {
+    setActiveTab(tabFromHash());
+    function onHash() {
+      setActiveTab(tabFromHash());
+    }
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  function selectTab(tab: Tab) {
+    setActiveTab(tab);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", `#${tab}`);
+    }
+  }
 
   const savedContact = (saved.contact as typeof defaultContact) ?? defaultContact;
   const savedSocial = (saved.social as { instagram?: string; facebook?: string }) ?? {};
@@ -79,7 +104,10 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ global_colors: colors }),
     });
-    if (!res.ok) throw new Error("save failed");
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error ?? "save failed");
+    }
   }
 
   function updateLocation(idx: number, key: keyof AtelierLocation, value: string) {
@@ -107,7 +135,7 @@ export default function SettingsEditor({ saved, defaultContact, defaultLocations
           <button
             key={tab.key}
             type="button"
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => selectTab(tab.key)}
             className={`flex items-center gap-2 flex-1 justify-center px-3 py-2 rounded-lg text-xs font-medium transition-all ${
               activeTab === tab.key
                 ? "bg-white text-gray-900 shadow-sm"

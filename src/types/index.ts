@@ -49,6 +49,7 @@ export interface GalleryItem {
 export interface FaqItem {
   q: string;
   a: string;
+  category?: string;
 }
 
 export interface ServiceItem {
