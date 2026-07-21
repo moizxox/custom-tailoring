@@ -5,7 +5,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { LocationCards } from "@/components/sections/LocationCards";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import type { ContactFormConfig, PageHeroCms } from "@/lib/cms/helpers";
+import type { SectionAppearance } from "@/lib/cms/section-appearance";
 import type { SiteContactInfo } from "@/lib/cms/site-contact";
 import type { CmsTimetable } from "@/lib/cms/timetables";
 import type { AtelierLocation } from "@/lib/site-content";
@@ -13,12 +15,13 @@ import type { AtelierLocation } from "@/lib/site-content";
 interface KontaktPageContentProps {
   hero: PageHeroCms;
   form: ContactFormConfig;
+  formAppearance?: SectionAppearance;
   contact: SiteContactInfo;
   locations: AtelierLocation[];
   timetables: CmsTimetable[];
 }
 
-export function KontaktPageContent({ hero, form, contact, locations, timetables }: KontaktPageContentProps) {
+export function KontaktPageContent({ hero, form, formAppearance, contact, locations, timetables }: KontaktPageContentProps) {
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -89,7 +92,7 @@ export function KontaktPageContent({ hero, form, contact, locations, timetables 
         </div>
       </section>
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={formAppearance} className="py-20">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div className="flex flex-col gap-6">
             <h2 className="font-serif text-2xl text-charcoal">Direkt erreichen</h2>
@@ -193,7 +196,7 @@ export function KontaktPageContent({ hero, form, contact, locations, timetables 
             </div>
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

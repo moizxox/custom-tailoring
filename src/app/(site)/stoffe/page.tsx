@@ -1,10 +1,12 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -43,6 +45,8 @@ export default async function StoffePage() {
   };
   const advisory = mapContentBlock({ ...getDefaultSectionContent("stoffe", "advisory"), ...advisoryContent });
   const bottomCta = { ...getDefaultSectionContent("stoffe", "bottomCta"), ...bottomCtaContent } as { heading?: string; text?: string };
+  const fabricsAppearance = parseSectionAppearance(fabricsContent);
+  const bottomCtaAppearance = parseSectionAppearance(bottomCtaContent);
 
   return (
     <>
@@ -58,7 +62,7 @@ export default async function StoffePage() {
         breadcrumbs={[{ label: "Stoffe & Materialien", href: "/stoffe" }]}
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={fabricsAppearance} className="py-20">
         <div className="container-site">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {(fabricsData.items ?? []).map((f) => (
@@ -80,7 +84,7 @@ export default async function StoffePage() {
             )}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
       {advisory.imageSrc && (
         <ContentSection
@@ -98,7 +102,7 @@ export default async function StoffePage() {
         />
       )}
 
-      <PeriwinkleCtaSection heading={bottomCta.heading} text={bottomCta.text} />
+      <PeriwinkleCtaSection heading={bottomCta.heading} text={bottomCta.text} appearance={bottomCtaAppearance} />
     </>
   );
 }

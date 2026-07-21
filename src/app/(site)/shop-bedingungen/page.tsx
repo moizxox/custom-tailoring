@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { CmsDocumentSections } from "@/components/sections/CmsDocumentSections";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getCmsContent } from "@/lib/cms/content";
 import { getCmsDocumentSections } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
@@ -33,7 +34,7 @@ export default async function ShopBedingungenPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Shop-Bedingungen", href: "/shop-bedingungen" }]}
       />
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={doc.appearance} className="py-20">
         <div className="container-site max-w-3xl space-y-8">
           {doc.intro && <p className="font-sans text-sm text-charcoal-lighter leading-relaxed">{doc.intro}</p>}
           <CmsDocumentSections sections={doc.sections} />
@@ -47,7 +48,7 @@ export default async function ShopBedingungenPage() {
             </Link>
           </p>
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

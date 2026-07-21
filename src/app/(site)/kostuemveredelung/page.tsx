@@ -1,10 +1,12 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -33,6 +35,7 @@ export default async function KostuemveredelungPage() {
     ctaLabel?: string;
     ctaUrl?: string;
   };
+  const servicesAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...servicesContent });
 
   return (
     <>
@@ -63,7 +66,7 @@ export default async function KostuemveredelungPage() {
         />
       )}
 
-      <section className="py-20 section-bg-lavender">
+      <CmsSectionShell appearance={servicesAppearance} defaultClassName="section-bg-lavender" className="py-20">
         <div className="container-site max-w-3xl">
           <h2 className="font-serif text-3xl text-charcoal mb-6 text-center">{servicesData.heading}</h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -80,7 +83,7 @@ export default async function KostuemveredelungPage() {
             </p>
           )}
         </div>
-      </section>
+      </CmsSectionShell>
 
       <PeriwinkleCtaSection />
     </>

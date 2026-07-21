@@ -3,9 +3,11 @@ import { cn } from "@/lib/utils";
 import { PageHero } from "@/components/layout/PageHero";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { ShopProductGrid } from "@/components/shop/ShopProductGrid";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { getShopProducts } from "@/lib/products";
 import { splitLines } from "@/lib/cms/section-helpers";
 import { TIER_KEYS, TIER_STYLES } from "@/lib/product-tiers";
@@ -51,6 +53,8 @@ export default async function ShopPage() {
   const tiersData = { ...tiersDefaults, ...tiersContent } as { heading: string; subtext: string; items: TierItem[] };
   const categoriesData = { ...categoriesDefaults, ...categoriesContent } as { heading: string; items: CategoryItem[] };
   const { products, source } = shopData;
+  const tiersAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...tiersContent });
+  const categoriesAppearance = parseSectionAppearance(categoriesContent);
 
   return (
     <>
@@ -66,7 +70,7 @@ export default async function ShopPage() {
         breadcrumbs={[{ label: "Shop", href: "/shop" }]}
       />
 
-      <section className="py-20 section-bg-lavender">
+      <CmsSectionShell appearance={tiersAppearance} defaultClassName="section-bg-lavender" className="py-20">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Für jedes Budget</p>
@@ -101,9 +105,9 @@ export default async function ShopPage() {
             })}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={categoriesAppearance} className="py-20">
         <div className="container-site">
           <div className="text-center mb-12">
             <h2 className="section-heading mb-4">{categoriesData.heading}</h2>
@@ -128,7 +132,7 @@ export default async function ShopPage() {
           </div>
           <ShopProductGrid products={products} />
         </div>
-      </section>
+      </CmsSectionShell>
 
       <section className="py-16 section-bg-sky border-y border-periwinkle-light/30">
         <div className="container-site max-w-3xl text-center">

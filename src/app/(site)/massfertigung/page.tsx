@@ -1,8 +1,10 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { MASSFERTIGUNG_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import Image from "next/image";
 import Link from "next/link";
@@ -35,6 +37,8 @@ export default async function MassfertigungPage() {
   const stepsDetail: StepDetail[] = Array.isArray(stepsData.items) && stepsData.items.length > 0
     ? stepsData.items
     : (MASSFERTIGUNG_SECTION_DEFAULTS.steps.items as StepDetail[]);
+  const stepsAppearance = parseSectionAppearance(stepsContent);
+  const ctaAppearance = parseSectionAppearance(ctaContent);
 
   return (
     <>
@@ -97,7 +101,7 @@ export default async function MassfertigungPage() {
         ctaHref="/termin"
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={stepsAppearance} className="py-20">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Der Prozess</p>
@@ -118,18 +122,18 @@ export default async function MassfertigungPage() {
             ))}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
       <ProcessSection />
 
-      <section className="py-16 bg-periwinkle-lighter text-center">
+      <CmsSectionShell appearance={ctaAppearance} defaultClassName="bg-periwinkle-lighter" className="py-16 text-center">
         <div className="container-site max-w-xl mx-auto">
           <Image src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg" alt="" width={48} height={48} className="icon-periwinkle mx-auto mb-5" />
           <h2 className="font-serif text-3xl text-charcoal mb-3">{ctaData.heading}</h2>
           <p className="font-sans text-sm text-charcoal-light mb-7">{ctaData.subtext}</p>
           <Link href={ctaData.buttonUrl} className="btn-primary inline-flex">{ctaData.buttonLabel}</Link>
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

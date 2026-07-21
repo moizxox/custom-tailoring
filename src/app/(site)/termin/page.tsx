@@ -4,6 +4,7 @@ import { getAtelierLocations } from "@/lib/cms/site-locations";
 import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapBookingConfig, mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { APPOINTMENT_TYPES } from "@/lib/site-content";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -35,14 +36,17 @@ const DEFAULT_BOOKING = {
 };
 
 export default async function TerminPage() {
-  const [heroContent, bookingContent, locations, timetables] = await Promise.all([
+  const [heroContent, bookingContent, timetablesContent, locations, timetables] = await Promise.all([
     getCmsContent("termin", "hero", {}),
     getCmsContent("termin", "booking", {}),
+    getCmsContent("termin", "timetables", {}),
     getAtelierLocations(),
     getMeasurementTimetables(),
   ]);
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
   const booking = mapBookingConfig(bookingContent, DEFAULT_BOOKING);
+  const timetablesAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...timetablesContent });
+  const bookingAppearance = parseSectionAppearance(bookingContent);
 
   return (
     <>
@@ -58,7 +62,13 @@ export default async function TerminPage() {
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
       />
       <Suspense fallback={<div className="py-20 text-center text-charcoal-lighter">Laden…</div>}>
-        <TerminBooking config={booking} locations={locations} timetables={timetables} />
+        <TerminBooking
+          config={booking}
+          locations={locations}
+          timetables={timetables}
+          timetablesAppearance={timetablesAppearance}
+          bookingAppearance={bookingAppearance}
+        />
       </Suspense>
     </>
   );

@@ -8,6 +8,7 @@ interface Props {
   /** Fallback when gradientStyle is default */
   defaultClassName?: string;
   className?: string;
+  id?: string;
   children: React.ReactNode;
   /** Use full hero konfetti stack (gradient + figures) instead of overlay only */
   heroKonfetti?: boolean;
@@ -17,6 +18,7 @@ export function CmsSectionShell({
   appearance,
   defaultClassName = "section-bg-white",
   className,
+  id,
   children,
   heroKonfetti = false,
 }: Props) {
@@ -32,6 +34,7 @@ export function CmsSectionShell({
 
   return (
     <section
+      id={id}
       className={cn("relative overflow-hidden", !customBg && !hasBgImage && gradientClass, className)}
       style={customBg}
     >

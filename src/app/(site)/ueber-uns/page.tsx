@@ -1,10 +1,12 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { AboutBand } from "@/components/sections/AboutBand";
 import { ContentSection } from "@/components/sections/ContentSection";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,6 +54,9 @@ export default async function UeberUnsPage() {
   };
   const teamData = { ...getDefaultSectionContent("ueber-uns", "team"), ...teamContent } as { items?: TeamMember[] };
   const TEAM = teamData.items ?? [];
+  const storyAppearance = parseSectionAppearance(story);
+  const valuesAppearance = parseSectionAppearance(valuesData as Record<string, unknown>);
+  const teamAppearance = parseSectionAppearance(teamData as Record<string, unknown>);
 
   return (
     <>
@@ -67,7 +72,7 @@ export default async function UeberUnsPage() {
         appearance={hero.appearance}
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={storyAppearance} className="py-20">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
             {story.label && <p className="section-label mb-4">{story.label}</p>}
@@ -100,7 +105,7 @@ export default async function UeberUnsPage() {
             </div>
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
       {work.imageSrc && (
         <ContentSection
@@ -118,7 +123,7 @@ export default async function UeberUnsPage() {
         />
       )}
 
-      <section className="py-16 section-bg-white">
+      <CmsSectionShell appearance={valuesAppearance} className="py-16">
         <div className="container-site">
           <div className="text-center mb-12">
             {valuesData.sectionLabel && <p className="section-label mb-3">{valuesData.sectionLabel}</p>}
@@ -136,9 +141,9 @@ export default async function UeberUnsPage() {
             ))}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
-      <section id="team" className="py-16 section-bg-white scroll-mt-28">
+      <CmsSectionShell id="team" appearance={teamAppearance} className="py-16 scroll-mt-28">
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Unser Team</p>
@@ -159,7 +164,7 @@ export default async function UeberUnsPage() {
             ))}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
       <AboutBand />
     </>

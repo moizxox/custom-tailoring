@@ -1,8 +1,10 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,6 +31,7 @@ export default async function FaqsPage() {
     ctaText?: string;
     ctaButton?: string;
   };
+  const faqAppearance = parseSectionAppearance({ ...faqDefaults, ...faqContent });
 
   return (
     <>
@@ -44,7 +47,7 @@ export default async function FaqsPage() {
         breadcrumbs={[{ label: "FAQs", href: "/faqs" }]}
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={faqAppearance} className="py-20">
         <div className="container-site max-w-3xl mx-auto">
           <FaqAccordion
             items={faqsData.items ?? []}
@@ -52,7 +55,7 @@ export default async function FaqsPage() {
             ctaButton={faqsData.ctaButton}
           />
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

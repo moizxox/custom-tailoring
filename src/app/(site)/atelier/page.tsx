@@ -2,10 +2,12 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ContentSection } from "@/components/sections/ContentSection";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
 import { PhotoSlider } from "@/components/ui/PhotoSlider";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -33,6 +35,7 @@ export default async function AtelierPage() {
   const workshop = mapContentBlock({ ...getDefaultSectionContent("atelier", "workshop"), ...workshopContent });
   const materials = mapContentBlock({ ...getDefaultSectionContent("atelier", "materials"), ...materialsContent });
   const slides = (Array.isArray(intro.slides) ? intro.slides : []) as { src: string; alt: string }[];
+  const introAppearance = parseSectionAppearance(intro);
 
   return (
     <>
@@ -48,7 +51,7 @@ export default async function AtelierPage() {
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={introAppearance} className="py-20">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             {typeof intro.label === "string" && <p className="section-label mb-4">{intro.label}</p>}
@@ -89,7 +92,7 @@ export default async function AtelierPage() {
           </div>
           {slides.length > 0 && <PhotoSlider slides={slides} />}
         </div>
-      </section>
+      </CmsSectionShell>
 
       {workshop.imageSrc && (
         <ContentSection

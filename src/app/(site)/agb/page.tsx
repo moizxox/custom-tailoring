@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/layout/PageHero";
 import { CmsDocumentSections } from "@/components/sections/CmsDocumentSections";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getCmsContent } from "@/lib/cms/content";
 import { getCmsDocumentSections } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
@@ -32,12 +33,12 @@ export default async function AgbPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "AGB", href: "/agb" }]}
       />
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={doc.appearance} className="py-20">
         <div className="container-site max-w-3xl">
           {doc.intro && <p className="font-sans text-sm text-charcoal-lighter mb-10 leading-relaxed">{doc.intro}</p>}
           <CmsDocumentSections sections={doc.sections} />
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

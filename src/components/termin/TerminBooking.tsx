@@ -4,7 +4,9 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { buildBookingDates, type BookingConfig } from "@/lib/cms/helpers";
+import type { SectionAppearance } from "@/lib/cms/section-appearance";
 import type { CmsTimetable } from "@/lib/cms/timetables";
 import { SITE_CONTACT, type AtelierLocation, type LocationId } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
@@ -13,9 +15,11 @@ interface TerminBookingProps {
   config: BookingConfig;
   locations: AtelierLocation[];
   timetables?: CmsTimetable[];
+  timetablesAppearance?: SectionAppearance;
+  bookingAppearance?: SectionAppearance;
 }
 
-export function TerminBooking({ config, locations, timetables }: TerminBookingProps) {
+export function TerminBooking({ config, locations, timetables, timetablesAppearance, bookingAppearance }: TerminBookingProps) {
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get("standort") as LocationId) || "pratteln";
   const initialTyp = searchParams.get("typ");
@@ -43,7 +47,12 @@ export function TerminBooking({ config, locations, timetables }: TerminBookingPr
 
   return (
     <>
-      <section id="massen-ohne-termin" className="py-16 section-bg-lavender border-b border-periwinkle-light/30 scroll-mt-24">
+      <CmsSectionShell
+        id="massen-ohne-termin"
+        appearance={timetablesAppearance}
+        defaultClassName="section-bg-lavender"
+        className="py-16 border-b border-periwinkle-light/30 scroll-mt-24"
+      >
         <div className="container-site max-w-5xl">
           <div className="text-center mb-10">
             <p className="section-label mb-3 justify-center">Hochsaison</p>
@@ -60,9 +69,9 @@ export function TerminBooking({ config, locations, timetables }: TerminBookingPr
           </div>
           <AtelierTimetable timetables={timetables} locations={locations} />
         </div>
-      </section>
+      </CmsSectionShell>
 
-      <section id="termin-buchen" className="py-20 section-bg-white scroll-mt-24">
+      <CmsSectionShell id="termin-buchen" appearance={bookingAppearance} className="py-20 scroll-mt-24">
         <div className="container-site max-w-2xl mx-auto">
           <div className="mb-10">
             <h2 className="font-serif text-xl text-charcoal mb-4 text-center">Terminart direkt wählen</h2>
@@ -342,7 +351,7 @@ export function TerminBooking({ config, locations, timetables }: TerminBookingPr
             </a>
           </p>
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

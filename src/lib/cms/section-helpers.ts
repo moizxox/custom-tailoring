@@ -28,7 +28,7 @@ export async function getCmsItemsSection<T extends Record<string, string>>(
 export async function getCmsDocumentSections(
   pageSlug: string,
   sectionKey = "sections",
-): Promise<{ intro?: string; sections: CmsDocumentSection[] }> {
+): Promise<{ intro?: string; sections: CmsDocumentSection[]; appearance: ReturnType<typeof parseSectionAppearance> }> {
   const defaults = getDefaultSectionContent(pageSlug, sectionKey);
   const content = await getCmsContent(pageSlug, sectionKey, {});
   const merged: Record<string, unknown> = { ...defaults, ...content };
@@ -36,6 +36,7 @@ export async function getCmsDocumentSections(
   const items = Array.isArray(raw) ? raw : [];
   return {
     intro: typeof merged.intro === "string" ? merged.intro : undefined,
+    appearance: parseSectionAppearance(merged),
     sections: items.map((item) => {
       const row = item as Record<string, string>;
       return {

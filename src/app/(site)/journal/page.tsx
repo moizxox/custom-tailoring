@@ -1,7 +1,9 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -35,6 +37,7 @@ export default async function JournalPage() {
   const defaults = getDefaultSectionContent("journal", "posts");
   const postsData = { ...defaults, ...postsContent } as { items: JournalPost[] };
   const posts = postsData.items ?? [];
+  const postsAppearance = parseSectionAppearance({ ...defaults, ...postsContent });
 
   return (
     <>
@@ -50,7 +53,7 @@ export default async function JournalPage() {
         breadcrumbs={[{ label: "Journal", href: "/journal" }]}
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={postsAppearance} className="py-20">
         <div className="container-site">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
@@ -89,7 +92,7 @@ export default async function JournalPage() {
             ))}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

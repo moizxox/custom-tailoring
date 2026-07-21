@@ -1,7 +1,9 @@
 import { PageHero } from "@/components/layout/PageHero";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import type { Metadata } from "next";
 
@@ -33,6 +35,7 @@ export default async function GaleriePage() {
   const defaults = getDefaultSectionContent("galerie", "gallery");
   const galleryData = { ...defaults, ...galleryContent } as { items: GalleryItem[] };
   const items = galleryData.items ?? [];
+  const galleryAppearance = parseSectionAppearance({ ...defaults, ...galleryContent });
 
   return (
     <>
@@ -48,7 +51,7 @@ export default async function GaleriePage() {
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
 
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={galleryAppearance} className="py-20">
         <div className="container-site">
           <div className="flex flex-wrap gap-2 mb-10">
             {CATEGORIES.map((cat) => (
@@ -97,7 +100,7 @@ export default async function GaleriePage() {
             ))}
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
     </>
   );
 }

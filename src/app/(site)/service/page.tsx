@@ -2,8 +2,10 @@ import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import { PeriwinkleCtaSection } from "@/components/sections/PeriwinkleCtaSection";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { SERVICE_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
@@ -47,6 +49,10 @@ export default async function ServicePage() {
   const faqs: FaqItem[] = Array.isArray(faqsData.items) && faqsData.items.length > 0
     ? faqsData.items : SERVICE_FAQS.map((f) => ({ q: f.q, a: f.a }));
 
+  const offeringsAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...offeringsContent });
+  const processAppearance = parseSectionAppearance(processContent);
+  const faqsAppearance = parseSectionAppearance(faqsContent);
+
   return (
     <>
       <PageHero
@@ -62,7 +68,7 @@ export default async function ServicePage() {
       />
 
       {/* Leistungen overview */}
-      <section className="py-20 section-bg-lavender">
+      <CmsSectionShell appearance={offeringsAppearance} defaultClassName="section-bg-lavender" className="py-20">
         <div className="container-site">
           <div className="text-center mb-12">
             <h2 className="section-heading mb-4">{offeringsData.heading}</h2>
@@ -84,10 +90,10 @@ export default async function ServicePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </CmsSectionShell>
 
       {/* 6-step order process */}
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={processAppearance} className="py-20">
         <div className="container-site max-w-4xl">
           <div className="text-center mb-14">
             <p className="section-label mb-3">Bestellprozess</p>
@@ -107,7 +113,7 @@ export default async function ServicePage() {
             ))}
           </ol>
         </div>
-      </section>
+      </CmsSectionShell>
 
       {/* Massen ohne Termin — links to timetable */}
       <section id="massen-ohne-termin" className="py-16 section-bg-white border-y border-periwinkle-light/30">
@@ -123,7 +129,7 @@ export default async function ServicePage() {
       </section>
 
       {/* FAQs from old service page */}
-      <section className="py-20 section-bg-white">
+      <CmsSectionShell appearance={faqsAppearance} className="py-20">
         <div className="container-site max-w-3xl">
           <div className="text-center mb-10">
             <h2 className="section-heading mb-2">Häufig gestellte Fragen</h2>
@@ -148,7 +154,7 @@ export default async function ServicePage() {
             </Link>
           </p>
         </div>
-      </section>
+      </CmsSectionShell>
 
       <PeriwinkleCtaSection />
     </>

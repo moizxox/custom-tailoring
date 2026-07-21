@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
+import type { SectionAppearance } from "@/lib/cms/section-appearance";
 
 interface PeriwinkleCtaSectionProps {
   heading?: string;
@@ -7,6 +9,7 @@ interface PeriwinkleCtaSectionProps {
   primaryHref?: string;
   secondaryLabel?: string;
   secondaryHref?: string;
+  appearance?: SectionAppearance;
 }
 
 export function PeriwinkleCtaSection({
@@ -16,9 +19,10 @@ export function PeriwinkleCtaSection({
   primaryHref = "/termin",
   secondaryLabel = "Nachricht senden",
   secondaryHref = "/kontakt",
+  appearance,
 }: PeriwinkleCtaSectionProps) {
   return (
-    <section className="py-16 bg-periwinkle-lighter">
+    <CmsSectionShell appearance={appearance} defaultClassName="bg-periwinkle-lighter" className="py-16">
       <div className="container-site text-center">
         <h2 className="font-serif text-3xl text-charcoal mb-3">{heading}</h2>
         <p className="font-sans text-sm text-charcoal-light mb-7 max-w-md mx-auto">{text}</p>
@@ -31,6 +35,6 @@ export function PeriwinkleCtaSection({
           </Link>
         </div>
       </div>
-    </section>
+    </CmsSectionShell>
   );
 }

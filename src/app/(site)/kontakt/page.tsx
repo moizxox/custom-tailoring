@@ -4,6 +4,7 @@ import { getAtelierLocations } from "@/lib/cms/site-locations";
 import { getSiteContactInfo } from "@/lib/cms/site-contact";
 import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { mapContactFormConfig, mapPageHeroContent } from "@/lib/cms/helpers";
+import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -42,6 +43,16 @@ export default async function KontaktPage() {
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
 
   const form = mapContactFormConfig(formContent, DEFAULT_FORM);
+  const formAppearance = parseSectionAppearance(formContent);
 
-  return <KontaktPageContent hero={hero} form={form} contact={contact} locations={locations} timetables={timetables} />;
+  return (
+    <KontaktPageContent
+      hero={hero}
+      form={form}
+      formAppearance={formAppearance}
+      contact={contact}
+      locations={locations}
+      timetables={timetables}
+    />
+  );
 }
