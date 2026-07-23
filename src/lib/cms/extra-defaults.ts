@@ -6,15 +6,20 @@ const CDN = "https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschne
 export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string, unknown>>> = {
   shop: {
     tiers: {
+      sectionLabel: "Für jedes Budget",
       heading: "Qualitätsstufen im Überblick",
       subtext:
         "Drei Stufen — unterschiedlich in Material, Verarbeitung und Ausstattung. So erhalten Sie genau die Qualität, die zu Ihrem Projekt passt.",
+      navHint: "Preise wählen — alle Angaben sind unverbindliche Richtwerte",
       items: SHOP_QUALITY_TIERS.map((t, i) => ({
         name: t.name,
         badge: i === 0 ? "Einstieg" : i === 1 ? "Beliebt" : "Premium",
+        price: i === 0 ? "ab CHF 290.–" : i === 1 ? "ab CHF 480.–" : "ab CHF 720.–",
+        priceNote: "pro Kostüm",
         tagline: t.tagline,
         features: t.features.join("\n"),
         recommendation: t.recommendation,
+        linkUrl: `#stufe-${t.id}`,
       })),
     },
     categories: {

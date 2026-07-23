@@ -29,15 +29,24 @@ const DEFAULT_HERO = {
 interface TierItem {
   name: string;
   badge: string;
+  price?: string;
+  priceNote?: string;
   tagline: string;
   features: string;
   recommendation: string;
+  linkUrl?: string;
 }
 
 interface CategoryItem {
   name: string;
   description: string;
   slug: string;
+}
+
+function tierAnchorId(name: string, index: number) {
+  const key = TIER_KEYS[index];
+  if (key) return `stufe-${key}`;
+  return `stufe-${name.toLowerCase().replace(/\s+/g, "-")}`;
 }
 
 export default async function ShopPage() {
@@ -50,11 +59,18 @@ export default async function ShopPage() {
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
   const tiersDefaults = getDefaultSectionContent("shop", "tiers");
   const categoriesDefaults = getDefaultSectionContent("shop", "categories");
-  const tiersData = { ...tiersDefaults, ...tiersContent } as { heading: string; subtext: string; items: TierItem[] };
+  const tiersData = { ...tiersDefaults, ...tiersContent } as {
+    sectionLabel?: string;
+    heading: string;
+    subtext: string;
+    navHint?: string;
+    items: TierItem[];
+  };
   const categoriesData = { ...categoriesDefaults, ...categoriesContent } as { heading: string; items: CategoryItem[] };
   const { products, source } = shopData;
   const tiersAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...tiersContent });
   const categoriesAppearance = parseSectionAppearance(categoriesContent);
+  const tierItems = tiersData.items ?? [];
 
   return (
     <>
@@ -72,35 +88,82 @@ export default async function ShopPage() {
 
       <CmsSectionShell appearance={tiersAppearance} defaultClassName="section-bg-lavender" className="py-20">
         <div className="container-site">
-          <div className="text-center mb-12">
-            <p className="section-label mb-3">Für jedes Budget</p>
+          <div className="text-center mb-10">
+            {tiersData.sectionLabel && <p className="section-label mb-3">{tiersData.sectionLabel}</p>}
             <h2 className="section-heading mb-4">{tiersData.heading}</h2>
             <p className="section-subtext max-w-2xl mx-auto">{tiersData.subtext}</p>
           </div>
+
+          {/* Price navigation — CMS-editable names & prices */}
+          <nav aria-label="Preise nach Qualitätsstufe" className="mb-12">
+            {tiersData.navHint && (
+              <p className="text-center font-sans text-xs text-charcoal-lighter mb-4">{tiersData.navHint}</p>
+            )}
+            <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-4xl mx-auto">
+              {tierItems.map((tier, index) => {
+                const tierKey = TIER_KEYS[index] ?? "standard";
+                const style = TIER_STYLES[tierKey];
+                const href = tier.linkUrl?.trim() || `#${tierAnchorId(tier.name, index)}`;
+                return (
+                  <li key={`${tier.name}-nav`}>
+                    <Link
+                      href={href}
+                      className={cn(
+                        "flex flex-col items-center justify-center gap-1 rounded-2xl border-2 bg-white/80 px-4 py-4 text-center transition-all hover:shadow-soft hover:-translate-y-0.5",
+                        style.border,
+                      )}
+                    >
+                      <span className={cn("font-sans text-[10px] font-semibold tracking-[0.18em] uppercase", style.accent)}>
+                        {tier.badge || tier.name}
+                      </span>
+                      <span className="font-serif text-xl text-charcoal leading-tight">{tier.name}</span>
+                      {tier.price?.trim() && (
+                        <span className="font-sans text-sm font-semibold text-charcoal mt-1">{tier.price}</span>
+                      )}
+                      {tier.priceNote?.trim() && (
+                        <span className="font-sans text-[11px] text-charcoal-lighter">{tier.priceNote}</span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(tiersData.items ?? []).map((tier, index) => {
+            {tierItems.map((tier, index) => {
               const tierKey = TIER_KEYS[index] ?? "standard";
               const style = TIER_STYLES[tierKey];
+              const anchorId = tierAnchorId(tier.name, index);
               return (
-              <article
-                key={tier.name}
-                className={cn("rounded-3xl card-gradient border-2 p-7 flex flex-col", style.border)}
-              >
-                <span className={cn("font-sans text-[10px] font-semibold tracking-[0.2em] uppercase mb-2", style.accent)}>
-                  {tier.badge}
-                </span>
-                <h3 className="font-serif text-2xl text-charcoal mb-2">{tier.name}</h3>
-                <p className="font-sans text-sm text-charcoal-light mb-5">{tier.tagline}</p>
-                <ul className="flex flex-col gap-2 mb-6 flex-1">
-                  {splitLines(tier.features).map((f) => (
-                    <li key={f} className="flex items-start gap-2 font-sans text-sm text-charcoal-light">
-                      <span className="text-periwinkle-dark mt-0.5">✔</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <p className="font-sans text-[12px] text-charcoal-lighter leading-relaxed border-t border-periwinkle-light/30 pt-4">{tier.recommendation}</p>
-              </article>
+                <article
+                  key={tier.name}
+                  id={anchorId}
+                  className={cn("scroll-mt-28 rounded-3xl card-gradient border-2 p-7 flex flex-col", style.border)}
+                >
+                  <span className={cn("font-sans text-[10px] font-semibold tracking-[0.2em] uppercase mb-2", style.accent)}>
+                    {tier.badge}
+                  </span>
+                  <h3 className="font-serif text-2xl text-charcoal mb-2">{tier.name}</h3>
+                  {tier.price?.trim() && (
+                    <p className="font-sans text-lg font-semibold text-charcoal mb-1">{tier.price}</p>
+                  )}
+                  {tier.priceNote?.trim() && (
+                    <p className="font-sans text-[11px] text-charcoal-lighter mb-3">{tier.priceNote}</p>
+                  )}
+                  <p className="font-sans text-sm text-charcoal-light mb-5">{tier.tagline}</p>
+                  <ul className="flex flex-col gap-2 mb-6 flex-1">
+                    {splitLines(tier.features).map((f) => (
+                      <li key={f} className="flex items-start gap-2 font-sans text-sm text-charcoal-light">
+                        <span className="text-periwinkle-dark mt-0.5">✔</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="font-sans text-[12px] text-charcoal-lighter leading-relaxed border-t border-periwinkle-light/30 pt-4">
+                    {tier.recommendation}
+                  </p>
+                </article>
               );
             })}
           </div>

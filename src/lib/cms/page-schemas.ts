@@ -766,10 +766,13 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
       { key: "hero", label: "Hero section", fields: pageHeroFields() },
       {
         key: "tiers",
-        label: "Quality tiers",
+        label: "Quality tiers (with prices)",
+        description: "Price navigation + tier cards at the top of the shop — all text and prices editable",
         fields: [
+          { key: "sectionLabel", label: "Section label", type: "text", hint: 'e.g. "Für jedes Budget"' },
           { key: "heading", label: "Section heading", type: "text" },
           { key: "subtext", label: "Section subtext", type: "textarea" },
+          { key: "navHint", label: "Price nav hint", type: "text", hint: "Short line above the price buttons (optional)" },
           {
             key: "items",
             label: "Tier cards",
@@ -777,9 +780,12 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
             itemFields: [
               { key: "name", label: "Name", type: "text" },
               { key: "badge", label: "Badge label", type: "text" },
+              { key: "price", label: "Price", type: "text", hint: 'e.g. "ab CHF 290.–"' },
+              { key: "priceNote", label: "Price note", type: "text", hint: 'e.g. "pro Kostüm" (optional)' },
               { key: "tagline", label: "Tagline", type: "text" },
               { key: "features", label: "Features", type: "textarea", hint: "One feature per line" },
               { key: "recommendation", label: "Recommendation", type: "textarea" },
+              { key: "linkUrl", label: "Nav link", type: "url", hint: "Where the price button goes (e.g. #produkte)" },
             ],
           },
         ],
