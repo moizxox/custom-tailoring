@@ -8,9 +8,11 @@ export async function GET(req: NextRequest) {
   if (!session) return crmError("Unauthorized", 401);
   try {
     const { searchParams } = new URL(req.url);
+    const archivedParam = searchParams.get("archived");
     const result = await listGroups({
       search: searchParams.get("q") ?? undefined,
       type: searchParams.get("type") ?? undefined,
+      archived: archivedParam === "1" || archivedParam === "true" ? true : false,
     });
     return NextResponse.json(result);
   } catch (error) {
@@ -36,6 +38,7 @@ export async function POST(req: NextRequest) {
       leaderId: emptyToNull(body.leaderId),
       location: typeof body.location === "string" ? body.location : null,
       notes: typeof body.notes === "string" ? body.notes : null,
+      billingMode: typeof body.billingMode === "string" ? body.billingMode : null,
     });
     return NextResponse.json({ group }, { status: 201 });
   } catch (error) {

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getGroup } from "@/lib/crm/groups";
+import { getGroup, BILLING_MODES, GROUP_TYPES } from "@/lib/crm/groups";
+import { prisma } from "@/lib/prisma";
 import { GroupForm } from "@/components/crm/GroupForm";
 import { GroupMemberTable } from "@/components/crm/GroupMemberTable";
 
@@ -20,6 +21,16 @@ export default async function GroupDetailPage({ params }: Props) {
   const group = await getGroup(id);
   if (!group) notFound();
 
+  const customers = await prisma.customer.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
+
+  const typeLabel = GROUP_TYPES.find((t) => t.value === group.type)?.label ?? group.type;
+  const billingLabel = group.billingMode
+    ? (BILLING_MODES.find((b) => b.value === group.billingMode)?.label ?? group.billingMode)
+    : null;
+
   return (
     <div className="p-6 md:p-8 max-w-5xl">
       <div className="flex items-center gap-2 mb-6">
@@ -30,14 +41,22 @@ export default async function GroupDetailPage({ params }: Props) {
         <span className="text-xs text-gray-400">{group.name}</span>
       </div>
 
-      <h1 className="text-2xl font-semibold text-gray-900 mb-1">{group.name}</h1>
-      <p className="text-sm text-gray-400 mb-6 capitalize">{group.type}{group.season ? ` — ${group.season}` : ""}</p>
+      <div className="flex items-center gap-3 mb-1">
+        <h1 className="text-2xl font-semibold text-gray-900">{group.name}</h1>
+        {group.archived && (
+          <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 font-medium">Archiviert</span>
+        )}
+      </div>
+      <p className="text-sm text-gray-400 mb-6">
+        {[typeLabel, group.season, billingLabel].filter(Boolean).join(" — ")}
+      </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2 bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-gray-900 mb-4">Gruppendetails</h2>
           <GroupForm
             groupId={group.id}
+            customers={customers}
             initialData={{
               name: group.name,
               description: group.description ?? "",
@@ -46,6 +65,8 @@ export default async function GroupDetailPage({ params }: Props) {
               leaderId: group.leaderId ?? "",
               location: group.location ?? "",
               notes: group.notes ?? "",
+              billingMode: group.billingMode ?? "collective",
+              archived: group.archived,
             }}
           />
         </div>

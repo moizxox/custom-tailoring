@@ -35,6 +35,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
       leaderId: body.leaderId !== undefined ? emptyToNull(body.leaderId) : undefined,
       location: typeof body.location === "string" ? body.location : undefined,
       notes: typeof body.notes === "string" ? body.notes : undefined,
+      billingMode: typeof body.billingMode === "string" ? body.billingMode : undefined,
+      archived: typeof body.archived === "boolean" ? body.archived : undefined,
     });
     return NextResponse.json({ group });
   } catch (error) {
