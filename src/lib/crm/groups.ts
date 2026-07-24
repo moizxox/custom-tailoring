@@ -12,6 +12,13 @@ export const GROUP_TYPES = [
   { value: "company", label: "Unternehmen" },
 ] as const;
 
+export const BILLING_MODES = [
+  { value: "collective", label: "Sammelrechnung" },
+  { value: "individual", label: "Einzelrechnung" },
+  { value: "mixed", label: "Gemischt" },
+  { value: "other", label: "Sonstiges" },
+] as const;
+
 export interface CreateGroupInput {
   name: string;
   description?: string | null;
@@ -20,6 +27,8 @@ export interface CreateGroupInput {
   leaderId?: string | null;
   location?: string | null;
   notes?: string | null;
+  billingMode?: string | null;
+  archived?: boolean;
 }
 
 export async function createGroup(input: CreateGroupInput) {
@@ -32,6 +41,8 @@ export async function createGroup(input: CreateGroupInput) {
       leaderId: emptyToNull(input.leaderId),
       location: input.location?.trim() || null,
       notes: input.notes?.trim() || null,
+      billingMode: input.billingMode?.trim() || "collective",
+      archived: input.archived ?? false,
     },
   });
 }
@@ -56,6 +67,7 @@ export async function getGroup(id: string) {
 export async function listGroups(opts?: {
   search?: string;
   type?: string;
+  archived?: boolean;
   skip?: number;
   take?: number;
 }) {
@@ -65,6 +77,7 @@ export async function listGroups(opts?: {
         ? { name: { contains: opts.search, mode: "insensitive" as const } }
         : {},
       opts?.type ? { type: opts.type } : {},
+      opts?.archived !== undefined ? { archived: opts.archived } : { archived: false },
     ],
   };
 
@@ -97,6 +110,9 @@ export async function updateGroup(id: string, data: Partial<CreateGroupInput>) {
       leaderId: data.leaderId !== undefined ? emptyToNull(data.leaderId) : undefined,
       location: data.location !== undefined ? data.location?.trim() || null : undefined,
       notes: data.notes !== undefined ? data.notes?.trim() || null : undefined,
+      billingMode:
+        data.billingMode !== undefined ? data.billingMode?.trim() || null : undefined,
+      archived: data.archived ?? undefined,
     },
   });
 }

@@ -136,6 +136,7 @@ model Customer {
   groupMemberships GroupMember[]
   ledGroups        Group[]             @relation("GroupLeader")
   projects         Project[]           @relation("CustomerProjects")
+  contactProjects  Project[]           @relation("ProjectContactPerson")
   measurements     Measurement[]
   notifications    Notification[]      @relation("CustomerNotifications")
   portalTokens     PortalAccessToken[]
@@ -148,22 +149,26 @@ model Customer {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model Group {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  type        String   @default("group") // group | guggenmusik | clique | verein
-  season      String? // e.g. "Fasnacht 2026"
-  leaderId    String?
-  location    String?
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  type         String   @default("group") // group | guggenmusik | clique | verein
+  season       String? // e.g. "Fasnacht 2026"
+  leaderId     String?
+  location     String?
+  notes        String?
+  /// Sammelrechnung | Einzelrechnung | other
+  billingMode  String?  @default("collective")
+  archived     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   leader   Customer?     @relation("GroupLeader", fields: [leaderId], references: [id])
   members  GroupMember[]
   projects Project[]     @relation("GroupProjects")
 
   @@index([leaderId])
+  @@index([archived])
 }
 
 model GroupMember {
@@ -190,29 +195,60 @@ model GroupMember {
 
 model Project {
   id              String    @id @default(cuid())
+  /// Human-readable order number, e.g. KSP26-0003
+  projectNumber   String?   @unique
   title           String
   description     String?
   customerId      String?
   groupId         String?
+  season          String?
+  archived        Boolean   @default(false)
   /// Body/fit category for Massblatt: Herren | Damen | Kinder | Mixed
   costumeCategory String?
   /// Order type: guggenmusik | clique | verein | familie | einzelperson | schnitzelbaengg | other
   orderType       String?
   quantity        Int       @default(1)
-  /// Abholtermin 1
-  deadline        DateTime?
-  /// Abholtermin 2
-  deliveryDate    DateTime?
 
-  // Public status (visible to customer)
+  /// Masse-Fristen (up to 3)
+  measurementDeadline1 DateTime?
+  measurementDeadline2 DateTime?
+  measurementDeadline3 DateTime?
+  /// Anprobe
+  fittingDate          DateTime?
+  /// Abholung (geplant) — primary pickup
+  deadline             DateTime?
+  /// Lieferung / Abholung 2
+  deliveryDate         DateTime?
+  deliveryDate2        DateTime?
+
+  // Public status (visible to customer) — Wunschkleid-style workflow
   customerStatus String @default("request_received")
   // Internal production status (admin only)
   internalStatus String @default("new")
 
-  priority      String   @default("normal") // low | normal | high | urgent
-  totalAmount   Decimal? @db.Decimal(10, 2)
-  paidAmount    Decimal? @db.Decimal(10, 2)
-  paymentStatus String   @default("unpaid") // unpaid | partial | paid
+  priority        String   @default("normal") // low | normal | high | urgent
+  totalAmount     Decimal? @db.Decimal(10, 2)
+  paidAmount      Decimal? @db.Decimal(10, 2)
+  /// Anzahlung erforderlich
+  depositRequired Decimal? @db.Decimal(10, 2)
+  paymentStatus   String   @default("unpaid") // unpaid | partial | paid
+
+  /// Linked system contact (Ansprechperson)
+  contactPersonId      String?
+  /// Free-text Ansprechperson when not a system user
+  contactPersonName    String?
+  contactPersonContact String?
+  /// Kassier (free-text)
+  treasurerName        String?
+  treasurerContact     String?
+  treasurerNotes       String?
+  /// Social-Media-Verantwortliche
+  socialMediaName     String?
+  socialMediaContact   String?
+  socialMediaNotes     String?
+
+  hasMajorCostume   Boolean @default(false)
+  majorCostumeNotes String?
 
   /// Customer-visible notes
   notes         String?
@@ -222,17 +258,25 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer      Customer?      @relation("CustomerProjects", fields: [customerId], references: [id])
-  group         Group?         @relation("GroupProjects", fields: [groupId], references: [id])
-  measurements  Measurement[]
-  conversations Conversation[]
-  tasks         Task[]
-  files         ProjectFile[]
+  customer         Customer?               @relation("CustomerProjects", fields: [customerId], references: [id])
+  contactPerson    Customer?               @relation("ProjectContactPerson", fields: [contactPersonId], references: [id])
+  group            Group?                  @relation("GroupProjects", fields: [groupId], references: [id])
+  measurements     Measurement[]
+  conversations    Conversation[]
+  tasks            Task[]
+  files            ProjectFile[]
+  statusHistory    ProjectStatusHistory[]
+  payments         ProjectPayment[]
+  reclamations     ProjectReclamation[]
 
   @@index([customerId])
   @@index([groupId])
+  @@index([contactPersonId])
   @@index([customerStatus])
   @@index([internalStatus])
+  @@index([season])
+  @@index([archived])
+  @@index([projectNumber])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -395,4 +439,53 @@ model ProjectFile {
 
   @@index([projectId])
   @@index([category])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CRM — Status history, payments, reclamations
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ProjectStatusHistory {
+  id        String   @id @default(cuid())
+  projectId String
+  status    String
+  note      String?
+  changedBy String?
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([createdAt])
+}
+
+model ProjectPayment {
+  id        String    @id @default(cuid())
+  projectId String
+  amount    Decimal   @db.Decimal(10, 2)
+  kind      String    @default("partial") // deposit | partial | final | refund | other
+  paidAt    DateTime  @default(now())
+  note      String?
+  createdAt DateTime  @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([paidAt])
+}
+
+model ProjectReclamation {
+  id          String    @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  status      String    @default("open") // open | in_progress | resolved | closed
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  resolvedAt  DateTime?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([status])
 }
