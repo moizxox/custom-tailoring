@@ -109,6 +109,8 @@ model ContactSubmission {
   email               String
   phone               String?
   location            String?
+  /// Gruppenkostüme | Einzelkostüme | both (comma-separated)
+  costumeType         String?
   message             String
   read                Boolean   @default(false)
   convertedCustomerId String?

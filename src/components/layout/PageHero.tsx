@@ -53,7 +53,7 @@ export function PageHero({
       className="pt-20 lg:pt-24 min-h-[60vh]"
       heroKonfetti
     >
-      <BackgroundDecor variant="page" showConfetti={false} showMesh={false} showStitchDashes showFigures={false} />
+      <BackgroundDecor variant="page" showConfetti={false} showMesh={false} showStitchDashes={false} showFigures={false} />
 
       <div className="container-site relative z-10 pb-10 lg:pb-12 pt-8 lg:pt-12">
         <div className="max-w-3xl mx-auto text-center">

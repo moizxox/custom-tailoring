@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       phone?: string;
       location?: string;
       message?: string;
+      costumeType?: string | null;
     };
 
     if (!body.name?.trim() || !body.email?.trim() || !body.message?.trim()) {
@@ -38,11 +39,12 @@ export async function POST(req: NextRequest) {
     const email = body.email.trim().toLowerCase();
     const phone = body.phone?.trim() ?? null;
     const location = body.location ?? null;
+    const costumeType = body.costumeType?.trim() || null;
     const message = body.message.trim();
 
     try {
       await prisma.contactSubmission.create({
-        data: { name, email, phone, location, message },
+        data: { name, email, phone, location, costumeType, message },
       });
     } catch (dbError) {
       console.error("[kontakt] database save failed:", dbError);
@@ -61,6 +63,7 @@ export async function POST(req: NextRequest) {
     const safeEmail = escapeHtml(email);
     const safePhone = phone ? escapeHtml(phone) : "";
     const safeLocation = location ? escapeHtml(LOCATION_LABELS[location] ?? location) : "";
+    const safeCostume = costumeType ? escapeHtml(costumeType) : "";
     const safeMessage = escapeHtml(message);
     const safeFirstName = escapeHtml(name.split(" ")[0] ?? name);
 
@@ -83,6 +86,7 @@ export async function POST(req: NextRequest) {
                 <tr><td style="padding: 4px 12px 4px 0; color: #888;">E-Mail</td><td><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
                 ${safePhone ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Telefon</td><td>${safePhone}</td></tr>` : ""}
                 ${safeLocation ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Standort</td><td>${safeLocation}</td></tr>` : ""}
+                ${safeCostume ? `<tr><td style="padding: 4px 12px 4px 0; color: #888;">Art</td><td>${safeCostume}</td></tr>` : ""}
               </table>
               <h3 style="font-family: Georgia, serif; color: #2c2a28; margin-top: 20px;">Nachricht</h3>
               <p style="font-family: sans-serif; font-size: 14px; color: #444; white-space: pre-wrap; background: #f5f4f2; padding: 12px; border-radius: 8px;">${safeMessage}</p>

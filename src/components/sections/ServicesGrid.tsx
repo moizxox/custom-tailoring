@@ -147,13 +147,22 @@ interface ServicesGridProps {
 }
 
 export function ServicesGrid({ acf }: ServicesGridProps) {
+  const cmsProvided = acf as Record<string, unknown> | undefined;
+  const servicesFromCms = Array.isArray(acf?.services);
   const data = {
     ...DEFAULT_DATA,
     ...acf,
-    services: Array.isArray(acf?.services) && acf.services.length > 0
-      ? acf.services as AcfServiceItem[]
+    services: servicesFromCms
+      ? (acf!.services as AcfServiceItem[])
       : DEFAULT_DATA.services,
   };
+
+  if (cmsProvided && Object.prototype.hasOwnProperty.call(cmsProvided, "heading") && !String(acf?.heading ?? "").trim()) {
+    return null;
+  }
+  if (servicesFromCms && data.services.length === 0) {
+    return null;
+  }
 
   const appearance = parseSectionAppearance(acf as Record<string, unknown>);
 

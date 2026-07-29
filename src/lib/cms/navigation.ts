@@ -7,6 +7,8 @@ export interface NavItem {
   label: string;
   href: string;
   openInNewTab?: boolean;
+  /** Nested submenu items — drag an item under another in the CMS to nest. */
+  children?: NavItem[];
 }
 
 export interface FooterLocation {
@@ -87,6 +89,7 @@ export const DEFAULT_FOOTER: FooterContent = {
       heading: "Service",
       links: [
         { label: "Termin buchen", href: "/termin" },
+        { label: "Massen ohne Termin", href: "/massen-ohne-termin" },
         { label: "Leistungen", href: "/service" },
         { label: "FAQs", href: "/faqs" },
         { label: "Atelier", href: "/atelier" },
@@ -97,10 +100,57 @@ export const DEFAULT_FOOTER: FooterContent = {
   copyrightText: "Kostümschneiderei. Alle Rechte vorbehalten.",
 };
 
+/** Normalize legacy flat nav + nested children into a clean tree (max depth 1). */
+export function normalizeNavItems(raw: unknown): NavItem[] {
+  if (!Array.isArray(raw) || raw.length === 0) return DEFAULT_NAV_ITEMS;
+
+  const normalized: NavItem[] = [];
+
+  for (const entry of raw) {
+    if (!entry || typeof entry !== "object") continue;
+    const item = entry as Record<string, unknown>;
+    const id =
+      typeof item.id === "string" && item.id
+        ? item.id
+        : Math.random().toString(36).slice(2, 9);
+    const label = typeof item.label === "string" ? item.label : "";
+    const href = typeof item.href === "string" ? item.href : "/";
+    if (!label.trim()) continue;
+
+    const children: NavItem[] = [];
+    const childrenRaw = Array.isArray(item.children) ? item.children : [];
+    for (const child of childrenRaw) {
+      if (!child || typeof child !== "object") continue;
+      const c = child as Record<string, unknown>;
+      const cLabel = typeof c.label === "string" ? c.label : "";
+      if (!cLabel.trim()) continue;
+      children.push({
+        id:
+          typeof c.id === "string" && c.id
+            ? c.id
+            : Math.random().toString(36).slice(2, 9),
+        label: cLabel,
+        href: typeof c.href === "string" ? c.href : "/",
+        openInNewTab: Boolean(c.openInNewTab),
+      });
+    }
+
+    normalized.push({
+      id,
+      label,
+      href,
+      openInNewTab: Boolean(item.openInNewTab),
+      ...(children.length > 0 ? { children } : {}),
+    });
+  }
+
+  return normalized;
+}
+
 export async function getNavItems(): Promise<NavItem[]> {
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key: "navigation" } });
-    if (row && Array.isArray(row.value)) return row.value as unknown as NavItem[];
+    if (row && Array.isArray(row.value)) return normalizeNavItems(row.value);
   } catch {}
   return DEFAULT_NAV_ITEMS;
 }

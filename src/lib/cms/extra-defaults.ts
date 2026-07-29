@@ -294,8 +294,8 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
       heading: "Tradition in jedem Stich. Moderne in jeder Linie.",
       headingAccent: "Moderne",
       paragraphs: "Was 2003 als kleines Atelier in Basel begann, ist heute ein geschätzter Treffpunkt.\n\nOb für die Basler Fasnacht, einen Theaterauftritt oder eine private Feier – wir begleiten Sie von der ersten Idee bis zur finalen Anprobe.\n\nUnsere Kundschaft reicht von Einzelpersonen über Cliquen bis hin zu grossen Guggenmusiken.",
-      ctaLabel: "Uns kennenlernen →",
-      ctaUrl: "/termin",
+      ctaLabel: "",
+      ctaUrl: "",
     },
     work: {
       label: "Unsere Arbeit",

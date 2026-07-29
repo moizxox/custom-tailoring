@@ -248,11 +248,7 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
                     <span
                       className={cn(
                         "text-[12px] font-semibold",
-                        isActive
-                          ? key === "einfach"
-                            ? "text-white/85"
-                            : "text-charcoal/70"
-                          : "text-charcoal-lighter",
+                        isActive ? "text-charcoal/75" : "text-charcoal-lighter",
                       )}
                     >
                       {option.price}

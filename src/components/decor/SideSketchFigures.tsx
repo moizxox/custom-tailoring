@@ -11,7 +11,7 @@ interface SideSketchFiguresProps {
 }
 
 /** Side Fasnacht sketch strips — full vertical stack, faded only toward page center */
-export function SideSketchFigures({ className, opacity = "opacity-[0.10]", width = "w-[min(20vw,300px)]" }: SideSketchFiguresProps) {
+export function SideSketchFigures({ className, opacity = "opacity-[0.045]", width = "w-[min(18vw,260px)]" }: SideSketchFiguresProps) {
   const edgeMask = {
     left: "[mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_98%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_80%,transparent_98%)]",
     right: "[mask-image:linear-gradient(to_left,black_0%,black_80%,transparent_98%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,black_80%,transparent_98%)]",
@@ -24,8 +24,8 @@ export function SideSketchFigures({ className, opacity = "opacity-[0.10]", width
           src={BG_IMAGES.figuresSideLeftSketch}
           alt=""
           fill
-          className="object-contain object-left outline-figure-gold outline-figure-strong"
-          sizes="(max-width: 768px) 22vw, 300px"
+          className="object-contain object-left outline-figure-gold opacity-90"
+          sizes="(max-width: 768px) 20vw, 260px"
         />
       </div>
 
@@ -34,8 +34,8 @@ export function SideSketchFigures({ className, opacity = "opacity-[0.10]", width
           src={BG_IMAGES.figuresSideRightSketch}
           alt=""
           fill
-          className="object-contain object-right outline-figure-gold outline-figure-strong"
-          sizes="(max-width: 768px) 22vw, 300px"
+          className="object-contain object-right outline-figure-gold opacity-90"
+          sizes="(max-width: 768px) 20vw, 260px"
         />
       </div>
     </div>

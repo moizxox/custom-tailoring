@@ -44,13 +44,23 @@ interface ProcessSectionProps {
 }
 
 export function ProcessSection({ acf }: ProcessSectionProps) {
+  const cmsProvided = acf as Record<string, unknown> | undefined;
+  const stepsFromCms = Array.isArray(acf?.steps);
   const data = {
     ...DEFAULT_DATA,
     ...acf,
-    steps: Array.isArray(acf?.steps) && acf.steps.length > 0
-      ? acf.steps as typeof DEFAULT_DATA.steps
+    steps: stepsFromCms
+      ? (acf!.steps as typeof DEFAULT_DATA.steps)
       : DEFAULT_DATA.steps,
   };
+
+  if (cmsProvided && Object.prototype.hasOwnProperty.call(cmsProvided, "heading") && !String(acf?.heading ?? "").trim()) {
+    return null;
+  }
+  if (stepsFromCms && data.steps.length === 0) {
+    return null;
+  }
+
   const appearance = parseSectionAppearance(acf as Record<string, unknown>);
 
   return (

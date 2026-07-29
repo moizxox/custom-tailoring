@@ -73,37 +73,19 @@ export default async function UeberUnsPage() {
       />
 
       <CmsSectionShell appearance={storyAppearance} className="py-20">
-        <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          <div>
-            {story.label && <p className="section-label mb-4">{story.label}</p>}
-            <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
-              <AccentHeadingText heading={story.heading ?? ""} accent={story.headingAccent} />
-            </h2>
-            <div className="flex flex-col gap-4 font-sans text-sm text-charcoal-light leading-relaxed">
-              {splitParagraphs(story.paragraphs ?? "").map((p) => (
-                <p key={p.slice(0, 48)}>{p}</p>
-              ))}
-            </div>
-            {story.ctaLabel && story.ctaUrl && (
-              <Link href={story.ctaUrl} className="btn-primary mt-7 inline-flex">{story.ctaLabel}</Link>
-            )}
+        <div className="container-site max-w-3xl">
+          {story.label && <p className="section-label mb-4">{story.label}</p>}
+          <h2 className="font-serif text-3xl text-charcoal mb-5 leading-snug">
+            <AccentHeadingText heading={story.heading ?? ""} accent={story.headingAccent} />
+          </h2>
+          <div className="flex flex-col gap-4 font-sans text-sm text-charcoal-light leading-relaxed">
+            {splitParagraphs(story.paragraphs ?? "").map((p) => (
+              <p key={p.slice(0, 48)}>{p}</p>
+            ))}
           </div>
-
-          <div className="rounded-2xl bg-gradient-to-br from-periwinkle-lighter via-sand-light to-offwhite-warm border border-periwinkle-light/40 p-10 flex flex-col items-center text-center gap-5">
-            <Image src="/icons/sewing/sewing-machine-sewing-tailoring-cloth.svg" alt="" width={64} height={64} className="icon-periwinkle" />
-            <div>
-              <p className="font-serif text-5xl text-charcoal font-semibold">20+</p>
-              <p className="font-sans text-sm text-charcoal-light mt-1">Jahre Erfahrung in Basel</p>
-            </div>
-            <div className="flex gap-8">
-              {[["500+", "Kostüme"], ["100%", "Handarbeit"], ["3", "Anproben"]].map(([val, lbl]) => (
-                <div key={lbl} className="text-center">
-                  <p className="font-serif text-2xl text-periwinkle-dark font-semibold">{val}</p>
-                  <p className="font-sans text-xs text-charcoal-lighter mt-0.5">{lbl}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          {story.ctaLabel?.trim() && story.ctaUrl?.trim() && (
+            <Link href={story.ctaUrl} className="btn-primary mt-7 inline-flex">{story.ctaLabel}</Link>
+          )}
         </div>
       </CmsSectionShell>
 

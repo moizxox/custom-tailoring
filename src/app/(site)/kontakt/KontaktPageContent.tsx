@@ -28,6 +28,8 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
     phone: "",
     message: "",
     location: "pratteln",
+    groupCostume: false,
+    singleCostume: false,
   });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -39,10 +41,21 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
     setSending(true);
     setSubmitError("");
     try {
+      const costumeTypes: string[] = [];
+      if (contactForm.groupCostume) costumeTypes.push("Gruppenkostüme");
+      if (contactForm.singleCostume) costumeTypes.push("Einzelkostüme");
+
       const res = await fetch("/api/kontakt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contactForm),
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          message: contactForm.message,
+          location: contactForm.location,
+          costumeType: costumeTypes.length ? costumeTypes.join(", ") : null,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -167,6 +180,37 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
                       <option value="therwil">Atelier Therwil</option>
                       <option value="unsicher">Noch unentschlossen</option>
                     </select>
+
+                    <fieldset className="rounded-xl border border-stone-light bg-offwhite/50 px-4 py-3">
+                      <legend className="font-sans text-[11px] font-semibold tracking-[0.14em] uppercase text-warmgrey px-1">
+                        Art der Anfrage
+                      </legend>
+                      <div className="flex flex-col sm:flex-row gap-3 mt-1">
+                        <label className="flex items-center gap-2.5 font-sans text-sm text-charcoal cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={contactForm.groupCostume}
+                            onChange={(e) =>
+                              setContactForm((f) => ({ ...f, groupCostume: e.target.checked }))
+                            }
+                            className="rounded border-stone-light text-periwinkle-dark focus:ring-periwinkle"
+                          />
+                          Gruppenkostüme
+                        </label>
+                        <label className="flex items-center gap-2.5 font-sans text-sm text-charcoal cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={contactForm.singleCostume}
+                            onChange={(e) =>
+                              setContactForm((f) => ({ ...f, singleCostume: e.target.checked }))
+                            }
+                            className="rounded border-stone-light text-periwinkle-dark focus:ring-periwinkle"
+                          />
+                          Einzelkostüme
+                        </label>
+                      </div>
+                    </fieldset>
+
                     <textarea
                       required
                       rows={5}
@@ -183,6 +227,17 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
                     <button type="submit" disabled={sending} className="btn-primary justify-center">
                       {sending ? "Wird gesendet…" : form.submitLabel}
                     </button>
+                    {form.downloadUrl?.trim() && (
+                      <a
+                        href={form.downloadUrl}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-outline-dark justify-center text-sm"
+                      >
+                        {form.downloadLabel?.trim() || "Datei herunterladen"}
+                      </a>
+                    )}
                     <p className="text-[11px] text-charcoal-lighter text-center">
                       Mit dem Absenden stimmen Sie unserer{" "}
                       <a href="/datenschutz" className="underline hover:text-charcoal">

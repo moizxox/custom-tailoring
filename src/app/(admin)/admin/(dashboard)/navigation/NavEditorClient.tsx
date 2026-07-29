@@ -48,40 +48,319 @@ function Field({ label, children, hint }: { label: string; children: React.React
 
 const inp = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition";
 
-/* ─── Nav item row ───────────────────────────────────────────────────────── */
+/* ─── Nav item row (supports drag-to-nest submenus) ──────────────────────── */
 function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (items: NavItem[]) => void }) {
-  const drag = useDraggableList(items, onChange);
+  const dragFrom = useRef<{ parentId: string | null; index: number } | null>(null);
+  const [dropHint, setDropHint] = useState<{ parentId: string | null; index: number; nest?: boolean } | null>(null);
 
-  function update(id: string, patch: Partial<NavItem>) {
+  function updateTop(id: string, patch: Partial<NavItem>) {
     onChange(items.map((it) => (it.id === id ? { ...it, ...patch } : it)));
   }
-  function remove(id: string) { onChange(items.filter((it) => it.id !== id)); }
-  function add() { onChange([...items, { id: uid(), label: "New link", href: "/", openInNewTab: false }]); }
+
+  function updateChild(parentId: string, childId: string, patch: Partial<NavItem>) {
+    onChange(
+      items.map((it) =>
+        it.id === parentId
+          ? {
+              ...it,
+              children: (it.children ?? []).map((c) => (c.id === childId ? { ...c, ...patch } : c)),
+            }
+          : it,
+      ),
+    );
+  }
+
+  function removeTop(id: string) {
+    onChange(items.filter((it) => it.id !== id));
+  }
+
+  function removeChild(parentId: string, childId: string) {
+    onChange(
+      items.map((it) =>
+        it.id === parentId
+          ? { ...it, children: (it.children ?? []).filter((c) => c.id !== childId) }
+          : it,
+      ),
+    );
+  }
+
+  function add() {
+    onChange([...items, { id: uid(), label: "Neuer Link", href: "/", openInNewTab: false }]);
+  }
+
+  function nestUnder(childId: string, parentId: string) {
+    if (childId === parentId) return;
+    const child = items.find((it) => it.id === childId);
+    const parent = items.find((it) => it.id === parentId);
+    if (!child || !parent) return;
+    // Promote child's own children to top-level first (max depth 1)
+    const promoted = child.children ?? [];
+    const without = items.filter((it) => it.id !== childId);
+    const nested: NavItem = {
+      id: child.id,
+      label: child.label,
+      href: child.href,
+      openInNewTab: child.openInNewTab,
+    };
+    onChange(
+      without
+        .flatMap((it) => (it.id === parentId ? [it] : [it]))
+        .map((it) =>
+          it.id === parentId
+            ? { ...it, children: [...(it.children ?? []), nested] }
+            : it,
+        )
+        .concat(promoted),
+    );
+  }
+
+  function unnest(parentId: string, childId: string) {
+    const parent = items.find((it) => it.id === parentId);
+    const child = parent?.children?.find((c) => c.id === childId);
+    if (!parent || !child) return;
+    const parentIndex = items.findIndex((it) => it.id === parentId);
+    const next = items.map((it) =>
+      it.id === parentId
+        ? { ...it, children: (it.children ?? []).filter((c) => c.id !== childId) }
+        : it,
+    );
+    next.splice(parentIndex + 1, 0, { ...child });
+    onChange(next);
+  }
+
+  function reorderTop(from: number, to: number) {
+    if (from === to) return;
+    const next = [...items];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    onChange(next);
+  }
+
+  function reorderChild(parentId: string, from: number, to: number) {
+    if (from === to) return;
+    onChange(
+      items.map((it) => {
+        if (it.id !== parentId) return it;
+        const kids = [...(it.children ?? [])];
+        const [moved] = kids.splice(from, 1);
+        kids.splice(to, 0, moved);
+        return { ...it, children: kids };
+      }),
+    );
+  }
+
+  function onDragStartTop(index: number) {
+    dragFrom.current = { parentId: null, index };
+  }
+
+  function onDragStartChild(parentId: string, index: number) {
+    dragFrom.current = { parentId, index };
+  }
+
+  function onDragOverTop(e: React.DragEvent, index: number) {
+    e.preventDefault();
+    const nest = e.clientX - (e.currentTarget as HTMLElement).getBoundingClientRect().left > 56;
+    setDropHint({ parentId: null, index, nest });
+  }
+
+  function onDropTop(e: React.DragEvent, toIndex: number) {
+    e.preventDefault();
+    const from = dragFrom.current;
+    setDropHint(null);
+    dragFrom.current = null;
+    if (!from) return;
+
+    const nest = e.clientX - (e.currentTarget as HTMLElement).getBoundingClientRect().left > 56;
+    const target = items[toIndex];
+    if (!target) return;
+
+    if (from.parentId === null) {
+      const source = items[from.index];
+      if (!source) return;
+      if (nest && source.id !== target.id) {
+        nestUnder(source.id, target.id);
+        return;
+      }
+      reorderTop(from.index, toIndex);
+      return;
+    }
+
+    // Dragging a child onto a top-level item → unnest next to / under target
+    const parent = items.find((it) => it.id === from.parentId);
+    const child = parent?.children?.[from.index];
+    if (!child) return;
+    unnest(from.parentId, child.id);
+  }
+
+  function onDropChild(e: React.DragEvent, parentId: string, toIndex: number) {
+    e.preventDefault();
+    const from = dragFrom.current;
+    setDropHint(null);
+    dragFrom.current = null;
+    if (!from) return;
+
+    if (from.parentId === parentId) {
+      reorderChild(parentId, from.index, toIndex);
+      return;
+    }
+
+    if (from.parentId === null) {
+      nestUnder(items[from.index]?.id ?? "", parentId);
+      return;
+    }
+
+    // Move between parents
+    const srcParent = items.find((it) => it.id === from.parentId);
+    const child = srcParent?.children?.[from.index];
+    if (!child) return;
+    onChange(
+      items.map((it) => {
+        if (it.id === from.parentId) {
+          return { ...it, children: (it.children ?? []).filter((c) => c.id !== child.id) };
+        }
+        if (it.id === parentId) {
+          const kids = [...(it.children ?? [])];
+          kids.splice(toIndex, 0, child);
+          return { ...it, children: kids };
+        }
+        return it;
+      }),
+    );
+  }
+
+  function renderRow(
+    item: NavItem,
+    opts: {
+      nested?: boolean;
+      parentId?: string;
+      index: number;
+      onDragStart: () => void;
+      onDragOver: (e: React.DragEvent) => void;
+      onDrop: (e: React.DragEvent) => void;
+      onUpdate: (patch: Partial<NavItem>) => void;
+      onRemove: () => void;
+      onUnnest?: () => void;
+      onMakeSub?: () => void;
+    },
+  ) {
+    const isDropTarget =
+      dropHint &&
+      ((opts.nested && dropHint.parentId === opts.parentId && dropHint.index === opts.index) ||
+        (!opts.nested && dropHint.parentId === null && dropHint.index === opts.index));
+
+    return (
+      <div
+        key={item.id}
+        draggable
+        onDragStart={opts.onDragStart}
+        onDragOver={opts.onDragOver}
+        onDrop={opts.onDrop}
+        onDragEnd={() => {
+          dragFrom.current = null;
+          setDropHint(null);
+        }}
+        className={cn(
+          "flex items-center gap-2 bg-white border rounded-xl px-3 py-2.5 group cursor-grab active:cursor-grabbing hover:border-violet-200 hover:shadow-sm transition-all",
+          opts.nested ? "ml-8 border-violet-100 bg-violet-50/40" : "border-gray-200",
+          isDropTarget && dropHint?.nest && !opts.nested && "ring-2 ring-violet-400 border-violet-300",
+          isDropTarget && !dropHint?.nest && "ring-2 ring-violet-200",
+        )}
+      >
+        <GripVertical className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-gray-400" />
+        {opts.nested && (
+          <span className="text-[10px] font-medium uppercase tracking-wide text-violet-500 shrink-0">Sub</span>
+        )}
+        <input
+          value={item.label}
+          onChange={(e) => opts.onUpdate({ label: e.target.value })}
+          placeholder="Label"
+          className={cn(inp, "flex-1")}
+        />
+        <input
+          value={item.href}
+          onChange={(e) => opts.onUpdate({ href: e.target.value })}
+          placeholder="/path"
+          className={cn(inp, "flex-1 font-mono text-xs")}
+        />
+        <label className="flex items-center gap-1.5 text-xs text-gray-500 shrink-0 cursor-pointer select-none whitespace-nowrap">
+          <input
+            type="checkbox"
+            checked={!!item.openInNewTab}
+            onChange={(e) => opts.onUpdate({ openInNewTab: e.target.checked })}
+            className="accent-violet-600 rounded"
+          />
+          <ExternalLink className="w-3 h-3" /> New tab
+        </label>
+        {!opts.nested && opts.index > 0 && opts.onMakeSub && (
+          <button
+            type="button"
+            title="Als Unterpunkt des vorherigen Eintrags"
+            onClick={opts.onMakeSub}
+            className="px-2 py-1 text-[10px] font-medium text-violet-600 bg-violet-50 rounded-lg hover:bg-violet-100 shrink-0"
+          >
+            → Sub
+          </button>
+        )}
+        {opts.nested && opts.onUnnest && (
+          <button
+            type="button"
+            title="Aus Untermenü lösen"
+            onClick={opts.onUnnest}
+            className="px-2 py-1 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 shrink-0"
+          >
+            ↑ Top
+          </button>
+        )}
+        <button type="button" onClick={opts.onRemove} className="p-1 text-gray-300 hover:text-red-400 transition-colors shrink-0">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2">
+      <p className="text-xs text-gray-500 bg-violet-50 border border-violet-100 rounded-xl px-3 py-2">
+        Drag to reorder. Drop slightly to the <strong>right</strong> of an item (or use → Sub) to create a submenu.
+        Use this for seasonal links like «Massen ohne Termin» — nest under Service, or remove when out of season.
+      </p>
       {items.map((item, i) => (
-        <div
-          key={item.id}
-          draggable
-          onDragStart={() => drag.onDragStart(i)}
-          onDragOver={(e) => drag.onDragOver(e, i)}
-          onDrop={drag.onDrop}
-          className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2.5 group cursor-grab active:cursor-grabbing hover:border-violet-200 hover:shadow-sm transition-all"
-        >
-          <GripVertical className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-gray-400" />
-          <input value={item.label} onChange={(e) => update(item.id, { label: e.target.value })} placeholder="Label" className={cn(inp, "flex-1")} />
-          <input value={item.href} onChange={(e) => update(item.id, { href: e.target.value })} placeholder="/path" className={cn(inp, "flex-1 font-mono text-xs")} />
-          <label className="flex items-center gap-1.5 text-xs text-gray-500 shrink-0 cursor-pointer select-none whitespace-nowrap">
-            <input type="checkbox" checked={!!item.openInNewTab} onChange={(e) => update(item.id, { openInNewTab: e.target.checked })} className="accent-violet-600 rounded" />
-            <ExternalLink className="w-3 h-3" /> New tab
-          </label>
-          <button type="button" onClick={() => remove(item.id)} className="p-1 text-gray-300 hover:text-red-400 transition-colors shrink-0">
-            <X className="w-4 h-4" />
-          </button>
+        <div key={item.id} className="space-y-1.5">
+          {renderRow(item, {
+            index: i,
+            onDragStart: () => onDragStartTop(i),
+            onDragOver: (e) => onDragOverTop(e, i),
+            onDrop: (e) => onDropTop(e, i),
+            onUpdate: (patch) => updateTop(item.id, patch),
+            onRemove: () => removeTop(item.id),
+            onMakeSub:
+              i > 0
+                ? () => nestUnder(item.id, items[i - 1].id)
+                : undefined,
+          })}
+          {(item.children ?? []).map((child, ci) =>
+            renderRow(child, {
+              nested: true,
+              parentId: item.id,
+              index: ci,
+              onDragStart: () => onDragStartChild(item.id, ci),
+              onDragOver: (e) => {
+                e.preventDefault();
+                setDropHint({ parentId: item.id, index: ci });
+              },
+              onDrop: (e) => onDropChild(e, item.id, ci),
+              onUpdate: (patch) => updateChild(item.id, child.id, patch),
+              onRemove: () => removeChild(item.id, child.id),
+              onUnnest: () => unnest(item.id, child.id),
+            }),
+          )}
         </div>
       ))}
-      <button type="button" onClick={add} className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-violet-300 hover:text-violet-600 transition-colors">
+      <button
+        type="button"
+        onClick={add}
+        className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-violet-300 hover:text-violet-600 transition-colors"
+      >
         <Plus className="w-4 h-4" /> Add nav item
       </button>
     </div>
@@ -201,7 +480,7 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Navigation & Footer</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Changes apply to the live site. Drag nav rows to reorder.</p>
+          <p className="text-sm text-gray-500 mt-0.5">Drag to reorder. Drop rightward (or → Sub) to nest a submenu.</p>
         </div>
         <div className="flex items-center gap-3">
           {saved && (
@@ -248,7 +527,7 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
           </Section>
 
           <Section title="Navigation links" icon={<Navigation className="w-4 h-4" />}>
-            <p className="text-xs text-gray-400 -mt-2">Drag to reorder. Shown in desktop and mobile nav.</p>
+            <p className="text-xs text-gray-400 -mt-2">Drag to reorder. Nest items for dropdown submenus (e.g. seasonal «Massen ohne Termin»).</p>
             <NavItemsEditor items={nav} onChange={setNav} />
           </Section>
         </div>

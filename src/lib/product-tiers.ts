@@ -21,7 +21,7 @@ export const TIER_STYLES: Record<
 > = {
   einfach: {
     pill: "border-[#c48a4a]/50 bg-[#c48a4a]/8 text-charcoal hover:border-[#c48a4a]/70",
-    pillSelected: "border-[#b87333] bg-gradient-to-br from-[#d4a574] to-[#b87333] text-white shadow-[0_2px_14px_rgba(184,115,51,0.4)]",
+    pillSelected: "border-[#b87333] bg-gradient-to-br from-[#e8c9a8] to-[#d4a574] text-charcoal shadow-[0_2px_14px_rgba(184,115,51,0.28)]",
     dot: "bg-[#b87333]",
     accent: "text-[#b87333]",
     ring: "ring-[#c48a4a]/30",

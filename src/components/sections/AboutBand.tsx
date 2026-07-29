@@ -51,13 +51,19 @@ interface AboutBandProps {
 }
 
 export function AboutBand({ acf }: AboutBandProps) {
+  const cmsProvided = acf as Record<string, unknown> | undefined;
+  const uspsFromCms = Array.isArray(acf?.usps);
   const data = {
     ...DEFAULT_DATA,
     ...acf,
-    usps: Array.isArray(acf?.usps) && acf.usps.length > 0
-      ? acf.usps as typeof DEFAULT_DATA.usps
+    usps: uspsFromCms
+      ? (acf!.usps as typeof DEFAULT_DATA.usps)
       : DEFAULT_DATA.usps,
   };
+
+  if (cmsProvided && Object.prototype.hasOwnProperty.call(cmsProvided, "heading") && !String(acf?.heading ?? "").trim()) {
+    return null;
+  }
 
   const appearance = parseSectionAppearance(acf as Record<string, unknown>);
 

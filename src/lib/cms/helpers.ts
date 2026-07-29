@@ -26,8 +26,17 @@ export function parseHeadingTag(value: unknown, fallback: HeadingTag = "h1"): He
 }
 
 export function pickString(content: Record<string, unknown>, key: string, fallback: string): string {
-  const value = content[key];
-  return typeof value === "string" && value.trim() ? value : fallback;
+  // If the CMS explicitly saved this key (even as ""), respect it — do not revive demo copy.
+  if (Object.prototype.hasOwnProperty.call(content, key)) {
+    const value = content[key];
+    return typeof value === "string" ? value : fallback;
+  }
+  return fallback;
+}
+
+/** True when CMS provided an array field (including empty). */
+export function hasCmsArray(content: Record<string, unknown> | undefined, key: string): boolean {
+  return !!content && Object.prototype.hasOwnProperty.call(content, key) && Array.isArray(content[key]);
 }
 
 export interface PageHeroCms {
@@ -120,6 +129,9 @@ export interface ContactFormConfig {
   submitLabel: string;
   successTitle: string;
   successMessage: string;
+  /** Optional download link shown under the form (e.g. Massblatt PDF) */
+  downloadLabel?: string;
+  downloadUrl?: string;
 }
 
 export function mapContactFormConfig(
@@ -136,6 +148,8 @@ export function mapContactFormConfig(
     submitLabel: pickString(content, "submitLabel", defaults.submitLabel),
     successTitle: pickString(content, "successTitle", defaults.successTitle),
     successMessage: pickString(content, "successMessage", defaults.successMessage),
+    downloadLabel: pickString(content, "downloadLabel", defaults.downloadLabel ?? ""),
+    downloadUrl: pickString(content, "downloadUrl", defaults.downloadUrl ?? ""),
   };
 }
 

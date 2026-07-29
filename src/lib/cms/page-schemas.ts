@@ -442,6 +442,18 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
           { key: "submitLabel", label: "Submit button label", type: "text" },
           { key: "successTitle", label: "Success title", type: "text" },
           { key: "successMessage", label: "Success message", type: "textarea" },
+          {
+            key: "downloadLabel",
+            label: "Download button label",
+            type: "text",
+            hint: 'e.g. "Massblatt herunterladen" — leave empty to hide',
+          },
+          {
+            key: "downloadUrl",
+            label: "Download file URL",
+            type: "url",
+            hint: "PDF or file URL (upload via Media library, then paste link)",
+          },
         ],
       },
     ],

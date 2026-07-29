@@ -60,19 +60,26 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
+  const cmsProvided = acf as Record<string, unknown> | undefined;
+  const badgesFromCms = Array.isArray(acf?.badges);
+  const introFromCms = Array.isArray(acf?.intro_points);
+
   const data = {
     ...DEFAULT_DATA,
     ...acf,
-    badges:
-      Array.isArray(acf?.badges) && acf.badges.length > 0
-        ? (acf.badges as typeof DEFAULT_DATA.badges)
-        : DEFAULT_DATA.badges,
+    badges: badgesFromCms
+      ? (acf!.badges as typeof DEFAULT_DATA.badges)
+      : DEFAULT_DATA.badges,
   };
-  const introPoints: string[] =
-    Array.isArray(acf?.intro_points) &&
-    (acf.intro_points as unknown[]).length > 0
-      ? (acf.intro_points as { text: string }[]).map((p) => p.text)
-      : DEFAULT_INTRO_POINTS;
+
+  // Empty heading after CMS clear → do not render demo hero
+  if (cmsProvided && Object.prototype.hasOwnProperty.call(cmsProvided, "heading") && !String(acf?.heading ?? "").trim()) {
+    return null;
+  }
+
+  const introPoints: string[] = introFromCms
+    ? (acf!.intro_points as { text: string }[]).map((p) => p.text).filter((t) => t?.trim())
+    : DEFAULT_INTRO_POINTS;
 
   const appearance = parseSectionAppearance(acf);
 
