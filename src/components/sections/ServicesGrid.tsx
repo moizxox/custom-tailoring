@@ -113,33 +113,36 @@ function ServiceCard({ item }: { item: AcfServiceItem }) {
   const card = (
     <div
       className={cn(
-        "group flex flex-col items-center text-center gap-4 p-5 rounded-2xl h-full",
+        "group flex flex-col items-center text-center gap-3 p-5 rounded-2xl h-full min-h-[168px]",
         "card-gradient",
         "hover:border-periwinkle-light hover:shadow-card-hover hover:-translate-y-1",
         "transition-all duration-300 ease-out cursor-pointer",
       )}
     >
-      {/* Icon */}
       <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-soft">
         <Image src={`/icons/sewing/${item.icon_slug}`} alt="" width={26} height={26} className="icon-periwinkle" />
       </div>
-
-      {/* Text — flex-1 pushes content to fill remaining height */}
-      <div className="flex flex-col flex-1">
-        <h3 className="font-serif text-[14px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug">{item.title}</h3>
-        <p className="font-sans text-[11px] text-charcoal-lighter leading-relaxed">{item.description}</p>
+      <div className="flex flex-col flex-1 w-full">
+        <h3 className="font-serif text-[14px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug line-clamp-2">
+          {item.title}
+        </h3>
+        {item.description?.trim() && (
+          <p className="font-sans text-[11px] text-charcoal-lighter leading-relaxed line-clamp-3">
+            {item.description}
+          </p>
+        )}
       </div>
     </div>
   );
 
   if (item.link_url) {
     return (
-      <Link href={item.link_url} className="block reveal-item">
+      <Link href={item.link_url} className="block h-full reveal-item">
         {card}
       </Link>
     );
   }
-  return <div className="reveal-item">{card}</div>;
+  return <div className="h-full reveal-item">{card}</div>;
 }
 
 interface ServicesGridProps {
@@ -186,8 +189,8 @@ export function ServicesGrid({ acf }: ServicesGridProps) {
           )}
         </div>
 
-        {/* 12-card grid — auto-rows ensures equal heights in every row */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 auto-rows-fr">
+        {/* Even grid: 2 / 3 / 4 columns so rows stay balanced (e.g. 8 → 4×2) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-fr [&>*]:min-h-0 [&>*]:h-full">
           {data.services.map((service) => (
             <ServiceCard key={service.title} item={service} />
           ))}
