@@ -804,9 +804,10 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
       },
       {
         key: "categories",
-        label: "Shop categories",
-        fields: [
-          { key: "heading", label: "Section heading", type: "text" },
+        label: "Shop categories & products intro",
+        description: "Category cards + the product grid heading above the products",
+        fields: withSectionOptions([
+          { key: "heading", label: "Categories heading", type: "text" },
           {
             key: "items",
             label: "Categories",
@@ -817,7 +818,36 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
               { key: "slug", label: "Anchor slug", type: "text" },
             ],
           },
-        ],
+          { key: "productsLabel", label: "Products section label", type: "text", hint: 'e.g. "Auswahl"' },
+          { key: "productsHeading", label: "Products heading", type: "text", hint: 'e.g. "Unsere Produkte"' },
+          { key: "productsSubtext", label: "Products intro text", type: "textarea" },
+        ]),
+      },
+      {
+        key: "infoBand",
+        label: "Info band (above footer CTA)",
+        description: "Massanfertigung / legal note band — fully editable",
+        fields: withSectionOptions([
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "text", label: "Body text", type: "textarea" },
+          { key: "primaryLabel", label: "Button 1 — label", type: "text" },
+          { key: "primaryUrl", label: "Button 1 — link", type: "url" },
+          { key: "secondaryLabel", label: "Button 2 — label", type: "text" },
+          { key: "secondaryUrl", label: "Button 2 — link", type: "url" },
+        ]),
+      },
+      {
+        key: "bottomCta",
+        label: "Bottom CTA banner",
+        description: "Purple banner above the footer — heading, text and buttons",
+        fields: withSectionOptions([
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "text", label: "Text", type: "textarea" },
+          { key: "primaryLabel", label: "Primary button label", type: "text" },
+          { key: "primaryUrl", label: "Primary button link", type: "url" },
+          { key: "secondaryLabel", label: "Secondary button label", type: "text" },
+          { key: "secondaryUrl", label: "Secondary button link", type: "url" },
+        ]),
       },
     ],
   },

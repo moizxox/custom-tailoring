@@ -104,16 +104,6 @@ export function PageHero({
           )}
         </div>
       </div>
-
-      <div className="relative z-10">
-        <div className="container-site">
-          <div className="flex items-center gap-3 py-1 pb-4">
-            <div className="line-gold-dashed flex-1" />
-            <div className="w-2 h-2 rounded-full bg-gold-muted shrink-0" />
-            <div className="line-gold-dashed-light w-12 shrink-0" />
-          </div>
-        </div>
-      </div>
     </CmsSectionShell>
   );
 }

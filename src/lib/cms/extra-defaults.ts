@@ -24,11 +24,32 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
     },
     categories: {
       heading: "Unsere Angebote",
+      productsLabel: "Auswahl",
+      productsHeading: "Unsere Produkte",
+      productsSubtext:
+        "Klicken Sie auf ein Produkt für Fotos, Qualitätsstufen und Preise. Alle Kostüme werden massgeschneidert — Anfragen sind unverbindlich.",
       items: SHOP_CATEGORIES.map((c) => ({
         name: c.name,
         description: c.description,
         slug: c.slug,
       })),
+    },
+    infoBand: {
+      heading: "Massanfertigung & verbindliche Bestellung",
+      text:
+        "Viele unserer Kostüme werden individuell nach Mass gefertigt. Eine verbindliche Bestellung entsteht erst nach schriftlicher Bestätigung (Angebot, Auftragsbestätigung oder Rechnung). Lieferzeiten, Preise und Lieferkosten werden transparent kommuniziert.",
+      primaryLabel: "Shop-Bedingungen",
+      primaryUrl: "/shop-bedingungen",
+      secondaryLabel: "AGB",
+      secondaryUrl: "/agb",
+    },
+    bottomCta: {
+      heading: "Haben Sie Fragen?",
+      text: "Wir beraten Sie gerne persönlich. Buchen Sie ein kostenloses Erstgespräch.",
+      primaryLabel: "Termin buchen",
+      primaryUrl: "/termin",
+      secondaryLabel: "Nachricht senden",
+      secondaryUrl: "/kontakt",
     },
   },
   galerie: {

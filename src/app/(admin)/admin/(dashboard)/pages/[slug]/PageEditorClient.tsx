@@ -206,6 +206,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
   const [sectionOrder, setSectionOrder] = useState<string[]>(initialSectionOrder);
   const [orderSaving, setOrderSaving] = useState(false);
   const [orderSaved, setOrderSaved] = useState(false);
+  const [orderError, setOrderError] = useState("");
   const [states, setStates] = useState<Record<string, SectionState>>(() =>
     buildInitialState(sections, initialContents)
   );
@@ -248,6 +249,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
 
   const saveSectionOrder = useCallback(async () => {
     setOrderSaving(true);
+    setOrderError("");
     try {
       const res = await fetch(`/admin/api/pages/${pageSlug}/order`, {
         method: "PUT",
@@ -258,7 +260,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
       setOrderSaved(true);
       setTimeout(() => setOrderSaved(false), 3000);
     } catch {
-      // silent — user can retry
+      setOrderError("Section order could not be saved. Please try again.");
     } finally {
       setOrderSaving(false);
     }
@@ -327,8 +329,9 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
               className="w-full px-3 py-2 text-xs font-medium rounded-lg bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-60 transition">
               {orderSaving ? "Saving order…" : "Save section order"}
             </button>
-            {orderSaved && <p className="text-[10px] text-green-600 px-1">Section order saved</p>}
-            <p className="text-[10px] text-gray-400 px-1">{orderedSections.length} sections — use arrows to reorder</p>
+            {orderSaved && <p className="text-[10px] text-green-600 px-1">Section order saved — refresh the live page to see it</p>}
+            {orderError && <p className="text-[10px] text-red-600 px-1">{orderError}</p>}
+            <p className="text-[10px] text-gray-400 px-1">{orderedSections.length} sections — use arrows to reorder, then save</p>
           </div>
         </div>
       </aside>

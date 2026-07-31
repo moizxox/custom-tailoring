@@ -6,6 +6,11 @@ export function revalidateCmsPage(slug: string) {
   const page = PAGE_SCHEMAS.find((p) => p.slug === slug);
   if (page) {
     revalidatePath(page.path);
+    // Also refresh the route tree so section-order / layout consumers update.
+    revalidatePath(page.path, "page");
+    if (page.path === "/") {
+      revalidatePath("/", "layout");
+    }
   }
 }
 
