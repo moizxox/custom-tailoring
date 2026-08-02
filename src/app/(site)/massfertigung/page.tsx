@@ -1,5 +1,4 @@
 import { PageHero } from "@/components/layout/PageHero";
-import { ContentSection } from "@/components/sections/ContentSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { MassblattDownload } from "@/components/sections/MassblattDownload";
 import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
@@ -54,7 +53,6 @@ export default async function MassfertigungPage() {
         textColor={hero.textColor}
         accentColor={hero.accentColor}
         appearance={hero.appearance}
-        breadcrumbs={[{ label: "Massfertigung", href: "/massfertigung" }]}
       />
 
       {/* Private measurement area — not public */}
@@ -62,7 +60,7 @@ export default async function MassfertigungPage() {
         <div className="container-site relative z-10 max-w-3xl mx-auto text-center">
           <p className="section-label mb-3">Massblätter</p>
           <h2 className="section-heading text-3xl mb-4">
-            Vertrauliche Masseingabe für{" "}
+            Masseingabe für{" "}
             <span className="text-periwinkle-dark">unsere Kundinnen & Kunden</span>
           </h2>
           <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8">
@@ -89,21 +87,6 @@ export default async function MassfertigungPage() {
           </div>
         </div>
       </section>
-
-      <ContentSection
-        label="Präzision"
-        heading="Mass nehmen mit Sorgfalt und Erfahrung"
-        headingAccent="Sorgfalt"
-        imageSrc="https://res.cloudinary.com/dohrf7n0s/image/upload/lani-kostuemschneiderei/figures/woman-measurement.png"
-        imageAlt="Massnehmen für Massanfertigung"
-        imagePosition="left"
-        paragraphs={[
-          "Ein gut sitzendes Kostüm beginnt mit präzisen Massen. Im Atelier nehmen wir alle relevanten Werte persönlich auf – oder Sie erfassen sie bequem über Ihren geschützten Kundenbereich.",
-          "Auf Basis Ihrer Masse konstruieren wir ein individuelles Schnittmuster. Kein Standard, keine Kompromisse – jedes Kostüm wird für Ihre Figur und Ihren Anlass neu entworfen.",
-        ]}
-        ctaLabel="Termin buchen"
-        ctaHref="/termin"
-      />
 
       <CmsSectionShell appearance={stepsAppearance} className="py-20">
         <div className="container-site">

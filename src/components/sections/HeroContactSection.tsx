@@ -96,7 +96,7 @@ export function HeroContactSection({ acf }: { acf?: HeroContactCopy & Record<str
     <CmsSectionShell
       appearance={appearance}
       defaultClassName="bg-gradient-to-br from-periwinkle-lighter/40 via-offwhite-warm to-sand-light/30"
-      className="py-16 lg:py-20 border-t border-dashed border-gold-muted/40"
+      className="py-16 lg:py-20 border-t border-periwinkle-light/25"
     >
       <div id="kontakt" className="container-site">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_460px] gap-10 xl:gap-16 items-start">

@@ -91,25 +91,18 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
 
       <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8 flex flex-col gap-5">
         <div>
-          <p className="section-label mb-2">Massblatt</p>
-          <h2 className="font-serif text-2xl text-charcoal">{customer.projectTitle}</h2>
+          <h2 className="font-serif text-2xl text-charcoal">Massblatt</h2>
           <p className="font-sans text-sm text-charcoal-light mt-1">
-            Kategorie: {customer.costumeCategory}
+            Füllen Sie die Masse aus, die für Ihr Kostüm relevant sind. Nicht alle Felder sind Pflicht.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {fields.map((field) => (
             <div key={field.key} className="flex flex-col gap-1.5">
-              <label htmlFor={field.key} className="text-xs font-sans font-medium text-charcoal-light flex items-baseline gap-2">
-                <span className="inline-flex min-w-[2rem] justify-center rounded bg-gold-lighter/80 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-gold-deeper">
-                  {field.letter}
-                </span>
-                <span>
-                  {field.label}
-                  {field.required && <span className="text-periwinkle-dark"> *</span>}
-                  <span className="text-charcoal-lighter font-normal"> ({field.unit})</span>
-                </span>
+              <label htmlFor={field.key} className="text-xs font-sans font-medium text-charcoal-light">
+                {field.label}
+                <span className="text-charcoal-lighter font-normal"> ({field.unit})</span>
               </label>
               <input
                 id={field.key}
@@ -117,7 +110,6 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
                 type="number"
                 step="0.5"
                 min="0"
-                required={field.required}
                 className="input-field"
                 placeholder={field.unit}
               />

@@ -139,21 +139,25 @@ export default async function UeberUnsPage() {
         <div className="container-site">
           <div className="text-center mb-12">
             <p className="section-label mb-3">Unser Team</p>
-            <h2 className="section-heading">Menschen hinter den <span className="text-periwinkle-dark">Kostümen</span></h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {TEAM.map((m) => (
+            {TEAM.map((m) => {
+              const icon = m.icon_slug?.trim();
+              const showIcon = Boolean(icon && icon !== "none" && icon !== "null");
+              return (
               <div key={m.name} className="bg-white rounded-2xl border border-stone-light p-7 flex flex-col items-center text-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-periwinkle-lighter to-sand-light flex items-center justify-center">
-                  <Image src={`/icons/sewing/${m.icon_slug}`} alt="" width={36} height={36} className="icon-periwinkle" />
-                </div>
+                {showIcon ? (
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-periwinkle-lighter to-sand-light flex items-center justify-center">
+                    <Image src={`/icons/sewing/${icon}`} alt="" width={36} height={36} className="icon-periwinkle" />
+                  </div>
+                ) : null}
                 <div>
                   <h3 className="font-serif text-lg text-charcoal">{m.name}</h3>
                   <p className="font-sans text-xs text-periwinkle-dark font-medium tracking-wide mt-0.5">{m.role}</p>
                 </div>
                 <p className="font-sans text-sm text-charcoal-lighter leading-relaxed">{m.bio}</p>
               </div>
-            ))}
+            );})}
           </div>
         </div>
       </CmsSectionShell>

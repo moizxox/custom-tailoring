@@ -51,6 +51,13 @@ export async function POST(request: Request) {
     );
   }
 
+  if (Object.keys(values).length === 0) {
+    return NextResponse.json(
+      { error: "Bitte mindestens ein Mass eintragen." },
+      { status: 400 }
+    );
+  }
+
   // Find the customer's latest project to link the measurement
   const project = await prisma.project.findFirst({
     where: { customerId },
