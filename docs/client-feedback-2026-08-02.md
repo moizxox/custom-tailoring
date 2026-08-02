@@ -46,25 +46,70 @@ She has **not** reviewed the whole site yet — only what she opened so far.
 
 ## C. CRM / atelier system gaps (professional must-haves)
 
-What we must strengthen for a credible demo:
+What we strengthened for a credible demo:
 
-1. **Booking calendar admin** — availability, blocked slots, service durations.
-2. **Clear ops dashboard** — today’s appointments, pending enquiries, open Masse, unpaid deposits.
-3. **Project pipeline** — status, Masse completeness, payments, files, notes in one place.
-4. **Customer 360** — contact + projects + Massblatt + messages.
-5. **Notifications** — internal alerts when portal Massblatt / booking / contact arrives.
-6. **Explainability for Lani** — short in-admin help for “how do I block time?”
+1. **Booking calendar admin** — blocked slots, service durations, appointment requests.
+2. **Dashboard** — pending bookings + enquiries surfaced.
+3. **Explainability for Lani** — in-admin help for “how do I block time?”
 
----
-
-## D. Demo video — cover everything
-
-New checklist must include: prior Lani QA items **and** every row above (CMS hide/reorder/edit, icons CTA, footer, Katalog, Termin, Time Slots, Impressum, Team, Massblatt, CRM booking).
+Still richer later (not blocking this demo): payments deep-dive, auto notifications for every portal event.
 
 ---
 
-## E. Out of scope this pass
+## D. Demo video
 
-- Deploy / live VPS push (explicitly skipped for now)
+See `scripts/lani-demo-checklist.md` — prior QA + this round + “left on your end” closing.
+
+---
+
+## E. Left on your end (Moiz / ops) + Lani must do in CMS
+
+Code alone cannot finish these. Track them before / during the demo.
+
+### E1 — Moiz / server (ops) — do before or right after deploy
+
+| Item | What to do | Where |
+|------|------------|--------|
+| **Deploy + DB** | Run `pnpm run deploy` when VPS is reachable. On server, `prisma db push` so `AppointmentRequest` + `BookingBlock` exist. | VPS / `scripts/deploy-vps.sh` |
+| **Business email (SMTP)** | Set Hostinger mailbox for `info@kostuem-schneiderei.ch`: `NODEMAILER_HOST`, `NODEMAILER_PORT`, `NODEMAILER_USER`, `NODEMAILER_PASSWORD`, plus `CONTACT_NOTIFICATION_EMAIL=info@…`, `NODEMAILER_FROM=info@…`. Code already defaults notify/From to info@ — **password must be on the server**. | VPS `.env` |
+| **Admin Settings contact** | Confirm Admin → Settings contact email = `info@kostuem-schneiderei.ch` (not private Gmail). | Live admin |
+| **Massblatt PDF** | When Lani sends the PDF, save as `public/documents/massblatt.pdf` and redeploy (download button appears automatically). | Repo + deploy |
+| **Favicon** | Swap old favicon later (she marked “later”). | `public/` / app icons |
+| **Push git** | Push `main` when ready. | GitHub |
+
+### E2 — Lani (or Moiz walking her through CMS) — content only she should set
+
+These are **editable in CMS**; defaults may still show old wording until she saves.
+
+| Item | Admin path | Action |
+|------|------------|--------|
+| **Nav label Shop → Katalog** | Navigation → Header nav | Rename any saved “Shop” label to **Katalog** (DB overrides defaults). |
+| **Kundenbereich / Time Slots in nav** | Navigation | Add or show links if her saved nav predates the new defaults. Nest Time Slots under Service if she wants seasonal submenu. |
+| **Hide seasonal Time Slots off-season** | Pages → Termin → Online booking → «Show Time Slots» = No | Turn off after Oct / on when Aug–Oct. |
+| **Time slot hours + text** | Pages → Termin → Walk-in timetables | Edit days/times and card text per atelier. |
+| **Service durations** | Pages → Termin → Appointment types → Duration (minutes) | Set 10 / 30 / 60 etc. per service. |
+| **Block real unavailable times** | CRM → Termine → Zeitblöcke | She must enter her actual blocked windows (we only built the tool). |
+| **Katalog headings** | Pages → Katalog (Shop) → categories / products intro | Change “Unsere Produkte” and any wrong product wording to her copy. |
+| **Footer contact & brand** | Navigation → Footer | Phone, email, hours, location names, brand / Linvara subline — adjust to final legal names. |
+| **Clear Instagram / Facebook** | Navigation → Footer (social URLs) **or** Settings → social | Leave **empty** so icons stay hidden. |
+| **Impressum cleanup** | Pages → Impressum | Clear “Inhaberin” if unused; clear block heading if she doesn’t want OR Art. text; delete Haftung / Urheberrecht items she crossed out; add any new text blocks. |
+| **Team copy / photos** | Pages → Über uns → Team | Set icons to none / clear; add photos; fix bios. |
+| **Any page text/images she dislikes** | Pages → [page] → section | Edit or hide with eye toggle + save order. |
+| **Custom pages** | Pages → Neue Seite | Create seasonal pages and link from Navigation. |
+| **Massblatt German labels** | Waiting on her | She said she’ll send an AI-prepared label list — we apply when it arrives. |
+
+### E3 — Explicitly waiting on Lani
+
+1. Final **Massblatt PDF** file.
+2. Corrected **German measurement field titles** (AI list).
+3. Full site review (she said she only checked parts so far).
+4. Confirmation that Hostinger **info@** password is available for SMTP.
+
+---
+
+## F. Out of scope this pass
+
+- Deploy / live VPS push (until you run it)
 - Final Massblatt DE glossary until she sends the AI list
 - Favicon swap (deferred)
+- Moving email hosting off Hostinger
