@@ -119,7 +119,7 @@ export function GroupMemberTable({ groupId, members: initialMembers }: Props) {
             <tr className="border-b border-gray-200">
               <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Name</th>
               <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium hidden md:table-cell">Kostümvariante</th>
-              <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Massnahme</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500 font-medium">Masse</th>
               <th className="text-right px-4 py-3 text-xs text-gray-500 font-medium">Aktionen</th>
             </tr>
           </thead>

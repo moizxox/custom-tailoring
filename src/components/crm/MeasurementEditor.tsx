@@ -148,7 +148,7 @@ export function MeasurementEditor({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Massnahme konnte nicht erstellt werden.");
+        setError(data.error ?? "Masse konnten nicht erstellt werden.");
         return;
       }
       startTransition(() => router.refresh());
@@ -228,7 +228,7 @@ export function MeasurementEditor({
                   onClick={() => handleNew()}
                   className="text-xs px-3 py-1.5 rounded-xl bg-violet-600 text-white hover:bg-violet-500 disabled:opacity-50"
                 >
-                  {creating ? "…" : "+ Massnahme"}
+                  {creating ? "…" : "+ Masse"}
                 </button>
                 <button
                   type="button"
@@ -319,7 +319,7 @@ export function MeasurementEditor({
             disabled={creating || !newCustomerId}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium disabled:opacity-50"
           >
-            + Massnahme erstellen
+            + Masse erstellen
           </button>
         </div>
       )}

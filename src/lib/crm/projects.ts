@@ -27,7 +27,7 @@ export const CUSTOMER_STATUSES = [
   // legacy aliases kept for older records
   { value: "consultation_scheduled", label: "Beratung geplant" },
   { value: "design_approved", label: "Design bestätigt" },
-  { value: "measurement_pending", label: "Massnahme ausstehend" },
+  { value: "measurement_pending", label: "Masse ausstehend" },
   { value: "fitting_scheduled", label: "Anprobe geplant" },
   { value: "alterations", label: "Anpassungen" },
 ] as const;

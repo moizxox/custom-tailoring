@@ -131,7 +131,7 @@ function formatStatus(status: string): string {
     request_received: "Anfrage eingegangen",
     consultation_scheduled: "Beratung geplant",
     design_approved: "Design bestätigt",
-    measurement_pending: "Massnahme ausstehend",
+    measurement_pending: "Masse ausstehend",
     production_started: "In Produktion",
     fitting_scheduled: "Anprobe geplant",
     alterations: "Anpassungen",

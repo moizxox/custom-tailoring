@@ -60,6 +60,6 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ measurement }, { status: 201 });
   } catch (error) {
-    return crmCatch(error, "Massnahme konnte nicht erstellt werden.");
+    return crmCatch(error, "Masse konnten nicht erstellt werden.");
   }
 }
