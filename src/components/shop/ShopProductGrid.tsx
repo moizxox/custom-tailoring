@@ -14,17 +14,17 @@ export function ShopProductGrid({ products }: ShopProductGridProps) {
           key={product.id}
           className="rounded-2xl border border-stone-light overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 bg-white group flex flex-col h-full"
         >
-          {/* Fixed frame so every card image area is the same size */}
+          {/* Square frame + cover so every card image area matches */}
           <Link
             href={`/shop/${product.slug}`}
-            className="block relative w-full aspect-[3/4] shrink-0 bg-sand-light/40 overflow-hidden"
+            className="block relative w-full aspect-square shrink-0 bg-sand-light/40 overflow-hidden"
           >
             {product.imageUrl ? (
               <Image
                 src={product.imageUrl}
                 alt={product.name}
                 fill
-                className="object-contain object-center p-5 sm:p-6 transition-transform duration-500 group-hover:scale-[1.02]"
+                className="object-contain object-center p-3 transition-transform duration-500 group-hover:scale-[1.02]"
                 sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
               />
             ) : (
