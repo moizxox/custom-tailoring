@@ -159,6 +159,17 @@ export function Navbar({
             />
 
             <Link
+              href="/kundenbereich/login"
+              className={cn(
+                "hidden lg:inline-flex items-center",
+                "text-[12px] font-sans font-medium text-charcoal/70 hover:text-periwinkle-dark",
+                "px-2 py-1.5 transition-colors",
+              )}
+            >
+              Kundenbereich
+            </Link>
+
+            <Link
               href={ctaUrl}
               className={cn(
                 "hidden sm:inline-flex items-center gap-2",
@@ -269,6 +280,13 @@ export function Navbar({
               </div>
             );
           })}
+          <Link
+            href="/kundenbereich/login"
+            onClick={() => setMobileOpen(false)}
+            className="py-3.5 text-sm font-sans text-charcoal-light hover:text-charcoal border-b border-stone-light/60 transition-colors"
+          >
+            Kundenbereich
+          </Link>
           <Link
             href={ctaUrl}
             onClick={() => setMobileOpen(false)}
