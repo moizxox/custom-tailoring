@@ -77,37 +77,62 @@ function IconPicker({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="space-y-2">
       {/* Current icon + trigger */}
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-3 px-3 py-2 bg-white border border-gray-200 rounded-xl hover:border-violet-300 transition-colors w-full text-left"
-      >
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="flex items-center gap-3 px-3 py-2 bg-white border border-gray-200 rounded-xl hover:border-violet-300 transition-colors flex-1 text-left min-w-0"
+        >
+          {value ? (
+            <Image
+              src={`/icons/sewing/${value}`}
+              alt=""
+              width={22}
+              height={22}
+              className="shrink-0 opacity-70"
+            />
+          ) : (
+            <div className="w-[22px] h-[22px] rounded-md bg-gray-100 shrink-0" />
+          )}
+          <span className="flex-1 text-xs text-gray-600 truncate">
+            {value ? niceName(value) : "No icon (text only)"}
+          </span>
+          <ChevronDown className={cn("w-3.5 h-3.5 text-gray-400 transition-transform shrink-0", open && "rotate-180")} />
+        </button>
         {value ? (
-          <Image
-            src={`/icons/sewing/${value}`}
-            alt=""
-            width={22}
-            height={22}
-            className="shrink-0 opacity-70"
-          />
-        ) : (
-          <div className="w-[22px] h-[22px] rounded-md bg-gray-100 shrink-0" />
-        )}
-        <span className="flex-1 text-xs text-gray-600 truncate">{value ? niceName(value) : "Choose icon…"}</span>
-        <ChevronDown className={cn("w-3.5 h-3.5 text-gray-400 transition-transform shrink-0", open && "rotate-180")} />
-      </button>
+          <button
+            type="button"
+            onClick={() => { onChange(""); setOpen(false); }}
+            className="px-3 py-2 text-xs text-gray-500 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 hover:text-gray-800 transition-colors whitespace-nowrap"
+          >
+            Clear
+          </button>
+        ) : null}
+      </div>
 
       {open && (
         <div className="border border-gray-200 rounded-xl bg-white shadow-lg overflow-hidden">
           {/* Search */}
-          <div className="px-3 pt-3 pb-2 border-b border-gray-100">
+          <div className="px-3 pt-3 pb-2 border-b border-gray-100 flex gap-2">
             <input
               type="text"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search icons…"
-              className="w-full text-xs px-2.5 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400 bg-gray-50"
+              className="flex-1 text-xs px-2.5 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400 bg-gray-50"
             />
+            <button
+              type="button"
+              onClick={() => { onChange(""); setOpen(false); setQ(""); }}
+              className={cn(
+                "text-xs px-2.5 py-1.5 rounded-lg border whitespace-nowrap transition-colors",
+                !value
+                  ? "border-violet-400 bg-violet-50 text-violet-700"
+                  : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-white"
+              )}
+            >
+              None
+            </button>
           </div>
 
           {/* Icon grid */}

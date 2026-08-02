@@ -6,7 +6,7 @@ import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
-import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { parseBool, parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,7 +25,7 @@ interface TeamMember {
 }
 
 interface ValueItem {
-  icon_slug: string;
+  icon_slug?: string;
   title: string;
   text: string;
 }
@@ -50,6 +50,7 @@ export default async function UeberUnsPage() {
   const valuesData = { ...getDefaultSectionContent("ueber-uns", "values"), ...valuesContent } as {
     sectionLabel?: string;
     heading?: string;
+    showIcons?: boolean | string;
     items?: ValueItem[];
   };
   const teamData = { ...getDefaultSectionContent("ueber-uns", "team"), ...teamContent } as { items?: TeamMember[] };
@@ -57,6 +58,10 @@ export default async function UeberUnsPage() {
   const storyAppearance = parseSectionAppearance(story);
   const valuesAppearance = parseSectionAppearance(valuesData as Record<string, unknown>);
   const teamAppearance = parseSectionAppearance(teamData as Record<string, unknown>);
+  const valuesShowIcons =
+    Object.prototype.hasOwnProperty.call(valuesContent, "showIcons")
+      ? parseBool((valuesContent as Record<string, unknown>).showIcons)
+      : valuesData.showIcons !== false;
 
   return (
     <>
@@ -112,15 +117,20 @@ export default async function UeberUnsPage() {
             <h2 className="section-heading">{valuesData.heading}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {(valuesData.items ?? []).map((v) => (
-              <div key={v.title} className="bg-white rounded-2xl border border-stone-light p-7 text-center flex flex-col items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-periwinkle-lighter flex items-center justify-center">
-                  <Image src={`/icons/sewing/${v.icon_slug}`} alt="" width={28} height={28} className="icon-periwinkle" />
+            {(valuesData.items ?? []).map((v) => {
+              const icon = v.icon_slug?.trim();
+              return (
+                <div key={v.title} className="bg-white rounded-2xl border border-stone-light p-7 text-center flex flex-col items-center gap-4 h-full">
+                  {valuesShowIcons && icon ? (
+                    <div className="w-14 h-14 rounded-full bg-periwinkle-lighter flex items-center justify-center">
+                      <Image src={`/icons/sewing/${icon}`} alt="" width={28} height={28} className="icon-periwinkle" />
+                    </div>
+                  ) : null}
+                  <h3 className="font-serif text-xl text-charcoal">{v.title}</h3>
+                  <p className="font-sans text-sm text-charcoal-lighter leading-relaxed">{v.text}</p>
                 </div>
-                <h3 className="font-serif text-xl text-charcoal">{v.title}</h3>
-                <p className="font-sans text-sm text-charcoal-lighter leading-relaxed">{v.text}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </CmsSectionShell>

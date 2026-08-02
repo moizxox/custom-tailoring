@@ -289,14 +289,22 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
           { key: "cta_secondary_label", label: "Secondary CTA label", type: "text", group: "links" },
           { key: "cta_secondary_url", label: "Secondary CTA link", type: "url", group: "links" },
           {
+            key: "showIcons",
+            label: "Show icons on USP cards",
+            type: "toggle",
+            group: "content",
+            hint: "Turn off for text-only tiles (no icons)",
+          },
+          {
             key: "usps",
             label: "Feature USPs",
             type: "items",
             group: "items",
-            hint: "Small cards on the right side",
+            hint: "2×2 cards on the right — icon optional per card",
             itemFields: [
-              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "icon_slug", label: "Icon (optional)", type: "icon_slug" },
               { key: "title", label: "Title", type: "text" },
+              { key: "subtitle", label: "Subtitle (optional)", type: "text", hint: 'e.g. "für Erwachsene und Kinder"' },
               { key: "description", label: "Description", type: "textarea" },
             ],
           },
@@ -404,11 +412,17 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
           { key: "sectionLabel", label: "Section label", type: "text" },
           { key: "heading", label: "Heading", type: "text" },
           {
+            key: "showIcons",
+            label: "Show icons on value cards",
+            type: "toggle",
+            hint: "Turn off for a text-only layout without icons",
+          },
+          {
             key: "items",
             label: "Value cards",
             type: "items",
             itemFields: [
-              { key: "icon_slug", label: "Icon", type: "icon_slug" },
+              { key: "icon_slug", label: "Icon (optional)", type: "icon_slug" },
               { key: "title", label: "Title", type: "text" },
               { key: "text", label: "Description", type: "textarea" },
             ],
@@ -771,7 +785,7 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
   },
   {
     slug: "shop",
-    label: "Shop",
+    label: "Katalog",
     icon: "🛍️",
     path: "/shop",
     sections: [

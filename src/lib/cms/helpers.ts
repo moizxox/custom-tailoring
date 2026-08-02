@@ -134,20 +134,30 @@ export interface ContactFormConfig {
   downloadUrl?: string;
 }
 
+/** Like pickString, but blank/whitespace falls back — for form UX fields that must stay usable. */
+export function pickStringFilled(
+  content: Record<string, unknown>,
+  key: string,
+  fallback: string
+): string {
+  const raw = pickString(content, key, fallback);
+  return raw.trim() ? raw : fallback;
+}
+
 export function mapContactFormConfig(
   content: Record<string, unknown>,
   defaults: ContactFormConfig
 ): ContactFormConfig {
   return {
-    title: pickString(content, "title", defaults.title),
+    title: pickStringFilled(content, "title", defaults.title),
     subtitle: pickString(content, "subtitle", defaults.subtitle),
-    namePlaceholder: pickString(content, "namePlaceholder", defaults.namePlaceholder),
-    phonePlaceholder: pickString(content, "phonePlaceholder", defaults.phonePlaceholder),
-    emailPlaceholder: pickString(content, "emailPlaceholder", defaults.emailPlaceholder),
-    messagePlaceholder: pickString(content, "messagePlaceholder", defaults.messagePlaceholder),
-    submitLabel: pickString(content, "submitLabel", defaults.submitLabel),
-    successTitle: pickString(content, "successTitle", defaults.successTitle),
-    successMessage: pickString(content, "successMessage", defaults.successMessage),
+    namePlaceholder: pickStringFilled(content, "namePlaceholder", defaults.namePlaceholder),
+    phonePlaceholder: pickStringFilled(content, "phonePlaceholder", defaults.phonePlaceholder),
+    emailPlaceholder: pickStringFilled(content, "emailPlaceholder", defaults.emailPlaceholder),
+    messagePlaceholder: pickStringFilled(content, "messagePlaceholder", defaults.messagePlaceholder),
+    submitLabel: pickStringFilled(content, "submitLabel", defaults.submitLabel),
+    successTitle: pickStringFilled(content, "successTitle", defaults.successTitle),
+    successMessage: pickStringFilled(content, "successMessage", defaults.successMessage),
     downloadLabel: pickString(content, "downloadLabel", defaults.downloadLabel ?? ""),
     downloadUrl: pickString(content, "downloadUrl", defaults.downloadUrl ?? ""),
   };
