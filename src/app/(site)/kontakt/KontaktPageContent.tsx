@@ -2,7 +2,8 @@
 
 import { PageHero } from "@/components/layout/PageHero";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { LocationCards } from "@/components/sections/LocationCards";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
 import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
@@ -21,7 +22,17 @@ interface KontaktPageContentProps {
   timetables: CmsTimetable[];
 }
 
+function buildProductPrefill(produkt: string | null, qualitaet: string | null, preis: string | null) {
+  if (!produkt) return "";
+  const lines = [`Anfrage zum Produkt: ${produkt}`];
+  if (qualitaet) lines.push(`Qualitätsstufe: ${qualitaet}`);
+  if (preis) lines.push(`Richtpreis: ${preis}`);
+  lines.push("", "Meine Nachricht:", "");
+  return lines.join("\n");
+}
+
 export function KontaktPageContent({ hero, form, formAppearance, contact, locations, timetables }: KontaktPageContentProps) {
+  const searchParams = useSearchParams();
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -36,6 +47,15 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
 
   const [submitError, setSubmitError] = useState("");
 
+  useEffect(() => {
+    const produkt = searchParams.get("produkt");
+    const qualitaet = searchParams.get("qualitaet");
+    const preis = searchParams.get("preis");
+    const prefill = buildProductPrefill(produkt, qualitaet, preis);
+    if (!prefill) return;
+    setContactForm((f) => (f.message.trim() ? f : { ...f, message: prefill }));
+  }, [searchParams]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
@@ -44,6 +64,8 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
       const costumeTypes: string[] = [];
       if (contactForm.groupCostume) costumeTypes.push("Gruppenkostüme");
       if (contactForm.singleCostume) costumeTypes.push("Einzelkostüme");
+      const produkt = searchParams.get("produkt");
+      if (produkt) costumeTypes.push(`Katalog: ${produkt}`);
 
       const res = await fetch("/api/kontakt", {
         method: "POST",
@@ -147,39 +169,59 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
                   <p className="font-sans text-sm text-charcoal-lighter mb-6">{form.subtitle}</p>
                   <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        required
-                        placeholder={form.namePlaceholder}
-                        className="input-field"
-                        value={contactForm.name}
-                        onChange={(e) => setContactForm((f) => ({ ...f, name: e.target.value }))}
-                      />
-                      <input
-                        type="tel"
-                        placeholder={form.phonePlaceholder}
-                        className="input-field"
-                        value={contactForm.phone}
-                        onChange={(e) => setContactForm((f) => ({ ...f, phone: e.target.value }))}
-                      />
+                      <label className="flex flex-col gap-1.5">
+                        <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                          Name *
+                        </span>
+                        <input
+                          type="text"
+                          required
+                          placeholder={form.namePlaceholder}
+                          className="input-field"
+                          value={contactForm.name}
+                          onChange={(e) => setContactForm((f) => ({ ...f, name: e.target.value }))}
+                        />
+                      </label>
+                      <label className="flex flex-col gap-1.5">
+                        <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                          Telefon
+                        </span>
+                        <input
+                          type="tel"
+                          placeholder={form.phonePlaceholder}
+                          className="input-field"
+                          value={contactForm.phone}
+                          onChange={(e) => setContactForm((f) => ({ ...f, phone: e.target.value }))}
+                        />
+                      </label>
                     </div>
-                    <input
-                      type="email"
-                      required
-                      placeholder={form.emailPlaceholder}
-                      className="input-field"
-                      value={contactForm.email}
-                      onChange={(e) => setContactForm((f) => ({ ...f, email: e.target.value }))}
-                    />
-                    <select
-                      className="input-field"
-                      value={contactForm.location}
-                      onChange={(e) => setContactForm((f) => ({ ...f, location: e.target.value }))}
-                    >
-                      <option value="pratteln">Atelier Pratteln</option>
-                      <option value="therwil">Atelier Therwil</option>
-                      <option value="unsicher">Noch unentschlossen</option>
-                    </select>
+                    <label className="flex flex-col gap-1.5">
+                      <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                        E-Mail *
+                      </span>
+                      <input
+                        type="email"
+                        required
+                        placeholder={form.emailPlaceholder}
+                        className="input-field"
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm((f) => ({ ...f, email: e.target.value }))}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-1.5">
+                      <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                        Standort
+                      </span>
+                      <select
+                        className="input-field"
+                        value={contactForm.location}
+                        onChange={(e) => setContactForm((f) => ({ ...f, location: e.target.value }))}
+                      >
+                        <option value="pratteln">Atelier Pratteln</option>
+                        <option value="therwil">Atelier Therwil</option>
+                        <option value="unsicher">Noch unentschlossen</option>
+                      </select>
+                    </label>
 
                     <fieldset className="rounded-xl border border-stone-light bg-offwhite/50 px-4 py-3">
                       <legend className="font-sans text-[11px] font-semibold tracking-[0.14em] uppercase text-warmgrey px-1">
@@ -211,21 +253,26 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
                       </div>
                     </fieldset>
 
-                    <textarea
-                      required
-                      rows={5}
-                      placeholder={form.messagePlaceholder}
-                      className="input-field resize-none"
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
-                    />
+                    <label className="flex flex-col gap-1.5">
+                      <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                        Nachricht *
+                      </span>
+                      <textarea
+                        required
+                        rows={5}
+                        placeholder={form.messagePlaceholder}
+                        className="input-field resize-none"
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm((f) => ({ ...f, message: e.target.value }))}
+                      />
+                    </label>
                     {submitError && (
                       <p className="text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
                         {submitError}
                       </p>
                     )}
                     <button type="submit" disabled={sending} className="btn-primary justify-center">
-                      {sending ? "Wird gesendet…" : form.submitLabel}
+                      {sending ? "Wird gesendet…" : form.submitLabel || "Nachricht senden"}
                     </button>
                     {form.downloadUrl?.trim() && (
                       <a
