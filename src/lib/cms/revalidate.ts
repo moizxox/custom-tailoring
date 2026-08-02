@@ -8,10 +8,20 @@ export function revalidateCmsPage(slug: string) {
     revalidatePath(page.path);
     // Also refresh the route tree so section-order / layout consumers update.
     revalidatePath(page.path, "page");
+    revalidatePath(page.path, "layout");
     if (page.path === "/") {
       revalidatePath("/", "layout");
     }
   }
+  // Site layout wraps every public page (nav/footer + ISR).
+  revalidatePath("/", "layout");
+}
+
+/** Custom admin-created pages at /seite/[slug]. */
+export function revalidateCustomPage(slug: string) {
+  revalidatePath(`/seite/${slug}`);
+  revalidatePath(`/seite/${slug}`, "page");
+  revalidatePath("/", "layout");
 }
 
 /** Shop product list and detail pages. */

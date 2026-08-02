@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { CmsSection, CmsField, FieldGroup } from "@/lib/cms/page-schemas";
 import MediaPickerModal from "@/components/admin/MediaPickerModal";
@@ -200,6 +201,7 @@ function FieldInput({
 /* ─── Main component ─────────────────────────────────────────────────────── */
 export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel, initialSectionOrder }: Props) {
   const t = useTranslations("editor");
+  const router = useRouter();
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [imagePickerMeta, setImagePickerMeta] = useState<{ sectionKey: string; fieldKey: string } | null>(null);
   const [search, setSearch] = useState("");
@@ -207,6 +209,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
   const [orderSaving, setOrderSaving] = useState(false);
   const [orderSaved, setOrderSaved] = useState(false);
   const [orderError, setOrderError] = useState("");
+  const [orderDirty, setOrderDirty] = useState(false);
   const [states, setStates] = useState<Record<string, SectionState>>(() =>
     buildInitialState(sections, initialContents)
   );
@@ -245,6 +248,8 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
       return next;
     });
     setOrderSaved(false);
+    setOrderDirty(true);
+    setOrderError("");
   }, []);
 
   const saveSectionOrder = useCallback(async () => {
@@ -256,15 +261,21 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order: sectionOrder }),
       });
-      if (!res.ok) throw new Error("order save failed");
+      const data = (await res.json().catch(() => ({}))) as { error?: string; order?: string[] };
+      if (!res.ok) throw new Error(data.error || "order save failed");
+      if (Array.isArray(data.order) && data.order.length) {
+        setSectionOrder(data.order);
+      }
+      setOrderDirty(false);
       setOrderSaved(true);
-      setTimeout(() => setOrderSaved(false), 3000);
-    } catch {
-      setOrderError("Section order could not be saved. Please try again.");
+      router.refresh();
+      setTimeout(() => setOrderSaved(false), 4000);
+    } catch (err) {
+      setOrderError(err instanceof Error ? err.message : "Section order could not be saved. Please try again.");
     } finally {
       setOrderSaving(false);
     }
-  }, [pageSlug, sectionOrder]);
+  }, [pageSlug, sectionOrder, router]);
 
   const saveSection = useCallback(async (sectionKey: string, section: CmsSection) => {
     setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saving: true, error: "" } }));
@@ -325,24 +336,54 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
             })}
           </nav>
           <div className="pt-3 border-t border-gray-100 space-y-2">
-            <button type="button" onClick={saveSectionOrder} disabled={orderSaving}
-              className="w-full px-3 py-2 text-xs font-medium rounded-lg bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-60 transition">
-              {orderSaving ? "Saving order…" : "Save section order"}
+            <button
+              type="button"
+              onClick={saveSectionOrder}
+              disabled={orderSaving || !orderDirty}
+              className={cn(
+                "w-full px-3 py-2 text-xs font-medium rounded-lg text-white disabled:opacity-60 transition",
+                orderDirty ? "bg-violet-600 hover:bg-violet-500" : "bg-gray-900 hover:bg-gray-800"
+              )}
+            >
+              {orderSaving ? "Saving order…" : orderDirty ? "Save section order *" : "Save section order"}
             </button>
-            {orderSaved && <p className="text-[10px] text-green-600 px-1">Section order saved — refresh the live page to see it</p>}
+            {orderSaved && (
+              <p className="text-[10px] text-green-600 px-1">
+                Section order saved. Open the live page (hard refresh) to verify.
+              </p>
+            )}
             {orderError && <p className="text-[10px] text-red-600 px-1">{orderError}</p>}
-            <p className="text-[10px] text-gray-400 px-1">{orderedSections.length} sections — use arrows to reorder, then save</p>
+            <p className="text-[10px] text-gray-400 px-1">
+              {orderedSections.length} sections — use arrows to reorder, then save
+            </p>
           </div>
         </div>
       </aside>
 
       {/* ── Main content ─────────────────────────────────────────────────── */}
       <div className="flex-1 min-w-0 space-y-3">
-        {/* Mobile search */}
-        <div className="xl:hidden relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search sections…"
-            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 bg-gray-50 focus:bg-white transition" />
+        {/* Mobile search + order save (sidebar is xl-only) */}
+        <div className="xl:hidden space-y-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search sections…"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-400 bg-gray-50 focus:bg-white transition" />
+          </div>
+          <button
+            type="button"
+            onClick={saveSectionOrder}
+            disabled={orderSaving || !orderDirty}
+            className={cn(
+              "w-full px-4 py-2.5 text-sm font-medium rounded-xl text-white disabled:opacity-60 transition",
+              orderDirty ? "bg-violet-600 hover:bg-violet-500" : "bg-gray-900"
+            )}
+          >
+            {orderSaving ? "Saving order…" : orderDirty ? "Save section order *" : "Save section order"}
+          </button>
+          {orderSaved && (
+            <p className="text-xs text-green-600">Section order saved. Hard-refresh the live page to verify.</p>
+          )}
+          {orderError && <p className="text-xs text-red-600">{orderError}</p>}
         </div>
 
         {filteredSections.length === 0 && (

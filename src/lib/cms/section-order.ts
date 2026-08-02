@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { getSiteSetting } from "@/lib/cms/content";
 import { getPageSchema } from "@/lib/cms/page-schemas";
 
@@ -7,11 +8,17 @@ export function getDefaultSectionOrder(pageSlug: string): string[] {
 }
 
 export async function getPageSectionOrder(pageSlug: string): Promise<string[]> {
-  const defaults = getDefaultSectionOrder(pageSlug);
-  const saved = await getSiteSetting<string[]>(`page_order_${pageSlug}`, []);
-  if (!Array.isArray(saved) || saved.length === 0) return defaults;
+  // Always read latest order from DB — do not bake into static ISR cache.
+  noStore();
 
-  const valid = saved.filter((key) => defaults.includes(key));
+  const defaults = getDefaultSectionOrder(pageSlug);
+  const saved = await getSiteSetting<unknown>(`page_order_${pageSlug}`, []);
+  const savedKeys = Array.isArray(saved)
+    ? saved.filter((key): key is string => typeof key === "string")
+    : [];
+  if (savedKeys.length === 0) return defaults;
+
+  const valid = savedKeys.filter((key) => defaults.includes(key));
   const missing = defaults.filter((key) => !valid.includes(key));
   return [...valid, ...missing];
 }
