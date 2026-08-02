@@ -1,13 +1,14 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
-import { getNavItems, getFooterContent } from "@/lib/cms/navigation";
+import { filterVisibleNavItems, getNavItems, getFooterContent } from "@/lib/cms/navigation";
 
 /** Re-fetch CMS content from the DB periodically (production is statically cached otherwise). */
 export const revalidate = 60;
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const [navItems, footerContent] = await Promise.all([getNavItems(), getFooterContent()]);
+  const [navItemsRaw, footerContent] = await Promise.all([getNavItems(), getFooterContent()]);
+  const navItems = filterVisibleNavItems(navItemsRaw);
 
   return (
     <>

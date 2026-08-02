@@ -85,7 +85,7 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
   }
 
   function add() {
-    onChange([...items, { id: uid(), label: "Neuer Link", href: "/", openInNewTab: false }]);
+    onChange([...items, { id: uid(), label: "Neuer Link", href: "/", openInNewTab: false, hidden: false }]);
   }
 
   function nestUnder(childId: string, parentId: string) {
@@ -101,6 +101,7 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
       label: child.label,
       href: child.href,
       openInNewTab: child.openInNewTab,
+      hidden: child.hidden,
     };
     onChange(
       without
@@ -262,6 +263,7 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
         className={cn(
           "flex items-center gap-2 bg-white border rounded-xl px-3 py-2.5 group cursor-grab active:cursor-grabbing hover:border-violet-200 hover:shadow-sm transition-all",
           opts.nested ? "ml-8 border-violet-100 bg-violet-50/40" : "border-gray-200",
+          item.hidden && "opacity-55",
           isDropTarget && dropHint?.nest && !opts.nested && "ring-2 ring-violet-400 border-violet-300",
           isDropTarget && !dropHint?.nest && "ring-2 ring-violet-200",
         )}
@@ -282,6 +284,15 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
           placeholder="/path"
           className={cn(inp, "flex-1 font-mono text-xs")}
         />
+        <label className="flex items-center gap-1.5 text-xs text-gray-500 shrink-0 cursor-pointer select-none whitespace-nowrap" title="Auf der Website in der Navigation anzeigen">
+          <input
+            type="checkbox"
+            checked={!item.hidden}
+            onChange={(e) => opts.onUpdate({ hidden: !e.target.checked })}
+            className="accent-violet-600 rounded"
+          />
+          Auf Website anzeigen
+        </label>
         <label className="flex items-center gap-1.5 text-xs text-gray-500 shrink-0 cursor-pointer select-none whitespace-nowrap">
           <input
             type="checkbox"

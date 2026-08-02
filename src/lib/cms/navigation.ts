@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { DEFAULT_LEGAL_LINKS } from "@/lib/cms/extra-defaults";
 import { NAV_LINKS } from "@/lib/site-content";
@@ -7,6 +8,8 @@ export interface NavItem {
   label: string;
   href: string;
   openInNewTab?: boolean;
+  /** When true, item stays in CMS but is omitted from the public Navbar. */
+  hidden?: boolean;
   /** Nested submenu items — drag an item under another in the CMS to nest. */
   children?: NavItem[];
 }
@@ -77,7 +80,7 @@ export const DEFAULT_FOOTER: FooterContent = {
     {
       heading: "Navigation",
       links: [
-        { label: "Shop", href: "/shop" },
+        { label: "Katalog", href: "/shop" },
         { label: "Galerie", href: "/galerie" },
         { label: "Mass Nehmen", href: "/massfertigung" },
         { label: "Kostümveredelung", href: "/kostuemveredelung" },
@@ -93,6 +96,7 @@ export const DEFAULT_FOOTER: FooterContent = {
         { label: "Leistungen", href: "/service" },
         { label: "FAQs", href: "/faqs" },
         { label: "Atelier", href: "/atelier" },
+        { label: "Kundenbereich", href: "/kundenbereich/login" },
       ],
     },
   ],
@@ -132,6 +136,7 @@ export function normalizeNavItems(raw: unknown): NavItem[] {
         label: cLabel,
         href: typeof c.href === "string" ? c.href : "/",
         openInNewTab: Boolean(c.openInNewTab),
+        hidden: Boolean(c.hidden),
       });
     }
 
@@ -140,6 +145,7 @@ export function normalizeNavItems(raw: unknown): NavItem[] {
       label,
       href,
       openInNewTab: Boolean(item.openInNewTab),
+      hidden: Boolean(item.hidden),
       ...(children.length > 0 ? { children } : {}),
     });
   }
@@ -147,7 +153,23 @@ export function normalizeNavItems(raw: unknown): NavItem[] {
   return normalized;
 }
 
+/** Public Navbar: drop hidden items (and hidden children). */
+export function filterVisibleNavItems(items: NavItem[]): NavItem[] {
+  return items
+    .filter((item) => !item.hidden)
+    .map((item) => {
+      const children = item.children?.filter((c) => !c.hidden);
+      if (!children?.length) {
+        const { children: _drop, ...rest } = item;
+        void _drop;
+        return rest;
+      }
+      return { ...item, children };
+    });
+}
+
 export async function getNavItems(): Promise<NavItem[]> {
+  noStore();
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key: "navigation" } });
     if (row && Array.isArray(row.value)) return normalizeNavItems(row.value);
@@ -156,6 +178,7 @@ export async function getNavItems(): Promise<NavItem[]> {
 }
 
 export async function getFooterContent(): Promise<FooterContent> {
+  noStore();
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key: "footer" } });
     if (row && typeof row.value === "object" && row.value !== null) {
