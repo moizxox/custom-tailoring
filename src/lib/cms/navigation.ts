@@ -65,16 +65,16 @@ export const DEFAULT_FOOTER: FooterContent = {
   ctaSecondaryUrl: "/kontakt",
   brandName: "Kostüm",
   brandAccent: "schneiderei",
-  brandSubline: "Pratteln & Therwil",
+  brandSubline: "Linvara AG",
   phone: "079 654 66 55",
   phoneHref: "tel:+41796546655",
   email: "info@kostuem-schneiderei.ch",
   hours: "Termine nur nach Vereinbarung",
-  instagramUrl: "https://instagram.com",
-  facebookUrl: "https://facebook.com",
+  instagramUrl: "",
+  facebookUrl: "",
   locations: [
-    { name: "Pratteln", address: "Hohenrainstrasse 26c", city: "4133 Pratteln" },
-    { name: "Therwil", address: "Reinacherstrasse 5", city: "4106 Therwil" },
+    { name: "Linvara AG Pratteln", address: "Hohenrainstrasse 26c", city: "4133 Pratteln" },
+    { name: "Linvara AG Therwil", address: "Reinacherstrasse 5", city: "4106 Therwil" },
   ],
   columns: [
     {
@@ -93,6 +93,7 @@ export const DEFAULT_FOOTER: FooterContent = {
       links: [
         { label: "Termin buchen", href: "/termin" },
         { label: "Massen ohne Termin", href: "/massen-ohne-termin" },
+        { label: "Time Slots", href: "/termin#massen-ohne-termin" },
         { label: "Leistungen", href: "/service" },
         { label: "FAQs", href: "/faqs" },
         { label: "Atelier", href: "/atelier" },

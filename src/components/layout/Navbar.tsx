@@ -107,7 +107,7 @@ export function Navbar({
   ctaUrl = "/termin",
   brandName = "Kostüm",
   brandAccent = "Schneiderei",
-  brandSubline = "Pratteln & Therwil",
+  brandSubline = "Linvara AG",
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -137,7 +137,7 @@ export function Navbar({
             <span className="font-serif text-[15px] tracking-[0.18em] uppercase text-periwinkle-dark">
               {brandAccent}
             </span>
-            <span className="font-sans text-[7px] tracking-[0.22em] uppercase text-warmgrey mt-0.5">
+            <span className="font-sans text-[10px] tracking-[0.18em] uppercase text-warmgrey mt-0.5 font-medium">
               {brandSubline}
             </span>
           </Link>

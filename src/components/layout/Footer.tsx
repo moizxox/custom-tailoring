@@ -39,6 +39,43 @@ export function Footer({ footerContent }: FooterProps) {
               <p className="font-serif text-xl md:text-2xl text-charcoal leading-snug">{d.ctaHeading}</p>
             </div>
             <div className="flex items-center gap-3 shrink-0 flex-wrap justify-center">
+              {d.phone && (
+                <a
+                  href={d.phoneHref || `tel:${d.phone}`}
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-stone-light/80 bg-white/70 text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark transition-colors"
+                  aria-label={`Anrufen ${d.phone}`}
+                  title={d.phone}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </a>
+              )}
+              {d.email && (
+                <a
+                  href={`mailto:${d.email}`}
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-stone-light/80 bg-white/70 text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark transition-colors"
+                  aria-label={`E-Mail ${d.email}`}
+                  title={d.email}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </a>
+              )}
+              <a
+                href={`https://wa.me/${(d.phoneHref || d.phone).replace(/\D/g, "").replace(/^0/, "41")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-stone-light/80 bg-white/70 text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark transition-colors"
+                aria-label="WhatsApp"
+                title="WhatsApp"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <path d="M17.472 14.382c-.297-.139-1.633-.807-1.886-.9-.253-.093-.437-.139-.62.14-.184.278-.713.9-.873 1.085-.16.185-.32.208-.597.07-.277-.139-1.17-.43-2.227-1.372-.823-.734-1.379-1.64-1.54-1.917-.16-.278-.017-.428.122-.566.125-.124.278-.323.416-.485.139-.162.185-.278.278-.463.093-.185.047-.347-.023-.485-.07-.139-.62-1.497-.85-2.05-.224-.54-.45-.466-.62-.475l-.528-.01c-.185 0-.485.07-.739.347-.253.278-.967.945-.967 2.304s.99 2.673 1.127 2.85c.139.185 1.946 2.97 4.715 4.163.66.285 1.174.455 1.575.582.661.21 1.263.18 1.738.11.53-.079 1.633-.668 1.864-1.313.23-.645.23-1.197.16-1.313-.07-.116-.255-.185-.532-.324z" />
+                  <path d="M12.004 2.003c-5.523 0-10 4.477-10 10 0 1.761.46 3.412 1.264 4.846L2.003 22l5.29-1.386A9.953 9.953 0 0012.004 22c5.523 0 10-4.477 10-10s-4.477-10-10-10zm0 18.15a8.13 8.13 0 01-4.14-1.14l-.297-.176-3.14.823.838-3.06-.193-.314a8.13 8.13 0 01-1.25-4.283c0-4.5 3.66-8.16 8.16-8.16s8.16 3.66 8.16 8.16-3.66 8.15-8.138 8.15z" />
+                </svg>
+              </a>
               <Link href={d.ctaPrimaryUrl} className="btn-primary shadow-soft">{d.ctaPrimaryLabel}</Link>
               <Link href={d.ctaSecondaryUrl} className="btn-secondary">{d.ctaSecondaryLabel}</Link>
             </div>
@@ -67,7 +104,7 @@ export function Footer({ footerContent }: FooterProps) {
                 <div className="grid sm:grid-cols-2 gap-4">
                   {d.locations.map((loc) => (
                     <address key={loc.name} className="not-italic text-sm text-charcoal/65">
-                      <span className="font-medium text-charcoal block mb-1">Atelier {loc.name}</span>
+                      <span className="font-medium text-charcoal block mb-1">{loc.name}</span>
                       <span>{loc.address}</span>
                       <br />
                       <span>{loc.city}</span>
@@ -91,13 +128,17 @@ export function Footer({ footerContent }: FooterProps) {
                 {d.hours && <span className="text-charcoal/50 text-[13px]">{d.hours}</span>}
               </div>
 
-              {/* Social */}
+              {/* Social — only when a real profile URL is set (empty = hidden) */}
               <div className="flex gap-2.5">
                 {[
                   { label: "Instagram", href: d.instagramUrl },
                   { label: "Facebook", href: d.facebookUrl },
                 ]
-                  .filter((s) => s.href)
+                  .filter((s) => {
+                    const h = (s.href ?? "").trim();
+                    if (!h) return false;
+                    return !/^https?:\/\/(www\.)?(instagram|facebook)\.com\/?$/i.test(h);
+                  })
                   .map((s) => (
                     <a
                       key={s.label}
