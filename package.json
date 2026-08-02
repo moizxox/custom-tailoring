@@ -16,7 +16,9 @@
     "db:reset-admin": "dotenv -e .env.local -- tsx prisma/reset-admin.ts",
     "db:create-admin": "dotenv -e .env.local -- tsx prisma/create-admin.ts",
     "db:studio": "dotenv -e .env.local -- prisma studio",
-    "upload:cloudinary": "dotenv -e .env.local -- tsx scripts/upload-to-cloudinary.ts"
+    "upload:cloudinary": "dotenv -e .env.local -- tsx scripts/upload-to-cloudinary.ts",
+    "deploy": "bash scripts/deploy-vps.sh",
+    "deploy:vps": "bash scripts/deploy-vps.sh"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -34,3 +34,8 @@ Sewing_outline/
 .vercel
 
 *.zip
+.env*
+.env.vercel.production
+
+# Deploy artifacts
+.deploy/
