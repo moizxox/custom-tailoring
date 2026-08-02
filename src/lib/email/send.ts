@@ -32,14 +32,17 @@ function smtpPass() {
   return (process.env.NODEMAILER_PASSWORD ?? process.env.SMTP_PASS)?.replace(/\s/g, "");
 }
 
+/** Business mailbox — never fall back to a private Gmail as From. */
+export const BUSINESS_EMAIL = "info@kostuem-schneiderei.ch";
+
 function fromAddress() {
-  return (
+  const configured =
     process.env.NODEMAILER_FROM ??
     process.env.SMTP_FROM ??
-    process.env.RESEND_FROM_EMAIL ??
-    smtpUser() ??
-    "noreply@lani-kostumschneiderei.ch"
-  );
+    process.env.RESEND_FROM_EMAIL;
+  if (configured?.trim()) return configured.trim();
+  // Prefer the business address over a personal SMTP login (e.g. Gmail).
+  return BUSINESS_EMAIL;
 }
 
 function hasSmtpConfig() {

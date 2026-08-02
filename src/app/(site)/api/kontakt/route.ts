@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendEmail } from "@/lib/email/send";
+import { BUSINESS_EMAIL, sendEmail } from "@/lib/email/send";
 
 const LOCATION_LABELS: Record<string, string> = {
   pratteln: "Atelier Pratteln",
@@ -67,11 +67,9 @@ export async function POST(req: NextRequest) {
     const safeMessage = escapeHtml(message);
     const safeFirstName = escapeHtml(name.split(" ")[0] ?? name);
 
+    // Prefer business mailbox for notifications — never require private Gmail.
     const recipientEmail =
-      process.env.CONTACT_NOTIFICATION_EMAIL ??
-      process.env.SMTP_USER ??
-      process.env.NODEMAILER_USER ??
-      process.env.RESEND_FROM_EMAIL;
+      process.env.CONTACT_NOTIFICATION_EMAIL?.trim() || BUSINESS_EMAIL;
 
     void Promise.allSettled([
       recipientEmail
