@@ -110,13 +110,20 @@ export function mapHomeHeroContent(content: Record<string, unknown>): Partial<Ho
 export interface BookingConfig {
   timeSlots: string[];
   daysAhead: number;
-  appointmentTypes: Array<{ id: string; label: string; description: string }>;
+  appointmentTypes: Array<{
+    id: string;
+    label: string;
+    description: string;
+    durationMin?: number;
+  }>;
   walkInTitle: string;
   walkInDescription: string;
   namePlaceholder: string;
   emailPlaceholder: string;
   phonePlaceholder: string;
   notesPlaceholder: string;
+  /** When false, hide walk-in / high-season timetable band */
+  showWalkIn?: boolean;
 }
 
 export interface ContactFormConfig {
@@ -187,7 +194,21 @@ export function mapBookingConfig(
 
   let appointmentTypes = defaults.appointmentTypes;
   if (Array.isArray(content.appointmentTypes)) {
-    appointmentTypes = content.appointmentTypes as BookingConfig["appointmentTypes"];
+    appointmentTypes = (content.appointmentTypes as Array<Record<string, unknown>>).map((row, i) => {
+      const durationRaw = row.durationMin ?? row.duration;
+      const durationMin =
+        typeof durationRaw === "number"
+          ? durationRaw
+          : typeof durationRaw === "string" && durationRaw.trim()
+            ? parseInt(durationRaw, 10)
+            : 30;
+      return {
+        id: typeof row.id === "string" && row.id ? row.id : `type-${i}`,
+        label: typeof row.label === "string" ? row.label : `Termin ${i + 1}`,
+        description: typeof row.description === "string" ? row.description : "",
+        durationMin: Number.isFinite(durationMin) ? durationMin : 30,
+      };
+    });
   }
 
   const daysAheadRaw = content.daysAhead;
@@ -198,15 +219,24 @@ export function mapBookingConfig(
       ? parseInt(daysAheadRaw, 10)
       : defaults.daysAhead;
 
+  const showWalkInRaw = content.showWalkIn;
+  const showWalkIn =
+    showWalkInRaw === false || showWalkInRaw === "false"
+      ? false
+      : showWalkInRaw === true || showWalkInRaw === "true"
+        ? true
+        : defaults.showWalkIn !== false;
+
   return {
     timeSlots,
     daysAhead: Number.isFinite(daysAhead) ? daysAhead : defaults.daysAhead,
     appointmentTypes,
     walkInTitle: pickString(content, "walkInTitle", defaults.walkInTitle),
     walkInDescription: pickString(content, "walkInDescription", defaults.walkInDescription),
-    namePlaceholder: pickString(content, "namePlaceholder", defaults.namePlaceholder),
-    emailPlaceholder: pickString(content, "emailPlaceholder", defaults.emailPlaceholder),
-    phonePlaceholder: pickString(content, "phonePlaceholder", defaults.phonePlaceholder),
-    notesPlaceholder: pickString(content, "notesPlaceholder", defaults.notesPlaceholder),
+    namePlaceholder: pickStringFilled(content, "namePlaceholder", defaults.namePlaceholder),
+    emailPlaceholder: pickStringFilled(content, "emailPlaceholder", defaults.emailPlaceholder),
+    phonePlaceholder: pickStringFilled(content, "phonePlaceholder", defaults.phonePlaceholder),
+    notesPlaceholder: pickStringFilled(content, "notesPlaceholder", defaults.notesPlaceholder),
+    showWalkIn,
   };
 }

@@ -31,22 +31,57 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
   const [selectedLocation, setSelectedLocation] = useState<LocationId>(
     locations.some((l) => l.id === initialLocation) ? initialLocation : (locations[0]?.id ?? "pratteln"),
   );
+  const [selectedServiceId, setSelectedServiceId] = useState(preselected?.id ?? "");
   const [selectedService, setSelectedService] = useState(preselected?.label ?? "");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const locationLabel = locations.find((l) => l.id === selectedLocation)?.name ?? "";
+  const selectedType = config.appointmentTypes.find((t) => t.id === selectedServiceId || t.label === selectedService);
+  const durationMin = selectedType?.durationMin ?? 30;
+  const showWalkIn = config.showWalkIn !== false;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await new Promise((r) => setTimeout(r, 600));
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/termin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          locationId: selectedLocation,
+          serviceId: selectedServiceId || selectedType?.id,
+          serviceLabel: selectedService,
+          date: selectedDate,
+          time: selectedTime,
+          durationMin,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          notes: form.notes,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error ?? "Buchung fehlgeschlagen.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setSubmitError("Verbindungsfehler. Bitte versuchen Sie es erneut.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <>
+      {showWalkIn && (
       <CmsSectionShell
         id="massen-ohne-termin"
         appearance={timetablesAppearance}
@@ -55,7 +90,7 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
       >
         <div className="container-site max-w-5xl">
           <div className="text-center mb-10">
-            <p className="section-label mb-3 justify-center">Hochsaison</p>
+            <p className="section-label mb-3 justify-center">Time Slots · Hochsaison</p>
             <h2 className="font-serif text-3xl text-charcoal mb-3">{config.walkInTitle}</h2>
             <p className="font-sans text-sm text-charcoal-light max-w-2xl mx-auto leading-relaxed">{config.walkInDescription}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -70,6 +105,7 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
           <AtelierTimetable timetables={timetables} locations={locations} />
         </div>
       </CmsSectionShell>
+      )}
 
       <CmsSectionShell id="termin-buchen" appearance={bookingAppearance} className="py-20 scroll-mt-24">
         <div className="container-site max-w-2xl mx-auto">
@@ -86,6 +122,7 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
                     type="button"
                     onClick={() => {
                       setSelectedService(type.label);
+                      setSelectedServiceId(type.id);
                       setStep(2);
                       window.scrollTo({ top: 400, behavior: "smooth" });
                     }}
@@ -96,6 +133,9 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
                 </li>
               ))}
             </ul>
+            <p className="mt-3 font-sans text-[11px] text-charcoal-lighter text-center">
+              Dauer pro Terminart wird im CMS hinterlegt (z. B. 10 oder 60 Minuten).
+            </p>
           </div>
 
           {submitted ? (
@@ -103,9 +143,9 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
               <div className="w-20 h-20 rounded-full bg-periwinkle-lighter flex items-center justify-center">
                 <Image src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg" alt="" width={40} height={40} className="icon-periwinkle" />
               </div>
-              <h2 className="font-serif text-3xl text-charcoal">Termin bestätigt!</h2>
+              <h2 className="font-serif text-3xl text-charcoal">Buchungsanfrage erhalten</h2>
               <p className="font-sans text-sm text-charcoal-light max-w-sm">
-                Wir haben Ihre Buchung für Atelier {locationLabel} erhalten. Sie erhalten eine Bestätigung per E-Mail.
+                Wir haben Ihre Anfrage für Atelier {locationLabel} erhalten. Eine verbindliche Terminbestätigung erhalten Sie per E-Mail.
               </p>
               <button
                 type="button"
@@ -182,7 +222,10 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
                         <button
                           key={type.id}
                           type="button"
-                          onClick={() => setSelectedService(type.label)}
+                          onClick={() => {
+                            setSelectedService(type.label);
+                            setSelectedServiceId(type.id);
+                          }}
                           className={cn(
                             "text-left px-5 py-4 rounded-xl border transition-all duration-200",
                             selectedService === type.label
@@ -192,6 +235,11 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
                         >
                           <span className="block font-sans text-sm font-medium text-charcoal">{type.label}</span>
                           <span className="block font-sans text-[12px] text-charcoal-lighter mt-0.5">{type.description}</span>
+                          {type.durationMin ? (
+                            <span className="block font-sans text-[11px] text-periwinkle-dark mt-1">
+                              Dauer: {type.durationMin} Min.
+                            </span>
+                          ) : null}
                         </button>
                       ))}
                     </div>
@@ -281,39 +329,60 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
                       </span>
                       <span>
                         <strong className="text-charcoal">Zeit:</strong> {selectedTime} Uhr
+                        {durationMin ? ` · ${durationMin} Min.` : ""}
                       </span>
                     </div>
                     <div className="flex flex-col gap-4">
-                      <input
-                        type="text"
-                        required
-                        placeholder={config.namePlaceholder}
-                        className="input-field"
-                        value={form.name}
-                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                      />
-                      <input
-                        type="email"
-                        required
-                        placeholder={config.emailPlaceholder}
-                        className="input-field"
-                        value={form.email}
-                        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      />
-                      <input
-                        type="tel"
-                        placeholder={config.phonePlaceholder}
-                        className="input-field"
-                        value={form.phone}
-                        onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                      />
-                      <textarea
-                        rows={3}
-                        placeholder={config.notesPlaceholder}
-                        className="input-field resize-none"
-                        value={form.notes}
-                        onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                      />
+                      <label className="flex flex-col gap-1.5">
+                        <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                          Name *
+                        </span>
+                        <input
+                          type="text"
+                          required
+                          placeholder={config.namePlaceholder || "Ihr Name"}
+                          className="input-field"
+                          value={form.name}
+                          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                        />
+                      </label>
+                      <label className="flex flex-col gap-1.5">
+                        <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                          E-Mail *
+                        </span>
+                        <input
+                          type="email"
+                          required
+                          placeholder={config.emailPlaceholder || "name@beispiel.ch"}
+                          className="input-field"
+                          value={form.email}
+                          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                        />
+                      </label>
+                      <label className="flex flex-col gap-1.5">
+                        <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                          Telefon
+                        </span>
+                        <input
+                          type="tel"
+                          placeholder={config.phonePlaceholder || "079 …"}
+                          className="input-field"
+                          value={form.phone}
+                          onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                        />
+                      </label>
+                      <label className="flex flex-col gap-1.5">
+                        <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                          Nachricht
+                        </span>
+                        <textarea
+                          rows={3}
+                          placeholder={config.notesPlaceholder || "Optionale Anmerkungen…"}
+                          className="input-field resize-none"
+                          value={form.notes}
+                          onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+                        />
+                      </label>
                     </div>
                     <p className="text-[11px] text-charcoal-lighter mt-4">
                       Mit der Buchung akzeptieren Sie unsere{" "}
@@ -326,12 +395,17 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
                       </a>
                       .
                     </p>
+                    {submitError && (
+                      <p className="mt-4 font-sans text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                        {submitError}
+                      </p>
+                    )}
                     <div className="flex gap-3 mt-6">
                       <button type="button" onClick={() => setStep(3)} className="btn-outline-dark flex-1 justify-center">
                         ← Zurück
                       </button>
-                      <button type="submit" className="btn-primary flex-1 justify-center">
-                        Termin bestätigen
+                      <button type="submit" disabled={submitting} className="btn-primary flex-1 justify-center disabled:opacity-60">
+                        {submitting ? "Wird gesendet…" : "Termin anfragen"}
                       </button>
                     </div>
                   </form>

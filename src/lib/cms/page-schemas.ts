@@ -666,11 +666,25 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
           {
             key: "appointmentTypes",
             label: "Appointment types",
-            type: "array",
-            hint: "JSON array: id, label, description per entry",
+            type: "items",
+            itemFields: [
+              { key: "id", label: "ID (slug)", type: "text", hint: "e.g. beratung-gruppe" },
+              { key: "label", label: "Label", type: "text" },
+              { key: "description", label: "Description", type: "textarea" },
+              { key: "durationMin", label: "Duration (minutes)", type: "text", hint: "e.g. 10, 30, 60" },
+            ],
           },
-          { key: "walkInTitle", label: "Walk-in section title", type: "text" },
-          { key: "walkInDescription", label: "Walk-in section text", type: "textarea" },
+          { key: "walkInTitle", label: "Walk-in / Time Slots title", type: "text" },
+          { key: "walkInDescription", label: "Walk-in / Time Slots text", type: "textarea" },
+          {
+            key: "showWalkIn",
+            label: "Show Time Slots (Hochsaison) section",
+            type: "select",
+            options: [
+              { value: "true", label: "Yes — show Aug–Oct style band" },
+              { value: "false", label: "No — hide for off-season" },
+            ],
+          },
           { key: "namePlaceholder", label: "Name field placeholder", type: "text" },
           { key: "emailPlaceholder", label: "Email field placeholder", type: "text" },
           { key: "phonePlaceholder", label: "Phone field placeholder", type: "text" },
@@ -947,8 +961,9 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
         key: "company",
         label: "Company details",
         fields: [
+          { key: "sectionTitle", label: "Block heading (optional)", type: "text", hint: "Leave empty to hide — e.g. remove «Angaben gemäss OR…»" },
           { key: "name", label: "Company name", type: "text" },
-          { key: "owner", label: "Owner", type: "text" },
+          { key: "owner", label: "Owner (optional — leave empty to hide)", type: "text" },
           { key: "address", label: "Street address", type: "text" },
           { key: "city", label: "City / ZIP", type: "text" },
           { key: "country", label: "Country", type: "text" },
@@ -964,7 +979,7 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
       {
         key: "sections",
         label: "Additional sections",
-        description: "Haftung, Urheberrecht, or any extra legal blocks",
+        description: "Add or remove any text blocks (Haftung, Urheberrecht, custom notes). Delete an item to hide it.",
         fields: [
           {
             key: "items",
