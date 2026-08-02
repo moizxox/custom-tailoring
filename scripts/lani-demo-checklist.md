@@ -1,18 +1,47 @@
-# Video demo checklist for Lani (~8–12 min)
+# Video demo checklist for Lani (full — Aug 2026 round)
 
-Record one continuous walkthrough. Show **each** point before asking for her final UX review.
+Record one continuous walkthrough (~12–15 min). Cover **prior QA items** and **new feedback**.
 
-1. **QC mindset** — “We completed internal QC before this review.”
-2. **Nav hide** — Admin → Navigation → uncheck «Auf Website anzeigen» → hard refresh public site → item gone from nav but still in CMS.
-3. **Create page** — Admin → Pages → Neue Seite → publish → open `/seite/…` → Navigation → add link to that path.
-4. **Sections / empty pages** — Open previously empty or mis-ordered pages; confirm sections appear on the correct route.
-5. **Kundenbereich** — Header «Kundenbereich» + nav/footer → login/register → Massblatt.
-6. **Katalog images** — `/shop` grid + product detail: full image visible with `object-contain` (not cropped).
-7. **Katalog naming** — Nav/title say Katalog; `/katalog` redirects to `/shop`; product → inline enquiry form (no “buy” wording).
-8. **Business email** — Submit enquiry → show notification to `info@kostuem-schneiderei.ch` / From is business address (email header screenshot).
-9. **Measurement form** — Massfertigung: PDF download when file is at `public/documents/massblatt.pdf` (or placeholder note) + portal Massblatt submit → appears in CRM.
-10. **CRM Masse translations** — Project Masse tab / CRM labels say **Masse** (not «Massnahme»).
-11. **CMS live publish** — Change a headline in admin → hard refresh public page → change visible immediately.
-12. **Responsive** — Home, Katalog, Kontakt, portal at mobile width.
+## Opening
+1. **QC mindset** — “We finished another internal QC pass with your document notes before asking you to review.”
 
-End with: “Please do your final UX review now; everything on your list has been checked on our side first.”
+## CMS flexibility (her core request)
+2. **Section hide** — Admin → Pages → any page → Eye toggle «Ausgeblendet» → Save order → hard refresh public page → section gone (still in CMS).
+3. **Section reorder** — arrows up/down → save → live order updates.
+4. **Edit text + images** — open a section, change headline + image, save, show live.
+5. **Custom page** — Neue Seite → publish `/seite/…` → add to Navigation.
+6. **Nav hide** — Navigation → «Auf Website anzeigen» off → item stays in CMS, hidden live.
+
+## Screenshot / document fixes
+7. **Footer CTA icons** — phone / mail / WhatsApp between headline and buttons.
+8. **Footer brand** — Linvara AG + Kostümschneiderei; Instagram/Facebook hidden when empty.
+9. **Footer contact editable** — Admin → Navigation → Footer fields.
+10. **No breadcrumb text on Katalog hero** — illustrated banners without Start › Shop overlay.
+11. **Katalog images** — grid shows full costume (`object-contain`), not cropped.
+12. **Katalog wording** — «Alle Angebote» / Angebot ansehen (not Produkt-buy language).
+13. **CMS headings** — show editing «Unsere Produkte» / categories texts in Shop page CMS.
+14. **Termin form labels** — step 4 shows Name / E-Mail / Telefon / Nachricht labels.
+15. **Termin success** — «Buchungsanfrage erhalten» (not «bestätigt»).
+16. **Time Slots** — Termin page Hochsaison band + CMS toggle to hide off-season; nav/service «Time Slots».
+17. **Time slots editable** — Admin → Termin → timetables + walk-in text.
+18. **Block times** — CRM → Termine → create block → show booking rejected in that window.
+19. **Service duration** — Appointment type duration (10 vs 60) in CMS + shown in booking.
+20. **Impressum** — empty owner/title hides lines; Additional sections add/remove text blocks.
+21. **Team** — no broken icon when none; only «Unser Team» (no wrong subtitle).
+22. **Logo** — Linvara AG larger under brand.
+23. **Massfertigung** — Präzision block removed; title without «Vertrauliche».
+24. **Massblatt** — title Massblatt; no Aktuelles Projekt/Kategorie; no letter badges; submit with partial fields.
+25. **Dashed mistake** — cleaner section borders (no wrong dashed stitch line on contact band).
+
+## Portal / CRM professional
+26. **Kundenbereich** — find in header → login → Massblatt.
+27. **CRM dashboard** — Anfragen, Termine, Kunden, Projekte.
+28. **CRM Termine** — list requests, confirm/cancel, block calendar with help text.
+29. **CRM Masse** — project Masse labels (not Massnahme).
+30. **Business email** — enquiry From/notify info@ (show if available).
+
+## Responsive
+31. Home, Katalog, Kontakt, Termin, portal at mobile width.
+
+## Close
+“Please review now — everything from your document and message is covered on our side first. Favicon later as noted.”
