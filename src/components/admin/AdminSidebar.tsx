@@ -6,13 +6,14 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FileText, ShoppingBag, ImageIcon, Menu, Settings,
-  UserPlus, ExternalLink, Scissors, Palette, Users, FolderKanban, UsersRound, Inbox,
+  UserPlus, ExternalLink, Scissors, Palette, Users, FolderKanban, UsersRound, Inbox, CalendarDays,
 } from "lucide-react";
 import { CrmSearchBar } from "@/components/crm/CrmSearchBar";
 
 const CRM_NAV_ITEMS = [
   { href: "/admin/crm", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/crm/submissions", label: "Anfragen", icon: Inbox, exact: false, badgeKey: "submissions" as const },
+  { href: "/admin/crm/bookings", label: "Termine", icon: CalendarDays, exact: false },
   { href: "/admin/crm/customers", label: "Kunden", icon: Users, exact: false },
   { href: "/admin/crm/groups", label: "Gruppen", icon: UsersRound, exact: false },
   { href: "/admin/crm/projects", label: "Projekte", icon: FolderKanban, exact: false },

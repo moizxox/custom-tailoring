@@ -508,3 +508,39 @@ model CustomPage {
 
   @@index([published])
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Booking — appointments + blocked slots (atelier calendar)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model AppointmentRequest {
+  id          String   @id @default(cuid())
+  locationId  String
+  serviceId   String?
+  serviceLabel String
+  date        String   // YYYY-MM-DD
+  time        String   // HH:mm
+  durationMin Int      @default(30)
+  name        String
+  email       String
+  phone       String?
+  notes       String?
+  status      String   @default("pending") // pending | confirmed | cancelled | completed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([date, locationId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model BookingBlock {
+  id         String   @id @default(cuid())
+  locationId String?  // null = all locations
+  startAt    DateTime
+  endAt      DateTime
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  @@index([startAt, endAt])
+}

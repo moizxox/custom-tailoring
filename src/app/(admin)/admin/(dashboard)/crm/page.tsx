@@ -22,6 +22,7 @@ export default async function CrmDashboardPage() {
   let recentProjects: ProjectCard[] = [];
   let unreadMessages = 0;
   let unreadSubmissions = 0;
+  let pendingBookings = 0;
 
   try {
     [
@@ -33,6 +34,7 @@ export default async function CrmDashboardPage() {
       recentProjects,
       unreadMessages,
       unreadSubmissions,
+      pendingBookings,
     ] = await Promise.all([
       prisma.customer.count(),
       prisma.group.count(),
@@ -54,6 +56,7 @@ export default async function CrmDashboardPage() {
         where: { senderRole: "customer", isInternal: false, readAt: null },
       }),
       prisma.contactSubmission.count({ where: { read: false } }),
+      prisma.appointmentRequest.count({ where: { status: "pending" } }).catch(() => 0),
     ]);
   } catch (error) {
     console.error("[crm] dashboard load failed:", error);
@@ -64,6 +67,7 @@ export default async function CrmDashboardPage() {
     { label: "Gruppen", value: groupCount, icon: UsersRound, href: "/admin/crm/groups", color: "bg-purple-500/10 text-purple-400" },
     { label: "Projekte gesamt", value: projectCount, icon: FolderKanban, href: "/admin/crm/projects", color: "bg-emerald-500/10 text-emerald-400" },
     { label: "Aktive Projekte", value: activeProjectCount, icon: FolderKanban, href: "/admin/crm/projects", color: "bg-amber-500/10 text-amber-400" },
+    { label: "Offene Termine", value: pendingBookings, icon: AlertCircle, href: "/admin/crm/bookings", color: "bg-orange-500/10 text-orange-400" },
     { label: "Ungelesene Nachrichten", value: unreadMessages, icon: MessageSquare, href: "/admin/crm/projects", color: "bg-rose-500/10 text-rose-400" },
     { label: "Neue Anfragen", value: unreadSubmissions, icon: Inbox, href: "/admin/crm/submissions?unread=true", color: "bg-sky-500/10 text-sky-400" },
   ];
