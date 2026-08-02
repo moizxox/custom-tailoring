@@ -23,6 +23,12 @@ interface ProductDetailViewProps {
     tierPricing: TierPricing;
   };
   tierDefinitions: ShopTierDefinition[];
+  contact?: {
+    phone: string;
+    phoneHref: string;
+    whatsapp: string;
+    email: string;
+  };
 }
 
 const DESC_CUTOFF = 220;
@@ -121,7 +127,15 @@ function QualityAccordion({
   );
 }
 
-export function ProductDetailView({ product, tierDefinitions }: ProductDetailViewProps) {
+function buildInquiryMessage(productName: string, quality?: string, price?: string) {
+  const lines = [`Anfrage zum Produkt: ${productName}`];
+  if (quality) lines.push(`Qualitätsstufe: ${quality}`);
+  if (price) lines.push(`Richtpreis: ${price}`);
+  lines.push("", "Meine Nachricht:", "");
+  return lines.join("\n");
+}
+
+export function ProductDetailView({ product, tierDefinitions, contact }: ProductDetailViewProps) {
   const enabledTiers = getEnabledTiers(product.tierPricing);
   const availableTierCards = mergeTierDefinitions(tierDefinitions, product.tierPricing).filter((t) => t.available);
   const hasVariants = enabledTiers.length > 0;
@@ -131,6 +145,17 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
   const [selectedTier, setSelectedTier] = useState<TierKey>(defaultTier);
   const [openAccordion, setOpenAccordion] = useState<TierKey | null>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const [enquiry, setEnquiry] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const images =
     product.galleryUrls.length > 0
@@ -139,25 +164,68 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
 
   const selectedPrice =
     product.tierPricing[selectedTier]?.price ?? enabledTiers[0]?.option.price ?? "";
+  const selectedQuality = hasVariants
+    ? availableTierCards.find((t) => t.key === selectedTier)?.name ?? "Standard"
+    : undefined;
 
   const inquiryHref = useMemo(() => {
     const p = new URLSearchParams({ produkt: product.name });
     if (hasVariants) {
-      const label = availableTierCards.find((t) => t.key === selectedTier)?.name ?? "Standard";
-      p.set("qualitaet", label);
+      if (selectedQuality) p.set("qualitaet", selectedQuality);
       if (selectedPrice) p.set("preis", selectedPrice);
     }
     return `/kontakt?${p.toString()}`;
-  }, [product.name, selectedTier, selectedPrice, availableTierCards, hasVariants]);
+  }, [product.name, selectedQuality, selectedPrice, hasVariants]);
+
+  function syncMessageFromSelection() {
+    setEnquiry((f) => ({
+      ...f,
+      message: buildInquiryMessage(product.name, selectedQuality, selectedPrice || undefined),
+    }));
+  }
+
+  function openEnquiryForm() {
+    syncMessageFromSelection();
+    setSent(false);
+    setSubmitError("");
+    requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  async function handleEnquirySubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSending(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/kontakt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: enquiry.name,
+          email: enquiry.email,
+          phone: enquiry.phone,
+          message: enquiry.message || buildInquiryMessage(product.name, selectedQuality, selectedPrice || undefined),
+          costumeType: `Katalog: ${product.name}`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data.error ?? "Fehler beim Senden.");
+        return;
+      }
+      setSent(true);
+    } catch {
+      setSubmitError("Verbindungsfehler. Bitte versuchen Sie es erneut.");
+    } finally {
+      setSending(false);
+    }
+  }
 
   return (
     <>
-      {/* ── Two-column product section ─────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px] xl:grid-cols-[1fr_480px] gap-10 xl:gap-16 items-start">
-
-        {/* ── Left: image gallery ──────────────────────────────────── */}
         <div className="flex flex-col-reverse sm:flex-row gap-3">
-          {/* Thumbnail strip */}
           {images.length > 1 && (
             <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[600px]">
               {images.map((src, i) => (
@@ -178,7 +246,6 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
             </div>
           )}
 
-          {/* Main image */}
           <div className="relative flex-1 aspect-[3/4] max-h-[720px] rounded-2xl overflow-hidden bg-sand-light/30">
             {images.map((src, i) => (
               <Image
@@ -202,10 +269,7 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
           </div>
         </div>
 
-        {/* ── Right: sticky product info ───────────────────────────── */}
         <div ref={stickyRef} className="lg:sticky lg:top-24 flex flex-col gap-7">
-
-          {/* Category + name */}
           <div>
             <p className="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-periwinkle-dark mb-2">
               {product.category}
@@ -214,10 +278,8 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
             {product.description && <DescriptionBlock text={product.description} />}
           </div>
 
-          {/* Divider */}
           <div className="h-px bg-stone-light" />
 
-          {/* Tier picker */}
           {hasVariants ? (
             <div className="flex flex-col gap-4">
               <div className="flex items-baseline justify-between gap-2">
@@ -232,28 +294,42 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
                   const style = TIER_STYLES[key];
                   const isActive = selectedTier === key;
                   return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setSelectedTier(key)}
-                    className={cn(
-                      "flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-sans font-medium border-2 transition-all duration-150",
-                      isActive ? style.pillSelected : style.pill,
-                    )}
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <span className={cn("w-2 h-2 rounded-full shrink-0", style.dot)} />
-                      {label}
-                    </span>
-                    <span
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => {
+                        setSelectedTier(key);
+                        setEnquiry((f) => {
+                          const quality =
+                            availableTierCards.find((t) => t.key === key)?.name ?? label;
+                          const price = product.tierPricing[key]?.price ?? option.price ?? "";
+                          if (!f.message.trim() || f.message.startsWith("Anfrage zum Produkt:")) {
+                            return {
+                              ...f,
+                              message: buildInquiryMessage(product.name, quality, price || undefined),
+                            };
+                          }
+                          return f;
+                        });
+                      }}
                       className={cn(
-                        "text-[12px] font-semibold",
-                        isActive ? "text-charcoal/75" : "text-charcoal-lighter",
+                        "flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-sans font-medium border-2 transition-all duration-150",
+                        isActive ? style.pillSelected : style.pill,
                       )}
                     >
-                      {option.price}
-                    </span>
-                  </button>
+                      <span className="flex items-center gap-2.5">
+                        <span className={cn("w-2 h-2 rounded-full shrink-0", style.dot)} />
+                        {label}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[12px] font-semibold",
+                          isActive ? "text-charcoal/75" : "text-charcoal-lighter",
+                        )}
+                      >
+                        {option.price}
+                      </span>
+                    </button>
                   );
                 })}
               </div>
@@ -266,23 +342,62 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
             </div>
           )}
 
-          {/* CTA */}
           <div className="flex flex-col gap-3">
-            <Link
-              href={inquiryHref}
+            <button
+              type="button"
+              onClick={openEnquiryForm}
               className="btn-primary w-full justify-center py-3.5 text-base rounded-xl"
             >
               Anfrage senden
-            </Link>
+            </button>
+            {contact && (
+              <div className="flex items-center justify-center gap-3">
+                <a
+                  href={contact.phoneHref}
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-stone-light text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark transition-colors"
+                  aria-label={`Anrufen ${contact.phone}`}
+                  title={contact.phone}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </a>
+                <a
+                  href={contact.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-stone-light text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark transition-colors"
+                  aria-label="WhatsApp"
+                  title="WhatsApp"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.139-1.633-.807-1.886-.9-.253-.093-.437-.139-.62.14-.184.278-.713.9-.873 1.085-.16.185-.32.208-.597.07-.277-.139-1.17-.43-2.227-1.372-.823-.734-1.379-1.64-1.54-1.917-.16-.278-.017-.428.122-.566.125-.124.278-.323.416-.485.139-.162.185-.278.278-.463.093-.185.047-.347-.023-.485-.07-.139-.62-1.497-.85-2.05-.224-.54-.45-.466-.62-.475l-.528-.01c-.185 0-.485.07-.739.347-.253.278-.967.945-.967 2.304s.99 2.673 1.127 2.85c.139.185 1.946 2.97 4.715 4.163.66.285 1.174.455 1.575.582.661.21 1.263.18 1.738.11.53-.079 1.633-.668 1.864-1.313.23-.645.23-1.197.16-1.313-.07-.116-.255-.185-.532-.324z" />
+                    <path d="M12.004 2.003c-5.523 0-10 4.477-10 10 0 1.761.46 3.412 1.264 4.846L2.003 22l5.29-1.386A9.953 9.953 0 0012.004 22c5.523 0 10-4.477 10-10s-4.477-10-10-10zm0 18.15a8.13 8.13 0 01-4.14-1.14l-.297-.176-3.14.823.838-3.06-.193-.314a8.13 8.13 0 01-1.25-4.283c0-4.5 3.66-8.16 8.16-8.16s8.16 3.66 8.16 8.16-3.66 8.15-8.138 8.15z" />
+                  </svg>
+                </a>
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="inline-flex items-center justify-center w-11 h-11 rounded-full border border-stone-light text-charcoal hover:border-periwinkle-dark hover:text-periwinkle-dark transition-colors"
+                  aria-label={`E-Mail ${contact.email}`}
+                  title={contact.email}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </a>
+              </div>
+            )}
             <Link
               href="/shop"
               className="btn-outline-dark w-full justify-center py-3 rounded-xl text-sm"
             >
               ← Alle Produkte
             </Link>
+            <Link href={inquiryHref} className="text-center font-sans text-[11px] text-charcoal/45 hover:text-periwinkle-dark">
+              Oder über die Kontaktseite anfragen
+            </Link>
           </div>
 
-          {/* Note */}
           <p className="font-sans text-[11px] text-charcoal/40 leading-relaxed border-t border-stone-light pt-4">
             Massanfertigung nach Mass — Preise sind Richtwerte. Verbindlich wird die Bestellung erst nach
             schriftlicher Bestätigung (Angebot oder Auftragsbestätigung).
@@ -290,7 +405,87 @@ export function ProductDetailView({ product, tierDefinitions }: ProductDetailVie
         </div>
       </div>
 
-      {/* ── Full-width: quality details accordion ──────────────────── */}
+      <div ref={formRef} className="mt-16 pt-10 border-t border-stone-light scroll-mt-28">
+        <div className="max-w-xl">
+          <p className="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-charcoal/40 mb-1">
+            Unverbindliche Anfrage
+          </p>
+          <h2 className="font-serif text-2xl text-charcoal mb-2">Zu diesem Kostüm anfragen</h2>
+          <p className="font-sans text-sm text-charcoal-lighter mb-6">
+            Produkt und gewählte Qualitätsstufe sind vorausgefüllt. Wir melden uns in der Regel innerhalb von 1–2 Werktagen.
+          </p>
+
+          {sent ? (
+            <div className="rounded-2xl border border-stone-light bg-white p-8 text-center">
+              <h3 className="font-serif text-xl text-charcoal mb-2">Vielen Dank!</h3>
+              <p className="font-sans text-sm text-charcoal-light mb-4">
+                Ihre Anfrage zu «{product.name}» ist bei uns eingegangen.
+              </p>
+              <button type="button" onClick={() => setSent(false)} className="btn-outline-dark text-xs">
+                Neue Anfrage
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleEnquirySubmit} className="rounded-2xl border border-stone-light bg-white p-6 sm:p-8 flex flex-col gap-4 shadow-soft">
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                  Name *
+                </span>
+                <input
+                  type="text"
+                  required
+                  className="input-field"
+                  value={enquiry.name}
+                  onChange={(e) => setEnquiry((f) => ({ ...f, name: e.target.value }))}
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                  E-Mail *
+                </span>
+                <input
+                  type="email"
+                  required
+                  className="input-field"
+                  value={enquiry.email}
+                  onChange={(e) => setEnquiry((f) => ({ ...f, email: e.target.value }))}
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                  Telefon
+                </span>
+                <input
+                  type="tel"
+                  className="input-field"
+                  value={enquiry.phone}
+                  onChange={(e) => setEnquiry((f) => ({ ...f, phone: e.target.value }))}
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="font-sans text-[11px] font-semibold tracking-[0.12em] uppercase text-warmgrey">
+                  Nachricht *
+                </span>
+                <textarea
+                  required
+                  rows={6}
+                  className="input-field resize-y min-h-[140px]"
+                  value={enquiry.message || buildInquiryMessage(product.name, selectedQuality, selectedPrice || undefined)}
+                  onChange={(e) => setEnquiry((f) => ({ ...f, message: e.target.value }))}
+                  onFocus={() => {
+                    if (!enquiry.message.trim()) syncMessageFromSelection();
+                  }}
+                />
+              </label>
+              {submitError && <p className="font-sans text-sm text-red-600">{submitError}</p>}
+              <button type="submit" disabled={sending} className="btn-primary w-full justify-center py-3 rounded-xl disabled:opacity-60">
+                {sending ? "Wird gesendet…" : "Anfrage absenden"}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+
       {hasVariants && availableTierCards.length > 0 && (
         <div className="mt-16 pt-10 border-t border-stone-light">
           <div className="max-w-3xl">

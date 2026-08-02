@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { KontaktPageContent } from "@/app/(site)/kontakt/KontaktPageContent";
 import { getCmsContent } from "@/lib/cms/content";
 import { getAtelierLocations } from "@/lib/cms/site-locations";
@@ -46,13 +47,15 @@ export default async function KontaktPage() {
   const formAppearance = parseSectionAppearance(formContent);
 
   return (
-    <KontaktPageContent
-      hero={hero}
-      form={form}
-      formAppearance={formAppearance}
-      contact={contact}
-      locations={locations}
-      timetables={timetables}
-    />
+    <Suspense fallback={null}>
+      <KontaktPageContent
+        hero={hero}
+        form={form}
+        formAppearance={formAppearance}
+        contact={contact}
+        locations={locations}
+        timetables={timetables}
+      />
+    </Suspense>
   );
 }

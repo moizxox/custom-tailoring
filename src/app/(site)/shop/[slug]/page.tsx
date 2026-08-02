@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ProductDetailView } from "@/components/shop/ProductDetailView";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
+import { getSiteContactInfo } from "@/lib/cms/site-contact";
 import { splitLines } from "@/lib/cms/section-helpers";
 import { getShopProductBySlug } from "@/lib/products";
 import type { ShopTierDefinition } from "@/lib/product-tiers";
@@ -24,9 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ShopProductPage({ params }: Props) {
   const { slug } = await params;
-  const [product, tiersContent] = await Promise.all([
+  const [product, tiersContent, contact] = await Promise.all([
     getShopProductBySlug(slug),
     getCmsContent("shop", "tiers", {}),
+    getSiteContactInfo(),
   ]);
   if (!product) notFound();
 
@@ -42,20 +44,18 @@ export default async function ShopProductPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-offwhite">
-      {/* Slim breadcrumb bar */}
       <div className="border-b border-stone-light bg-white">
         <div className="container-site py-3">
           <nav className="flex items-center gap-2 font-sans text-[12px] text-charcoal-lighter">
             <Link href="/" className="hover:text-charcoal transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/shop" className="hover:text-charcoal transition-colors">Shop</Link>
+            <Link href="/shop" className="hover:text-charcoal transition-colors">Katalog</Link>
             <span>/</span>
             <span className="text-charcoal font-medium truncate max-w-[200px]">{product.name}</span>
           </nav>
         </div>
       </div>
 
-      {/* Product content */}
       <section className="py-10 sm:py-14">
         <div className="container-site">
           <ProductDetailView
@@ -68,6 +68,12 @@ export default async function ShopProductPage({ params }: Props) {
               tierPricing: product.tierPricing,
             }}
             tierDefinitions={tierDefinitions}
+            contact={{
+              phone: contact.phone,
+              phoneHref: contact.phoneHref,
+              whatsapp: contact.whatsapp,
+              email: contact.email,
+            }}
           />
         </div>
       </section>
