@@ -3,6 +3,7 @@ import { PAGE_SCHEMAS } from "@/lib/cms/page-schemas";
 import { prisma } from "@/lib/db/prisma";
 import { getAdminT, getSchemaTranslator } from "@/lib/i18n/admin";
 import { localizePageSchema } from "@/lib/i18n/schema-labels";
+import { CustomPagesSection } from "./CustomPagesSection";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pages" };
@@ -16,8 +17,26 @@ async function getEditedSlugs(): Promise<Set<string>> {
   }
 }
 
+async function getCustomPages() {
+  try {
+    return await prisma.customPage.findMany({
+      orderBy: { updatedAt: "desc" },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        navLabel: true,
+        published: true,
+        updatedAt: true,
+      },
+    });
+  } catch {
+    return [];
+  }
+}
+
 export default async function PagesListPage() {
-  const editedSlugs = await getEditedSlugs();
+  const [editedSlugs, customPages] = await Promise.all([getEditedSlugs(), getCustomPages()]);
   const t = getAdminT("pages");
   const ts = getSchemaTranslator();
   const pages = PAGE_SCHEMAS.map((page) => localizePageSchema(ts, page));
@@ -72,6 +91,13 @@ export default async function PagesListPage() {
           </tbody>
         </table>
       </div>
+
+      <CustomPagesSection
+        initialPages={customPages.map((p) => ({
+          ...p,
+          updatedAt: p.updatedAt.toISOString(),
+        }))}
+      />
     </div>
   );
 }

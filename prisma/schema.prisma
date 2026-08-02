@@ -491,3 +491,20 @@ model ProjectReclamation {
   @@index([projectId])
   @@index([status])
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Custom CMS pages (admin-created content at /seite/[slug])
+// ─────────────────────────────────────────────────────────────────────────────
+
+model CustomPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  navLabel  String?
+  published Boolean  @default(false)
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published])
+}
