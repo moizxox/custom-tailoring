@@ -8,7 +8,7 @@ import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
-import { getPageSectionOrder } from "@/lib/cms/section-order";
+import { getPageSectionOrder, getPageHiddenSections, filterVisibleSectionKeys } from "@/lib/cms/section-order";
 import { getShopProducts } from "@/lib/products";
 import { splitLines } from "@/lib/cms/section-helpers";
 import { TIER_KEYS, TIER_STYLES } from "@/lib/product-tiers";
@@ -57,6 +57,7 @@ function tierAnchorId(name: string, index: number) {
 export default async function ShopPage() {
   const [
     order,
+    hidden,
     heroContent,
     tiersContent,
     categoriesContent,
@@ -65,6 +66,7 @@ export default async function ShopPage() {
     shopData,
   ] = await Promise.all([
     getPageSectionOrder("shop"),
+    getPageHiddenSections("shop"),
     getCmsContent("shop", "hero", {}),
     getCmsContent("shop", "tiers", {}),
     getCmsContent("shop", "categories", {}),
@@ -72,6 +74,7 @@ export default async function ShopPage() {
     getCmsContent("shop", "bottomCta", {}),
     getShopProducts(),
   ]);
+  const visibleOrder = filterVisibleSectionKeys(order, hidden);
 
   const hero = mapPageHeroContent(heroContent, DEFAULT_HERO);
   const tiersDefaults = getDefaultSectionContent("shop", "tiers");
@@ -137,7 +140,7 @@ export default async function ShopPage() {
         textColor={hero.textColor}
         accentColor={hero.accentColor}
         appearance={hero.appearance}
-        breadcrumbs={[{ label: "Katalog", href: "/shop" }]}
+        breadcrumbs={undefined}
       />
     ),
     tiers: () => {
@@ -307,7 +310,7 @@ export default async function ShopPage() {
 
   return (
     <>
-      {order
+      {visibleOrder
         .filter((key): key is ShopSectionKey => key in renderers)
         .map((key) => (
           <div key={key}>{renderers[key]()}</div>

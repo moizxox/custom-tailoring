@@ -23,6 +23,15 @@ export async function getPageSectionOrder(pageSlug: string): Promise<string[]> {
   return [...valid, ...missing];
 }
 
+/** Section keys hidden on the public site (still editable in CMS). */
+export async function getPageHiddenSections(pageSlug: string): Promise<string[]> {
+  noStore();
+  const defaults = new Set(getDefaultSectionOrder(pageSlug));
+  const saved = await getSiteSetting<unknown>(`page_hidden_${pageSlug}`, []);
+  if (!Array.isArray(saved)) return [];
+  return saved.filter((key): key is string => typeof key === "string" && defaults.has(key));
+}
+
 export function sortSectionsByOrder<T extends { key: string }>(sections: T[], order: string[]): T[] {
   const map = new Map(sections.map((s) => [s.key, s]));
   const sorted: T[] = [];
@@ -34,4 +43,10 @@ export function sortSectionsByOrder<T extends { key: string }>(sections: T[], or
     if (!order.includes(sec.key)) sorted.push(sec);
   }
   return sorted;
+}
+
+/** Public render: drop hidden keys while preserving order. */
+export function filterVisibleSectionKeys(order: string[], hidden: string[]): string[] {
+  const hide = new Set(hidden);
+  return order.filter((key) => !hide.has(key));
 }

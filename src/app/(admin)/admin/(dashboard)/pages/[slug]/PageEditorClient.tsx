@@ -8,7 +8,7 @@ import MediaPickerModal from "@/components/admin/MediaPickerModal";
 import ItemsEditor from "@/components/admin/ItemsEditor";
 import ColorPicker from "@/components/admin/ColorPicker";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Check, Search, Image as ImageIcon, ChevronUp, GripVertical } from "lucide-react";
+import { ChevronDown, Check, Search, Image as ImageIcon, ChevronUp, GripVertical, Eye, EyeOff } from "lucide-react";
 import { sortSectionsByOrder } from "@/lib/cms/section-order";
 
 const FIELD_GROUP_META: { key: FieldGroup; label: string }[] = [
@@ -58,6 +58,7 @@ interface Props {
   initialContents: Record<string, Record<string, unknown>>;
   pageLabel: string;
   initialSectionOrder: string[];
+  initialHiddenSections?: string[];
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────────────── */
@@ -199,13 +200,14 @@ function FieldInput({
 }
 
 /* ─── Main component ─────────────────────────────────────────────────────── */
-export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel, initialSectionOrder }: Props) {
+export default function PageEditorClient({ pageSlug, sections, initialContents, pageLabel, initialSectionOrder, initialHiddenSections = [] }: Props) {
   const t = useTranslations("editor");
   const router = useRouter();
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [imagePickerMeta, setImagePickerMeta] = useState<{ sectionKey: string; fieldKey: string } | null>(null);
   const [search, setSearch] = useState("");
   const [sectionOrder, setSectionOrder] = useState<string[]>(initialSectionOrder);
+  const [hiddenSections, setHiddenSections] = useState<string[]>(initialHiddenSections);
   const [orderSaving, setOrderSaving] = useState(false);
   const [orderSaved, setOrderSaved] = useState(false);
   const [orderError, setOrderError] = useState("");
@@ -237,6 +239,15 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
     setStates((prev) => ({ ...prev, [key]: { ...prev[key], expanded: !prev[key].expanded } }));
   }, []);
 
+  const toggleHidden = useCallback((key: string) => {
+    setHiddenSections((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
+    );
+    setOrderSaved(false);
+    setOrderDirty(true);
+    setOrderError("");
+  }, []);
+
   const moveSection = useCallback((key: string, direction: -1 | 1) => {
     setSectionOrder((prev) => {
       const idx = prev.indexOf(key);
@@ -259,12 +270,19 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
       const res = await fetch(`/admin/api/pages/${pageSlug}/order`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order: sectionOrder }),
+        body: JSON.stringify({ order: sectionOrder, hidden: hiddenSections }),
       });
-      const data = (await res.json().catch(() => ({}))) as { error?: string; order?: string[] };
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        order?: string[];
+        hidden?: string[];
+      };
       if (!res.ok) throw new Error(data.error || "order save failed");
       if (Array.isArray(data.order) && data.order.length) {
         setSectionOrder(data.order);
+      }
+      if (Array.isArray(data.hidden)) {
+        setHiddenSections(data.hidden);
       }
       setOrderDirty(false);
       setOrderSaved(true);
@@ -275,7 +293,7 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
     } finally {
       setOrderSaving(false);
     }
-  }, [pageSlug, sectionOrder, router]);
+  }, [pageSlug, sectionOrder, hiddenSections, router]);
 
   const saveSection = useCallback(async (sectionKey: string, section: CmsSection) => {
     setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saving: true, error: "" } }));
@@ -397,7 +415,10 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
           const orderIndex = sectionOrder.indexOf(section.key);
           return (
             <div key={section.key} ref={(el) => { sectionRefs.current[section.key] = el; }}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden scroll-mt-6">
+              className={cn(
+                "bg-white rounded-xl border border-gray-200 overflow-hidden scroll-mt-6",
+                hiddenSections.includes(section.key) && "opacity-70 border-amber-200",
+              )}>
 
               {/* Section header */}
               <div className="flex items-stretch">
@@ -424,6 +445,30 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0 ml-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleHidden(section.key);
+                      }}
+                      title={hiddenSections.includes(section.key) ? "Auf Website anzeigen" : "Auf Website ausblenden"}
+                      className={cn(
+                        "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium border transition-colors",
+                        hiddenSections.includes(section.key)
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-white text-gray-500 border-gray-200 hover:border-violet-200 hover:text-violet-700",
+                      )}
+                    >
+                      {hiddenSections.includes(section.key) ? (
+                        <>
+                          <EyeOff className="w-3.5 h-3.5" /> Ausgeblendet
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-3.5 h-3.5" /> Sichtbar
+                        </>
+                      )}
+                    </button>
                     {st.saved && (
                       <span className="text-xs text-green-600 flex items-center gap-1 font-medium">
                         <Check className="w-3 h-3" /> Saved

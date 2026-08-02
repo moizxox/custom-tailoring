@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getAdminT, getSchemaTranslator } from "@/lib/i18n/admin";
 import { localizePageSchema } from "@/lib/i18n/schema-labels";
 import { getDefaultSectionContent } from "@/lib/cms/default-content";
-import { getPageSectionOrder, sortSectionsByOrder } from "@/lib/cms/section-order";
+import { getPageSectionOrder, getPageHiddenSections, sortSectionsByOrder } from "@/lib/cms/section-order";
 import { notFound } from "next/navigation";
 import PageEditorClient from "./PageEditorClient";
 import Link from "next/link";
@@ -37,7 +37,10 @@ export default async function PageEditorPage({ params }: Props) {
   if (!schema) notFound();
 
   const savedContent = await loadSectionContent(slug);
-  const sectionOrder = await getPageSectionOrder(slug);
+  const [sectionOrder, hiddenSections] = await Promise.all([
+    getPageSectionOrder(slug),
+    getPageHiddenSections(slug),
+  ]);
   const t = getAdminT("pages");
   const ts = getSchemaTranslator();
   const localized = localizePageSchema(ts, schema);
@@ -69,6 +72,7 @@ export default async function PageEditorPage({ params }: Props) {
         initialContents={initialContents}
         pageLabel={localized.label}
         initialSectionOrder={sectionOrder}
+        initialHiddenSections={hiddenSections}
       />
     </div>
   );

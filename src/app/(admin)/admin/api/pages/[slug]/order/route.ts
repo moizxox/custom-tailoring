@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
   if (!schema) return NextResponse.json({ error: "Unknown page slug" }, { status: 404 });
 
   try {
-    const body = (await request.json()) as { order?: unknown };
+    const body = (await request.json()) as { order?: unknown; hidden?: unknown };
     if (!Array.isArray(body.order) || !body.order.every((k) => typeof k === "string")) {
       return NextResponse.json({ error: "order array of section keys required" }, { status: 400 });
     }
@@ -30,16 +30,29 @@ export async function PUT(request: NextRequest, { params }: Props) {
     }
     const missing = schema.sections.map((s) => s.key).filter((key) => !sanitized.includes(key));
     const finalOrder = [...sanitized, ...missing];
-    const value = finalOrder as unknown as Prisma.InputJsonValue;
+    const orderValue = finalOrder as unknown as Prisma.InputJsonValue;
 
-    await prisma.siteSettings.upsert({
-      where: { key: `page_order_${slug}` },
-      update: { value },
-      create: { key: `page_order_${slug}`, value },
-    });
+    const hiddenRaw = Array.isArray(body.hidden) ? body.hidden : [];
+    const finalHidden = hiddenRaw.filter(
+      (key): key is string => typeof key === "string" && validKeys.has(key),
+    );
+    const hiddenValue = finalHidden as unknown as Prisma.InputJsonValue;
+
+    await prisma.$transaction([
+      prisma.siteSettings.upsert({
+        where: { key: `page_order_${slug}` },
+        update: { value: orderValue },
+        create: { key: `page_order_${slug}`, value: orderValue },
+      }),
+      prisma.siteSettings.upsert({
+        where: { key: `page_hidden_${slug}` },
+        update: { value: hiddenValue },
+        create: { key: `page_hidden_${slug}`, value: hiddenValue },
+      }),
+    ]);
 
     revalidateCmsPage(slug);
-    return NextResponse.json({ ok: true, order: finalOrder });
+    return NextResponse.json({ ok: true, order: finalOrder, hidden: finalHidden });
   } catch (err) {
     console.error("[cms] section order save failed:", err);
     return NextResponse.json(

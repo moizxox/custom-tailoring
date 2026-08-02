@@ -8,7 +8,11 @@ import { AboutBand } from "@/components/sections/AboutBand";
 import { getCmsContent } from "@/lib/cms/content";
 import { HOME_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import { mapHomeHeroContent, parseHeadingTag } from "@/lib/cms/helpers";
-import { getPageSectionOrder } from "@/lib/cms/section-order";
+import {
+  filterVisibleSectionKeys,
+  getPageHiddenSections,
+  getPageSectionOrder,
+} from "@/lib/cms/section-order";
 import type { ComponentProps } from "react";
 
 type HomeSectionKey =
@@ -21,7 +25,11 @@ type HomeSectionKey =
   | "contactSection";
 
 export async function renderHomePageSections() {
-  const order = await getPageSectionOrder("home");
+  const [order, hidden] = await Promise.all([
+    getPageSectionOrder("home"),
+    getPageHiddenSections("home"),
+  ]);
+  const visibleOrder = filterVisibleSectionKeys(order, hidden);
 
   const [
     heroContent,
@@ -70,7 +78,7 @@ export async function renderHomePageSections() {
     ),
   };
 
-  return order
+  return visibleOrder
     .filter((key): key is HomeSectionKey => key in renderers)
     .map((key) => <div key={key}>{renderers[key]()}</div>);
 }
