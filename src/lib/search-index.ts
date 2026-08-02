@@ -13,7 +13,7 @@ export interface SearchResult {
 
 const STATIC_PAGES: SearchResult[] = [
   { title: "Startseite", description: "Kostümschneiderei für Guggenmusik, Cliquen und Einzelpersonen", href: "/", type: "page", keywords: "home fasnacht basel" },
-  { title: "Shop", description: "Fasnachtskostüme online — Stammkostüme, Sujet, ab Lager", href: "/shop", type: "page", keywords: "kaufen bestellen online" },
+  { title: "Katalog", description: "Fasnachtskostüme — Stammkostüme, Sujet, ab Lager. Unverbindliche Anfrage.", href: "/shop", type: "page", keywords: "katalog shop kostüme anfrage online" },
   { title: "Galerie", description: "Unsere fertigen Kostüme und Referenzen", href: "/galerie", type: "page", keywords: "bilder fotos referenzen gugge clique" },
   { title: "Mass Nehmen", description: "Massanfertigung und digitales Massblatt", href: "/massfertigung", type: "page", keywords: "mass massnehmen anprobe kundenbereich" },
   { title: "Kostümveredelung", description: "Stickerei, Stoffdruck und textile Veredelung", href: "/kostuemveredelung", type: "page", keywords: "stickerei druck logo veredelung" },
@@ -23,6 +23,7 @@ const STATIC_PAGES: SearchResult[] = [
   { title: "Atelier", description: "Werkstatt, Stoffe und Standort", href: "/atelier", type: "page", keywords: "werkstatt nähen" },
   { title: "Stoffe & Materialien", description: "Stoffauswahl und Materialberatung", href: "/stoffe", type: "page", keywords: "stoff fabric material" },
   { title: "Kontakt", description: "Atelier Pratteln und Therwil — Telefon, E-Mail", href: "/kontakt", type: "page", keywords: "kontakt adresse telefon email whatsapp" },
+  { title: "Kundenbereich", description: "Login, Masseingabe und Projektstatus für Kundinnen und Kunden", href: "/kundenbereich/login", type: "page", keywords: "login portal massblatt masse kunde" },
   {
     title: "Termin buchen",
     description: "Beratung und Terminvereinbarung mit Standortwahl",

@@ -15,13 +15,13 @@ import { TIER_KEYS, TIER_STYLES } from "@/lib/product-tiers";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Shop",
+  title: "Katalog",
   description:
     "Basler Fasnachtskostüme, Stammkostüme und Sujetkostüme — in den Qualitätsstufen Einfach, Standard und Premium.",
 };
 
 const DEFAULT_HERO = {
-  label: "Online Shop",
+  label: "Katalog",
   title: "Fasnachtskostüme",
   titleAccent: "Kostüme",
   subtitle:
@@ -137,7 +137,7 @@ export default async function ShopPage() {
         textColor={hero.textColor}
         accentColor={hero.accentColor}
         appearance={hero.appearance}
-        breadcrumbs={[{ label: "Shop", href: "/shop" }]}
+        breadcrumbs={[{ label: "Katalog", href: "/shop" }]}
       />
     ),
     tiers: () => {

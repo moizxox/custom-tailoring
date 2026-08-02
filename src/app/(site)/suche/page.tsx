@@ -15,7 +15,7 @@ export default async function SuchePage({ searchParams }: { searchParams: Promis
 
   return (
     <>
-      <PageHero label="Suche" title="Suchen" subtitle="Seiten, Leistungen und Shop-Angebote finden." breadcrumbs={[{ label: "Suche", href: "/suche" }]} />
+      <PageHero label="Suche" title="Suchen" subtitle="Seiten, Leistungen und Katalog-Angebote finden." breadcrumbs={[{ label: "Suche", href: "/suche" }]} />
       <section className="py-16 section-bg-white">
         <div className="container-site max-w-2xl">
           {!q ? (
@@ -23,7 +23,7 @@ export default async function SuchePage({ searchParams }: { searchParams: Promis
           ) : results.length === 0 ? (
             <div className="text-center py-8">
               <p className="font-serif text-xl text-charcoal mb-2">Keine Ergebnisse für «{q}»</p>
-              <p className="font-sans text-sm text-charcoal-lighter mb-6">Versuchen Sie andere Begriffe wie «Termin», «Shop» oder «Mass».</p>
+              <p className="font-sans text-sm text-charcoal-lighter mb-6">Versuchen Sie andere Begriffe wie «Termin», «Katalog» oder «Mass».</p>
               <Link href="/kontakt" className="btn-primary inline-flex">
                 Kontakt aufnehmen
               </Link>
