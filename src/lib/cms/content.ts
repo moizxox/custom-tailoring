@@ -1,15 +1,18 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 
 /**
  * Fetch CMS content for a page section from the database.
  * Falls back to the provided static default if no DB record exists.
  * Safe to call in server components — throws only if DB is truly unreachable.
+ * noStore: admin saves must appear on the live site immediately.
  */
 export async function getCmsContent<T>(
   pageSlug: string,
   sectionKey: string,
   fallback: T
 ): Promise<T> {
+  noStore();
   try {
     const row = await prisma.pageContent.findUnique({
       where: { pageSlug_sectionKey: { pageSlug, sectionKey } },
@@ -27,6 +30,7 @@ export async function getCmsContent<T>(
  * Falls back to the provided default if not found.
  */
 export async function getSiteSetting<T>(key: string, fallback: T): Promise<T> {
+  noStore();
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key } });
     if (!row) return fallback;
