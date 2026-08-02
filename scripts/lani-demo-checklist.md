@@ -45,3 +45,26 @@ Record one continuous walkthrough (~12–15 min). Cover **prior QA items** and *
 
 ## Close
 “Please review now — everything from your document and message is covered on our side first. Favicon later as noted.”
+
+---
+
+## Left on our / her end (say this in the video)
+
+Do **not** pretend these are finished in code alone:
+
+### You (Moiz) before go-live
+- Deploy + `prisma db push` on VPS  
+- Hostinger **SMTP password** for `info@kostuem-schneiderei.ch` in VPS `.env`  
+- Confirm Admin Settings contact = info@  
+- Drop Massblatt PDF into `public/documents/massblatt.pdf` when she sends it  
+- Favicon later  
+
+### Lani in CMS (walk her through these)
+- Rename nav **Shop → Katalog** if still old in saved nav  
+- Edit Katalog headings (“Unsere Produkte” etc.) under Pages → Katalog  
+- Footer contact / brand / empty social URLs under Navigation → Footer  
+- Impressum: remove unused lines & extra sections she crossed out  
+- Termin: set service **durations**, edit Time Slots text/times, toggle Time Slots off off-season  
+- CRM → Termine: enter her real **blocked times**  
+- Team photos / none icons; any other text she still wants changed  
+- Send Massblatt AI label list + PDF when ready  
