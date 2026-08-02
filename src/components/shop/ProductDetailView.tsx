@@ -391,7 +391,7 @@ export function ProductDetailView({ product, tierDefinitions, contact }: Product
               href="/shop"
               className="btn-outline-dark w-full justify-center py-3 rounded-xl text-sm"
             >
-              ← Alle Produkte
+              ← Alle Angebote
             </Link>
             <Link href={inquiryHref} className="text-center font-sans text-[11px] text-charcoal/45 hover:text-periwinkle-dark">
               Oder über die Kontaktseite anfragen

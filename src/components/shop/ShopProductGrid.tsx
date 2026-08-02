@@ -56,7 +56,7 @@ export function ShopProductGrid({ products }: ShopProductGridProps) {
             </p>
             <div className="mt-auto flex flex-col gap-2">
               <Link href={`/shop/${product.slug}`} className="btn-secondary w-full justify-center text-xs">
-                Details ansehen
+                Angebot ansehen
               </Link>
               <Link
                 href={`/kontakt?produkt=${encodeURIComponent(product.name)}`}
