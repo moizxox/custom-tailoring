@@ -73,7 +73,7 @@ Code alone cannot finish these. Track them before / during the demo.
 | **Deploy + DB** | Run `pnpm run deploy` when VPS is reachable. On server, `prisma db push` so `AppointmentRequest` + `BookingBlock` exist. | VPS / `scripts/deploy-vps.sh` |
 | **Business email (SMTP)** | Set Hostinger mailbox for `info@kostuem-schneiderei.ch`: `NODEMAILER_HOST`, `NODEMAILER_PORT`, `NODEMAILER_USER`, `NODEMAILER_PASSWORD`, plus `CONTACT_NOTIFICATION_EMAIL=info@…`, `NODEMAILER_FROM=info@…`. Code already defaults notify/From to info@ — **password must be on the server**. | VPS `.env` |
 | **Admin Settings contact** | Confirm Admin → Settings contact email = `info@kostuem-schneiderei.ch` (not private Gmail). | Live admin |
-| **Massblatt PDF** | When Lani sends the PDF, save as `public/documents/massblatt.pdf` and redeploy (download button appears automatically). | Repo + deploy |
+| **Massblatt PDF** | Done in repo: `public/documents/massblatt.pdf` (final) + `massblatt-layout.pdf` (1-page). Redeploy so live `/massfertigung` serves them. | Repo + deploy |
 | **Favicon** | Swap old favicon later (she marked “later”). | `public/` / app icons |
 | **Push git** | Push `main` when ready. | GitHub |
 
@@ -96,20 +96,18 @@ These are **editable in CMS**; defaults may still show old wording until she sav
 | **Team copy / photos** | Pages → Über uns → Team | Set icons to none / clear; add photos; fix bios. |
 | **Any page text/images she dislikes** | Pages → [page] → section | Edit or hide with eye toggle + save order. |
 | **Custom pages** | Pages → Neue Seite | Create seasonal pages and link from Navigation. |
-| **Massblatt German labels** | Waiting on her | She said she’ll send an AI-prepared label list — we apply when it arrives. |
+| **Massblatt German labels** | Done from her PDFs | Portal + CRM fields match Massformular wording (A–O). |
 
 ### E3 — Explicitly waiting on Lani
 
-1. Final **Massblatt PDF** file.
-2. Corrected **German measurement field titles** (AI list).
-3. Full site review (she said she only checked parts so far).
-4. Confirmation that Hostinger **info@** password is available for SMTP.
+1. Full site review (she said she only checked parts so far).
+2. Confirmation that the public Massformular PDFs on `/massfertigung` are the versions she wants customers to download.
+3. Confirmation that Hostinger **info@** password is available for SMTP.
 
 ---
 
 ## F. Out of scope this pass
 
 - Deploy / live VPS push (until you run it)
-- Final Massblatt DE glossary until she sends the AI list
 - Favicon swap (deferred)
 - Moving email hosting off Hostinger

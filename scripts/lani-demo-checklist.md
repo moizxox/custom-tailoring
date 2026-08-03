@@ -30,18 +30,19 @@ Record one continuous walkthrough (~12–15 min). Cover **prior QA items** and *
 21. **Team** — no broken icon when none; only «Unser Team» (no wrong subtitle).
 22. **Logo** — Linvara AG larger under brand.
 23. **Massfertigung** — Präzision block removed; title without «Vertrauliche».
-24. **Massblatt** — title Massblatt; no Aktuelles Projekt/Kategorie; no letter badges; submit with partial fields.
-25. **Dashed mistake** — cleaner section borders (no wrong dashed stitch line on contact band).
+24. **Massblatt (portal)** — title Massblatt; no Aktuelles Projekt/Kategorie; no letter badges; submit with partial fields; labels match her Massformular PDF (Kopfumfang, Halsumfang, Bundumfang…).
+25. **Massblatt PDF download** — `/massfertigung` → open «Massformular als PDF herunterladen» (her final 2-page form) and optionally «Alternativlayout (1 Seite)»; confirm files open correctly.
+26. **Dashed mistake** — cleaner section borders (no wrong dashed stitch line on contact band).
 
 ## Portal / CRM professional
-26. **Kundenbereich** — find in header → login → Massblatt.
-27. **CRM dashboard** — Anfragen, Termine, Kunden, Projekte.
-28. **CRM Termine** — list requests, confirm/cancel, block calendar with help text.
-29. **CRM Masse** — project Masse labels (not Massnahme).
-30. **Business email** — enquiry From/notify info@ (show if available).
+27. **Kundenbereich** — find in header → login → Massblatt (same DE labels as PDF).
+28. **CRM dashboard** — Anfragen, Termine, Kunden, Projekte.
+29. **CRM Termine** — list requests, confirm/cancel, block calendar with help text.
+30. **CRM Masse** — project Masse labels match PDF wording (letter + DE title).
+31. **Business email** — enquiry From/notify info@ (show if available).
 
 ## Responsive
-31. Home, Katalog, Kontakt, Termin, portal at mobile width.
+32. Home, Katalog, Kontakt, Termin, portal at mobile width.
 
 ## Close
 “Please review now — everything from your document and message is covered on our side first. Favicon later as noted.”
@@ -53,18 +54,17 @@ Record one continuous walkthrough (~12–15 min). Cover **prior QA items** and *
 Do **not** pretend these are finished in code alone:
 
 ### You (Moiz) before go-live
-- Deploy + `prisma db push` on VPS  
-- Hostinger **SMTP password** for `info@kostuem-schneiderei.ch` in VPS `.env`  
-- Confirm Admin Settings contact = info@  
-- Drop Massblatt PDF into `public/documents/massblatt.pdf` when she sends it  
-- Favicon later  
+- Deploy + `prisma db push` on VPS (so Massblatt PDFs + label updates are live)
+- Hostinger **SMTP password** for `info@kostuem-schneiderei.ch` in VPS `.env`
+- Confirm Admin Settings contact = info@
+- Favicon later
 
 ### Lani in CMS (walk her through these)
-- Rename nav **Shop → Katalog** if still old in saved nav  
-- Edit Katalog headings (“Unsere Produkte” etc.) under Pages → Katalog  
-- Footer contact / brand / empty social URLs under Navigation → Footer  
-- Impressum: remove unused lines & extra sections she crossed out  
-- Termin: set service **durations**, edit Time Slots text/times, toggle Time Slots off off-season  
-- CRM → Termine: enter her real **blocked times**  
-- Team photos / none icons; any other text she still wants changed  
-- Send Massblatt AI label list + PDF when ready  
+- Rename nav **Shop → Katalog** if still old in saved nav
+- Edit Katalog headings (“Unsere Produkte” etc.) under Pages → Katalog
+- Footer contact / brand / empty social URLs under Navigation → Footer
+- Impressum: remove unused lines & extra sections she crossed out
+- Termin: set service **durations**, edit Time Slots text/times, toggle Time Slots off off-season
+- CRM → Termine: enter her real **blocked times**
+- Team photos / none icons; any other text she still wants changed
+- Confirm the two Massformular PDFs on `/massfertigung` are the versions she wants public

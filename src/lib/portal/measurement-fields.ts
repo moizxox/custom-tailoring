@@ -9,32 +9,54 @@ export interface MeasurementField {
   required?: boolean;
 }
 
-/** Letter-coded fields matching the client's Massblatt diagrams (A–O, K1/K2, etc.)
- *  None are hard-required — garment type determines which values matter.
+/**
+ * Letter-coded body measurements aligned with Linvara Massformular
+ * (`public/documents/massblatt.pdf`). None are hard-required — garment
+ * type determines which values matter.
  */
 const LETTER_FIELDS: MeasurementField[] = [
-  { key: "o", letter: "O", label: "Körpergrösse", unit: "cm" },
-  { key: "a", letter: "A", label: "Hals (oben)", unit: "cm" },
-  { key: "b", letter: "B", label: "Hals (unten)", unit: "cm" },
-  { key: "c1", letter: "C1", label: "Schulterbreite", unit: "cm" },
-  { key: "c2", letter: "C2", label: "Rückenbreite", unit: "cm" },
+  { key: "a", letter: "A", label: "Kopfumfang", unit: "cm" },
+  { key: "b", letter: "B", label: "Halsumfang", unit: "cm" },
+  { key: "c1", letter: "C1", label: "Schulterbreite vorne", unit: "cm" },
+  { key: "c2", letter: "C2", label: "Schulterbreite hinten", unit: "cm" },
   { key: "d", letter: "D", label: "Brustumfang", unit: "cm" },
   { key: "e", letter: "E", label: "Taillenumfang", unit: "cm" },
-  { key: "f1", letter: "F1", label: "Hüfte (vorne)", unit: "cm" },
-  { key: "f2", letter: "F2", label: "Hüfte (hinten)", unit: "cm" },
+  { key: "f1", letter: "F1", label: "Bundumfang auf Bauchnabelhöhe", unit: "cm" },
+  { key: "f2", letter: "F2", label: "Hüftumfang", unit: "cm" },
   { key: "g", letter: "G", label: "Oberschenkelumfang", unit: "cm" },
-  { key: "h", letter: "H", label: "Knieumfang", unit: "cm" },
-  { key: "i1", letter: "I1", label: "Innenbeinlänge (links)", unit: "cm" },
-  { key: "i2", letter: "I2", label: "Innenbeinlänge (rechts)", unit: "cm", hint: "Falls abweichend" },
-  { key: "k1a", letter: "K1a", label: "Seitenlänge (vorne)", unit: "cm" },
-  { key: "k1b", letter: "K1b", label: "Seitenlänge (seitlich)", unit: "cm" },
-  { key: "k1c", letter: "K1c", label: "Seitenlänge (hinten)", unit: "cm" },
-  { key: "k2a", letter: "K2a", label: "Mitte (vorne)", unit: "cm" },
-  { key: "k2b", letter: "K2b", label: "Mitte (seitlich)", unit: "cm" },
-  { key: "k2c", letter: "K2c", label: "Mitte (hinten)", unit: "cm" },
-  { key: "l", letter: "L", label: "Armlänge", unit: "cm" },
-  { key: "m", letter: "M", label: "Handgelenkumfang", unit: "cm" },
-  { key: "n", letter: "N", label: "Oberarmumfang", unit: "cm" },
+  { key: "h", letter: "H", label: "Wadenumfang", unit: "cm" },
+  { key: "i1", letter: "I1", label: "Ab Bundhöhe bis Knie", unit: "cm" },
+  { key: "i2", letter: "I2", label: "Ab Bundhöhe bis Knöchel", unit: "cm" },
+  {
+    key: "k1a",
+    letter: "K1a",
+    label: "Mitte Schulter über Brust bis angezeigte Linie",
+    unit: "cm",
+  },
+  {
+    key: "k1b",
+    letter: "K1b",
+    label: "Mitte Schulter über Brust bis Kniehöhe",
+    unit: "cm",
+  },
+  {
+    key: "k1c",
+    letter: "K1c",
+    label: "Mitte Schulter über Brust bis Knöchel",
+    unit: "cm",
+  },
+  { key: "k2a", letter: "K2a", label: "Nackenmitte bis Bundhöhe", unit: "cm" },
+  {
+    key: "k2b",
+    letter: "K2b",
+    label: "Nackenmitte bis Höhe der Kniekehlen",
+    unit: "cm",
+  },
+  { key: "k2c", letter: "K2c", label: "Nackenmitte bis Knöchel", unit: "cm" },
+  { key: "n", letter: "N", label: "Armlochumfang", unit: "cm" },
+  { key: "m", letter: "M", label: "Oberarmumfang", unit: "cm" },
+  { key: "l", letter: "L", label: "Ärmellänge", unit: "cm" },
+  { key: "o", letter: "O", label: "Körpergrösse", unit: "cm" },
 ];
 
 export function getFieldsForCategory(category: CostumeCategory): MeasurementField[] {

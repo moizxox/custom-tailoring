@@ -93,7 +93,8 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
         <div>
           <h2 className="font-serif text-2xl text-charcoal">Massblatt</h2>
           <p className="font-sans text-sm text-charcoal-light mt-1">
-            Füllen Sie die Masse aus, die für Ihr Kostüm relevant sind. Nicht alle Felder sind Pflicht.
+            Bitte füllen Sie nur die von uns angeforderten Masse aus. Nicht für jedes Kostüm
+            werden alle Angaben benötigt. Alle Angaben in cm; das Massband soll locker anliegen.
           </p>
         </div>
 
@@ -122,7 +123,7 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="notes" className="text-xs font-sans font-medium text-charcoal-light">
-            Anmerkungen (optional)
+            Weitere Bemerkungen (optional)
           </label>
           <textarea
             id="notes"
