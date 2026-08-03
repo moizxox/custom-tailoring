@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CustomPageBlock, CustomPageContent } from "@/lib/cms/custom-pages";
+import { slugifyPageTitle } from "@/lib/cms/custom-pages";
 
 interface PageData {
   id: string;
@@ -22,6 +23,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
   const router = useRouter();
   const [title, setTitle] = useState(initial.title);
   const [slug, setSlug] = useState(initial.slug);
+  const [slugManual, setSlugManual] = useState(true);
   const [navLabel, setNavLabel] = useState(initial.navLabel ?? "");
   const [published, setPublished] = useState(initial.published);
   const [content, setContent] = useState<CustomPageContent>(initial.content);
@@ -80,6 +82,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
         return;
       }
       setSlug(data.page.slug);
+      setSlugManual(true);
       setMessage(published ? "Gespeichert und veröffentlicht." : "Entwurf gespeichert.");
       router.refresh();
     } catch {
@@ -131,21 +134,50 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
           Titel (Admin / Browser-Titel)
           <input
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              const next = e.target.value;
+              setTitle(next);
+              if (!slugManual) setSlug(slugifyPageTitle(next));
+            }}
             className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
             required
           />
         </label>
         <label className="block text-xs font-medium text-gray-600">
-          Slug
-          <input
-            value={slug}
-            onChange={(e) => setSlug(e.target.value.toLowerCase())}
-            className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono"
-            required
-          />
-          <span className="text-[11px] text-gray-400 mt-1 block">Öffentliche URL: /seite/{slug || "…"}</span>
+          Web-Adresse{" "}
+          <span className="font-normal text-gray-400">(änderbar)</span>
+          <div className="mt-1 flex items-center gap-0 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 focus-within:ring-2 focus-within:ring-violet-400">
+            <span className="px-3 py-2 text-xs text-gray-400 font-mono shrink-0 border-r border-gray-200 bg-gray-100">
+              /seite/
+            </span>
+            <input
+              value={slug}
+              onChange={(e) => {
+                setSlugManual(true);
+                setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"));
+              }}
+              className="flex-1 px-3 py-2 text-sm font-mono bg-transparent outline-none"
+              required
+            />
+          </div>
+          <span className="text-[11px] text-gray-400 mt-1 block">
+            Öffentliche URL: /seite/{slug || "…"}
+          </span>
         </label>
+        {!slugManual ? (
+          <p className="text-[11px] text-violet-600">Web-Adresse folgt dem Titel automatisch.</p>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setSlugManual(false);
+              setSlug(slugifyPageTitle(title));
+            }}
+            className="text-xs text-violet-600 hover:underline"
+          >
+            Wieder aus Titel erzeugen
+          </button>
+        )}
         <label className="block text-xs font-medium text-gray-600">
           Nav-Label (optional, Hinweis für Navigation)
           <input

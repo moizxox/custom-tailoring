@@ -7,30 +7,19 @@ import {
   MapPin, Type, Link2, ExternalLink, Columns3, Share2,
 } from "lucide-react";
 import type { NavItem, FooterContent, FooterLocation } from "@/lib/cms/navigation";
+import type { NavPageOption } from "@/lib/cms/nav-page-options";
+import { PageLinkSelect } from "@/components/admin/PageLinkSelect";
 import { cn } from "@/lib/utils";
 
 function uid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-function useDraggableList<T extends { id: string }>(
-  items: T[],
-  onChange: (items: T[]) => void
-) {
-  const dragIndex = useRef<number | null>(null);
+const PLACEHOLDER_LABELS = new Set(["", "Neuer Link", "New link", "New Link"]);
 
-  function onDragStart(i: number) { dragIndex.current = i; }
-  function onDragOver(e: React.DragEvent, i: number) {
-    e.preventDefault();
-    if (dragIndex.current === null || dragIndex.current === i) return;
-    const next = [...items];
-    const [moved] = next.splice(dragIndex.current, 1);
-    next.splice(i, 0, moved);
-    dragIndex.current = i;
-    onChange(next);
-  }
-  function onDrop() { dragIndex.current = null; }
-  return { onDragStart, onDragOver, onDrop };
+function suggestLabel(current: string, option: NavPageOption): string {
+  if (PLACEHOLDER_LABELS.has(current.trim())) return option.label.replace(/ \(Entwurf\)$/, "");
+  return current;
 }
 
 /* ─── Shared field row ───────────────────────────────────────────────────── */
@@ -49,7 +38,15 @@ function Field({ label, children, hint }: { label: string; children: React.React
 const inp = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent transition";
 
 /* ─── Nav item row (supports drag-to-nest submenus) ──────────────────────── */
-function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (items: NavItem[]) => void }) {
+function NavItemsEditor({
+  items,
+  onChange,
+  pageOptions,
+}: {
+  items: NavItem[];
+  onChange: (items: NavItem[]) => void;
+  pageOptions: NavPageOption[];
+}) {
   const dragFrom = useRef<{ parentId: string | null; index: number } | null>(null);
   const [dropHint, setDropHint] = useState<{ parentId: string | null; index: number; nest?: boolean } | null>(null);
 
@@ -93,7 +90,6 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
     const child = items.find((it) => it.id === childId);
     const parent = items.find((it) => it.id === parentId);
     if (!child || !parent) return;
-    // Promote child's own children to top-level first (max depth 1)
     const promoted = child.children ?? [];
     const without = items.filter((it) => it.id !== childId);
     const nested: NavItem = {
@@ -105,7 +101,6 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
     };
     onChange(
       without
-        .flatMap((it) => (it.id === parentId ? [it] : [it]))
         .map((it) =>
           it.id === parentId
             ? { ...it, children: [...(it.children ?? []), nested] }
@@ -186,7 +181,6 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
       return;
     }
 
-    // Dragging a child onto a top-level item → unnest next to / under target
     const parent = items.find((it) => it.id === from.parentId);
     const child = parent?.children?.[from.index];
     if (!child) return;
@@ -210,7 +204,6 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
       return;
     }
 
-    // Move between parents
     const srcParent = items.find((it) => it.id === from.parentId);
     const child = srcParent?.children?.[from.index];
     if (!child) return;
@@ -261,7 +254,7 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
           setDropHint(null);
         }}
         className={cn(
-          "flex items-center gap-2 bg-white border rounded-xl px-3 py-2.5 group cursor-grab active:cursor-grabbing hover:border-violet-200 hover:shadow-sm transition-all",
+          "flex flex-wrap sm:flex-nowrap items-center gap-2 bg-white border rounded-xl px-3 py-2.5 group cursor-grab active:cursor-grabbing hover:border-violet-200 hover:shadow-sm transition-all",
           opts.nested ? "ml-8 border-violet-100 bg-violet-50/40" : "border-gray-200",
           item.hidden && "opacity-55",
           isDropTarget && dropHint?.nest && !opts.nested && "ring-2 ring-violet-400 border-violet-300",
@@ -275,14 +268,18 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
         <input
           value={item.label}
           onChange={(e) => opts.onUpdate({ label: e.target.value })}
-          placeholder="Label"
-          className={cn(inp, "flex-1")}
+          placeholder="Bezeichnung"
+          className={cn(inp, "flex-1 min-w-[8rem]")}
         />
-        <input
+        <PageLinkSelect
+          compact
           value={item.href}
-          onChange={(e) => opts.onUpdate({ href: e.target.value })}
-          placeholder="/path"
-          className={cn(inp, "flex-1 font-mono text-xs")}
+          options={pageOptions}
+          onChange={(href) => opts.onUpdate({ href })}
+          onSelectPage={(option) =>
+            opts.onUpdate({ href: option.href, label: suggestLabel(item.label, option) })
+          }
+          selectClassName="min-w-[10rem]"
         />
         <label className="flex items-center gap-1.5 text-xs text-gray-500 shrink-0 cursor-pointer select-none whitespace-nowrap" title="Auf der Website in der Navigation anzeigen">
           <input
@@ -332,8 +329,7 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
   return (
     <div className="space-y-2">
       <p className="text-xs text-gray-500 bg-violet-50 border border-violet-100 rounded-xl px-3 py-2">
-        Drag to reorder. Drop slightly to the <strong>right</strong> of an item (or use → Sub) to create a submenu.
-        Use this for seasonal links like «Massen ohne Termin» — nest under Service, or remove when out of season.
+        Seite aus der Liste wählen — kein Tippen von URLs nötig. Rechts ziehen (oder → Sub) für Untermenüs.
       </p>
       {items.map((item, i) => (
         <div key={item.id} className="space-y-1.5">
@@ -372,7 +368,7 @@ function NavItemsEditor({ items, onChange }: { items: NavItem[]; onChange: (item
         onClick={add}
         className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-violet-300 hover:text-violet-600 transition-colors"
       >
-        <Plus className="w-4 h-4" /> Add nav item
+        <Plus className="w-4 h-4" /> Nav-Eintrag hinzufügen
       </button>
     </div>
   );
@@ -397,17 +393,18 @@ function LocationEditor({ loc, onChange, onRemove }: { loc: FooterLocation; onCh
 
 /* ─── Footer column editor ───────────────────────────────────────────────── */
 function FooterColumnEditor({
-  column, onChange, onRemove,
+  column, onChange, onRemove, pageOptions,
 }: {
   column: { heading: string; links: { label: string; href: string }[] };
   onChange: (col: typeof column) => void;
   onRemove: () => void;
+  pageOptions: NavPageOption[];
 }) {
   function updateLink(i: number, patch: Partial<{ label: string; href: string }>) {
     onChange({ ...column, links: column.links.map((l, idx) => (idx === i ? { ...l, ...patch } : l)) });
   }
   function removeLink(i: number) { onChange({ ...column, links: column.links.filter((_, idx) => idx !== i) }); }
-  function addLink() { onChange({ ...column, links: [...column.links, { label: "New link", href: "/" }] }); }
+  function addLink() { onChange({ ...column, links: [...column.links, { label: "Neuer Link", href: "/" }] }); }
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
@@ -417,14 +414,22 @@ function FooterColumnEditor({
       </div>
       <div className="space-y-1.5 pl-1">
         {column.links.map((link, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <input value={link.label} onChange={(e) => updateLink(i, { label: e.target.value })} placeholder="Label" className={cn(inp, "flex-1 text-xs")} />
-            <input value={link.href} onChange={(e) => updateLink(i, { href: e.target.value })} placeholder="/path" className={cn(inp, "flex-1 text-xs font-mono")} />
+          <div key={i} className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+            <input value={link.label} onChange={(e) => updateLink(i, { label: e.target.value })} placeholder="Bezeichnung" className={cn(inp, "flex-1 text-xs min-w-[8rem]")} />
+            <PageLinkSelect
+              compact
+              value={link.href}
+              options={pageOptions}
+              onChange={(href) => updateLink(i, { href })}
+              onSelectPage={(option) =>
+                updateLink(i, { href: option.href, label: suggestLabel(link.label, option) })
+              }
+            />
             <button type="button" onClick={() => removeLink(i)} className="p-1 text-gray-300 hover:text-red-400 transition-colors"><X className="w-3.5 h-3.5" /></button>
           </div>
         ))}
         <button type="button" onClick={addLink} className="text-xs text-gray-400 hover:text-violet-600 flex items-center gap-1 mt-1 transition-colors">
-          <Plus className="w-3 h-3" /> Add link
+          <Plus className="w-3 h-3" /> Link hinzufügen
         </button>
       </div>
     </div>
@@ -451,7 +456,15 @@ function Section({ title, icon, children }: { title: string; icon: React.ReactNo
 /* ─── Main ───────────────────────────────────────────────────────────────── */
 type Tab = "nav" | "footer";
 
-export default function NavEditorClient({ initialNav, initialFooter }: { initialNav: NavItem[]; initialFooter: FooterContent }) {
+export default function NavEditorClient({
+  initialNav,
+  initialFooter,
+  pageOptions,
+}: {
+  initialNav: NavItem[];
+  initialFooter: FooterContent;
+  pageOptions: NavPageOption[];
+}) {
   const [tab, setTab] = useState<Tab>("nav");
   const [nav, setNav] = useState<NavItem[]>(initialNav);
   const [footer, setFooter] = useState<FooterContent>(initialFooter);
@@ -487,11 +500,10 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
 
   return (
     <div className="max-w-3xl mx-auto">
-      {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Navigation & Footer</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Drag to reorder. Drop rightward (or → Sub) to nest a submenu.</p>
+          <p className="text-sm text-gray-500 mt-0.5">Seiten aus der Liste wählen — URLs werden automatisch gesetzt.</p>
         </div>
         <div className="flex items-center gap-3">
           {saved && (
@@ -507,7 +519,6 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
 
       {error && <div className="mb-4 px-4 py-2.5 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl">{error}</div>}
 
-      {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
         {([
           { key: "nav" as Tab, label: "Header nav", icon: <Navigation className="w-3.5 h-3.5" /> },
@@ -522,7 +533,6 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
         ))}
       </div>
 
-      {/* ── Header nav tab ── */}
       {tab === "nav" && (
         <div className="space-y-4">
           <Section title="Header CTA button" icon={<Link2 className="w-4 h-4" />}>
@@ -531,23 +541,25 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
               <Field label="Button label">
                 <input value={footer.ctaPrimaryLabel} onChange={(e) => setF("ctaPrimaryLabel", e.target.value)} className={inp} />
               </Field>
-              <Field label="Button link">
-                <input value={footer.ctaPrimaryUrl} onChange={(e) => setF("ctaPrimaryUrl", e.target.value)} className={cn(inp, "font-mono")} />
+              <Field label="Button link" hint="Seite wählen">
+                <PageLinkSelect
+                  value={footer.ctaPrimaryUrl}
+                  options={pageOptions}
+                  onChange={(href) => setF("ctaPrimaryUrl", href)}
+                />
               </Field>
             </div>
           </Section>
 
           <Section title="Navigation links" icon={<Navigation className="w-4 h-4" />}>
-            <p className="text-xs text-gray-400 -mt-2">Drag to reorder. Nest items for dropdown submenus (e.g. seasonal «Massen ohne Termin»).</p>
-            <NavItemsEditor items={nav} onChange={setNav} />
+            <p className="text-xs text-gray-400 -mt-2">Bezeichnung + Seite auswählen. Untermenüs mit → Sub oder Rechts-Drop.</p>
+            <NavItemsEditor items={nav} onChange={setNav} pageOptions={pageOptions} />
           </Section>
         </div>
       )}
 
-      {/* ── Footer tab ── */}
       {tab === "footer" && (
         <div className="space-y-4">
-          {/* CTA Banner */}
           <Section title="CTA banner" icon={<Type className="w-4 h-4" />}>
             <div className="grid sm:grid-cols-2 gap-3">
               <Field label="Small label text">
@@ -559,19 +571,26 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
               <Field label="Primary button label">
                 <input value={footer.ctaPrimaryLabel} onChange={(e) => setF("ctaPrimaryLabel", e.target.value)} className={inp} />
               </Field>
-              <Field label="Primary button URL">
-                <input value={footer.ctaPrimaryUrl} onChange={(e) => setF("ctaPrimaryUrl", e.target.value)} className={cn(inp, "font-mono")} />
+              <Field label="Primary button page">
+                <PageLinkSelect
+                  value={footer.ctaPrimaryUrl}
+                  options={pageOptions}
+                  onChange={(href) => setF("ctaPrimaryUrl", href)}
+                />
               </Field>
               <Field label="Secondary button label">
                 <input value={footer.ctaSecondaryLabel} onChange={(e) => setF("ctaSecondaryLabel", e.target.value)} className={inp} />
               </Field>
-              <Field label="Secondary button URL">
-                <input value={footer.ctaSecondaryUrl} onChange={(e) => setF("ctaSecondaryUrl", e.target.value)} className={cn(inp, "font-mono")} />
+              <Field label="Secondary button page">
+                <PageLinkSelect
+                  value={footer.ctaSecondaryUrl}
+                  options={pageOptions}
+                  onChange={(href) => setF("ctaSecondaryUrl", href)}
+                />
               </Field>
             </div>
           </Section>
 
-          {/* Brand */}
           <Section title="Brand / logo" icon={<Type className="w-4 h-4" />}>
             <div className="grid sm:grid-cols-3 gap-3">
               <Field label="Brand name (first part)">
@@ -586,7 +605,6 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
             </div>
           </Section>
 
-          {/* Contact */}
           <Section title="Contact info" icon={<Phone className="w-4 h-4" />}>
             <div className="grid sm:grid-cols-2 gap-3">
               <Field label="Phone number (display)" hint="visible text">
@@ -613,7 +631,6 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
             </div>
           </Section>
 
-          {/* Social */}
           <Section title="Social media" icon={<Share2 className="w-4 h-4" />}>
             <div className="grid sm:grid-cols-2 gap-3">
               <Field label="Instagram URL">
@@ -631,7 +648,6 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
             </div>
           </Section>
 
-          {/* Locations */}
           <Section title="Atelier locations" icon={<MapPin className="w-4 h-4" />}>
             <p className="text-xs text-gray-400 -mt-2">Name, street address, and ZIP + city for each atelier.</p>
             <div className="space-y-3">
@@ -650,12 +666,12 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
             </div>
           </Section>
 
-          {/* Link columns */}
           <Section title="Footer link columns" icon={<Columns3 className="w-4 h-4" />}>
             <p className="text-xs text-gray-400 -mt-2">Each column shows in the main footer grid.</p>
             <div className="space-y-3">
               {footer.columns.map((col, i) => (
                 <FooterColumnEditor key={i} column={col}
+                  pageOptions={pageOptions}
                   onChange={(c) => updateColumn(i, c)}
                   onRemove={() => setFooter((f) => ({ ...f, columns: f.columns.filter((_, idx) => idx !== i) }))}
                 />
@@ -668,37 +684,45 @@ export default function NavEditorClient({ initialNav, initialFooter }: { initial
             </div>
           </Section>
 
-          {/* Legal links */}
           <Section title="Legal footer links" icon={<Columns3 className="w-4 h-4" />}>
             <p className="text-xs text-gray-400 -mt-2">Impressum, AGB, Datenschutz, etc. shown in the footer bar.</p>
             <div className="space-y-2">
               {(footer.legalLinks ?? []).map((link, i) => (
-                <div key={i} className="flex gap-2 items-center">
+                <div key={i} className="flex flex-wrap sm:flex-nowrap gap-2 items-center">
                   <input
                     value={link.label}
                     onChange={(e) => setF("legalLinks", footer.legalLinks.map((l, idx) => idx === i ? { ...l, label: e.target.value } : l))}
-                    placeholder="Label"
-                    className={cn(inp, "flex-1")}
+                    placeholder="Bezeichnung"
+                    className={cn(inp, "flex-1 min-w-[8rem]")}
                   />
-                  <input
+                  <PageLinkSelect
+                    compact
                     value={link.href}
-                    onChange={(e) => setF("legalLinks", footer.legalLinks.map((l, idx) => idx === i ? { ...l, href: e.target.value } : l))}
-                    placeholder="/impressum"
-                    className={cn(inp, "flex-1 font-mono")}
+                    options={pageOptions}
+                    onChange={(href) => setF("legalLinks", footer.legalLinks.map((l, idx) => idx === i ? { ...l, href } : l))}
+                    onSelectPage={(option) =>
+                      setF(
+                        "legalLinks",
+                        footer.legalLinks.map((l, idx) =>
+                          idx === i
+                            ? { ...l, href: option.href, label: suggestLabel(l.label, option) }
+                            : l,
+                        ),
+                      )
+                    }
                   />
                   <button type="button" onClick={() => setF("legalLinks", footer.legalLinks.filter((_, idx) => idx !== i))} className="p-2 text-gray-300 hover:text-red-400">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               ))}
-              <button type="button" onClick={() => setF("legalLinks", [...(footer.legalLinks ?? []), { label: "", href: "" }])}
+              <button type="button" onClick={() => setF("legalLinks", [...(footer.legalLinks ?? []), { label: "", href: "/" }])}
                 className="w-full flex items-center justify-center gap-2 py-2 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-violet-300 hover:text-violet-600 transition-colors">
                 <Plus className="w-4 h-4" /> Add legal link
               </button>
             </div>
           </Section>
 
-          {/* Copyright */}
           <Section title="Copyright text" icon={<Type className="w-4 h-4" />}>
             <Field label="Copyright line" hint="Year is added automatically">
               <input value={footer.copyrightText} onChange={(e) => setF("copyrightText", e.target.value)} className={inp} />
