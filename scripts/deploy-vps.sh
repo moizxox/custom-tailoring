@@ -52,10 +52,10 @@ pnpm install --frozen-lockfile
 BUSINESS_EMAIL="info@kostuem-schneiderei.ch"
 if [ -f .env ]; then
   for KEY in CONTACT_NOTIFICATION_EMAIL NODEMAILER_FROM RESEND_FROM_EMAIL; do
-    if grep -q "^${KEY}=" .env; then
-      sed -i "s|^${KEY}=.*|${KEY}=${BUSINESS_EMAIL}|" .env
+    if grep -q "^\${KEY}=" .env; then
+      sed -i "s|^\${KEY}=.*|\${KEY}=\${BUSINESS_EMAIL}|" .env
     else
-      echo "${KEY}=${BUSINESS_EMAIL}" >> .env
+      echo "\${KEY}=\${BUSINESS_EMAIL}" >> .env
     fi
   done
 fi
@@ -75,6 +75,7 @@ curl -s -o /dev/null -w "katalog:%{http_code}\\n" http://127.0.0.1:3000/katalog 
 curl -s -o /dev/null -w "shop:%{http_code}\\n" http://127.0.0.1:3000/shop || true
 curl -s -o /dev/null -w "kontakt:%{http_code}\\n" http://127.0.0.1:3000/kontakt || true
 curl -s -o /dev/null -w "portal:%{http_code}\\n" http://127.0.0.1:3000/kundenbereich/login || true
+curl -s http://127.0.0.1:3000/api/termin >/dev/null 2>&1 || true
 curl -s http://127.0.0.1:3000/api/kontakt/status || true
 echo
 REMOTE
