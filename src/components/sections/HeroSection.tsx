@@ -183,13 +183,15 @@ export function HeroSection({ acf, headingTag = "h1" }: HeroSectionProps) {
                   className="flex items-center gap-2 bg-white/85 border border-periwinkle-light/40 ring-1 ring-gold-muted/15 rounded-full pl-2 pr-4 py-1.5"
                 >
                   <div className="w-9 h-9 rounded-full bg-gold-lighter/60 flex items-center justify-center">
-                    <Image
-                      src={`/icons/sewing/${badge.icon_slug}`}
-                      alt=""
-                      width={18}
-                      height={18}
-                      className="icon-gold"
-                    />
+                    {badge.icon_slug?.trim() ? (
+                      <Image
+                        src={`/icons/sewing/${badge.icon_slug.trim()}`}
+                        alt=""
+                        width={18}
+                        height={18}
+                        className="icon-gold"
+                      />
+                    ) : null}
                   </div>
                   <span className="font-sans text-[11px] font-medium text-charcoal-light">
                     {badge.label}

@@ -18,6 +18,10 @@ export async function getCmsContent<T>(
       where: { pageSlug_sectionKey: { pageSlug, sectionKey } },
     });
     if (!row) return fallback;
+    // Merge so schema defaults (incl. Flex-Bausteine) fill missing keys without wiping CMS edits
+    if (fallback && typeof fallback === "object" && !Array.isArray(fallback) && row.content && typeof row.content === "object" && !Array.isArray(row.content)) {
+      return { ...(fallback as Record<string, unknown>), ...(row.content as Record<string, unknown>) } as T;
+    }
     return row.content as T;
   } catch {
     // DB not configured or unreachable — return static fallback gracefully

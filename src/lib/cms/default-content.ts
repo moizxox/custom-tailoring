@@ -177,8 +177,12 @@ export const MASSFERTIGUNG_SECTION_DEFAULTS: Record<string, Record<string, unkno
 };
 
 import { EXTRA_SECTION_DEFAULTS } from "@/lib/cms/extra-defaults";
+import { MODULAR_SECTION_DEFAULTS } from "@/lib/cms/modular-sections";
 
 export function getDefaultSectionContent(pageSlug: string, sectionKey: string): Record<string, unknown> {
+  if (sectionKey.startsWith("flex_")) {
+    return { ...(MODULAR_SECTION_DEFAULTS[sectionKey] ?? {}) };
+  }
   if (pageSlug === "home") return HOME_SECTION_DEFAULTS[sectionKey] ?? {};
   if (pageSlug === "service") return SERVICE_SECTION_DEFAULTS[sectionKey] ?? {};
   if (pageSlug === "massfertigung") return MASSFERTIGUNG_SECTION_DEFAULTS[sectionKey] ?? {};

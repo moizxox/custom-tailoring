@@ -91,25 +91,42 @@ export async function renderModularSection(
       );
     }
     case "flex_process": {
+      const steps = Array.isArray(content.steps)
+        ? (content.steps as { number?: string; title?: string; description?: string }[])
+            .filter((s) => s && typeof s === "object")
+            .map((s) => ({
+              number: String(s.number ?? ""),
+              title: String(s.title ?? ""),
+              description: String(s.description ?? ""),
+            }))
+        : [];
       return (
         <ProcessSection
           acf={{
+            ...(content as Record<string, unknown>),
             acf_fc_layout: "process",
             section_label: String(content.section_label ?? ""),
             heading: String(content.heading ?? ""),
             heading_accent: String(content.heading_accent ?? ""),
-            steps: Array.isArray(content.steps)
-              ? (content.steps as { number: string; title: string; description: string }[])
-              : [],
-            ...content,
-          }}
+            steps,
+          } as Parameters<typeof ProcessSection>[0]["acf"]}
         />
       );
     }
     case "flex_gallery": {
+      const preview_items = Array.isArray(content.preview_items)
+        ? (content.preview_items as { src?: string; category?: string; title?: string }[])
+            .filter((item) => item && typeof item === "object" && String(item.src ?? "").trim())
+            .map((item) => ({
+              src: String(item.src),
+              category: String(item.category ?? ""),
+              title: String(item.title ?? ""),
+            }))
+        : [];
       return (
         <GalleryPreview
           acf={{
+            ...(content as Record<string, unknown>),
             acf_fc_layout: "gallery_preview",
             section_label: String(content.section_label ?? ""),
             heading: String(content.heading ?? ""),
@@ -118,10 +135,7 @@ export async function renderModularSection(
             show_cta: content.show_cta !== false && content.show_cta !== "false",
             cta_label: String(content.cta_label ?? "Zur Galerie"),
             cta_url: String(content.cta_url ?? "/galerie"),
-            preview_items: Array.isArray(content.preview_items)
-              ? (content.preview_items as { src: string; category: string; title: string }[])
-              : [],
-            ...content,
+            preview_items,
           }}
         />
       );

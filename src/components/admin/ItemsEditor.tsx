@@ -177,8 +177,22 @@ function uid() { return Math.random().toString(36).slice(2, 9); }
 
 type ItemWithId = ItemRecord & { __id: string };
 
-function ensureId(items: ItemRecord[]): ItemWithId[] {
-  return items.map((it) => ({ ...it, __id: (it as ItemWithId).__id ?? uid() })) as ItemWithId[];
+function coerceItem(it: unknown): ItemRecord {
+  if (!it || typeof it !== "object" || Array.isArray(it)) return {};
+  return Object.fromEntries(
+    Object.entries(it as Record<string, unknown>)
+      .filter(([key]) => key !== "__id")
+      .map(([key, val]) => [key, val == null ? "" : String(val)]),
+  );
+}
+
+function ensureId(items: unknown): ItemWithId[] {
+  const list = Array.isArray(items) ? items : [];
+  return list.map((it) => {
+    const coerced = coerceItem(it);
+    const existingId = it && typeof it === "object" && !Array.isArray(it) ? (it as ItemWithId).__id : undefined;
+    return { ...coerced, __id: existingId || uid() };
+  });
 }
 
 export default function ItemsEditor({ value, onChange, itemFields }: ItemsEditorProps) {

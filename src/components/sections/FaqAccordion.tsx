@@ -161,12 +161,18 @@ export function FaqAccordion({
           ))}
         </div>
       )}
-      <div className="mt-12 text-center">
-        <p className="font-sans text-sm text-charcoal-light mb-5">{ctaText}</p>
-        <Link href="/kontakt" className="btn-primary inline-flex">
-          {ctaButton}
-        </Link>
-      </div>
+      {(ctaText?.trim() || ctaButton?.trim()) && (
+        <div className="mt-12 text-center">
+          {ctaText?.trim() ? (
+            <p className="font-sans text-sm text-charcoal-light mb-5">{ctaText}</p>
+          ) : null}
+          {ctaButton?.trim() ? (
+            <Link href="/kontakt" className="btn-primary inline-flex">
+              {ctaButton}
+            </Link>
+          ) : null}
+        </div>
+      )}
     </>
   );
 }

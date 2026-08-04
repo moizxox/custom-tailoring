@@ -120,7 +120,9 @@ function ServiceCard({ item }: { item: AcfServiceItem }) {
       )}
     >
       <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-soft">
-        <Image src={`/icons/sewing/${item.icon_slug}`} alt="" width={26} height={26} className="icon-periwinkle" />
+        {item.icon_slug?.trim() ? (
+          <Image src={`/icons/sewing/${item.icon_slug.trim()}`} alt="" width={26} height={26} className="icon-periwinkle" />
+        ) : null}
       </div>
       <div className="flex flex-col flex-1 w-full">
         <h3 className="font-serif text-[14px] font-semibold text-charcoal group-hover:text-periwinkle-deep transition-colors duration-200 mb-1.5 leading-snug line-clamp-2">

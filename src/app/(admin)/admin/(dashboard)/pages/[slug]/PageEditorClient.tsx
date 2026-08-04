@@ -9,7 +9,7 @@ import ItemsEditor from "@/components/admin/ItemsEditor";
 import ColorPicker from "@/components/admin/ColorPicker";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Check, Search, Image as ImageIcon, ChevronUp, GripVertical, Eye, EyeOff } from "lucide-react";
-import { sortSectionsByOrder } from "@/lib/cms/section-order";
+import { sortSectionsByOrder } from "@/lib/cms/section-order-utils";
 
 const FIELD_GROUP_META: { key: FieldGroup; label: string }[] = [
   { key: "content", label: "Content" },
@@ -64,10 +64,27 @@ interface Props {
 /* ─── Helpers ────────────────────────────────────────────────────────────── */
 function fieldToString(raw: unknown): string {
   if (typeof raw === "string") return raw;
-  if (typeof raw === "number") return String(raw);
+  if (typeof raw === "number" || typeof raw === "boolean") return String(raw);
   if (Array.isArray(raw)) return JSON.stringify(raw, null, 2);
   if (typeof raw === "object" && raw !== null) return JSON.stringify(raw, null, 2);
   return "";
+}
+
+function coerceItemRecords(raw: unknown): Record<string, string>[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object" && !Array.isArray(item))
+    .map((item) =>
+      Object.fromEntries(
+        Object.entries(item)
+          .filter(([key]) => key !== "__id")
+          .map(([key, val]) => [key, fieldToString(val)]),
+      ),
+    );
+}
+
+function emptySectionState(): SectionState {
+  return { values: {}, arrays: {}, saving: false, saved: false, error: "", expanded: false };
 }
 
 function buildInitialState(sections: CmsSection[], initialContents: Record<string, Record<string, unknown>>): Record<string, SectionState> {
@@ -78,8 +95,7 @@ function buildInitialState(sections: CmsSection[], initialContents: Record<strin
     const arrays: Record<string, Record<string, string>[]> = {};
     for (const f of sec.fields) {
       if (f.type === "items") {
-        const raw = content[f.key];
-        arrays[f.key] = Array.isArray(raw) ? (raw as Record<string, string>[]) : [];
+        arrays[f.key] = coerceItemRecords(content[f.key]);
       } else {
         const raw = content[f.key];
         if (f.type === "toggle") {
@@ -222,21 +238,30 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
   );
 
   const updateValue = useCallback((sectionKey: string, fieldKey: string, value: string) => {
-    setStates((prev) => ({
-      ...prev,
-      [sectionKey]: { ...prev[sectionKey], saved: false, values: { ...prev[sectionKey].values, [fieldKey]: value } },
-    }));
+    setStates((prev) => {
+      const base = prev[sectionKey] ?? emptySectionState();
+      return {
+        ...prev,
+        [sectionKey]: { ...base, saved: false, values: { ...base.values, [fieldKey]: value } },
+      };
+    });
   }, []);
 
   const updateArray = useCallback((sectionKey: string, fieldKey: string, items: Record<string, string>[]) => {
-    setStates((prev) => ({
-      ...prev,
-      [sectionKey]: { ...prev[sectionKey], saved: false, arrays: { ...prev[sectionKey].arrays, [fieldKey]: items } },
-    }));
+    setStates((prev) => {
+      const base = prev[sectionKey] ?? emptySectionState();
+      return {
+        ...prev,
+        [sectionKey]: { ...base, saved: false, arrays: { ...base.arrays, [fieldKey]: items } },
+      };
+    });
   }, []);
 
   const toggleSection = useCallback((key: string) => {
-    setStates((prev) => ({ ...prev, [key]: { ...prev[key], expanded: !prev[key].expanded } }));
+    setStates((prev) => {
+      const base = prev[key] ?? emptySectionState();
+      return { ...prev, [key]: { ...base, expanded: !base.expanded } };
+    });
   }, []);
 
   const toggleHidden = useCallback((key: string) => {
@@ -296,30 +321,48 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
   }, [pageSlug, sectionOrder, hiddenSections, router]);
 
   const saveSection = useCallback(async (sectionKey: string, section: CmsSection) => {
-    setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saving: true, error: "" } }));
+    setStates((prev) => {
+      const base = prev[sectionKey] ?? emptySectionState();
+      return { ...prev, [sectionKey]: { ...base, saving: true, error: "" } };
+    });
     try {
+      const current = states[sectionKey] ?? emptySectionState();
       const res = await fetch(`/admin/api/pages/${pageSlug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sectionKey, content: buildSavePayload(states[sectionKey], section) }),
+        body: JSON.stringify({ sectionKey, content: buildSavePayload(current, section) }),
       });
       if (!res.ok) throw new Error("save failed");
-      setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saving: false, saved: true, error: "" } }));
-      setTimeout(() => setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saved: false } })), 3000);
+      setStates((prev) => {
+        const base = prev[sectionKey] ?? emptySectionState();
+        return { ...prev, [sectionKey]: { ...base, saving: false, saved: true, error: "" } };
+      });
+      setTimeout(() => setStates((prev) => {
+        const base = prev[sectionKey] ?? emptySectionState();
+        return { ...prev, [sectionKey]: { ...base, saved: false } };
+      }), 3000);
     } catch {
-      setStates((prev) => ({ ...prev, [sectionKey]: { ...prev[sectionKey], saving: false, error: t("saveFailed") } }));
+      setStates((prev) => {
+        const base = prev[sectionKey] ?? emptySectionState();
+        return { ...prev, [sectionKey]: { ...base, saving: false, error: t("saveFailed") } };
+      });
     }
   }, [pageSlug, states, t]);
 
   const scrollToSection = (key: string) => {
-    setStates((prev) => ({ ...prev, [key]: { ...prev[key], expanded: true } }));
+    setStates((prev) => {
+      const base = prev[key] ?? emptySectionState();
+      return { ...prev, [key]: { ...base, expanded: true } };
+    });
     setTimeout(() => sectionRefs.current[key]?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
 
-  const filteredSections = orderedSections.filter((s) =>
-    !search || s.label.toLowerCase().includes(search.toLowerCase()) ||
-    s.fields.some((f) => f.label.toLowerCase().includes(search.toLowerCase()))
-  );
+  const filteredSections = orderedSections.filter((s) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    if ((s.label ?? "").toLowerCase().includes(q)) return true;
+    return s.fields.some((f) => (f.label ?? "").toLowerCase().includes(q));
+  });
 
   return (
     <div className="flex gap-6 min-h-full">
@@ -339,8 +382,10 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
           </div>
           <nav className="space-y-0.5 max-h-[55vh] overflow-y-auto pr-0.5">
             {orderedSections.map((sec, idx) => {
-              const isMatch = !search || sec.label.toLowerCase().includes(search.toLowerCase()) ||
-                sec.fields.some((f) => f.label.toLowerCase().includes(search.toLowerCase()));
+              const isMatch =
+                !search ||
+                (sec.label ?? "").toLowerCase().includes(search.toLowerCase()) ||
+                sec.fields.some((f) => (f.label ?? "").toLowerCase().includes(search.toLowerCase()));
               const st = states[sec.key];
               const isHidden = hiddenSections.includes(sec.key);
               const orderIndex = sectionOrder.indexOf(sec.key);
