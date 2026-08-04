@@ -7,10 +7,10 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Stoffe & Materialien",
@@ -49,8 +49,8 @@ export default async function StoffePage() {
   const fabricsAppearance = parseSectionAppearance(fabricsContent);
   const bottomCtaAppearance = parseSectionAppearance(bottomCtaContent);
 
-  return (
-    <>
+  const renderers = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -62,7 +62,8 @@ export default async function StoffePage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Stoffe & Materialien", href: "/stoffe" }]}
       />
-
+    ),
+    fabrics: () => (
       <CmsSectionShell appearance={fabricsAppearance} className="py-20">
         <div className="container-site">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,8 +87,9 @@ export default async function StoffePage() {
           </div>
         </div>
       </CmsSectionShell>
-
-      {advisory.imageSrc && (
+    ),
+    advisory: () =>
+      advisory.imageSrc ? (
         <ContentSection
           label={advisory.label}
           heading={advisory.heading}
@@ -101,10 +103,11 @@ export default async function StoffePage() {
           ctaLabel={advisory.ctaLabel}
           ctaHref={advisory.ctaHref}
         />
-      )}
-
+      ) : null,
+    bottomCta: () => (
       <PeriwinkleCtaSection heading={bottomCta.heading} text={bottomCta.text} appearance={bottomCtaAppearance} />
-      <FlexiblePageSections pageSlug="stoffe" />
-    </>
-  );
+    ),
+  };
+
+  return <>{await renderOrderedPageSections("stoffe", renderers)}</>;
 }

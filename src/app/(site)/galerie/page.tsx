@@ -4,9 +4,9 @@ import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Galerie",
@@ -20,6 +20,8 @@ interface GalleryItem {
   category: string;
   title: string;
 }
+
+type GalerieSectionKey = "hero" | "gallery";
 
 export default async function GaleriePage() {
   const [heroContent, galleryContent] = await Promise.all([
@@ -38,8 +40,8 @@ export default async function GaleriePage() {
   const items = galleryData.items ?? [];
   const galleryAppearance = parseSectionAppearance({ ...defaults, ...galleryContent });
 
-  return (
-    <>
+  const renderers: Record<GalerieSectionKey, () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -51,7 +53,8 @@ export default async function GaleriePage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Galerie", href: "/galerie" }]}
       />
-
+    ),
+    gallery: () => (
       <CmsSectionShell appearance={galleryAppearance} className="py-20">
         <div className="container-site">
           <div className="flex flex-wrap gap-2 mb-10">
@@ -102,7 +105,8 @@ export default async function GaleriePage() {
           </div>
         </div>
       </CmsSectionShell>
-      <FlexiblePageSections pageSlug="galerie" />
-    </>
-  );
+    ),
+  };
+
+  return <>{await renderOrderedPageSections("galerie", renderers)}</>;
 }

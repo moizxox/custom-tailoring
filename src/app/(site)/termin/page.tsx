@@ -5,10 +5,10 @@ import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapBookingConfig, mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import { APPOINTMENT_TYPES } from "@/lib/site-content";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Termin buchen",
@@ -36,6 +36,8 @@ const DEFAULT_BOOKING = {
   notesPlaceholder: "Anmerkungen (optional)",
 };
 
+type TerminSectionKey = "hero" | "timetables" | "booking";
+
 export default async function TerminPage() {
   const [heroContent, bookingContent, timetablesContent, locations, timetables] = await Promise.all([
     getCmsContent("termin", "hero", {}),
@@ -49,8 +51,16 @@ export default async function TerminPage() {
   const timetablesAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...timetablesContent });
   const bookingAppearance = parseSectionAppearance(bookingContent);
 
-  return (
-    <>
+  const bookingProps = {
+    config: booking,
+    locations,
+    timetables,
+    timetablesAppearance,
+    bookingAppearance,
+  };
+
+  const renderers: Record<TerminSectionKey, () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -62,16 +72,18 @@ export default async function TerminPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Termin buchen", href: "/termin" }]}
       />
+    ),
+    timetables: () => (
       <Suspense fallback={<div className="py-20 text-center text-charcoal-lighter">Laden…</div>}>
-        <TerminBooking
-          config={booking}
-          locations={locations}
-          timetables={timetables}
-          timetablesAppearance={timetablesAppearance}
-          bookingAppearance={bookingAppearance}
-        />
+        <TerminBooking {...bookingProps} sections={["timetables"]} />
       </Suspense>
-      <FlexiblePageSections pageSlug="termin" />
-    </>
-  );
+    ),
+    booking: () => (
+      <Suspense fallback={<div className="py-20 text-center text-charcoal-lighter">Laden…</div>}>
+        <TerminBooking {...bookingProps} sections={["booking"]} />
+      </Suspense>
+    ),
+  };
+
+  return <>{await renderOrderedPageSections("termin", renderers)}</>;
 }

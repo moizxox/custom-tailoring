@@ -7,9 +7,9 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Kostümveredelung",
@@ -38,8 +38,8 @@ export default async function KostuemveredelungPage() {
   };
   const servicesAppearance = parseSectionAppearance({ gradientStyle: "lavender", ...servicesContent });
 
-  return (
-    <>
+  const renderers = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -51,8 +51,9 @@ export default async function KostuemveredelungPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Kostümveredelung", href: "/kostuemveredelung" }]}
       />
-
-      {main.imageSrc && (
+    ),
+    main: () =>
+      main.imageSrc ? (
         <ContentSection
           label={main.label}
           heading={main.heading}
@@ -65,29 +66,32 @@ export default async function KostuemveredelungPage() {
           appearance={main.appearance}
           ctaHref={main.ctaHref}
         />
-      )}
+      ) : null,
+    services: () => (
+      <>
+        <CmsSectionShell appearance={servicesAppearance} defaultClassName="section-bg-lavender" className="py-20">
+          <div className="container-site max-w-3xl">
+            <h2 className="font-serif text-3xl text-charcoal mb-6 text-center">{servicesData.heading}</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {(servicesData.items ?? []).map((item) => (
+                <li key={item.label} className="flex items-center gap-3 bg-white/70 rounded-xl border border-white px-5 py-4 font-sans text-sm text-charcoal-light">
+                  <span className="w-2 h-2 rounded-full bg-periwinkle shrink-0" />
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+            {servicesData.ctaLabel && servicesData.ctaUrl && (
+              <p className="text-center mt-8">
+                <Link href={servicesData.ctaUrl} className="btn-primary inline-flex">{servicesData.ctaLabel}</Link>
+              </p>
+            )}
+          </div>
+        </CmsSectionShell>
 
-      <CmsSectionShell appearance={servicesAppearance} defaultClassName="section-bg-lavender" className="py-20">
-        <div className="container-site max-w-3xl">
-          <h2 className="font-serif text-3xl text-charcoal mb-6 text-center">{servicesData.heading}</h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {(servicesData.items ?? []).map((item) => (
-              <li key={item.label} className="flex items-center gap-3 bg-white/70 rounded-xl border border-white px-5 py-4 font-sans text-sm text-charcoal-light">
-                <span className="w-2 h-2 rounded-full bg-periwinkle shrink-0" />
-                {item.label}
-              </li>
-            ))}
-          </ul>
-          {servicesData.ctaLabel && servicesData.ctaUrl && (
-            <p className="text-center mt-8">
-              <Link href={servicesData.ctaUrl} className="btn-primary inline-flex">{servicesData.ctaLabel}</Link>
-            </p>
-          )}
-        </div>
-      </CmsSectionShell>
+        <PeriwinkleCtaSection />
+      </>
+    ),
+  };
 
-      <PeriwinkleCtaSection />
-      <FlexiblePageSections pageSlug="kostuemveredelung" />
-    </>
-  );
+  return <>{await renderOrderedPageSections("kostuemveredelung", renderers)}</>;
 }

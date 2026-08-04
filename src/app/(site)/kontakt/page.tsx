@@ -1,12 +1,13 @@
 import { Suspense } from "react";
+import { PageHero } from "@/components/layout/PageHero";
 import { KontaktPageContent } from "@/app/(site)/kontakt/KontaktPageContent";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 import { getCmsContent } from "@/lib/cms/content";
 import { getAtelierLocations } from "@/lib/cms/site-locations";
 import { getSiteContactInfo } from "@/lib/cms/site-contact";
 import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { mapContactFormConfig, mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,8 +48,21 @@ export default async function KontaktPage() {
   const form = mapContactFormConfig(formContent, DEFAULT_FORM);
   const formAppearance = parseSectionAppearance(formContent);
 
-  return (
-    <>
+  const renderers: Record<"hero" | "contactForm", () => React.ReactNode> = {
+    hero: () => (
+      <PageHero
+        label={hero.label}
+        title={hero.title}
+        titleAccent={hero.titleAccent}
+        subtitle={hero.subtitle}
+        headingTag={hero.headingTag}
+        textColor={hero.textColor}
+        accentColor={hero.accentColor}
+        appearance={hero.appearance}
+        breadcrumbs={[{ label: "Kontakt", href: "/kontakt" }]}
+      />
+    ),
+    contactForm: () => (
       <Suspense fallback={null}>
         <KontaktPageContent
           hero={hero}
@@ -57,9 +71,11 @@ export default async function KontaktPage() {
           contact={contact}
           locations={locations}
           timetables={timetables}
+          hideHero
         />
       </Suspense>
-      <FlexiblePageSections pageSlug="kontakt" />
-    </>
-  );
+    ),
+  };
+
+  return <>{await renderOrderedPageSections("kontakt", renderers)}</>;
 }

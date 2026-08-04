@@ -6,8 +6,8 @@ import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import Link from "next/link";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -40,8 +40,8 @@ export default async function JournalPage() {
   const posts = postsData.items ?? [];
   const postsAppearance = parseSectionAppearance({ ...defaults, ...postsContent });
 
-  return (
-    <>
+  const renderers: Record<"hero" | "posts", () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -53,7 +53,8 @@ export default async function JournalPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Journal", href: "/journal" }]}
       />
-
+    ),
+    posts: () => (
       <CmsSectionShell appearance={postsAppearance} className="py-20">
         <div className="container-site">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -94,7 +95,8 @@ export default async function JournalPage() {
           </div>
         </div>
       </CmsSectionShell>
-      <FlexiblePageSections pageSlug="journal" />
-    </>
-  );
+    ),
+  };
+
+  return <>{await renderOrderedPageSections("journal", renderers)}</>;
 }

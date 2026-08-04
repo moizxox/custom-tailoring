@@ -20,6 +20,7 @@ interface KontaktPageContentProps {
   contact: SiteContactInfo;
   locations: AtelierLocation[];
   timetables: CmsTimetable[];
+  hideHero?: boolean;
 }
 
 function buildProductPrefill(produkt: string | null, qualitaet: string | null, preis: string | null) {
@@ -31,7 +32,7 @@ function buildProductPrefill(produkt: string | null, qualitaet: string | null, p
   return lines.join("\n");
 }
 
-export function KontaktPageContent({ hero, form, formAppearance, contact, locations, timetables }: KontaktPageContentProps) {
+export function KontaktPageContent({ hero, form, formAppearance, contact, locations, timetables, hideHero }: KontaktPageContentProps) {
   const searchParams = useSearchParams();
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -94,17 +95,19 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
 
   return (
     <>
-      <PageHero
-        label={hero.label}
-        title={hero.title}
-        titleAccent={hero.titleAccent}
-        subtitle={hero.subtitle}
-        headingTag={hero.headingTag}
-        textColor={hero.textColor}
-        accentColor={hero.accentColor}
-        appearance={hero.appearance}
-        breadcrumbs={[{ label: "Kontakt", href: "/kontakt" }]}
-      />
+      {!hideHero && (
+        <PageHero
+          label={hero.label}
+          title={hero.title}
+          titleAccent={hero.titleAccent}
+          subtitle={hero.subtitle}
+          headingTag={hero.headingTag}
+          textColor={hero.textColor}
+          accentColor={hero.accentColor}
+          appearance={hero.appearance}
+          breadcrumbs={[{ label: "Kontakt", href: "/kontakt" }]}
+        />
+      )}
 
       <section className="py-20 section-bg-white">
         <div className="container-site">

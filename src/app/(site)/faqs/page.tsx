@@ -5,8 +5,8 @@ import { getDefaultSectionContent } from "@/lib/cms/default-content";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "FAQs",
@@ -34,8 +34,8 @@ export default async function FaqsPage() {
   };
   const faqAppearance = parseSectionAppearance({ ...faqDefaults, ...faqContent });
 
-  return (
-    <>
+  const renderers: Record<"hero" | "items", () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -47,7 +47,8 @@ export default async function FaqsPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "FAQs", href: "/faqs" }]}
       />
-
+    ),
+    items: () => (
       <CmsSectionShell appearance={faqAppearance} className="py-20">
         <div className="container-site max-w-3xl mx-auto">
           <FaqAccordion
@@ -57,7 +58,8 @@ export default async function FaqsPage() {
           />
         </div>
       </CmsSectionShell>
-      <FlexiblePageSections pageSlug="faqs" />
-    </>
-  );
+    ),
+  };
+
+  return <>{await renderOrderedPageSections("faqs", renderers)}</>;
 }

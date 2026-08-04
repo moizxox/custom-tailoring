@@ -17,9 +17,19 @@ interface TerminBookingProps {
   timetables?: CmsTimetable[];
   timetablesAppearance?: SectionAppearance;
   bookingAppearance?: SectionAppearance;
+  sections?: ("timetables" | "booking")[];
 }
 
-export function TerminBooking({ config, locations, timetables, timetablesAppearance, bookingAppearance }: TerminBookingProps) {
+export function TerminBooking({
+  config,
+  locations,
+  timetables,
+  timetablesAppearance,
+  bookingAppearance,
+  sections,
+}: TerminBookingProps) {
+  const showTimetables = !sections || sections.includes("timetables");
+  const showBooking = !sections || sections.includes("booking");
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get("standort") as LocationId) || "pratteln";
   const initialTyp = searchParams.get("typ");
@@ -43,7 +53,7 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
   const locationLabel = locations.find((l) => l.id === selectedLocation)?.name ?? "";
   const selectedType = config.appointmentTypes.find((t) => t.id === selectedServiceId || t.label === selectedService);
   const durationMin = selectedType?.durationMin ?? 30;
-  const showWalkIn = config.showWalkIn !== false;
+  const showWalkIn = showTimetables && config.showWalkIn !== false;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +117,7 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
       </CmsSectionShell>
       )}
 
+      {showBooking && (
       <CmsSectionShell id="termin-buchen" appearance={bookingAppearance} className="py-20 scroll-mt-24">
         <div className="container-site max-w-2xl mx-auto">
           <div className="mb-10">
@@ -426,6 +437,7 @@ export function TerminBooking({ config, locations, timetables, timetablesAppeara
           </p>
         </div>
       </CmsSectionShell>
+      )}
     </>
   );
 }

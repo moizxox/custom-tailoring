@@ -8,15 +8,17 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Atelier",
   description: "Unser Atelier in Basel – der Ort, wo Kostüme entstehen.",
 };
+
+type AtelierSectionKey = "hero" | "intro" | "workshop" | "materials";
 
 export default async function AtelierPage() {
   const [heroContent, introContent, workshopContent, materialsContent] = await Promise.all([
@@ -38,8 +40,8 @@ export default async function AtelierPage() {
   const slides = (Array.isArray(intro.slides) ? intro.slides : []) as { src: string; alt: string }[];
   const introAppearance = parseSectionAppearance(intro);
 
-  return (
-    <>
+  const renderers: Record<AtelierSectionKey, () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -51,7 +53,8 @@ export default async function AtelierPage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Atelier", href: "/atelier" }]}
       />
-
+    ),
+    intro: () => (
       <CmsSectionShell appearance={introAppearance} className="py-20">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -94,8 +97,9 @@ export default async function AtelierPage() {
           {slides.length > 0 && <PhotoSlider slides={slides} />}
         </div>
       </CmsSectionShell>
-
-      {workshop.imageSrc && (
+    ),
+    workshop: () =>
+      workshop.imageSrc ? (
         <ContentSection
           label={workshop.label}
           heading={workshop.heading}
@@ -108,9 +112,9 @@ export default async function AtelierPage() {
           ctaHref={workshop.ctaHref}
           appearance={workshop.appearance}
         />
-      )}
-
-      {materials.imageSrc && (
+      ) : null,
+    materials: () =>
+      materials.imageSrc ? (
         <ContentSection
           label={materials.label}
           heading={materials.heading}
@@ -124,10 +128,13 @@ export default async function AtelierPage() {
           ctaHref={materials.ctaHref}
           appearance={materials.appearance}
         />
-      )}
+      ) : null,
+  };
 
+  return (
+    <>
+      {await renderOrderedPageSections("atelier", renderers)}
       <PeriwinkleCtaSection />
-      <FlexiblePageSections pageSlug="atelier" />
     </>
   );
 }

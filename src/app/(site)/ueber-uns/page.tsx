@@ -7,11 +7,11 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapContentBlock, splitParagraphs } from "@/lib/cms/section-helpers";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseBool, parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Über uns",
@@ -30,6 +30,8 @@ interface ValueItem {
   title: string;
   text: string;
 }
+
+type UeberUnsSectionKey = "hero" | "team" | "story" | "work" | "values";
 
 export default async function UeberUnsPage() {
   const [heroContent, storyContent, workContent, valuesContent, teamContent] = await Promise.all([
@@ -64,8 +66,8 @@ export default async function UeberUnsPage() {
       ? parseBool((valuesContent as Record<string, unknown>).showIcons)
       : valuesData.showIcons !== false;
 
-  return (
-    <>
+  const renderers: Record<UeberUnsSectionKey, () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -77,7 +79,8 @@ export default async function UeberUnsPage() {
         accentColor={hero.accentColor}
         appearance={hero.appearance}
       />
-
+    ),
+    story: () => (
       <CmsSectionShell appearance={storyAppearance} className="py-20">
         <div className="container-site max-w-3xl">
           {story.label && <p className="section-label mb-4">{story.label}</p>}
@@ -94,8 +97,9 @@ export default async function UeberUnsPage() {
           )}
         </div>
       </CmsSectionShell>
-
-      {work.imageSrc && (
+    ),
+    work: () =>
+      work.imageSrc ? (
         <ContentSection
           label={work.label}
           heading={work.heading}
@@ -109,8 +113,8 @@ export default async function UeberUnsPage() {
           ctaLabel={work.ctaLabel}
           ctaHref={work.ctaHref}
         />
-      )}
-
+      ) : null,
+    values: () => (
       <CmsSectionShell appearance={valuesAppearance} className="py-16">
         <div className="container-site">
           <div className="text-center mb-12">
@@ -135,7 +139,8 @@ export default async function UeberUnsPage() {
           </div>
         </div>
       </CmsSectionShell>
-
+    ),
+    team: () => (
       <CmsSectionShell id="team" appearance={teamAppearance} className="py-16 scroll-mt-28">
         <div className="container-site">
           <div className="text-center mb-12">
@@ -162,9 +167,13 @@ export default async function UeberUnsPage() {
           </div>
         </div>
       </CmsSectionShell>
+    ),
+  };
 
+  return (
+    <>
+      {await renderOrderedPageSections("ueber-uns", renderers)}
       <AboutBand />
-      <FlexiblePageSections pageSlug="ueber-uns" />
     </>
   );
 }

@@ -6,11 +6,11 @@ import { CmsSectionShell } from "@/components/cms/CmsSectionShell";
 import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
+import { renderOrderedPageSections } from "@/lib/cms/render-ordered-sections";
 import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { SERVICE_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
 import type { Metadata } from "next";
-import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 interface ServiceItem { title: string; description: string; }
 interface ProcessStep { number: string; title: string; description: string; }
@@ -28,6 +28,8 @@ const DEFAULT_HERO = {
   subtitle: "Unsere Leistungen im Überblick — für Guggenmusik, Cliquen und Einzelmasken.",
   headingTag: "h1" as const,
 };
+
+type ServiceSectionKey = "hero" | "offerings" | "orderProcess" | "faqs";
 
 export default async function ServicePage() {
   const [heroContent, offeringsContent, processContent, faqsContent, timetables] = await Promise.all([
@@ -54,8 +56,8 @@ export default async function ServicePage() {
   const processAppearance = parseSectionAppearance(processContent);
   const faqsAppearance = parseSectionAppearance(faqsContent);
 
-  return (
-    <>
+  const renderers: Record<ServiceSectionKey, () => React.ReactNode> = {
+    hero: () => (
       <PageHero
         label={hero.label}
         title={hero.title}
@@ -67,8 +69,8 @@ export default async function ServicePage() {
         appearance={hero.appearance}
         breadcrumbs={[{ label: "Service", href: "/service" }]}
       />
-
-      {/* Leistungen overview */}
+    ),
+    offerings: () => (
       <CmsSectionShell appearance={offeringsAppearance} defaultClassName="section-bg-lavender" className="py-20">
         <div className="container-site">
           <div className="text-center mb-12">
@@ -92,73 +94,77 @@ export default async function ServicePage() {
           </div>
         </div>
       </CmsSectionShell>
-
-      {/* 6-step order process */}
-      <CmsSectionShell appearance={processAppearance} className="py-20">
-        <div className="container-site max-w-4xl">
-          <div className="text-center mb-14">
-            <p className="section-label mb-3">Bestellprozess</p>
-            <h2 className="section-heading">{processData.heading}</h2>
+    ),
+    orderProcess: () => (
+      <>
+        <CmsSectionShell appearance={processAppearance} className="py-20">
+          <div className="container-site max-w-4xl">
+            <div className="text-center mb-14">
+              <p className="section-label mb-3">Bestellprozess</p>
+              <h2 className="section-heading">{processData.heading}</h2>
+            </div>
+            <ol className="flex flex-col gap-8">
+              {processSteps.map((step) => (
+                <li key={step.number} className="flex gap-5 sm:gap-6">
+                  <div className="w-12 h-12 rounded-full bg-periwinkle-lighter border-2 border-periwinkle-light flex items-center justify-center shrink-0">
+                    <span className="font-serif text-lg text-periwinkle-dark font-semibold">{step.number}</span>
+                  </div>
+                  <div className="flex-1 pt-1">
+                    <h3 className="font-serif text-xl text-charcoal mb-2">{step.title}</h3>
+                    <p className="font-sans text-sm text-charcoal-light leading-relaxed">{step.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
-          <ol className="flex flex-col gap-8">
-            {processSteps.map((step) => (
-              <li key={step.number} className="flex gap-5 sm:gap-6">
-                <div className="w-12 h-12 rounded-full bg-periwinkle-lighter border-2 border-periwinkle-light flex items-center justify-center shrink-0">
-                  <span className="font-serif text-lg text-periwinkle-dark font-semibold">{step.number}</span>
-                </div>
-                <div className="flex-1 pt-1">
-                  <h3 className="font-serif text-xl text-charcoal mb-2">{step.title}</h3>
-                  <p className="font-sans text-sm text-charcoal-light leading-relaxed">{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </CmsSectionShell>
+        </CmsSectionShell>
 
-      {/* Massen ohne Termin — links to timetable */}
-      <section id="massen-ohne-termin" className="py-16 section-bg-white border-y border-periwinkle-light/30">
-        <div className="container-site max-w-5xl">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-2xl text-charcoal mb-2">Massnehmen ohne Voranmeldung</h2>
-            <p className="font-sans text-sm text-charcoal-light max-w-2xl mx-auto">
-              Die aktuellen Zeitfenster für das Massnehmen veröffentlichen wir auf unserer Webseite — pro Standort Pratteln und Therwil.
+        <section id="massen-ohne-termin" className="py-16 section-bg-white border-y border-periwinkle-light/30">
+          <div className="container-site max-w-5xl">
+            <div className="text-center mb-10">
+              <h2 className="font-serif text-2xl text-charcoal mb-2">Massnehmen ohne Voranmeldung</h2>
+              <p className="font-sans text-sm text-charcoal-light max-w-2xl mx-auto">
+                Die aktuellen Zeitfenster für das Massnehmen veröffentlichen wir auf unserer Webseite — pro Standort Pratteln und Therwil.
+              </p>
+            </div>
+            <AtelierTimetable timetables={timetables} />
+          </div>
+        </section>
+      </>
+    ),
+    faqs: () => (
+      <>
+        <CmsSectionShell appearance={faqsAppearance} className="py-20">
+          <div className="container-site max-w-3xl">
+            <div className="text-center mb-10">
+              <h2 className="section-heading mb-2">Häufig gestellte Fragen</h2>
+              <p className="font-sans text-sm text-charcoal-lighter">{SERVICE_FAQS[0]?.category}</p>
+            </div>
+            <div className="flex flex-col gap-3">
+              {faqs.map((faq) => (
+                <details key={faq.q} className="group rounded-xl border border-stone-light bg-white overflow-hidden">
+                  <summary className="cursor-pointer px-6 py-4 font-sans text-sm font-medium text-charcoal hover:bg-offwhite-warm transition-colors list-none flex justify-between items-center gap-4">
+                    {faq.q}
+                    <span className="text-periwinkle-dark shrink-0 group-open:rotate-180 transition-transform">▾</span>
+                  </summary>
+                  <div className="px-6 pb-4 border-t border-stone-light/60">
+                    <p className="font-sans text-sm text-charcoal-light leading-relaxed pt-3">{faq.a}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+            <p className="text-center mt-8">
+              <Link href="/faqs" className="text-sm text-periwinkle-dark hover:underline">
+                Alle FAQs ansehen →
+              </Link>
             </p>
           </div>
-          <AtelierTimetable timetables={timetables} />
-        </div>
-      </section>
+        </CmsSectionShell>
 
-      {/* FAQs from old service page */}
-      <CmsSectionShell appearance={faqsAppearance} className="py-20">
-        <div className="container-site max-w-3xl">
-          <div className="text-center mb-10">
-            <h2 className="section-heading mb-2">Häufig gestellte Fragen</h2>
-            <p className="font-sans text-sm text-charcoal-lighter">{SERVICE_FAQS[0]?.category}</p>
-          </div>
-          <div className="flex flex-col gap-3">
-            {faqs.map((faq) => (
-              <details key={faq.q} className="group rounded-xl border border-stone-light bg-white overflow-hidden">
-                <summary className="cursor-pointer px-6 py-4 font-sans text-sm font-medium text-charcoal hover:bg-offwhite-warm transition-colors list-none flex justify-between items-center gap-4">
-                  {faq.q}
-                  <span className="text-periwinkle-dark shrink-0 group-open:rotate-180 transition-transform">▾</span>
-                </summary>
-                <div className="px-6 pb-4 border-t border-stone-light/60">
-                  <p className="font-sans text-sm text-charcoal-light leading-relaxed pt-3">{faq.a}</p>
-                </div>
-              </details>
-            ))}
-          </div>
-          <p className="text-center mt-8">
-            <Link href="/faqs" className="text-sm text-periwinkle-dark hover:underline">
-              Alle FAQs ansehen →
-            </Link>
-          </p>
-        </div>
-      </CmsSectionShell>
+        <PeriwinkleCtaSection />
+      </>
+    ),
+  };
 
-      <PeriwinkleCtaSection />
-      <FlexiblePageSections pageSlug="service" />
-    </>
-  );
+  return <>{await renderOrderedPageSections("service", renderers)}</>;
 }
