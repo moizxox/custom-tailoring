@@ -9,6 +9,7 @@ import { MASSFERTIGUNG_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Massfertigung",
@@ -123,6 +124,7 @@ export default async function MassfertigungPage() {
           <Link href={ctaData.buttonUrl} className="btn-primary inline-flex">{ctaData.buttonLabel}</Link>
         </div>
       </CmsSectionShell>
+      <FlexiblePageSections pageSlug="massfertigung" />
     </>
   );
 }

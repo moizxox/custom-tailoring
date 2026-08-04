@@ -2,9 +2,10 @@
 
 ## CMS flexibility (her core request)
 
-1. **Section hide** — Admin → Pages → any page → Eye toggle «Ausgeblendet» → Save order → hard refresh public page → section gone (still in CMS).
-2. **Section reorder** — arrows up/down → save → live order updates.
+1. **Section hide** — Admin → Pages → any page → Eye toggle «Ausgeblendet» (sidebar or section) → Save visibility → hard refresh public page → section gone (still in CMS).
+2. **Section reorder** — arrows up/down (sidebar or section) → save → live order updates.
 3. **Edit text + images** — open a section, change headline + image, save, show live.
+3b. **Modular Flex-Bausteine** — every page lists the same Flex blocks (Textblock, Bild+Text, CTA, Ablauf, Galerie, FAQ, Kontakt-Band). They start hidden; turn Eye on, fill content, save order — appears live.
 4. **Custom page** — Neue Seite → type title → Web-Adresse auto-fills (editable) → publish `/seite/…`.
 5. **Nav page picker** — Navigation → pick a page from the dropdown (no typing `/shop`) → Save → live link works. Same for Footer links.
 6. **Nav hide** — Navigation → «Auf Website anzeigen» off → item stays in CMS, hidden live.

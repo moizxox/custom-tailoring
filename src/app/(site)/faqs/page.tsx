@@ -6,6 +6,7 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "FAQs",
@@ -56,6 +57,7 @@ export default async function FaqsPage() {
           />
         </div>
       </CmsSectionShell>
+      <FlexiblePageSections pageSlug="faqs" />
     </>
   );
 }

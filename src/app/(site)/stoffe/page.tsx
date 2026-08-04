@@ -10,6 +10,7 @@ import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Stoffe & Materialien",
@@ -103,6 +104,7 @@ export default async function StoffePage() {
       )}
 
       <PeriwinkleCtaSection heading={bottomCta.heading} text={bottomCta.text} appearance={bottomCtaAppearance} />
+      <FlexiblePageSections pageSlug="stoffe" />
     </>
   );
 }

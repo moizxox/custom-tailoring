@@ -10,6 +10,7 @@ import { getMeasurementTimetables } from "@/lib/cms/timetables";
 import { SERVICE_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import { ORDER_PROCESS_STEPS, SERVICE_FAQS, SERVICE_OFFERINGS } from "@/lib/site-content";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 interface ServiceItem { title: string; description: string; }
 interface ProcessStep { number: string; title: string; description: string; }
@@ -157,6 +158,7 @@ export default async function ServicePage() {
       </CmsSectionShell>
 
       <PeriwinkleCtaSection />
+      <FlexiblePageSections pageSlug="service" />
     </>
   );
 }

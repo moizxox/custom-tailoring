@@ -5,9 +5,11 @@ import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { GalleryPreview } from "@/components/sections/GalleryPreview";
 import { AboutBand } from "@/components/sections/AboutBand";
+import { renderModularSection } from "@/components/cms/FlexiblePageSections";
 import { getCmsContent } from "@/lib/cms/content";
 import { HOME_SECTION_DEFAULTS } from "@/lib/cms/default-content";
 import { mapHomeHeroContent, parseHeadingTag } from "@/lib/cms/helpers";
+import { isModularSectionKey } from "@/lib/cms/modular-sections";
 import {
   filterVisibleSectionKeys,
   getPageHiddenSections,
@@ -50,7 +52,6 @@ export async function renderHomePageSections() {
   ]);
 
   const heroAcf = { ...heroContent, ...mapHomeHeroContent(heroContent) };
-  // Preserve historic home-hero confetti until CMS toggle is saved.
   if (!("showKonfetti" in heroContent)) {
     (heroAcf as Record<string, unknown>).showKonfetti = true;
   }
@@ -78,7 +79,18 @@ export async function renderHomePageSections() {
     ),
   };
 
-  return visibleOrder
-    .filter((key): key is HomeSectionKey => key in renderers)
-    .map((key) => <div key={key}>{renderers[key]()}</div>);
+  const nodes = await Promise.all(
+    visibleOrder.map(async (key) => {
+      if (key in renderers) {
+        return <div key={key}>{renderers[key as HomeSectionKey]()}</div>;
+      }
+      if (isModularSectionKey(key)) {
+        const node = await renderModularSection("home", key);
+        return node ? <div key={key}>{node}</div> : null;
+      }
+      return null;
+    }),
+  );
+
+  return nodes;
 }

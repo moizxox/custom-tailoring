@@ -7,6 +7,7 @@ import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -93,6 +94,7 @@ export default async function JournalPage() {
           </div>
         </div>
       </CmsSectionShell>
+      <FlexiblePageSections pageSlug="journal" />
     </>
   );
 }

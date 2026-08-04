@@ -9,6 +9,8 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { getPageSectionOrder, getPageHiddenSections, filterVisibleSectionKeys } from "@/lib/cms/section-order";
+import { isModularSectionKey } from "@/lib/cms/modular-sections";
+import { renderModularSection } from "@/components/cms/FlexiblePageSections";
 import { getShopProducts } from "@/lib/products";
 import { splitLines } from "@/lib/cms/section-helpers";
 import { TIER_KEYS, TIER_STYLES } from "@/lib/product-tiers";
@@ -310,11 +312,20 @@ export default async function ShopPage() {
 
   return (
     <>
-      {visibleOrder
-        .filter((key): key is ShopSectionKey => key in renderers)
-        .map((key) => (
-          <div key={key}>{renderers[key]()}</div>
-        ))}
+      {(
+        await Promise.all(
+          visibleOrder.map(async (key) => {
+            if (key in renderers) {
+              return <div key={key}>{renderers[key as ShopSectionKey]()}</div>;
+            }
+            if (isModularSectionKey(key)) {
+              const node = await renderModularSection("shop", key);
+              return node ? <div key={key}>{node}</div> : null;
+            }
+            return null;
+          }),
+        )
+      )}
     </>
   );
 }

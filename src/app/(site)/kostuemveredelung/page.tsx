@@ -9,6 +9,7 @@ import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Kostümveredelung",
@@ -86,6 +87,7 @@ export default async function KostuemveredelungPage() {
       </CmsSectionShell>
 
       <PeriwinkleCtaSection />
+      <FlexiblePageSections pageSlug="kostuemveredelung" />
     </>
   );
 }

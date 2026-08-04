@@ -11,6 +11,7 @@ import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Über uns",
@@ -163,6 +164,7 @@ export default async function UeberUnsPage() {
       </CmsSectionShell>
 
       <AboutBand />
+      <FlexiblePageSections pageSlug="ueber-uns" />
     </>
   );
 }

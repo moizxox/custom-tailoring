@@ -11,6 +11,7 @@ import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { AccentHeadingText } from "@/components/ui/AccentHeadingText";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Atelier",
@@ -126,6 +127,7 @@ export default async function AtelierPage() {
       )}
 
       <PeriwinkleCtaSection />
+      <FlexiblePageSections pageSlug="atelier" />
     </>
   );
 }

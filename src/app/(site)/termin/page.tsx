@@ -8,6 +8,7 @@ import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { APPOINTMENT_TYPES } from "@/lib/site-content";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Termin buchen",
@@ -70,6 +71,7 @@ export default async function TerminPage() {
           bookingAppearance={bookingAppearance}
         />
       </Suspense>
+      <FlexiblePageSections pageSlug="termin" />
     </>
   );
 }

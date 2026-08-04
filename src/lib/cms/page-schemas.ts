@@ -4,6 +4,7 @@
  */
 
 import { SECTION_GRADIENT_OPTIONS } from "@/lib/cms/section-appearance";
+import { mergeModularSections } from "@/lib/cms/modular-sections";
 
 export type FieldType =
   | "text"
@@ -150,6 +151,10 @@ export interface CmsSection {
   label: string;
   description?: string;
   fields: CmsField[];
+  /** When true, section starts hidden on the public site until enabled in CMS. */
+  defaultHidden?: boolean;
+  /** Shared building-block available on every page. */
+  modular?: boolean;
 }
 
 export interface CmsPageSchema {
@@ -1092,7 +1097,16 @@ function withAppearanceOnAllSections(pages: CmsPageSchema[]): CmsPageSchema[] {
   }));
 }
 
-export const PAGE_SCHEMAS: CmsPageSchema[] = withAppearanceOnAllSections(PAGE_SCHEMAS_RAW);
+function withModularBuildingBlocks(pages: CmsPageSchema[]): CmsPageSchema[] {
+  return pages.map((page) => ({
+    ...page,
+    sections: mergeModularSections(page.sections),
+  }));
+}
+
+export const PAGE_SCHEMAS: CmsPageSchema[] = withAppearanceOnAllSections(
+  withModularBuildingBlocks(PAGE_SCHEMAS_RAW),
+);
 
 export function getPageSchema(slug: string): CmsPageSchema | undefined {
   return PAGE_SCHEMAS.find((p) => p.slug === slug);

@@ -6,6 +6,7 @@ import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 
 export const metadata: Metadata = {
   title: "Galerie",
@@ -101,6 +102,7 @@ export default async function GaleriePage() {
           </div>
         </div>
       </CmsSectionShell>
+      <FlexiblePageSections pageSlug="galerie" />
     </>
   );
 }

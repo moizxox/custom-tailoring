@@ -324,32 +324,87 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
   return (
     <div className="flex gap-6 min-h-full">
       {/* ── Sticky sidebar ──────────────────────────────────────────────── */}
-      <aside className="hidden xl:flex flex-col w-56 shrink-0">
+      <aside className="hidden xl:flex flex-col w-64 shrink-0">
         <div className="sticky top-6 space-y-2">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest px-1 mb-3">
-            {pageLabel}
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest px-1 mb-1">
+            Bausteine
+          </p>
+          <p className="text-[10px] text-gray-400 px-1 leading-relaxed mb-2">
+            Gleiche Abschnitte auf jeder Seite. Ein-/ausblenden mit dem Auge, Reihenfolge mit den Pfeilen, dann speichern.
           </p>
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Find section…"
+            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Abschnitt suchen…"
               className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-400 bg-gray-50 focus:bg-white transition" />
           </div>
-          <nav className="space-y-0.5">
+          <nav className="space-y-0.5 max-h-[55vh] overflow-y-auto pr-0.5">
             {orderedSections.map((sec, idx) => {
               const isMatch = !search || sec.label.toLowerCase().includes(search.toLowerCase()) ||
                 sec.fields.some((f) => f.label.toLowerCase().includes(search.toLowerCase()));
               const st = states[sec.key];
+              const isHidden = hiddenSections.includes(sec.key);
+              const orderIndex = sectionOrder.indexOf(sec.key);
               return (
-                <button key={sec.key} type="button" onClick={() => scrollToSection(sec.key)}
-                  className={cn("w-full text-left px-3 py-2 rounded-lg text-xs transition-colors flex items-center justify-between gap-2",
-                    isMatch ? "text-gray-700 hover:bg-gray-100" : "text-gray-300 hover:bg-gray-50",
-                    st?.expanded && "bg-violet-50 text-violet-700 font-medium")}>
-                  <span className="truncate flex items-center gap-1.5">
-                    <span className="text-[10px] text-gray-400 w-4">{idx + 1}</span>
-                    {sec.label}
-                  </span>
-                  {st?.saved && <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />}
-                </button>
+                <div
+                  key={sec.key}
+                  className={cn(
+                    "rounded-lg transition-colors",
+                    isMatch ? "" : "opacity-30",
+                    st?.expanded && "bg-violet-50 ring-1 ring-violet-100",
+                    isHidden && "bg-amber-50/60",
+                  )}
+                >
+                  <div className="flex items-center gap-0.5 px-1 py-0.5">
+                    <div className="flex flex-col shrink-0">
+                      <button
+                        type="button"
+                        disabled={orderIndex <= 0}
+                        onClick={() => moveSection(sec.key, -1)}
+                        className="p-0.5 text-gray-300 hover:text-violet-600 disabled:opacity-20"
+                        title="Nach oben"
+                      >
+                        <ChevronUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={orderIndex >= sectionOrder.length - 1}
+                        onClick={() => moveSection(sec.key, 1)}
+                        className="p-0.5 text-gray-300 hover:text-violet-600 disabled:opacity-20"
+                        title="Nach unten"
+                      >
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => scrollToSection(sec.key)}
+                      className={cn(
+                        "flex-1 text-left px-1.5 py-1.5 rounded-md text-xs transition-colors min-w-0",
+                        st?.expanded ? "text-violet-700 font-medium" : "text-gray-700 hover:bg-white/80",
+                      )}
+                    >
+                      <span className="truncate flex items-center gap-1.5">
+                        <span className="text-[10px] text-gray-400 w-3.5 shrink-0">{idx + 1}</span>
+                        <span className="truncate">{sec.label}</span>
+                        {sec.modular && (
+                          <span className="text-[9px] uppercase tracking-wide text-violet-400 shrink-0">Flex</span>
+                        )}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleHidden(sec.key)}
+                      title={isHidden ? "Auf Website anzeigen" : "Auf Website ausblenden"}
+                      className={cn(
+                        "p-1.5 rounded-md shrink-0 transition-colors",
+                        isHidden ? "text-amber-600 hover:bg-amber-100" : "text-gray-400 hover:text-violet-600 hover:bg-violet-50",
+                      )}
+                    >
+                      {isHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                    {st?.saved && <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0 mr-1" />}
+                  </div>
+                </div>
               );
             })}
           </nav>
@@ -363,16 +418,17 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                 orderDirty ? "bg-violet-600 hover:bg-violet-500" : "bg-gray-900 hover:bg-gray-800"
               )}
             >
-              {orderSaving ? "Saving order…" : orderDirty ? "Save section order *" : "Save section order"}
+              {orderSaving ? "Speichern…" : orderDirty ? "Reihenfolge & Sichtbarkeit speichern *" : "Reihenfolge & Sichtbarkeit speichern"}
             </button>
             {orderSaved && (
               <p className="text-[10px] text-green-600 px-1">
-                Section order saved. Open the live page (hard refresh) to verify.
+                Gespeichert. Live-Seite einmal hart neu laden.
               </p>
             )}
             {orderError && <p className="text-[10px] text-red-600 px-1">{orderError}</p>}
             <p className="text-[10px] text-gray-400 px-1">
-              {orderedSections.length} sections — use arrows to reorder, then save
+              {orderedSections.filter((s) => !hiddenSections.includes(s.key)).length} sichtbar ·{" "}
+              {hiddenSections.length} ausgeblendet
             </p>
           </div>
         </div>
@@ -440,6 +496,11 @@ export default function PageEditorClient({ pageSlug, sections, initialContents, 
                       <p className="text-sm font-semibold text-gray-900 truncate">
                         <span className="text-gray-400 font-normal mr-2">#{sectionIndex + 1}</span>
                         {section.label}
+                        {section.modular && (
+                          <span className="ml-2 inline-flex align-middle text-[10px] font-medium uppercase tracking-wide text-violet-600 bg-violet-50 border border-violet-100 px-1.5 py-0.5 rounded">
+                            Flex-Baustein
+                          </span>
+                        )}
                       </p>
                       {section.description && <p className="text-xs text-gray-400 mt-0.5 truncate">{section.description}</p>}
                     </div>
