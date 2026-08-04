@@ -3,7 +3,8 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
 import { getPageSchema } from "@/lib/cms/page-schemas";
-import { revalidateCmsPage } from "@/lib/cms/revalidate";
+import { resolvePageSchema } from "@/lib/cms/resolve-page-schema";
+import { revalidateCmsPage, revalidateCustomPage } from "@/lib/cms/revalidate";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -14,7 +15,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { slug } = await params;
-  const schema = getPageSchema(slug);
+  const schema = await resolvePageSchema(slug);
   if (!schema) return NextResponse.json({ error: "Unknown page slug" }, { status: 404 });
 
   try {
@@ -52,12 +53,13 @@ export async function PUT(request: NextRequest, { params }: Props) {
     ]);
 
     revalidateCmsPage(slug);
+    if (!getPageSchema(slug)) revalidateCustomPage(slug);
     return NextResponse.json({ ok: true, order: finalOrder, hidden: finalHidden });
   } catch (err) {
     console.error("[cms] section order save failed:", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

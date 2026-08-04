@@ -1,6 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { getPageSchema } from "@/lib/cms/page-schemas";
+import { resolvePageSchema } from "@/lib/cms/resolve-page-schema";
 import { getDefaultHiddenSectionKeys } from "@/lib/cms/modular-sections";
 
 export { filterVisibleSectionKeys, sortSectionsByOrder } from "@/lib/cms/section-order-utils";
@@ -13,7 +14,10 @@ export function getDefaultSectionOrder(pageSlug: string): string[] {
 export async function getPageSectionOrder(pageSlug: string): Promise<string[]> {
   noStore();
 
-  const defaults = getDefaultSectionOrder(pageSlug);
+  const schema = await resolvePageSchema(pageSlug);
+  const defaults = schema?.sections.map((s) => s.key) ?? [];
+  if (defaults.length === 0) return [];
+
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key: `page_order_${pageSlug}` } });
     const saved = row?.value;
@@ -33,7 +37,7 @@ export async function getPageSectionOrder(pageSlug: string): Promise<string[]> {
 /** Section keys hidden on the public site (still editable in CMS). */
 export async function getPageHiddenSections(pageSlug: string): Promise<string[]> {
   noStore();
-  const schema = getPageSchema(pageSlug);
+  const schema = await resolvePageSchema(pageSlug);
   const schemaKeys = new Set(schema?.sections.map((s) => s.key) ?? []);
   const defaultHidden = getDefaultHiddenSectionKeys(schema?.sections ?? []).filter((k) =>
     schemaKeys.has(k),
@@ -69,4 +73,3 @@ export async function getPageHiddenSections(pageSlug: string): Promise<string[]>
     return defaultHidden;
   }
 }
-

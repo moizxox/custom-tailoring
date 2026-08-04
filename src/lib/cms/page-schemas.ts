@@ -1111,3 +1111,17 @@ export const PAGE_SCHEMAS: CmsPageSchema[] = withAppearanceOnAllSections(
 export function getPageSchema(slug: string): CmsPageSchema | undefined {
   return PAGE_SCHEMAS.find((p) => p.slug === slug);
 }
+
+/** Schema for admin-created pages at /seite/[slug] — shared Flex-Bausteine pool. */
+export function buildCustomPageSchema(slug: string, label: string): CmsPageSchema {
+  const [schema] = withAppearanceOnAllSections([
+    {
+      slug,
+      label,
+      icon: "📄",
+      path: `/seite/${slug}`,
+      sections: mergeModularSections([]),
+    },
+  ]);
+  return schema;
+}

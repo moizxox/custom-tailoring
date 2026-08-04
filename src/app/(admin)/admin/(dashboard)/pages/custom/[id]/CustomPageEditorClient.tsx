@@ -93,13 +93,16 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
   }
 
   return (
-    <form onSubmit={save} className="max-w-3xl mx-auto space-y-6">
+    <form onSubmit={save} className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
           <Link href="/admin/pages" className="text-sm text-gray-400 hover:text-gray-600">
             ← Alle Seiten
           </Link>
           <h1 className="text-xl font-bold text-gray-900 mt-2">Eigene Seite bearbeiten</h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Hero + Textblöcke unten — darunter Flex-Bausteine (Bild+Text, CTA, Galerie, FAQ …)
+          </p>
         </div>
         <div className="flex items-center gap-3">
           {published && (
@@ -128,7 +131,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
         </p>
       )}
 
-      <section className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+      <section className="bg-white border border-gray-200 rounded-xl p-5 space-y-4 max-w-3xl">
         <h2 className="text-sm font-semibold text-gray-800">Metadaten</h2>
         <label className="block text-xs font-medium text-gray-600">
           Titel (Admin / Browser-Titel)
@@ -198,7 +201,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
         </label>
       </section>
 
-      <section className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+      <section className="bg-white border border-gray-200 rounded-xl p-5 space-y-4 max-w-3xl">
         <h2 className="text-sm font-semibold text-gray-800">Hero</h2>
         <label className="block text-xs font-medium text-gray-600">
           Label
@@ -235,9 +238,14 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
         </label>
       </section>
 
-      <section className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+      <section className="bg-white border border-gray-200 rounded-xl p-5 space-y-4 max-w-3xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-800">Inhaltsblöcke</h2>
+          <div>
+            <h2 className="text-sm font-semibold text-gray-800">Einfache Textblöcke</h2>
+            <p className="text-[11px] text-gray-400 mt-0.5">
+              Für kurze Abschnitte. Reichere Layouts → Flex-Bausteine weiter unten.
+            </p>
+          </div>
           <button
             type="button"
             onClick={addBlock}

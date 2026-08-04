@@ -8,6 +8,7 @@ import {
   normalizeCustomPageContent,
   slugifyPageTitle,
 } from "@/lib/cms/custom-pages";
+import { getPageSchema } from "@/lib/cms/page-schemas";
 import { revalidateCustomPage } from "@/lib/cms/revalidate";
 
 export async function GET() {
@@ -48,6 +49,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Ungültiger Slug. Nur Kleinbuchstaben, Zahlen und Bindestriche." },
         { status: 400 },
+      );
+    }
+
+    if (getPageSchema(slug)) {
+      return NextResponse.json(
+        { error: "Dieser Slug ist für eine feste Website-Seite reserviert." },
+        { status: 409 },
       );
     }
 

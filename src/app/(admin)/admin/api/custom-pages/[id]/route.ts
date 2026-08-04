@@ -6,6 +6,7 @@ import {
   isValidCustomSlug,
   normalizeCustomPageContent,
 } from "@/lib/cms/custom-pages";
+import { getPageSchema } from "@/lib/cms/page-schemas";
 import { revalidateCustomPage } from "@/lib/cms/revalidate";
 
 interface Props {
@@ -52,9 +53,47 @@ export async function PUT(request: NextRequest, { params }: Props) {
         );
       }
       if (slug !== existing.slug) {
+        if (getPageSchema(slug)) {
+          return NextResponse.json(
+            { error: "Dieser Slug ist für eine feste Website-Seite reserviert." },
+            { status: 409 },
+          );
+        }
         const clash = await prisma.customPage.findUnique({ where: { slug } });
         if (clash) {
           return NextResponse.json({ error: "Dieser Slug ist bereits vergeben." }, { status: 409 });
+        }
+        // Move Flex-Baustein content + order to the new slug
+        await prisma.$transaction([
+          prisma.pageContent.updateMany({
+            where: { pageSlug: existing.slug },
+            data: { pageSlug: slug },
+          }),
+          prisma.siteSettings.deleteMany({
+            where: {
+              key: { in: [`page_order_${slug}`, `page_hidden_${slug}`] },
+            },
+          }),
+        ]);
+        const [orderRow, hiddenRow] = await Promise.all([
+          prisma.siteSettings.findUnique({ where: { key: `page_order_${existing.slug}` } }),
+          prisma.siteSettings.findUnique({ where: { key: `page_hidden_${existing.slug}` } }),
+        ]);
+        if (orderRow) {
+          await prisma.siteSettings.upsert({
+            where: { key: `page_order_${slug}` },
+            update: { value: orderRow.value as Prisma.InputJsonValue },
+            create: { key: `page_order_${slug}`, value: orderRow.value as Prisma.InputJsonValue },
+          });
+          await prisma.siteSettings.delete({ where: { key: `page_order_${existing.slug}` } }).catch(() => null);
+        }
+        if (hiddenRow) {
+          await prisma.siteSettings.upsert({
+            where: { key: `page_hidden_${slug}` },
+            update: { value: hiddenRow.value as Prisma.InputJsonValue },
+            create: { key: `page_hidden_${slug}`, value: hiddenRow.value as Prisma.InputJsonValue },
+          });
+          await prisma.siteSettings.delete({ where: { key: `page_hidden_${existing.slug}` } }).catch(() => null);
         }
       }
     }

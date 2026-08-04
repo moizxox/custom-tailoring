@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@/auth";
 import { getPageSchema } from "@/lib/cms/page-schemas";
-import { revalidateCmsPage } from "@/lib/cms/revalidate";
+import { resolvePageSchema } from "@/lib/cms/resolve-page-schema";
+import { revalidateCmsPage, revalidateCustomPage } from "@/lib/cms/revalidate";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -27,13 +28,16 @@ export async function PUT(request: NextRequest, { params }: Props) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { slug } = await params;
-  const schema = getPageSchema(slug);
+  const schema = await resolvePageSchema(slug);
   if (!schema) return NextResponse.json({ error: "Unknown page slug" }, { status: 404 });
 
   try {
     const { sectionKey, content } = await request.json();
     if (!sectionKey || !content) {
       return NextResponse.json({ error: "sectionKey and content required" }, { status: 400 });
+    }
+    if (!schema.sections.some((s) => s.key === sectionKey)) {
+      return NextResponse.json({ error: "Unknown section key" }, { status: 400 });
     }
 
     await prisma.pageContent.upsert({
@@ -43,6 +47,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
     });
 
     revalidateCmsPage(slug);
+    if (!getPageSchema(slug)) revalidateCustomPage(slug);
 
     return NextResponse.json({ ok: true });
   } catch (err) {

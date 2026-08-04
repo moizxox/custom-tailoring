@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/layout/PageHero";
+import { FlexiblePageSections } from "@/components/cms/FlexiblePageSections";
 import { prisma } from "@/lib/db/prisma";
 import { normalizeCustomPageContent } from "@/lib/cms/custom-pages";
 import type { Metadata } from "next";
@@ -51,14 +52,10 @@ export default async function CustomPublicPage({ params }: Props) {
         subtitle={content.hero.subtitle}
         breadcrumbs={[{ label: navLabel, href: `/seite/${page.slug}` }]}
       />
-      <section className="py-16 section-bg-white">
-        <div className="container-site max-w-3xl mx-auto space-y-10">
-          {content.blocks.length === 0 ? (
-            <p className="font-sans text-sm text-charcoal-lighter text-center">
-              Inhalt folgt in Kürze.
-            </p>
-          ) : (
-            content.blocks.map((block) => (
+      {content.blocks.length > 0 && (
+        <section className="py-16 section-bg-white">
+          <div className="container-site max-w-3xl mx-auto space-y-10">
+            {content.blocks.map((block) => (
               <article key={block.id} className="space-y-3">
                 {block.title && (
                   <h2 className="font-serif text-2xl text-charcoal">{block.title}</h2>
@@ -76,10 +73,11 @@ export default async function CustomPublicPage({ params }: Props) {
                     </p>
                   ))}
               </article>
-            ))
-          )}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
+      <FlexiblePageSections pageSlug={page.slug} onlyModular />
     </>
   );
 }
