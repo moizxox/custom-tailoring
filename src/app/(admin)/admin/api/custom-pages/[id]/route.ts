@@ -6,7 +6,7 @@ import {
   isValidCustomSlug,
   normalizeCustomPageContent,
 } from "@/lib/cms/custom-pages";
-import { getPageSchema } from "@/lib/cms/page-schemas";
+import { isReservedCustomSlug } from "@/lib/cms/custom-page-routes";
 import { revalidateCustomPage } from "@/lib/cms/revalidate";
 
 interface Props {
@@ -53,9 +53,9 @@ export async function PUT(request: NextRequest, { params }: Props) {
         );
       }
       if (slug !== existing.slug) {
-        if (getPageSchema(slug)) {
+        if (isReservedCustomSlug(slug)) {
           return NextResponse.json(
-            { error: "Dieser Slug ist für eine feste Website-Seite reserviert." },
+            { error: "Dieser Slug ist bereits für eine Website-Seite oder System-Route reserviert." },
             { status: 409 },
           );
         }

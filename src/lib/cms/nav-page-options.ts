@@ -90,7 +90,7 @@ export function buildNavPageOptions(customPages: CustomPageNavSource[] = []): Na
     .slice()
     .sort((a, b) => a.title.localeCompare(b.title, "de"))
     .map((page) => ({
-      href: `/seite/${page.slug}`,
+      href: `/${page.slug}`,
       label: `${page.navLabel?.trim() || page.title}${page.published === false ? " (Entwurf)" : ""}`,
       group: "Eigene Seiten" as const,
     }));

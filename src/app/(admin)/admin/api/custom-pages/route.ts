@@ -8,7 +8,7 @@ import {
   normalizeCustomPageContent,
   slugifyPageTitle,
 } from "@/lib/cms/custom-pages";
-import { getPageSchema } from "@/lib/cms/page-schemas";
+import { isReservedCustomSlug } from "@/lib/cms/custom-page-routes";
 import { revalidateCustomPage } from "@/lib/cms/revalidate";
 
 export async function GET() {
@@ -52,9 +52,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (getPageSchema(slug)) {
+    if (isReservedCustomSlug(slug)) {
       return NextResponse.json(
-        { error: "Dieser Slug ist für eine feste Website-Seite reserviert." },
+        { error: "Dieser Slug ist bereits für eine Website-Seite oder System-Route reserviert." },
         { status: 409 },
       );
     }

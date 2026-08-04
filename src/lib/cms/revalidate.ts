@@ -17,10 +17,11 @@ export function revalidateCmsPage(slug: string) {
   revalidatePath("/", "layout");
 }
 
-/** Custom admin-created pages at /seite/[slug]. */
+/** Custom admin-created pages at /[slug] (legacy /seite/[slug] redirects). */
 export function revalidateCustomPage(slug: string) {
+  revalidatePath(`/${slug}`);
+  revalidatePath(`/${slug}`, "page");
   revalidatePath(`/seite/${slug}`);
-  revalidatePath(`/seite/${slug}`, "page");
   revalidatePath("/", "layout");
 }
 

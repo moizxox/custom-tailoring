@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CustomPageBlock, CustomPageContent } from "@/lib/cms/custom-pages";
 import { slugifyPageTitle } from "@/lib/cms/custom-pages";
+import { customPagePublicPath } from "@/lib/cms/custom-page-routes";
 
 interface PageData {
   id: string;
@@ -107,7 +108,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
         <div className="flex items-center gap-3">
           {published && (
             <Link
-              href={`/seite/${slug}`}
+              href={customPagePublicPath(slug)}
               target="_blank"
               className="text-xs font-medium text-periwinkle-600 hover:underline"
             >
@@ -149,9 +150,9 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
         <label className="block text-xs font-medium text-gray-600">
           Web-Adresse{" "}
           <span className="font-normal text-gray-400">(änderbar)</span>
-          <div className="mt-1 flex items-center gap-0 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 focus-within:ring-2 focus-within:ring-violet-400">
+            <div className="mt-1 flex items-center gap-0 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 focus-within:ring-2 focus-within:ring-violet-400">
             <span className="px-3 py-2 text-xs text-gray-400 font-mono shrink-0 border-r border-gray-200 bg-gray-100">
-              /seite/
+              /
             </span>
             <input
               value={slug}
@@ -164,7 +165,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
             />
           </div>
           <span className="text-[11px] text-gray-400 mt-1 block">
-            Öffentliche URL: /seite/{slug || "…"}
+            Öffentliche URL: {customPagePublicPath(slug || "…")}
           </span>
         </label>
         {!slugManual ? (
@@ -197,7 +198,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
             onChange={(e) => setPublished(e.target.checked)}
             className="accent-violet-600"
           />
-          Veröffentlicht (sichtbar unter /seite/{slug || "…"})
+          Veröffentlicht (sichtbar unter {customPagePublicPath(slug || "…")})
         </label>
       </section>
 
@@ -287,7 +288,7 @@ export default function CustomPageEditorClient({ initial }: { initial: PageData 
 
       <p className="text-xs text-gray-500">
         Tipp: Nach dem Veröffentlichen unter Navigation → Neuer Link mit{" "}
-        <code className="bg-gray-100 px-1 rounded">/seite/{slug || "slug"}</code> hinzufügen.
+        <code className="bg-gray-100 px-1 rounded">{customPagePublicPath(slug || "slug")}</code> hinzufügen.
       </p>
     </form>
   );

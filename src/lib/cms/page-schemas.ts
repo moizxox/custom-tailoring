@@ -1112,14 +1112,14 @@ export function getPageSchema(slug: string): CmsPageSchema | undefined {
   return PAGE_SCHEMAS.find((p) => p.slug === slug);
 }
 
-/** Schema for admin-created pages at /seite/[slug] — shared Flex-Bausteine pool. */
+/** Schema for admin-created pages at /[slug] — shared Flex-Bausteine pool. */
 export function buildCustomPageSchema(slug: string, label: string): CmsPageSchema {
   const [schema] = withAppearanceOnAllSections([
     {
       slug,
       label,
       icon: "📄",
-      path: `/seite/${slug}`,
+      path: `/${slug}`,
       sections: mergeModularSections([]),
     },
   ]);

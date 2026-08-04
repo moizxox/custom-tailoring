@@ -493,7 +493,7 @@ model ProjectReclamation {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Custom CMS pages (admin-created content at /seite/[slug])
+// Custom CMS pages (admin-created content at /[slug]; /seite/[slug] redirects)
 // ─────────────────────────────────────────────────────────────────────────────
 
 model CustomPage {

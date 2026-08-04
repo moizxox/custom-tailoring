@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { slugifyPageTitle } from "@/lib/cms/custom-pages";
+import { customPagePublicPath } from "@/lib/cms/custom-page-routes";
 
 interface CustomPageRow {
   id: string;
@@ -119,7 +120,7 @@ export function CustomPagesSection({ initialPages }: { initialPages: CustomPageR
             </span>
             <div className="mt-1 flex items-center gap-0 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 focus-within:ring-2 focus-within:ring-violet-400 focus-within:border-transparent">
               <span className="px-3 py-2 text-xs text-gray-400 font-mono shrink-0 border-r border-gray-200 bg-gray-100">
-                /seite/
+                /
               </span>
               <input
                 value={slug}
@@ -133,7 +134,8 @@ export function CustomPagesSection({ initialPages }: { initialPages: CustomPageR
             </div>
             {slug && (
               <span className="text-[11px] text-gray-400 mt-1.5 block">
-                Wird erreichbar unter: <code className="bg-gray-100 px-1 rounded">/seite/{slug}</code>
+                Wird erreichbar unter:{" "}
+                <code className="bg-gray-100 px-1 rounded">{customPagePublicPath(slug)}</code>
               </span>
             )}
           </label>
@@ -177,7 +179,9 @@ export function CustomPagesSection({ initialPages }: { initialPages: CustomPageR
               {pages.map((page) => (
                 <tr key={page.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3.5 font-medium text-gray-900">{page.title}</td>
-                  <td className="px-5 py-3.5 text-gray-400 font-mono text-xs">/seite/{page.slug}</td>
+                  <td className="px-5 py-3.5 text-gray-400 font-mono text-xs">
+                    {customPagePublicPath(page.slug)}
+                  </td>
                   <td className="px-5 py-3.5">
                     {page.published ? (
                       <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
