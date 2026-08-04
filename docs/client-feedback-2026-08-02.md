@@ -73,7 +73,7 @@ Code alone cannot finish these. Track them before / during the demo.
 | **Deploy + DB** | Run `pnpm run deploy` when VPS is reachable. On server, `prisma db push` so `AppointmentRequest` + `BookingBlock` exist. | VPS / `scripts/deploy-vps.sh` |
 | **Business email (SMTP)** | Set Hostinger mailbox for `info@kostuem-schneiderei.ch`: `NODEMAILER_HOST`, `NODEMAILER_PORT`, `NODEMAILER_USER`, `NODEMAILER_PASSWORD`, plus `CONTACT_NOTIFICATION_EMAIL=info@…`, `NODEMAILER_FROM=info@…`. Code already defaults notify/From to info@ — **password must be on the server**. | VPS `.env` |
 | **Admin Settings contact** | Confirm Admin → Settings contact email = `info@kostuem-schneiderei.ch` (not private Gmail). | Live admin |
-| **Massblatt PDF** | Done in repo: `public/documents/massblatt.pdf` (final) + `massblatt-layout.pdf` (1-page). Redeploy so live `/massfertigung` serves them. | Repo + deploy |
+| **Massblatt PDF** | Protected: files in `private/documents/`, download only via logged-in Kundenbereich. Public `/massfertigung` no longer exposes PDFs. Swap files when freelancer delivers new fillable forms. | Repo + deploy |
 | **Favicon** | Swap old favicon later (she marked “later”). | `public/` / app icons |
 | **Push git** | Push `main` when ready. | GitHub |
 

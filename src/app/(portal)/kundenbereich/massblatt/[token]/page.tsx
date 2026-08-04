@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { resolveAccessToken } from "@/lib/portal/customers";
 import { createPortalSession } from "@/lib/portal/session";
+import { getMassblattDownloads } from "@/lib/massblatt";
 import { MeasurementForm } from "@/components/portal/MeasurementForm";
 import { PortalHeader } from "@/components/portal/PortalHeader";
 import type { Metadata } from "next";
@@ -23,6 +24,7 @@ export default async function MassblattTokenPage({ params }: TokenPageProps) {
   }
 
   await createPortalSession(customer.id);
+  const pdfDownloads = await getMassblattDownloads();
 
   return (
     <>
@@ -32,7 +34,11 @@ export default async function MassblattTokenPage({ params }: TokenPageProps) {
           Persönlicher Zugangslink für <strong className="text-charcoal">{customer.name}</strong>.
           Diese Seite ist nicht öffentlich zugänglich.
         </div>
-        <MeasurementForm customer={customer} />
+        <MeasurementForm
+          customer={customer}
+          pdfAvailable={pdfDownloads.primary}
+          layoutPdfAvailable={pdfDownloads.layout}
+        />
       </div>
     </>
   );

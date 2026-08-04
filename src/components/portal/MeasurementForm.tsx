@@ -7,12 +7,19 @@ import {
   getFieldsForCategory,
   MEASUREMENT_DIAGRAM,
 } from "@/lib/portal/measurement-fields";
+import { MassblattDownload } from "@/components/sections/MassblattDownload";
 
 interface MeasurementFormProps {
   customer: PortalCustomer;
+  pdfAvailable?: boolean;
+  layoutPdfAvailable?: boolean;
 }
 
-export function MeasurementForm({ customer }: MeasurementFormProps) {
+export function MeasurementForm({
+  customer,
+  pdfAvailable = false,
+  layoutPdfAvailable = false,
+}: MeasurementFormProps) {
   const fields = getFieldsForCategory(customer.costumeCategory);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -97,6 +104,14 @@ export function MeasurementForm({ customer }: MeasurementFormProps) {
             werden alle Angaben benötigt. Alle Angaben in cm; das Massband soll locker anliegen.
           </p>
         </div>
+
+        {(pdfAvailable || layoutPdfAvailable) && (
+          <MassblattDownload
+            available={pdfAvailable}
+            layoutAvailable={layoutPdfAvailable}
+            className="rounded-xl border border-stone-light bg-sand-light/30 p-4"
+          />
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {fields.map((field) => (

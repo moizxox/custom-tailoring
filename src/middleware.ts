@@ -88,6 +88,14 @@ function handleAdmin(request: NextRequest): NextResponse | null {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function middleware(request: NextRequest) {
+  // Massblatt PDFs must never be served as public static files
+  if (
+    request.nextUrl.pathname.startsWith("/documents/") &&
+    request.nextUrl.pathname.toLowerCase().endsWith(".pdf")
+  ) {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
   const portalResult = handlePortal(request);
   if (portalResult) return portalResult;
 
@@ -98,5 +106,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/kundenbereich/:path*", "/admin/:path*"],
+  matcher: ["/kundenbereich/:path*", "/admin/:path*", "/documents/:path*"],
 };

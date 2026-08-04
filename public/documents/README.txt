@@ -1,11 +1,11 @@
-Linvara Massblatt PDFs (served publicly):
+Linvara Massblatt PDFs are NOT public.
 
-  massblatt.pdf         — Massformular_Linvara_AG_aktualisiert_final.pdf
-                          (primary 2-page form; download on /massfertigung)
+They live in:
+  private/documents/massblatt.pdf
+  private/documents/massblatt-layout.pdf
 
-  massblatt-layout.pdf  — Linvara_AG_Massformular_Felder_frei_angeordnet.pdf
-                          (alternate 1-page layout)
+and are served only to logged-in Kundenbereich users via:
+  /kundenbereich/api/documents/massblatt.pdf
+  /kundenbereich/api/documents/massblatt-layout.pdf
 
-Source copies may also live in repo folder pdfs/.
-Update portal/CRM field labels in src/lib/portal/measurement-fields.ts
-when the printed form wording changes.
+Do not place PDF forms under public/documents/.

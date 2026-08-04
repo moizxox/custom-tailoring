@@ -6,7 +6,6 @@ import { getCmsContent } from "@/lib/cms/content";
 import { mapPageHeroContent } from "@/lib/cms/helpers";
 import { parseSectionAppearance } from "@/lib/cms/section-appearance";
 import { MASSFERTIGUNG_SECTION_DEFAULTS } from "@/lib/cms/default-content";
-import { getMassblattDownloads } from "@/lib/massblatt";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -20,11 +19,10 @@ interface StepDetail { icon: string; title: string; text: string; }
 interface MassCtaData { heading: string; subtext: string; buttonLabel: string; buttonUrl: string; }
 
 export default async function MassfertigungPage() {
-  const [heroContent, stepsContent, ctaContent, pdfDownloads] = await Promise.all([
+  const [heroContent, stepsContent, ctaContent] = await Promise.all([
     getCmsContent("massfertigung", "hero", {}),
     getCmsContent("massfertigung", "steps", {}),
     getCmsContent("massfertigung", "cta", {}),
-    getMassblattDownloads(),
   ]);
   const hero = mapPageHeroContent(heroContent, {
     label: "Massgeschneidert für Sie",
@@ -84,8 +82,8 @@ export default async function MassfertigungPage() {
               Zum Kundenbereich
             </Link>
             <MassblattDownload
-              available={pdfDownloads.primary}
-              layoutAvailable={pdfDownloads.layout}
+              available={false}
+              showDownloads={false}
               className="mt-2 text-center"
             />
           </div>

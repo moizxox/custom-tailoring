@@ -11,8 +11,8 @@ export interface MeasurementField {
 
 /**
  * Letter-coded body measurements aligned with Linvara Massformular
- * (`public/documents/massblatt.pdf`). None are hard-required — garment
- * type determines which values matter.
+ * Aligned with Linvara Massformular (private/documents/massblatt.pdf).
+ * None are hard-required — garment type determines which values matter.
  */
 const LETTER_FIELDS: MeasurementField[] = [
   { key: "a", letter: "A", label: "Kopfumfang", unit: "cm" },

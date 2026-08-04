@@ -9,6 +9,8 @@
 5. **Nav page picker** — Navigation → pick a page from the dropdown (no typing `/shop`) → Save → live link works. Same for Footer links.
 6. **Nav hide** — Navigation → «Auf Website anzeigen» off → item stays in CMS, hidden live.
 
+
+
 ## Screenshot / document fixes
 
 1. **Footer CTA icons** — phone / mail / WhatsApp between headline and buttons.
@@ -16,6 +18,7 @@
 3. **Footer contact editable** — Admin → Navigation → Footer fields.
 4. **No breadcrumb text on Katalog hero** — illustrated banners without Start › Shop overlay.
 5. **Katalog images** — grid shows full costume (`object-contain`), not cropped.
+5b. **Square costume photos** — Home marquee, Galerie preview, Galerie grid, Atelier slider: square frames + full image visible (not cropped landscape).
 6. **Katalog wording** — «Alle Angebote» / Angebot ansehen (not Produkt-buy language).
 7. **CMS headings** — show editing «Unsere Produkte» / categories texts in Shop page CMS.
 8. **Termin form labels** — step 4 shows Name / E-Mail / Telefon / Nachricht labels.
@@ -29,8 +32,10 @@
 16. **Logo** — Linvara AG larger under brand.
 17. **Massfertigung** — Präzision block removed; title without «Vertrauliche».
 18. **Massblatt (portal)** — title Massblatt; no Aktuelles Projekt/Kategorie; no letter badges; submit with partial fields; labels match her Massformular PDF (Kopfumfang, Halsumfang, Bundumfang…).
-19. **Massblatt PDF download** — `/massfertigung` → open «Massformular als PDF herunterladen» (her final 2-page form) and optionally «Alternativlayout (1 Seite)»; confirm files open correctly.
+19. **Massblatt PDF protected** — `/massfertigung` has NO public PDF buttons (only Kundenbereich link). Login → Massblatt → PDF downloads work. Direct `/documents/massblatt.pdf` must 404.
 20. **Dashed mistake** — cleaner section borders (no wrong dashed stitch line on contact band).
+
+
 
 ## Portal / CRM professional
 
@@ -40,15 +45,21 @@
 4. **CRM Masse** — project Masse labels match PDF wording (letter + DE title).
 5. **Business email** — enquiry From/notify info@ (show if available).
 
+
+
 ## Responsive
 
 1. Home, Katalog, Kontakt, Termin, portal at mobile width.
+
+
 
 ## Close
 
 “Please review now — everything from your document and message is covered on our side first. Favicon later as noted.”
 
 ---
+
+
 
 ## Left on our / her end (say this in the video)
 
@@ -61,7 +72,7 @@ Do **not** pretend these are finished in code alone:
 - Confirm Admin Settings contact = info@
 - Favicon later
 
-### Lani in CMS (walk her through these)
+### Lani and Moiz Updates
 
 - Rename nav **Shop → Katalog** if still old in saved nav
 - Edit Katalog headings (“Unsere Produkte” etc.) under Pages → Katalog
@@ -70,4 +81,5 @@ Do **not** pretend these are finished in code alone:
 - Termin: set service **durations**, edit Time Slots text/times, toggle Time Slots off off-season
 - CRM → Termine: enter her real **blocked times**
 - Team photos / none icons; any other text she still wants changed
-- Confirm the two Massformular PDFs on `/massfertigung` are the versions she wants public
+- Confirm the two Massformular PDFs in Kundenbereich (not public) are the versions she wants; replace files in `private/documents/` when freelancer delivers new fillable forms
+
