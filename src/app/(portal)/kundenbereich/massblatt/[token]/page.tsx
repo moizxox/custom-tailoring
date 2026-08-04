@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { resolveAccessToken } from "@/lib/portal/customers";
 import { createPortalSession } from "@/lib/portal/session";
-import { getMassblattDownloads } from "@/lib/massblatt";
+import { getMassblattDownloads } from "@/lib/massblatt-server";
 import { MeasurementForm } from "@/components/portal/MeasurementForm";
 import { PortalHeader } from "@/components/portal/PortalHeader";
 import type { Metadata } from "next";

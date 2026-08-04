@@ -1,6 +1,7 @@
 import { readFile } from "fs/promises";
 import { NextResponse } from "next/server";
-import { getPrivateMassblattPath, isAllowedMassblattFile } from "@/lib/massblatt";
+import { isAllowedMassblattFile } from "@/lib/massblatt";
+import { getPrivateMassblattPath } from "@/lib/massblatt-server";
 import { getPortalCustomerId } from "@/lib/portal/session";
 
 interface RouteParams {
