@@ -68,9 +68,16 @@ export function PhotoMarquee({ className, acf }: PhotoMarqueeProps) {
           {track.map((photo, index) => (
             <div
               key={`${photo.src}-${index}`}
-              className="relative shrink-0 w-[min(72vw,420px)] h-56 sm:h-64 mx-2 sm:mx-3 rounded-2xl overflow-hidden border border-stone-light/70 shadow-soft"
+              className="relative shrink-0 w-[min(58vw,280px)] sm:w-[300px] aspect-square mx-2 sm:mx-3 rounded-2xl overflow-hidden border border-stone-light/70 shadow-soft bg-sand-light/40"
             >
-              <Image src={photo.src} alt={photo.alt} fill className="object-cover" sizes="420px" priority={index < 4} />
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                className="object-contain object-center p-2"
+                sizes="300px"
+                priority={index < 4}
+              />
             </div>
           ))}
         </div>

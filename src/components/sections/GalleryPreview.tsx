@@ -75,15 +75,15 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
                 "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover",
               )}
             >
-              <div className="relative h-72 overflow-hidden">
+              <div className="relative aspect-square overflow-hidden bg-sand-light/40">
                 <Image
                   src={item.src}
                   alt={item.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-contain object-center p-3 transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 via-charcoal/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 via-charcoal/10 to-transparent pointer-events-none" />
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                   <span className="inline-flex text-[10px] font-sans font-semibold tracking-[0.15em] uppercase text-white/90 bg-white/20 backdrop-blur-sm px-2.5 py-0.5 rounded-full mb-2">
                     {item.category}

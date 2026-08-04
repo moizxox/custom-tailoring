@@ -74,15 +74,15 @@ export default async function GaleriePage() {
                 key={item.src}
                 className="group relative overflow-hidden rounded-2xl border border-stone-light bg-white hover:border-periwinkle-light hover:shadow-card-hover transition-all duration-300"
               >
-                <div className="relative aspect-[4/5] overflow-hidden">
+                <div className="relative aspect-square overflow-hidden bg-sand-light/40">
                   <Image
                     src={item.src}
                     alt={item.title}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-contain object-center p-3 transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                     <span className="inline-flex text-[10px] font-sans font-semibold tracking-[0.15em] uppercase text-white/90 bg-white/20 backdrop-blur-sm px-2.5 py-0.5 rounded-full mb-2">
                       {item.category}
