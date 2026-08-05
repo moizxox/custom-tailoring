@@ -246,7 +246,7 @@ export function ProductDetailView({ product, tierDefinitions, contact }: Product
             </div>
           )}
 
-          <div className="relative flex-1 aspect-[3/4] max-h-[720px] rounded-2xl overflow-hidden bg-sand-light/30">
+          <div className="relative flex-1 aspect-[4/3] max-h-[720px] rounded-[14px] overflow-hidden bg-white border border-stone-light/60">
             {images.map((src, i) => (
               <Image
                 key={`main-${src}`}
@@ -255,7 +255,7 @@ export function ProductDetailView({ product, tierDefinitions, contact }: Product
                 fill
                 priority={i === 0}
                 className={cn(
-                  "object-contain p-4 sm:p-6 transition-opacity duration-300 absolute inset-0",
+                  "object-contain object-center transition-opacity duration-300 absolute inset-0",
                   activeImage === i ? "opacity-100" : "opacity-0",
                 )}
                 sizes="(max-width: 1024px) 100vw, 55vw"

@@ -12,19 +12,19 @@ export function ShopProductGrid({ products }: ShopProductGridProps) {
       {products.map((product) => (
         <article
           key={product.id}
-          className="rounded-xl border border-stone-light overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 bg-white group flex flex-col h-full"
+          className="product-card rounded-[14px] border border-stone-light overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 bg-white group flex flex-col h-full"
         >
-          {/* Square frame + cover so every card image area matches */}
+          {/* Fixed 4:3 frame — contain keeps full costume visible & centered */}
           <Link
             href={`/shop/${product.slug}`}
-            className="block relative w-full aspect-[4/3] shrink-0 bg-sand-light/30 overflow-hidden"
+            className="product-card-image block relative w-full aspect-[4/3] shrink-0 bg-white overflow-hidden border-b border-stone-light/60"
           >
             {product.imageUrl ? (
               <Image
                 src={product.imageUrl}
                 alt={product.name}
                 fill
-                className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                className="object-contain object-center"
                 sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw"
               />
             ) : (
