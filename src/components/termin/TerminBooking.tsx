@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AtelierTimetable } from "@/components/sections/AtelierTimetable";
@@ -398,13 +399,13 @@ export function TerminBooking({
                     </div>
                     <p className="text-[11px] text-charcoal-lighter mt-4">
                       Mit der Buchung akzeptieren Sie unsere{" "}
-                      <a href="/agb" className="text-periwinkle-dark hover:underline">
+                      <Link href="/agb" className="text-periwinkle-dark hover:underline">
                         AGB
-                      </a>{" "}
+                      </Link>{" "}
                       und{" "}
-                      <a href="/datenschutz" className="text-periwinkle-dark hover:underline">
+                      <Link href="/datenschutz" className="text-periwinkle-dark hover:underline">
                         Datenschutzerklärung
-                      </a>
+                      </Link>
                       .
                     </p>
                     {submitError && (
