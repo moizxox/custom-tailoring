@@ -125,7 +125,7 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
         <section className="py-16 section-bg-lavender border-y border-periwinkle-light/30">
           <div className="container-site max-w-5xl">
             <div className="text-center mb-10">
-              <h2 className="font-serif text-2xl text-charcoal mb-2">Massen ohne Termin — Hochsaison</h2>
+              <h2 className="font-serif text-2xl text-charcoal mb-2">Messen ohne Termin — Hochsaison</h2>
               <p className="font-sans text-sm text-charcoal-light">Feste Zeiten pro Standort während der Fasnachts-Saison</p>
             </div>
             <AtelierTimetable timetables={timetables} locations={locations} />

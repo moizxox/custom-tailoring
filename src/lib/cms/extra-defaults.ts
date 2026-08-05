@@ -348,7 +348,7 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
   },
   termin: {
     timetables: {
-      heading: "Massen ohne Termin — Hochsaison",
+      heading: "Messen ohne Termin — Hochsaison",
       subtext: "Feste Zeiten pro Standort während der Fasnachts-Saison",
       items: [
         {

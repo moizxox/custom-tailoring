@@ -119,6 +119,7 @@ export default async function ServicePage() {
           </div>
         </CmsSectionShell>
 
+        {timetables.some((t) => t.active) && (
         <section id="massen-ohne-termin" className="py-16 section-bg-white border-y border-periwinkle-light/30">
           <div className="container-site max-w-5xl">
             <div className="text-center mb-10">
@@ -130,6 +131,7 @@ export default async function ServicePage() {
             <AtelierTimetable timetables={timetables} />
           </div>
         </section>
+        )}
       </>
     ),
     faqs: () => (

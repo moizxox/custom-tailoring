@@ -58,7 +58,13 @@ export default async function MassenOhneTerminPage() {
 
       <section className="py-16 section-bg-lavender border-y border-periwinkle-light/30">
         <div className="container-site max-w-5xl">
-          <AtelierTimetable timetables={timetables} locations={locations} />
+          {timetables.some((t) => t.active) ? (
+            <AtelierTimetable timetables={timetables} locations={locations} />
+          ) : (
+            <p className="font-sans text-sm text-charcoal-light text-center max-w-xl mx-auto leading-relaxed">
+              Aktuell sind keine festen Masszeiten ohne Voranmeldung freigeschaltet. Bitte buchen Sie einen individuellen Termin oder kontaktieren Sie uns.
+            </p>
+          )}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link href="/termin" className="btn-primary">
               Individuellen Termin buchen

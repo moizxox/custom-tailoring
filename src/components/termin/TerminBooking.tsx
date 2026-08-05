@@ -53,7 +53,8 @@ export function TerminBooking({
   const locationLabel = locations.find((l) => l.id === selectedLocation)?.name ?? "";
   const selectedType = config.appointmentTypes.find((t) => t.id === selectedServiceId || t.label === selectedService);
   const durationMin = selectedType?.durationMin ?? 30;
-  const showWalkIn = showTimetables && config.showWalkIn !== false;
+  const hasActiveWalkIn = (timetables ?? []).some((t) => t.active);
+  const showWalkIn = showTimetables && config.showWalkIn !== false && hasActiveWalkIn;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
