@@ -7,6 +7,10 @@
 3. **Edit text + images** — open a section, change headline + image, save, show live.
 3b. **Modular Flex-Bausteine** — every page lists the same Flex blocks (Textblock, Bild+Text, CTA, Ablauf, Galerie, FAQ, Kontakt-Band). They start hidden; turn Eye on, fill content, save order — appears live.
 4. **Custom page** — Neue Seite → URL is `/{slug}` (not `/seite/…`) → Flex-Bausteine + publish. Old `/seite/…` redirects.
+4b. **Hochsaison hide** — Admin → Termin → Walk-in timetables → set Active = Nein for both locations → Kontakt purple band disappears fully (heading + background).
+4c. **Shop legal buttons** — Katalog → Info band → clear Shop-Bedingungen / AGB button labels (or leave empty) → save.
+4d. **Instagram URL** — Navigation / Footer → set Instagram profile URL (icon is Instagram, not “In”).
+4e. **Register verify** — if activation link says invalid, use «Erneut registrieren» (48h link, re-open OK if already activated).
 5. **Nav page picker** — Navigation → pick a page from the dropdown (no typing `/shop`) → Save → live link works. Same for Footer links.
 6. **Nav hide** — Navigation → «Auf Website anzeigen» off → item stays in CMS, hidden live.
 

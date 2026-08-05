@@ -2,6 +2,7 @@
 
 import { PageHero } from "@/components/layout/PageHero";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LocationCards } from "@/components/sections/LocationCards";
@@ -292,9 +293,9 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
                     )}
                     <p className="text-[11px] text-charcoal-lighter text-center">
                       Mit dem Absenden stimmen Sie unserer{" "}
-                      <a href="/datenschutz" className="underline hover:text-charcoal">
+                      <Link href="/datenschutz" className="underline hover:text-charcoal">
                         Datenschutzerklärung
-                      </a>{" "}
+                      </Link>{" "}
                       zu.
                     </p>
                   </form>

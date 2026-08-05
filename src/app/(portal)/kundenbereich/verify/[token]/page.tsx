@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { verifyRegistrationToken } from "@/lib/crm/registration";
 import { createPortalSession } from "@/lib/portal/session";
 import Link from "next/link";

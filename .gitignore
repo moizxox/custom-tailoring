@@ -39,3 +39,9 @@ Sewing_outline/
 
 # Deploy artifacts
 .deploy/
+
+# Local scratch
+Mian*.docx
+pdfs/
+wunschkleid-attachments/
+
