@@ -19,11 +19,16 @@ export async function createRegistrationToken(input: RegisterInput) {
     return { error: "Diese E-Mail ist bereits registriert." as const };
   }
 
+  // Allow a fresh token if the previous one expired or was stuck unused forever
   const pending = await prisma.customerVerificationToken.findFirst({
     where: { email, used: false, expiresAt: { gt: new Date() } },
   });
   if (pending) {
-    return { error: "Eine Bestätigungs-E-Mail wurde bereits gesendet. Bitte prüfen Sie Ihr Postfach." as const };
+    // Refresh: invalidate old pending and send a new link
+    await prisma.customerVerificationToken.update({
+      where: { id: pending.id },
+      data: { used: true },
+    });
   }
 
   const passwordHash = input.password
@@ -31,7 +36,7 @@ export async function createRegistrationToken(input: RegisterInput) {
     : null;
 
   const token = nanoid(32);
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 h
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 48); // 48 h
 
   await prisma.customerVerificationToken.create({
     data: {
@@ -58,19 +63,26 @@ export async function verifyRegistrationToken(token: string) {
     where: { token },
   });
 
-  if (!entry || entry.used || entry.expiresAt < new Date()) {
+  if (!entry) {
     return { error: "Ungültiger oder abgelaufener Link." as const };
   }
 
+  // Already activated (e.g. mail client opened the link twice / Safe Links)
   const existing = await prisma.customer.findUnique({
     where: { email: entry.email },
   });
   if (existing) {
-    await prisma.customerVerificationToken.update({
-      where: { id: entry.id },
-      data: { used: true },
-    });
-    return { customer: existing, alreadyExisted: true };
+    if (!entry.used) {
+      await prisma.customerVerificationToken.update({
+        where: { id: entry.id },
+        data: { used: true },
+      });
+    }
+    return { customer: existing, alreadyExisted: true as const };
+  }
+
+  if (entry.used || entry.expiresAt < new Date()) {
+    return { error: "Ungültiger oder abgelaufener Link." as const };
   }
 
   const customer = await createCustomer({
@@ -97,7 +109,7 @@ export async function verifyRegistrationToken(token: string) {
     accessCode: customer.accessCode,
   });
 
-  return { customer };
+  return { customer, alreadyExisted: false as const };
 }
 
 /** Login with email + password (for self-registered customers). */

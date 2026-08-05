@@ -128,11 +128,27 @@ export function Footer({ footerContent }: FooterProps) {
                 {d.hours && <span className="text-charcoal/50 text-[13px]">{d.hours}</span>}
               </div>
 
-              {/* Social — only when a real profile URL is set (empty = hidden) */}
+              {/* Social — Instagram / Facebook icons (label text would look like LinkedIn "In") */}
               <div className="flex gap-2.5">
                 {[
-                  { label: "Instagram", href: d.instagramUrl },
-                  { label: "Facebook", href: d.facebookUrl },
+                  {
+                    label: "Instagram",
+                    href: d.instagramUrl,
+                    icon: (
+                      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden>
+                        <path d="M12 7.2A4.8 4.8 0 1 0 12 16.8 4.8 4.8 0 0 0 12 7.2Zm0 7.92A3.12 3.12 0 1 1 12 8.88a3.12 3.12 0 0 1 0 6.24Zm5.28-8.16a1.12 1.12 0 1 1-2.24 0 1.12 1.12 0 0 1 2.24 0ZM12 2.4c-2.6 0-2.92.01-3.95.06-2.3.1-4.25 2.04-4.36 4.34C3.61 7.85 3.6 8.17 3.6 10.8s.01 2.95.09 3.98c.11 2.3 2.05 4.25 4.34 4.36 1.03.05 1.35.06 3.97.06s2.95-.01 3.98-.09c2.3-.11 4.24-2.05 4.35-4.34.05-1.04.06-1.36.06-3.97s-.01-2.95-.06-3.98C20.23 4.5 18.28 2.55 15.98 2.44 14.95 2.41 14.63 2.4 12 2.4Zm0 1.68c2.55 0 2.85.01 3.85.06 1.75.08 3.21 1.54 3.29 3.29.05 1 .06 1.3.06 3.85s-.01 2.85-.06 3.85c-.08 1.75-1.54 3.21-3.29 3.29-1 .05-1.3.06-3.85.06s-2.85-.01-3.85-.06c-1.75-.08-3.21-1.54-3.29-3.29-.05-1-.06-1.3-.06-3.85s.01-2.85.06-3.85c.08-1.75 1.54-3.21 3.29-3.29 1-.05 1.3-.06 3.85-.06Z" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    label: "Facebook",
+                    href: d.facebookUrl,
+                    icon: (
+                      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden>
+                        <path d="M13.5 22v-8.1h2.72l.41-3.16H13.5V8.72c0-.92.25-1.54 1.57-1.54h1.68V4.35c-.29-.04-1.29-.12-2.45-.12-2.42 0-4.08 1.48-4.08 4.19v2.34H7.7v3.16h2.52V22h3.28Z" />
+                      </svg>
+                    ),
+                  },
                 ]
                   .filter((s) => {
                     const h = (s.href ?? "").trim();
@@ -146,9 +162,10 @@ export function Footer({ footerContent }: FooterProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={s.label}
-                      className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 flex items-center justify-center text-charcoal/50 hover:text-periwinkle-dark hover:bg-white/80 transition-all duration-200 shadow-soft text-[10px] font-semibold"
+                      title={s.label}
+                      className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-sm border border-white/60 flex items-center justify-center text-charcoal/60 hover:text-periwinkle-dark hover:bg-white/80 transition-all duration-200 shadow-soft"
                     >
-                      {s.label.slice(0, 2)}
+                      {s.icon}
                     </a>
                   ))}
               </div>

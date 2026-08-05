@@ -70,17 +70,17 @@ export function GalleryPreview({ acf }: GalleryPreviewProps) {
               key={item.src}
               href="/galerie"
               className={cn(
-                "group relative overflow-hidden rounded-2xl",
+                "group relative overflow-hidden rounded-xl",
                 "border border-stone-light hover:border-periwinkle-light",
                 "transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover",
               )}
             >
-              <div className="relative aspect-square overflow-hidden bg-sand-light/40">
+              <div className="relative aspect-[4/3] overflow-hidden bg-sand-light/30">
                 <Image
                   src={item.src}
                   alt={item.title}
                   fill
-                  className="object-contain object-center p-3 transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 via-charcoal/10 to-transparent pointer-events-none" />

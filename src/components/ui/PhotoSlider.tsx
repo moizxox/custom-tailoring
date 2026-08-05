@@ -40,7 +40,7 @@ export function PhotoSlider({ slides, className, autoPlayMs = 5500 }: PhotoSlide
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <div className="relative aspect-square rounded-2xl overflow-hidden border border-stone-light/80 shadow-card bg-sand-light/40">
+      <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-stone-light/80 shadow-card bg-sand-light/20">
         {slides.map((slide, index) => (
           <div
             key={slide.src}
@@ -54,7 +54,7 @@ export function PhotoSlider({ slides, className, autoPlayMs = 5500 }: PhotoSlide
               src={slide.src}
               alt={slide.alt}
               fill
-              className="object-contain object-center p-3"
+              className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority={index === 0}
             />

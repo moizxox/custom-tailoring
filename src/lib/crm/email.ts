@@ -1,7 +1,8 @@
 import { sendEmail } from "@/lib/email/send";
 
 function appUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  const raw = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  return raw.replace(/\/$/, "");
 }
 
 const emailStyles = {
@@ -91,7 +92,7 @@ export async function sendVerificationEmail(opts: {
         <a href="${link}" style="${emailStyles.button}">E-Mail bestätigen</a>
       </p>
       <p style="${emailStyles.body}; font-size: 12px; color: #888;">
-        Der Link ist 24 Stunden gültig.
+        Der Link ist 48 Stunden gültig. Falls der Link schon geöffnet wurde, melden Sie sich einfach im Kundenbereich an.
       </p>
       <hr style="border: none; border-top: 1px solid #e5e3de; margin: 24px 0;">
       <p style="${emailStyles.footer}">

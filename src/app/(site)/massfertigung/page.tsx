@@ -57,15 +57,15 @@ export default async function MassfertigungPage() {
 
         <section className="relative py-16 section-bg-white overflow-hidden">
           <div className="container-site relative z-10 max-w-3xl mx-auto text-center">
-            <p className="section-label mb-3">Massblätter</p>
+            <p className="section-label mb-3">MASSAUFNAHME</p>
             <h2 className="section-heading text-3xl mb-4">
-              Masseingabe für{" "}
-              <span className="text-periwinkle-dark">unsere Kundinnen & Kunden</span>
+              Ihre Massangaben{" "}
+              <span className="text-periwinkle-dark">sicher übermitteln</span>
             </h2>
             <p className="font-sans text-sm text-charcoal-light leading-relaxed mb-8">
-              Unsere Massblätter und der genaue Messprozess sind nicht öffentlich einsehbar.
-              Nach Auftragsbestätigung erhalten Sie Zugang zu Ihrem persönlichen Kundenbereich —
-              per Login oder privatem Link.
+              Nach der Auftragsbestätigung erhalten Sie Zugang zu Ihrem persönlichen Kundenbereich.
+              Dort können Sie die benötigten Masse erfassen, Fotos hochladen und Ihre Angaben sicher
+              übermitteln.
             </p>
             <div className="glass-card p-8 flex flex-col items-center gap-4">
               <Image

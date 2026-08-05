@@ -13,8 +13,6 @@ export const metadata: Metadata = {
   description: "Entdecken Sie unsere Kostüme – Handwerk, Stoffe und fertige Unikate aus unserem Basler Atelier.",
 };
 
-const CATEGORIES = ["Alle", "Guggenmusik", "Clique", "Major", "Sujet"];
-
 interface GalleryItem {
   src: string;
   category: string;
@@ -57,33 +55,18 @@ export default async function GaleriePage() {
     gallery: () => (
       <CmsSectionShell appearance={galleryAppearance} className="py-20">
         <div className="container-site">
-          <div className="flex flex-wrap gap-2 mb-10">
-            {CATEGORIES.map((cat) => (
-              <span
-                key={cat}
-                className={`px-4 py-1.5 rounded-full text-[12px] font-sans font-medium border cursor-pointer transition-all duration-200 ${
-                  cat === "Alle"
-                    ? "bg-periwinkle border-periwinkle text-charcoal"
-                    : "bg-white border-stone-light text-charcoal-light hover:border-periwinkle-light"
-                }`}
-              >
-                {cat}
-              </span>
-            ))}
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((item) => (
               <article
                 key={item.src}
-                className="group relative overflow-hidden rounded-2xl border border-stone-light bg-white hover:border-periwinkle-light hover:shadow-card-hover transition-all duration-300"
+                className="group relative overflow-hidden rounded-xl border border-stone-light bg-white hover:border-periwinkle-light hover:shadow-card-hover transition-all duration-300"
               >
-                <div className="relative aspect-square overflow-hidden bg-sand-light/40">
+                <div className="relative aspect-[4/3] overflow-hidden bg-sand-light/30">
                   <Image
                     src={item.src}
                     alt={item.title}
                     fill
-                    className="object-contain object-center p-3 transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />

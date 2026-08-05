@@ -19,7 +19,10 @@ export function AtelierTimetable({ className, locationId, timetables, locations 
         const cmsTable = timetables?.find((t) => t.locationId === location.id);
         const fallback = MEASUREMENT_TIMETABLES[location.id];
         const timetable = cmsTable ?? { ...fallback, locationId: location.id };
-        if (!timetable.active) return null;
+        const isActive = cmsTable
+          ? cmsTable.active !== false && String(cmsTable.active) !== "false"
+          : timetable.active;
+        if (!isActive) return null;
 
         return (
           <article key={location.id} className="rounded-3xl card-gradient border border-periwinkle-light/40 overflow-hidden">

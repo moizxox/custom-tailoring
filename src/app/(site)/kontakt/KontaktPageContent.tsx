@@ -120,15 +120,17 @@ export function KontaktPageContent({ hero, form, formAppearance, contact, locati
         </div>
       </section>
 
-      <section className="py-16 section-bg-lavender border-y border-periwinkle-light/30">
-        <div className="container-site max-w-5xl">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-2xl text-charcoal mb-2">Massen ohne Termin — Hochsaison</h2>
-            <p className="font-sans text-sm text-charcoal-light">Feste Zeiten pro Standort während der Fasnachts-Saison</p>
+      {timetables.some((t) => t.active) && (
+        <section className="py-16 section-bg-lavender border-y border-periwinkle-light/30">
+          <div className="container-site max-w-5xl">
+            <div className="text-center mb-10">
+              <h2 className="font-serif text-2xl text-charcoal mb-2">Massen ohne Termin — Hochsaison</h2>
+              <p className="font-sans text-sm text-charcoal-light">Feste Zeiten pro Standort während der Fasnachts-Saison</p>
+            </div>
+            <AtelierTimetable timetables={timetables} locations={locations} />
           </div>
-          <AtelierTimetable timetables={timetables} locations={locations} />
-        </div>
-      </section>
+        </section>
+      )}
 
       <CmsSectionShell appearance={formAppearance} className="py-20">
         <div className="container-site grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">

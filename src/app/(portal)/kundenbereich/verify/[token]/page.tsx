@@ -33,12 +33,18 @@ export default async function VerifyEmailPage({ params }: Props) {
 
   await createPortalSession(result.customer.id);
 
+  const already = "alreadyExisted" in result && result.alreadyExisted;
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="glass-card p-8 max-w-md w-full text-center">
-        <h1 className="font-serif text-2xl text-charcoal mb-3">Willkommen, {result.customer.name.split(" ")[0]}!</h1>
+        <h1 className="font-serif text-2xl text-charcoal mb-3">
+          {already ? "Konto bereits aktiv" : `Willkommen, ${result.customer.name.split(" ")[0]}!`}
+        </h1>
         <p className="font-sans text-sm text-charcoal-light mb-6">
-          Ihr Konto wurde aktiviert. Ihr Zugangscode wurde per E-Mail gesendet.
+          {already
+            ? "Dieser Link wurde bereits verwendet. Sie können sich im Kundenbereich anmelden."
+            : "Ihr Konto wurde aktiviert. Ihr Zugangscode wurde per E-Mail gesendet."}
         </p>
         <Link href="/kundenbereich" className="btn-primary">
           Zum Kundenbereich
