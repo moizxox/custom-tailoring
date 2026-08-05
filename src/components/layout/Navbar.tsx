@@ -161,9 +161,10 @@ export function Navbar({
             <Link
               href="/kundenbereich/login"
               className={cn(
-                "hidden lg:inline-flex items-center",
-                "text-[12px] font-sans font-medium text-charcoal/70 hover:text-periwinkle-dark",
-                "px-2 py-1.5 transition-colors",
+                "hidden lg:inline-flex items-center gap-2",
+                "bg-periwinkle hover:bg-periwinkle-dark text-charcoal hover:text-white",
+                "text-[13px] font-sans font-medium px-4 py-2 rounded-full",
+                "transition-all duration-200 shadow-soft hover:shadow-periwinkle",
               )}
             >
               Kundenbereich
@@ -283,14 +284,14 @@ export function Navbar({
           <Link
             href="/kundenbereich/login"
             onClick={() => setMobileOpen(false)}
-            className="py-3.5 text-sm font-sans text-charcoal-light hover:text-charcoal border-b border-stone-light/60 transition-colors"
+            className="mt-4 btn-primary justify-center"
           >
             Kundenbereich
           </Link>
           <Link
             href={ctaUrl}
             onClick={() => setMobileOpen(false)}
-            className="mt-4 btn-primary justify-center"
+            className="mt-2 btn-outline-dark justify-center"
           >
             {ctaLabel}
           </Link>

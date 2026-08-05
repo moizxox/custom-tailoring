@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { findCustomerById } from "@/lib/portal/customers";
-import { getRequiredFieldKeys } from "@/lib/portal/measurement-fields";
+import {
+  formatPersonalNotes,
+  getRequiredFieldKeys,
+  MEASUREMENT_LETTER_KEYS,
+  parsePersonalFromFormData,
+} from "@/lib/portal/measurement-fields";
 import { getPortalCustomerId } from "@/lib/portal/session";
 import { prisma } from "@/lib/prisma";
-import type { MeasurementData } from "@/types";
 
 export async function POST(request: Request) {
   const customerId = await getPortalCustomerId();
@@ -17,60 +21,78 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData();
-  const raw: Record<string, string> = {};
-  const photoNames: string[] = [];
+  const personal = parsePersonalFromFormData(formData);
 
-  for (const [key, value] of formData.entries()) {
-    if (key === "photos" && value instanceof File && value.size > 0) {
-      photoNames.push(value.name);
-    } else if (typeof value === "string" && key !== "notes") {
-      raw[key] = value;
-    }
+  if (!personal.firstName || !personal.lastName) {
+    return NextResponse.json(
+      { error: "Bitte Vorname und Nachname angeben." },
+      { status: 400 },
+    );
+  }
+
+  if (!personal.consent) {
+    return NextResponse.json(
+      { error: "Bitte bestätigen Sie die Einverständniserklärung." },
+      { status: 400 },
+    );
   }
 
   const values: Record<string, number> = {};
-  for (const [key, value] of Object.entries(raw)) {
-    const num = Number(value);
-    if (value.trim() !== "" && !Number.isNaN(num)) {
+  for (const key of MEASUREMENT_LETTER_KEYS) {
+    const raw = formData.get(key);
+    if (typeof raw !== "string" || !raw.trim()) continue;
+    const num = Number(raw);
+    if (!Number.isNaN(num) && num > 0) {
       values[key] = num;
     }
   }
 
-  const notes = formData.get("notes");
-  const data: MeasurementData = {
-    values,
-    notes: typeof notes === "string" && notes.trim() ? notes.trim() : undefined,
-  };
+  // Sync Körpergrösse from personal section into letter O when provided
+  if (personal.heightCm && !values.o) {
+    const h = Number(personal.heightCm);
+    if (!Number.isNaN(h) && h > 0) values.o = h;
+  }
+
+  const freeNotes = formData.get("notes");
+  const freeNotesText =
+    typeof freeNotes === "string" && freeNotes.trim() ? freeNotes.trim() : "";
+
+  const notesParts = [formatPersonalNotes(personal)];
+  if (freeNotesText) {
+    notesParts.push("", "Weitere Bemerkungen:", freeNotesText);
+  }
+  const notes = notesParts.join("\n");
 
   const requiredKeys = getRequiredFieldKeys(customer.costumeCategory);
   const missing = requiredKeys.filter((key) => !values[key] || values[key] <= 0);
   if (missing.length > 0) {
     return NextResponse.json(
       { error: "Bitte füllen Sie alle Pflichtfelder aus." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (Object.keys(values).length === 0) {
     return NextResponse.json(
       { error: "Bitte mindestens ein Mass eintragen." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  // Find the customer's latest project to link the measurement
   const project = await prisma.project.findFirst({
     where: { customerId },
     orderBy: { createdAt: "desc" },
   });
 
-  // Save measurement to DB
   await prisma.measurement.create({
     data: {
       customerId,
       projectId: project?.id ?? null,
-      fields: data.values as object,
-      notes: data.notes ?? null,
+      fields: {
+        ...values,
+        _personal: personal,
+      } as object,
+      notes,
       status: "complete",
     },
   });

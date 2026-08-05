@@ -25,10 +25,24 @@ export async function PUT(req: NextRequest, { params }: Params) {
       snapshot: existing.fields,
     } as object);
 
+    const incoming = (body.fields as Record<string, unknown> | undefined) ?? null;
+    const prevFields =
+      existing.fields && typeof existing.fields === "object" && !Array.isArray(existing.fields)
+        ? (existing.fields as Record<string, unknown>)
+        : {};
+    const nextFields = incoming
+      ? {
+          ...incoming,
+          ...(prevFields._personal !== undefined && incoming._personal === undefined
+            ? { _personal: prevFields._personal }
+            : {}),
+        }
+      : existing.fields;
+
     const measurement = await prisma.measurement.update({
       where: { id },
       data: {
-        fields: (body.fields as object) ?? existing.fields,
+        fields: nextFields as object,
         status: typeof body.status === "string" ? body.status : existing.status,
         notes: typeof body.notes === "string" ? body.notes : existing.notes,
         history: prevHistory as object[],

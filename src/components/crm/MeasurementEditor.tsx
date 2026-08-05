@@ -387,13 +387,15 @@ export function MeasurementEditor({
           </div>
 
           <div className="mb-4">
-            <label className="block text-xs text-gray-500 mb-1.5">Notizen</label>
+            <label className="block text-xs text-gray-500 mb-1.5">
+              Notizen / persönliche Angaben (Massformular)
+            </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              rows={2}
+              rows={8}
               className={CRM_TEXTAREA}
-              placeholder="Besonderheiten, Kommentare…"
+              placeholder="Persönliche Angaben und Bemerkungen…"
             />
           </div>
 

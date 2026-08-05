@@ -45,3 +45,7 @@ Mian*.docx
 pdfs/
 wunschkleid-attachments/
 
+
+# Local PDF uploads (deploy via private/documents)
+*Massformular*.pdf
+*Linvara*.pdf
