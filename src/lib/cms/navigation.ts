@@ -1,4 +1,3 @@
-import { unstable_noStore as noStore } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { DEFAULT_LEGAL_LINKS } from "@/lib/cms/extra-defaults";
 import { NAV_LINKS } from "@/lib/site-content";
@@ -170,7 +169,6 @@ export function filterVisibleNavItems(items: NavItem[]): NavItem[] {
 }
 
 export async function getNavItems(): Promise<NavItem[]> {
-  noStore();
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key: "navigation" } });
     if (row && Array.isArray(row.value)) return normalizeNavItems(row.value);
@@ -179,7 +177,6 @@ export async function getNavItems(): Promise<NavItem[]> {
 }
 
 export async function getFooterContent(): Promise<FooterContent> {
-  noStore();
   try {
     const row = await prisma.siteSettings.findUnique({ where: { key: "footer" } });
     if (row && typeof row.value === "object" && row.value !== null) {

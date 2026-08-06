@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
-import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
 import { CookieSettingsButton } from "@/components/layout/CookieSettingsButton";
 import { DEFAULT_FOOTER, type FooterContent } from "@/lib/cms/navigation";
 
@@ -12,15 +10,11 @@ export function Footer({ footerContent }: FooterProps) {
   const d = { ...DEFAULT_FOOTER, ...footerContent };
 
   return (
-    <footer className="relative overflow-hidden mt-4 site-footer-enter">
+    <footer className="relative overflow-hidden mt-4 site-footer-enter" data-reveal-ignore>
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
-        <div className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/30 blur-[90px] animate-glow-drift" />
-        <div className="absolute top-[25%] -right-12 w-[400px] h-[360px] rounded-full bg-sand-light/50 blur-[90px] animate-glow-drift [animation-delay:4s]" />
-        <div className="absolute top-[45%] left-[40%] w-[480px] h-[300px] rounded-full bg-gold-lighter/30 blur-[100px]" />
+        <div className="absolute -top-20 left-[10%] w-[420px] h-[280px] rounded-full bg-periwinkle-lighter/25 blur-[90px]" />
+        <div className="absolute top-[25%] -right-12 w-[400px] h-[360px] rounded-full bg-sand-light/40 blur-[90px]" />
       </div>
-
-      <BackgroundDecor variant="footer" showFigures={false} showConfetti={false} showStitchDashes showMesh className="z-[1]" />
-      <SideSketchFigures className="z-[1]" opacity="opacity-[0.06]" width="w-[min(20vw,280px)]" />
 
       <div className="absolute top-5 left-[5%] right-[5%] z-[2] space-y-2.5 pointer-events-none" aria-hidden>
         <div className="line-gold-dashed" />
