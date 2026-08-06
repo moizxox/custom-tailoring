@@ -123,8 +123,7 @@ export default async function ShopPage() {
   const tierItems = tiersData.items ?? [];
 
   const productsHeading =
-    categoriesData.productsHeading?.trim() ||
-    (source === "database" ? "Unsere Produkte" : "Beispielprodukte");
+    categoriesData.productsHeading?.trim() || "Basler Fasnachtskostüme";
   const productsSubtext =
     categoriesData.productsSubtext?.trim() ||
     (source === "database"

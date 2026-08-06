@@ -852,7 +852,7 @@ const PAGE_SCHEMAS_RAW: CmsPageSchema[] = [
             ],
           },
           { key: "productsLabel", label: "Products section label", type: "text", hint: 'e.g. "Auswahl"' },
-          { key: "productsHeading", label: "Products heading", type: "text", hint: 'e.g. "Unsere Produkte"' },
+          { key: "productsHeading", label: "Products grid heading", type: "text", hint: 'Shown above the product cards — e.g. "Basler Fasnachtskostüme"' },
           { key: "productsSubtext", label: "Products intro text", type: "textarea" },
         ]),
       },

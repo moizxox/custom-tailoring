@@ -25,7 +25,7 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
     categories: {
       heading: "Unsere Angebote",
       productsLabel: "Auswahl",
-      productsHeading: "Unsere Produkte",
+      productsHeading: "Basler Fasnachtskostüme",
       productsSubtext:
         "Klicken Sie auf ein Produkt für Fotos, Qualitätsstufen und Preise. Alle Kostüme werden massgeschneidert — Anfragen sind unverbindlich.",
       items: SHOP_CATEGORIES.map((c) => ({
