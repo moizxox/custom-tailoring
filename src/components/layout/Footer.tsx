@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { BackgroundDecor } from "@/components/decor/BackgroundDecor";
 import { SideSketchFigures } from "@/components/decor/SideSketchFigures";
 import { CookieSettingsButton } from "@/components/layout/CookieSettingsButton";
@@ -87,16 +86,11 @@ export function Footer({ footerContent }: FooterProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {/* Brand + contact */}
             <div className="lg:col-span-2 flex flex-col gap-5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 ring-1 ring-gold-muted/20 flex items-center justify-center shadow-soft">
-                  <Image src="/icons/sewing/tailor-dummy-fashion-sewing-tailoring.svg" alt="" width={20} height={20} className="icon-periwinkle-deep" />
-                </div>
-                <div>
-                  <span className="font-serif text-lg text-charcoal tracking-[0.1em] uppercase block leading-tight">
-                    {d.brandName}<span className="text-periwinkle-dark">{d.brandAccent}</span>
-                  </span>
-                  <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-charcoal/45">{d.brandSubline}</span>
-                </div>
+              <div>
+                <span className="font-serif text-lg text-charcoal tracking-[0.1em] uppercase block leading-tight">
+                  {d.brandName}<span className="text-periwinkle-dark">{d.brandAccent}</span>
+                </span>
+                <span className="font-sans text-[9px] tracking-[0.22em] uppercase text-charcoal/45">{d.brandSubline}</span>
               </div>
 
               {/* Locations */}

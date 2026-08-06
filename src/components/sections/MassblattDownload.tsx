@@ -30,7 +30,7 @@ export function MassblattDownload({
         <Link href="/kundenbereich/login" className="text-periwinkle-dark hover:underline">
           Kundenbereich
         </Link>
-        — nicht öffentlich zugänglich.
+        .
       </p>
     );
   }

@@ -35,9 +35,9 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
       })),
     },
     infoBand: {
-      heading: "Massanfertigung & verbindliche Bestellung",
+      heading: "",
       text:
-        "Viele unserer Kostüme werden individuell nach Mass gefertigt. Eine verbindliche Bestellung entsteht erst nach schriftlicher Bestätigung (Angebot, Auftragsbestätigung oder Rechnung). Lieferzeiten, Preise und Lieferkosten werden transparent kommuniziert.\n\nKostümbeispiele und Ausführungen: Entdecken Sie verschiedene Kostümideen, Ausführungsvarianten und Gestaltungsmöglichkeiten. Jedes Kostüm wird individuell auf Ihre Wünsche und Masse abgestimmt. Die gezeigten Modelle dienen als Inspiration und können angepasst werden. Die angegebenen Preise verstehen sich inklusive Stoff, Kleinmaterial, Nähaufwand und MwSt. Preise für Gruppen auf Anfrage.",
+        "Kostümbeispiele und Ausführungen: Entdecken Sie verschiedene Kostümideen, Ausführungsvarianten und Gestaltungsmöglichkeiten. Jedes Kostüm wird individuell auf Ihre Wünsche und Masse abgestimmt. Die gezeigten Modelle dienen als Inspiration und können angepasst werden. Die angegebenen Preise verstehen sich inklusive Stoff, Kleinmaterial, Nähaufwand und MwSt. Preise für Gruppen auf Anfrage.",
       primaryLabel: "",
       primaryUrl: "",
       secondaryLabel: "",
