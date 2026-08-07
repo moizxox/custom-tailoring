@@ -49,7 +49,7 @@ corepack prepare pnpm@8.15.9 --activate
 pnpm install --frozen-lockfile
 
 # Ensure business mailbox for contact notifications / From (do not overwrite SMTP password).
-BUSINESS_EMAIL="info@kostuem-schneiderei.ch"
+BUSINESS_EMAIL="info@kostuemschneiderei.ch"
 if [ -f .env ]; then
   for KEY in CONTACT_NOTIFICATION_EMAIL NODEMAILER_FROM RESEND_FROM_EMAIL; do
     if grep -q "^\${KEY}=" .env; then
