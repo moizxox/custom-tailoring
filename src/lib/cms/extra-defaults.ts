@@ -139,17 +139,27 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
   },
   impressum: {
     company: {
+      sectionTitle: "",
+      nameLabel: "Firmenname",
       name: IMPRESSUM.companyName,
+      ownerLabel: "Geschäftsführung",
       owner: IMPRESSUM.owner,
+      locationLabel: "Hauptstandort",
       address: IMPRESSUM.address,
       city: IMPRESSUM.city,
       country: IMPRESSUM.country,
+      secondLocationLabel: "Weiterer Standort",
       secondLocation: IMPRESSUM.secondLocation,
+      phoneLabel: "Telefon",
       phone: IMPRESSUM.phone,
       phoneHref: IMPRESSUM.phoneHref,
+      emailLabel: "E-Mail",
       email: IMPRESSUM.email,
+      companyIdLabel: "Firmennummer",
       companyId: IMPRESSUM.companyId,
+      vatIdLabel: "MwSt.-Nummer",
       vatId: IMPRESSUM.vatId,
+      purposeLabel: "Firmenzweck",
       purpose: IMPRESSUM.purpose,
     },
     sections: {
@@ -340,7 +350,7 @@ export const EXTRA_SECTION_DEFAULTS: Record<string, Record<string, Record<string
     },
     team: {
       items: [
-        { name: "Lani Müller", role: "Inhaberin & Schneiderin", icon_slug: "tailor-dummy-fashion-sewing-tailoring.svg", bio: "Seit über 20 Jahren lebe ich meine Leidenschaft für das Kostümhandwerk." },
+        { name: "Lani Müller", role: "Geschäftsführung & Schneiderin", icon_slug: "tailor-dummy-fashion-sewing-tailoring.svg", bio: "Seit über 20 Jahren lebe ich meine Leidenschaft für das Kostümhandwerk." },
         { name: "Sarah Keller", role: "Designerin & Beraterin", icon_slug: "pencil-sewing-tailoring-drawing.svg", bio: "Kreativität und Präzision vereinen sich in meiner Arbeit." },
         { name: "Marco Brun", role: "Zuschneider", icon_slug: "scissor-cut-fabric-sewing.svg", bio: "Ein perfekter Schnitt ist die Grundlage jedes guten Kostüms." },
       ],

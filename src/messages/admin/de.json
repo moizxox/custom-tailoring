@@ -344,11 +344,27 @@
       "company": {
         "label": "Firmendaten",
         "fields": {
+          "sectionTitle": { "label": "Block-Überschrift (optional)" },
+          "nameLabel": { "label": "Beschriftung — Firmenname" },
           "name": { "label": "Firmenname" },
-          "owner": { "label": "Inhaberin" },
-          "uid": { "label": "UID" },
+          "ownerLabel": { "label": "Beschriftung — Geschäftsführung" },
+          "owner": { "label": "Geschäftsführung" },
+          "locationLabel": { "label": "Beschriftung — Hauptstandort" },
+          "address": { "label": "Strasse" },
+          "city": { "label": "PLZ / Ort" },
+          "country": { "label": "Land" },
+          "secondLocationLabel": { "label": "Beschriftung — Weiterer Standort" },
+          "secondLocation": { "label": "Weiterer Standort" },
+          "phoneLabel": { "label": "Beschriftung — Telefon" },
           "phone": { "label": "Telefon" },
-          "email": { "label": "E-Mail" }
+          "emailLabel": { "label": "Beschriftung — E-Mail" },
+          "email": { "label": "E-Mail" },
+          "companyIdLabel": { "label": "Beschriftung — Firmennummer" },
+          "companyId": { "label": "Firmennummer" },
+          "vatIdLabel": { "label": "Beschriftung — MwSt.-Nummer" },
+          "vatId": { "label": "MwSt.-Nummer" },
+          "purposeLabel": { "label": "Beschriftung — Firmenzweck" },
+          "purpose": { "label": "Firmenzweck" }
         }
       }
     }

@@ -344,11 +344,27 @@
       "company": {
         "label": "Company details",
         "fields": {
+          "sectionTitle": { "label": "Block heading (optional)" },
+          "nameLabel": { "label": "Label — company name" },
           "name": { "label": "Company name" },
-          "owner": { "label": "Owner" },
-          "uid": { "label": "UID" },
+          "ownerLabel": { "label": "Label — management" },
+          "owner": { "label": "Management / director" },
+          "locationLabel": { "label": "Label — main location" },
+          "address": { "label": "Street address" },
+          "city": { "label": "City / ZIP" },
+          "country": { "label": "Country" },
+          "secondLocationLabel": { "label": "Label — second location" },
+          "secondLocation": { "label": "Second location" },
+          "phoneLabel": { "label": "Label — phone" },
           "phone": { "label": "Phone" },
-          "email": { "label": "Email" }
+          "emailLabel": { "label": "Label — email" },
+          "email": { "label": "Email" },
+          "companyIdLabel": { "label": "Label — company ID" },
+          "companyId": { "label": "Company ID" },
+          "vatIdLabel": { "label": "Label — VAT ID" },
+          "vatId": { "label": "VAT ID" },
+          "purposeLabel": { "label": "Label — company purpose" },
+          "purpose": { "label": "Company purpose" }
         }
       }
     }
