@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db/prisma";
+import {
+  createCalendarEventForAppointment,
+  getGoogleCalendarStatus,
+} from "@/lib/google/calendar";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -17,9 +21,34 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
+  const existing = await prisma.appointmentRequest.findUnique({ where: { id } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  let googleEventId = existing.googleEventId;
+  let calendarWarning: string | null = null;
+
+  if (status === "confirmed" && existing.status !== "confirmed" && !googleEventId) {
+    const gcal = await getGoogleCalendarStatus();
+    if (gcal.connected) {
+      try {
+        googleEventId = await createCalendarEventForAppointment(existing);
+      } catch (err) {
+        calendarWarning =
+          err instanceof Error ? err.message : "Google Calendar Event konnte nicht erstellt werden.";
+        console.error("[gcal] create event failed", err);
+      }
+    } else {
+      calendarWarning = "Google Calendar ist nicht verbunden.";
+    }
+  }
+
   const appointment = await prisma.appointmentRequest.update({
     where: { id },
-    data: { status },
+    data: {
+      status,
+      ...(googleEventId ? { googleEventId } : {}),
+    },
   });
-  return NextResponse.json({ appointment });
+
+  return NextResponse.json({ appointment, calendarWarning });
 }

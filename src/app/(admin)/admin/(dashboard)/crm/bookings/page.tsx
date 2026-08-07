@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db/prisma";
+import { getGoogleCalendarStatus } from "@/lib/google/calendar";
 import { BookingAdminClient } from "./BookingAdminClient";
 
 export const metadata: Metadata = { title: "Termine — CRM" };
@@ -7,12 +8,21 @@ export const metadata: Metadata = { title: "Termine — CRM" };
 export default async function CrmBookingsPage() {
   let appointments: Awaited<ReturnType<typeof prisma.appointmentRequest.findMany>> = [];
   let blocks: Awaited<ReturnType<typeof prisma.bookingBlock.findMany>> = [];
+  let gcal = { configured: false, connected: false, email: null as string | null };
 
   try {
-    [appointments, blocks] = await Promise.all([
+    const [a, b, status] = await Promise.all([
       prisma.appointmentRequest.findMany({ orderBy: [{ date: "asc" }, { time: "asc" }], take: 100 }),
       prisma.bookingBlock.findMany({ orderBy: { startAt: "asc" }, take: 50 }),
+      getGoogleCalendarStatus(),
     ]);
+    appointments = a;
+    blocks = b;
+    gcal = {
+      configured: status.configured,
+      connected: status.connected,
+      email: status.email,
+    };
   } catch (error) {
     console.error("[crm] bookings load failed:", error);
   }
@@ -35,6 +45,7 @@ export default async function CrmBookingsPage() {
           startAt: b.startAt.toISOString(),
           endAt: b.endAt.toISOString(),
         }))}
+        initialGcal={gcal}
       />
     </div>
   );

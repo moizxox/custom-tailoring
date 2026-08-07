@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AppointmentRow {
   id: string;
@@ -16,6 +16,7 @@ interface AppointmentRow {
   notes: string | null;
   status: string;
   createdAt: string;
+  googleEventId?: string | null;
 }
 
 interface BlockRow {
@@ -24,6 +25,12 @@ interface BlockRow {
   startAt: string;
   endAt: string;
   reason: string | null;
+}
+
+interface GcalStatus {
+  configured: boolean;
+  connected: boolean;
+  email: string | null;
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -36,13 +43,16 @@ const STATUS_LABELS: Record<string, string> = {
 export function BookingAdminClient({
   initialAppointments,
   initialBlocks,
+  initialGcal,
 }: {
   initialAppointments: AppointmentRow[];
   initialBlocks: BlockRow[];
+  initialGcal: GcalStatus;
 }) {
   const router = useRouter();
   const [appointments, setAppointments] = useState(initialAppointments);
   const [blocks, setBlocks] = useState(initialBlocks);
+  const [gcal, setGcal] = useState(initialGcal);
   const [blockForm, setBlockForm] = useState({
     locationId: "",
     startAt: "",
@@ -51,6 +61,22 @@ export function BookingAdminClient({
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [gcalMsg, setGcalMsg] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const flag = params.get("gcal");
+    if (flag === "connected") setGcalMsg("Google Calendar verbunden.");
+    if (flag === "error") setGcalMsg(`Google-Verbindung fehlgeschlagen: ${params.get("msg") || "unbekannt"}`);
+    if (flag === "missing_config") setGcalMsg("Server: GOOGLE_CLIENT_ID / SECRET fehlen.");
+    if (flag) {
+      window.history.replaceState({}, "", "/admin/crm/bookings");
+      void fetch("/admin/api/integrations/google")
+        .then((r) => r.json())
+        .then((d) => setGcal({ configured: d.configured, connected: d.connected, email: d.email }))
+        .catch(() => {});
+    }
+  }, []);
 
   async function updateStatus(id: string, status: string) {
     const res = await fetch(`/admin/api/crm/bookings/${id}`, {
@@ -58,12 +84,37 @@ export function BookingAdminClient({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       alert("Status konnte nicht gespeichert werden.");
       return;
     }
-    setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+    setAppointments((prev) =>
+      prev.map((a) =>
+        a.id === id
+          ? {
+              ...a,
+              status,
+              googleEventId: data.appointment?.googleEventId ?? a.googleEventId,
+            }
+          : a,
+      ),
+    );
+    if (data.calendarWarning) {
+      alert(`Termin gespeichert. Kalender: ${data.calendarWarning}`);
+    }
     router.refresh();
+  }
+
+  async function disconnectGcal() {
+    if (!confirm("Google Calendar Trennung — neue Bestätigungen erzeugen dann kein Event mehr.")) return;
+    const res = await fetch("/admin/api/integrations/google/disconnect", { method: "POST" });
+    if (!res.ok) {
+      alert("Trennen fehlgeschlagen.");
+      return;
+    }
+    setGcal({ configured: gcal.configured, connected: false, email: null });
+    setGcalMsg("Google Calendar getrennt.");
   }
 
   async function addBlock(e: React.FormEvent) {
@@ -109,6 +160,41 @@ export function BookingAdminClient({
 
   return (
     <div className="space-y-10">
+      <section className="bg-white border border-gray-200 rounded-2xl p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <p className="font-semibold text-gray-900">Google Calendar</p>
+            <p className="text-sm text-gray-500 mt-1">
+              {gcal.connected
+                ? `Verbunden${gcal.email ? ` als ${gcal.email}` : ""}. Bestätigte Termine werden automatisch eingetragen.`
+                : gcal.configured
+                  ? "Noch nicht verbunden — bitte mit dem Kalender-Konto (wunschkleid@gmail.com) verbinden."
+                  : "Server-Konfiguration fehlt (GOOGLE_CLIENT_ID / SECRET)."}
+            </p>
+            {gcalMsg && <p className="text-sm text-violet-700 mt-2">{gcalMsg}</p>}
+          </div>
+          <div className="flex gap-2 shrink-0">
+            {gcal.configured && !gcal.connected && (
+              <a
+                href="/admin/api/integrations/google/connect"
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-500"
+              >
+                Google Calendar verbinden
+              </a>
+            )}
+            {gcal.connected && (
+              <button
+                type="button"
+                onClick={disconnectGcal}
+                className="inline-flex items-center px-4 py-2 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Trennen
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-violet-50 border border-violet-100 rounded-2xl p-5 text-sm text-violet-900 leading-relaxed">
         <p className="font-semibold mb-1">So blockieren Sie Zeiten</p>
         <p>
@@ -233,7 +319,12 @@ export function BookingAdminClient({
                       {a.phone && <p className="text-xs text-gray-500">{a.phone}</p>}
                       {a.notes && <p className="text-xs text-gray-400 mt-1">{a.notes}</p>}
                     </td>
-                    <td className="px-4 py-3">{STATUS_LABELS[a.status] ?? a.status}</td>
+                    <td className="px-4 py-3">
+                      {STATUS_LABELS[a.status] ?? a.status}
+                      {a.googleEventId && (
+                        <p className="text-[10px] text-emerald-600 mt-0.5">Kalender ✓</p>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-right space-x-2 whitespace-nowrap">
                       {a.status === "pending" && (
                         <button

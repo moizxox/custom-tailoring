@@ -514,20 +514,21 @@ model CustomPage {
 // ─────────────────────────────────────────────────────────────────────────────
 
 model AppointmentRequest {
-  id          String   @id @default(cuid())
-  locationId  String
-  serviceId   String?
-  serviceLabel String
-  date        String   // YYYY-MM-DD
-  time        String   // HH:mm
-  durationMin Int      @default(30)
-  name        String
-  email       String
-  phone       String?
-  notes       String?
-  status      String   @default("pending") // pending | confirmed | cancelled | completed
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  locationId     String
+  serviceId      String?
+  serviceLabel   String
+  date           String // YYYY-MM-DD
+  time           String // HH:mm
+  durationMin    Int      @default(30)
+  name           String
+  email          String
+  phone          String?
+  notes          String?
+  status         String   @default("pending") // pending | confirmed | cancelled | completed
+  googleEventId  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([date, locationId])
   @@index([status])
