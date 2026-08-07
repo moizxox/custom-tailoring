@@ -175,12 +175,15 @@ export function BookingAdminClient({
           </div>
           <div className="flex gap-2 shrink-0">
             {gcal.configured && !gcal.connected && (
-              <a
-                href="/admin/api/integrations/google/connect"
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = "/admin/api/integrations/google/connect";
+                }}
                 className="inline-flex items-center px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-500"
               >
                 Google Calendar verbinden
-              </a>
+              </button>
             )}
             {gcal.connected && (
               <button
