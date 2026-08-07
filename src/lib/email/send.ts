@@ -33,7 +33,7 @@ function smtpPass() {
 }
 
 /** Business mailbox — never fall back to a private Gmail as From. */
-export const BUSINESS_EMAIL = "info@kostuem-schneiderei.ch";
+export const BUSINESS_EMAIL = "info@kostuemschneiderei.ch";
 
 function fromAddress() {
   const configured =
